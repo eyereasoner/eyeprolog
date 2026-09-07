@@ -21,42 +21,42 @@ symmetry(reflection_b).
 symmetry(reflection_c).
 
 % Cayley table for D3 composition.
-compose(identity, identity, identity).
-compose(identity, rotation_120, rotation_120).
-compose(identity, rotation_240, rotation_240).
-compose(identity, reflection_a, reflection_a).
-compose(identity, reflection_b, reflection_b).
-compose(identity, reflection_c, reflection_c).
-compose(rotation_120, identity, rotation_120).
-compose(rotation_120, rotation_120, rotation_240).
-compose(rotation_120, rotation_240, identity).
-compose(rotation_120, reflection_a, reflection_b).
-compose(rotation_120, reflection_b, reflection_c).
-compose(rotation_120, reflection_c, reflection_a).
-compose(rotation_240, identity, rotation_240).
-compose(rotation_240, rotation_120, identity).
-compose(rotation_240, rotation_240, rotation_120).
-compose(rotation_240, reflection_a, reflection_c).
-compose(rotation_240, reflection_b, reflection_a).
-compose(rotation_240, reflection_c, reflection_b).
-compose(reflection_a, identity, reflection_a).
-compose(reflection_a, rotation_120, reflection_c).
-compose(reflection_a, rotation_240, reflection_b).
-compose(reflection_a, reflection_a, identity).
-compose(reflection_a, reflection_b, rotation_240).
-compose(reflection_a, reflection_c, rotation_120).
-compose(reflection_b, identity, reflection_b).
-compose(reflection_b, rotation_120, reflection_a).
-compose(reflection_b, rotation_240, reflection_c).
-compose(reflection_b, reflection_a, rotation_120).
-compose(reflection_b, reflection_b, identity).
-compose(reflection_b, reflection_c, rotation_240).
-compose(reflection_c, identity, reflection_c).
-compose(reflection_c, rotation_120, reflection_b).
-compose(reflection_c, rotation_240, reflection_a).
-compose(reflection_c, reflection_a, rotation_240).
-compose(reflection_c, reflection_b, rotation_120).
-compose(reflection_c, reflection_c, identity).
+compose_op(identity, identity, identity).
+compose_op(identity, rotation_120, rotation_120).
+compose_op(identity, rotation_240, rotation_240).
+compose_op(identity, reflection_a, reflection_a).
+compose_op(identity, reflection_b, reflection_b).
+compose_op(identity, reflection_c, reflection_c).
+compose_op(rotation_120, identity, rotation_120).
+compose_op(rotation_120, rotation_120, rotation_240).
+compose_op(rotation_120, rotation_240, identity).
+compose_op(rotation_120, reflection_a, reflection_b).
+compose_op(rotation_120, reflection_b, reflection_c).
+compose_op(rotation_120, reflection_c, reflection_a).
+compose_op(rotation_240, identity, rotation_240).
+compose_op(rotation_240, rotation_120, identity).
+compose_op(rotation_240, rotation_240, rotation_120).
+compose_op(rotation_240, reflection_a, reflection_c).
+compose_op(rotation_240, reflection_b, reflection_a).
+compose_op(rotation_240, reflection_c, reflection_b).
+compose_op(reflection_a, identity, reflection_a).
+compose_op(reflection_a, rotation_120, reflection_c).
+compose_op(reflection_a, rotation_240, reflection_b).
+compose_op(reflection_a, reflection_a, identity).
+compose_op(reflection_a, reflection_b, rotation_240).
+compose_op(reflection_a, reflection_c, rotation_120).
+compose_op(reflection_b, identity, reflection_b).
+compose_op(reflection_b, rotation_120, reflection_a).
+compose_op(reflection_b, rotation_240, reflection_c).
+compose_op(reflection_b, reflection_a, rotation_120).
+compose_op(reflection_b, reflection_b, identity).
+compose_op(reflection_b, reflection_c, rotation_240).
+compose_op(reflection_c, identity, reflection_c).
+compose_op(reflection_c, rotation_120, reflection_b).
+compose_op(reflection_c, rotation_240, reflection_a).
+compose_op(reflection_c, reflection_a, rotation_240).
+compose_op(reflection_c, reflection_b, rotation_120).
+compose_op(reflection_c, reflection_c, identity).
 % Each candidate subgroup must also contain inverses.
 inverse(identity, identity).
 inverse(rotation_120, rotation_240).
@@ -78,7 +78,7 @@ all_symmetries(Symmetries) :-
 
 % A valid subgroup is closed under both composition and inverse.
 closed_under_composition(Group) :-
-  \+ (member(X, Group), member(Y, Group), compose(X, Y, Z), \+ member(Z, Group)).
+  \+ (member(X, Group), member(Y, Group), compose_op(X, Y, Z), \+ member(Z, Group)).
 
 closed_under_inverse(Group) :-
   \+ (member(X, Group), inverse(X, Y), \+ member(Y, Group)).

@@ -196,6 +196,10 @@ export async function main(argv) {
   });
 
   const portabilityFailures = program.interopPortabilityWarnings ?? [];
+  // Shadowing is reported unconditionally: silently replacing a library
+  // predicate for the whole program is the failure mode this diagnostic exists
+  // to surface, so it must not depend on opting in to --warnings.
+  printLibraryShadowingWarnings(program);
   if (options.warnings || (options.portable && portabilityFailures.length > 0)) printWarnings(program);
   if (options.portable && portabilityFailures.length > 0) {
     process.exitCode = 1;
@@ -362,6 +366,14 @@ function printSourceWarning(warning) {
   if (warning.kind !== 'singleton') return;
   process.stderr.write(`Warning: singleton: ${warning.name}, near ${warning.filename}:${warning.line}
 `);
+}
+
+function printLibraryShadowingWarnings(program) {
+  for (const warning of program.libraryShadowingWarnings ?? []) {
+    process.stderr.write('eyeprolog warning: user definition shadows a bundled library predicate\n');
+    process.stderr.write(`  ${warning.indicator} replaces library(${warning.library}) ${warning.indicator} for all user code in this program\n`);
+    process.stderr.write(`  import it explicitly with :- use_module(library(${warning.library}), [${warning.indicator}]). to make this an error\n`);
+  }
 }
 
 function printWarnings(program) {

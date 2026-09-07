@@ -153,6 +153,7 @@ export class Program {
     this.autoloadedPredicates = [];
     this.libraryImports = [];
     this.interopPortabilityWarnings = [];
+    this.libraryShadowingWarnings = [];
     this.dynamicPredicates = new Set();
     // ISO 7.5.3 notes that a public/1 directive declaring user-defined
     // procedures to be public would be an extension. Such a procedure stays
@@ -1428,6 +1429,50 @@ function analyzeInteropPortability(program, extraGoals = []) {
     });
   }
   program.interopPortabilityWarnings = [...warnings.values()];
+  analyzeLibraryShadowing(program);
+}
+
+// A user-defined procedure replaces the bundled-library procedure of the same
+// name and arity: the library clauses are never autoloaded, so other parts of
+// the same program that expected the library behaviour just see the user's
+// clauses. Bundled library modules keep resolving their own internal calls, so
+// this only affects user code, but within user code it acts at a distance
+// across included files.
+//
+// How strictly this is treated depends on how explicit the program was, which
+// follows the graded scheme SWI-Prolog uses for the same situation:
+//
+//   implicit autoload                          -> warning
+//   use_module(library(L))                     -> warning
+//   use_module(library(L), [Name/Arity])       -> permission_error
+//
+// Only the last case is an outright contradiction: the program asked for that
+// exact predicate to be imported and then supplied clauses for it. The first
+// two stay warnings so that flat, module-free programs -- which load unchanged
+// on Scryer and Trealla, where the library is simply never imported -- keep
+// working. Note that ISO reserves permission_error(modify, static_procedure)
+// for built-in predicates (7.5.3); library predicates are not built-ins, so
+// this error is raised only where the program's own import list demands it.
+function analyzeLibraryShadowing(program) {
+  const explicitlyImported = new Map();
+  for (const entry of program.libraryImports) {
+    if (entry.imports == null) continue;
+    for (const indicator of entry.imports) {
+      explicitlyImported.set(`${entry.targetModule}:${indicator.key}`, entry.library);
+    }
+  }
+
+  const shadowed = new Map();
+  for (const group of program.groups.values()) {
+    if (group.module !== 'user') continue;
+    const key = `${group.name}/${group.arity}`;
+    const explicitLibrary = explicitlyImported.get(`${group.module}:${key}`);
+    if (explicitLibrary != null) throw staticProcedureModificationError(group.name, group.arity);
+    const library = eyePrologLibraryAutoload[key];
+    if (library == null || shadowed.has(key)) continue;
+    shadowed.set(key, { kind: 'shadowed-library-predicate', indicator: key, library });
+  }
+  program.libraryShadowingWarnings = [...shadowed.values()];
 }
 
 function sourceOptionsFor(source, options) {

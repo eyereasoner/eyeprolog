@@ -39,9 +39,9 @@ incident(V, E) :- edge(E, _u, V).
 adjacent_by_edge(V, U, E) :- edge(E, V, U).
 adjacent_by_edge(V, U, E) :- edge(E, U, V).
 
-select(Item, [Item | Rest], Rest).
-select(Item, [Head | Tail], [Head | Rest]) :-
-  select(Item, Tail, Rest).
+select_item(Item, [Item | Rest], Rest).
+select_item(Item, [Head | Tail], [Head | Rest]) :-
+  select_item(Item, Tail, Rest).
 
 % Eulerian paths start at an odd-degree vertex when exactly two exist.
 odd_degree(V) :-
@@ -77,7 +77,7 @@ eulerian_path(Path) :-
 dfs_euler(_current, Path, [], Path).
 dfs_euler(Current, Visited, Remaining, Path) :-
   adjacent_by_edge(Current, Next, Edge),
-  select(Edge, Remaining, Newremaining),
+  select_item(Edge, Remaining, Newremaining),
   dfs_euler(Next, [Next | Visited], Newremaining, Path).
 
 oddVertices(eulerian_path_case, Odds) :-

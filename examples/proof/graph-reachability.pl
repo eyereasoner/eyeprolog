@@ -11,7 +11,7 @@ why(
         bindings([binding("Start", a), binding("Goal", f)]),
         uses([
           proof(
-            goal(reachable(a, f, "a")),
+            goal(reachable_via(a, f, "a")),
             by(rule("graph-reachability.pl", clause(9))),
             bindings([binding("Start", a), binding("Goal", f), binding("Visited", "a"), binding("Next", b)]),
             uses([
@@ -24,7 +24,7 @@ why(
                 by(builtin('\\+', 1))
               ),
               proof(
-                goal(reachable(b, f, "ba")),
+                goal(reachable_via(b, f, "ba")),
                 by(rule("graph-reachability.pl", clause(9))),
                 bindings([binding("Start", b), binding("Goal", f), binding("Visited", "ba"), binding("Next", d)]),
                 uses([
@@ -37,7 +37,7 @@ why(
                     by(builtin('\\+', 1))
                   ),
                   proof(
-                    goal(reachable(d, f, "dba")),
+                    goal(reachable_via(d, f, "dba")),
                     by(rule("graph-reachability.pl", clause(9))),
                     bindings([binding("Start", d), binding("Goal", f), binding("Visited", "dba"), binding("Next", f)]),
                     uses([
@@ -50,7 +50,7 @@ why(
                         by(builtin('\\+', 1))
                       ),
                       proof(
-                        goal(reachable(f, f, "fdba")),
+                        goal(reachable_via(f, f, "fdba")),
                         by(fact("graph-reachability.pl", clause(8))),
                         bindings([binding("Node", f), binding("_visited", "fdba")])
                       )
@@ -79,7 +79,7 @@ why(
         bindings([binding("Start", c), binding("Goal", g)]),
         uses([
           proof(
-            goal(reachable(c, g, "c")),
+            goal(reachable_via(c, g, "c")),
             by(rule("graph-reachability.pl", clause(9))),
             bindings([binding("Start", c), binding("Goal", g), binding("Visited", "c"), binding("Next", e)]),
             uses([
@@ -92,7 +92,7 @@ why(
                 by(builtin('\\+', 1))
               ),
               proof(
-                goal(reachable(e, g, "ec")),
+                goal(reachable_via(e, g, "ec")),
                 by(rule("graph-reachability.pl", clause(9))),
                 bindings([binding("Start", e), binding("Goal", g), binding("Visited", "ec"), binding("Next", f)]),
                 uses([
@@ -105,7 +105,7 @@ why(
                     by(builtin('\\+', 1))
                   ),
                   proof(
-                    goal(reachable(f, g, "fec")),
+                    goal(reachable_via(f, g, "fec")),
                     by(rule("graph-reachability.pl", clause(9))),
                     bindings([binding("Start", f), binding("Goal", g), binding("Visited", "fec"), binding("Next", g)]),
                     uses([
@@ -118,7 +118,7 @@ why(
                         by(builtin('\\+', 1))
                       ),
                       proof(
-                        goal(reachable(g, g, "gfec")),
+                        goal(reachable_via(g, g, "gfec")),
                         by(fact("graph-reachability.pl", clause(8))),
                         bindings([binding("Node", g), binding("_visited", "gfec")])
                       )

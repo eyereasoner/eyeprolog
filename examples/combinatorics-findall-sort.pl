@@ -14,16 +14,16 @@
 
 % select/3 nondeterministically removes one item from a list; because it is an
 % ordinary rule, the example also demonstrates user-level list recursion.
-select(Item, [Item | Rest], Rest).
+select_item(Item, [Item | Rest], Rest).
 % The recursive clause keeps the non-selected head and searches the tail.
-select(Item, [Head | Tail], [Head | Rest]) :-
-  select(Item, Tail, Rest).
+select_item(Item, [Head | Tail], [Head | Rest]) :-
+  select_item(Item, Tail, Rest).
 
 % combination/3 builds an unordered K-combination by repeated selection.
 combination(0, _items, []).
 combination(I, Items, Combination) :-
   (I > 0),
-  select(Item, Items, Remaining),
+  select_item(Item, Items, Remaining),
   (J is I - 1),
   combination(J, Remaining, Partial),
   sort([Item | Partial], Combination).

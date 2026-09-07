@@ -18,14 +18,14 @@ edge(d, f).
 edge(e, f).
 edge(f, g).
 
-reachable(Node, Node, _visited).
-reachable(Start, Goal, Visited) :-
+reachable_via(Node, Node, _visited).
+reachable_via(Start, Goal, Visited) :-
   edge(Start, Next),
   \+ member(Next, Visited),
-  reachable(Next, Goal, [Next|Visited]).
+  reachable_via(Next, Goal, [Next|Visited]).
 
 is_reachable(Start, Goal) :-
-  reachable(Start, Goal, [Start]).
+  reachable_via(Start, Goal, [Start]).
 
 reachable(reachability_case, path(a, f)) :-
   is_reachable(a, f).

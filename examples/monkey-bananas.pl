@@ -20,16 +20,16 @@ plan(Moves) :-
   candidate_plan(Moves),
   initial_state(I),
   goal_state(G),
-  reachable(I, Moves, G).
+  reachable_state(I, Moves, G).
 
 candidate_plan([_, _, _]).
 candidate_plan([_, _, _, _]).
 candidate_plan([_, _, _, _, _]).
 
-reachable(S, [], S).
-reachable(S1, [M|L], S3) :-
+reachable_state(S, [], S).
+reachable_state(S1, [M|L], S3) :-
   legal_move(S1, M, S2),
-  reachable(S2, L, S3).
+  reachable_state(S2, L, S3).
 
 initial_state([loc1, loc2, loc3, n, n]).
 goal_state([_, _, _, _, y]).
