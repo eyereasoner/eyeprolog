@@ -1891,7 +1891,7 @@ c4 ?- call((!;1)).
         assertIncludes(repl.stdout, 'T = ./*. .', 'REPL dotted graphic atom answer');
         assertNotIncludes(repl.stdout, "T = './*.'", 'REPL dotted graphic atom has no spurious quotes');
         assertIncludes(repl.stdout, 'T = ok.', 'REPL following read answer');
-        assertIncludes(repl.stdout, 'error(syntax_error(read_term), eyeprolog)', 'REPL syntax error');
+        assertIncludes(repl.stdout, 'error(syntax_error(read_term), read / 1)', 'REPL syntax error');
         assertEqual(repl.stderr, '', 'REPL stderr');
 
         const continuedGraphic = runCli([], {
@@ -2719,8 +2719,8 @@ c4 ?- call((!;1)).
         });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout,
-          '?-    error(type_error(list, [1, [], _A | 2]), eyeprolog).\n' +
-          '?-    error(type_error(list, [1, [], _A | 2]), eyeprolog).\n' +
+          '?-    error(type_error(list, [1, [], _A | 2]), number_chars / 2).\n' +
+          '?-    error(type_error(list, [1, [], _A | 2]), number_chars / 2).\n' +
           '?- ',
           'stdout');
         assertEqual(result.stderr, '', 'stderr');
@@ -2734,8 +2734,8 @@ c4 ?- call((!;1)).
         });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout,
-          '?-    error(instantiation_error, eyeprolog).\n' +
-          '?-    Error = instantiation_error, Imp_def = eyeprolog.\n' +
+          '?-    error(instantiation_error, (is) / 2).\n' +
+          '?-    Error = instantiation_error, Imp_def = (is)/2.\n' +
           '?- ',
           'stdout');
         assertEqual(result.stderr, '', 'stderr');
@@ -4044,7 +4044,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         const result = runCli([], { input: 'statistics(nonsense, Value).\nhalt.\n' });
         assertEqual(result.status, 0, 'exit status');
         assertIncludes(result.stdout,
-          'error(domain_error(statistics_key, nonsense), eyeprolog).',
+          'error(domain_error(statistics_key, nonsense), statistics / 2).',
           'statistics key error');
         assertEqual(result.stderr, '', 'stderr');
       },
@@ -5082,7 +5082,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
             goal: 'answer(T)',
             ioOptions: { input: invalidOctal },
           }).stdout,
-          'answer(error(syntax_error(read_term), eyeprolog)).\n',
+          'answer(error(syntax_error(read_term), read / 1)).\n',
           'read/1 rejects non-octal numeric escape',
         );
       },

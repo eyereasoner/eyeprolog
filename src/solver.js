@@ -6,6 +6,7 @@ import {
   numberTerm, numberTextFromDouble, properListItems, termIsGround, termToString, unify, variable, variantTerms,
 } from './term.js';
 import { numberValueKey, sameNumberValue } from './number-value.js';
+import { attachBuiltinErrorContext } from './errors.js';
 import { PrologError, getStrictIsoRegistry } from './iso.js';
 import { getEyePrologRegistry } from './standard-library.js';
 import { selectClauseCandidates, selectClauseCandidatesForValues, selectGroundClauseCandidates } from './program-indexing.js';
@@ -757,8 +758,14 @@ export class Solver {
         if (builtinReady) {
           const deterministic = def.deterministic ||
             def.deterministicWhen?.({ solver: this, goal, env }) === true;
-          const iterator = def.handler({ solver: this, goal, env });
-          const firstResult = iterator.next();
+          let iterator;
+          let firstResult;
+          try {
+            iterator = def.handler({ solver: this, goal, env });
+            firstResult = iterator.next();
+          } catch (caught) {
+            throw attachBuiltinErrorContext(caught, def, goal);
+          }
           if (deterministic) {
             if (!firstResult.done) this.stats.deterministic_builtin_successes++;
             else this.stats.deterministic_builtin_failures++;

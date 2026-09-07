@@ -22,7 +22,7 @@ import {
 let isoFresh = 0;
 
 export { PrologError, HaltSignal } from './errors.js';
-import { PrologError, HaltSignal } from './errors.js';
+import { HaltSignal, PrologError, attachBuiltinErrorContext } from './errors.js';
 
 class ThrownTerm extends Error {
   constructor(term) {
@@ -2452,6 +2452,7 @@ function numberListText(list, env, kind, valueIsBound, solver = null) {
 }
 
 const numberSyntaxError = new PrologError('syntax_error(number)');
+numberSyntaxError._sharedInstance = true;
 
 function numberListBuiltin(kind) {
   return function* ({ solver, goal, env }) {
@@ -3161,8 +3162,17 @@ function* catchSolutions({ solver, goal, env }, state) {
       // isolated in a child solver. Running it directly avoids constructing a
       // complete Solver for hot caught failures such as number_chars/2 syntax
       // probes, while the cloned environment keeps catch/3's rollback boundary.
-      const iterator = direct.handler({ solver, goal: invoked, env: env.clone() });
-      const result = iterator.next();
+      let iterator;
+      let result;
+      try {
+        iterator = direct.handler({ solver, goal: invoked, env: env.clone() });
+        result = iterator.next();
+      } catch (caught) {
+        // This fast path bypasses the solver's builtin frame, so it has to
+        // attach the raising predicate's indicator itself (see
+        // attachBuiltinErrorContext in solver.js).
+        throw attachBuiltinErrorContext(caught, direct, invoked);
+      }
       if (result.done) solver.stats.deterministic_builtin_failures++;
       else {
         solver.stats.deterministic_builtin_successes++;
