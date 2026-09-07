@@ -61,15 +61,13 @@ npm run generate
 
 ## Chapter 8: Collecting and choosing answers
 
-- [01-findall.pl](chapter-08/01-findall.pl)
-- [02-outgoing_costs.pl](chapter-08/02-outgoing_costs.pl)
-- [03-best_route.pl](chapter-08/03-best_route.pl)
+- [01-outgoing_costs.pl](chapter-08/01-outgoing_costs.pl)
+- [02-best_route.pl](chapter-08/02-best_route.pl)
 
 ## Chapter 9: Structured data, text, and contexts
 
-- [01-functor.pl](chapter-09/01-functor.pl)
-- [02-normalized.pl](chapter-09/02-normalized.pl)
-- [03-message.pl](chapter-09/03-message.pl)
+- [01-normalized.pl](chapter-09/01-normalized.pl)
+- [02-message.pl](chapter-09/02-message.pl)
 
 ## Chapter 10: From puzzles to models
 
@@ -148,8 +146,7 @@ npm run generate
 
 - [01-worker.pl](chapter-24/01-worker.pl) — Generate, constrain, describe
 - [02-simple_path.pl](chapter-24/02-simple_path.pl) — Search over states
-- [03-reachable.pl](chapter-24/03-reachable.pl) — Existence, one witness, and all witnesses
-- [04-best_plan.pl](chapter-24/04-best_plan.pl) — Optimization is search plus an order
+- [03-best_plan.pl](chapter-24/03-best_plan.pl) — Optimization is search plus an order
 
 ## Chapter 25: Case study: an auditable decision service
 
@@ -174,11 +171,10 @@ npm run generate
 
 ## Chapter 28: Algebra, symmetry, and representation
 
-- [01-program.pl](chapter-28/01-program.pl) — Unification is structural equation solving
-- [02-triangle.pl](chapter-28/02-triangle.pl) — Symmetry reduces search
-- [03-rectangle.pl](chapter-28/03-rectangle.pl) — Relations reveal inverse problems
-- [04-integer_rectangle.pl](chapter-28/04-integer_rectangle.pl)
-- [05-preserves_combine.pl](chapter-28/05-preserves_combine.pl) — Composition, homomorphism, and reusable laws
+- [01-triangle.pl](chapter-28/01-triangle.pl) — Symmetry reduces search
+- [02-rectangle.pl](chapter-28/02-rectangle.pl) — Relations reveal inverse problems
+- [03-integer_rectangle.pl](chapter-28/03-integer_rectangle.pl)
+- [04-preserves_combine.pl](chapter-28/04-preserves_combine.pl) — Composition, homomorphism, and reusable laws
 
 ## Chapter 29: Search as experimental mathematics
 

@@ -4,6 +4,8 @@ import path from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 
+import { Program, getStrictIsoRegistry } from '../src/index.js';
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const bookPath = path.join(root, 'the-art-of-eyeprolog.md');
 const outputRoot = path.join(root, 'examples', 'book');
@@ -36,6 +38,11 @@ for (const match of book.matchAll(/^(## \d+\. ([^\n]+)|# ([^\n]+)|```eyeprolog\n
   if (!chapter) continue;
   const source = match[4].trim();
   if (!source.endsWith('.')) continue;
+  // The book also uses eyeprolog blocks for template listings and single
+  // illustrative goals. Those read as clauses for a built-in predicate, which
+  // ISO 7.4.3 forbids a Prolog text from defining, so they are not programs
+  // and are not extracted as such.
+  if (definesBuiltIn(source)) continue;
 
   const firstClause = source
     .split('\n')
@@ -44,6 +51,27 @@ for (const match of book.matchAll(/^(## \d+\. ([^\n]+)|# ([^\n]+)|```eyeprolog\n
   const predicate = firstClause?.match(/^([a-z][a-z0-9_]*)\s*(?:\(|\.|-->)/)?.[1] ?? 'program';
   const section = [...preceding.matchAll(/^### ([^\n]+)$/gm)].at(-1)?.[1] ?? '';
   chapter.examples.push({ predicate, section, source });
+}
+
+// True when a code block supplies clauses for a standard built-in predicate or
+// control construct, which marks it as a signature listing or goal fragment
+// rather than an extractable program.
+function definesBuiltIn(source) {
+  try {
+    const program = Program.parse(source);
+    const registry = getStrictIsoRegistry();
+    for (const group of program.groups.values()) {
+      if (group.name === ',' && group.arity === 2) return true;
+      if (registry.get(group.name, group.arity)) return true;
+    }
+    return false;
+  } catch (error) {
+    // Preparation itself rejects a clause head that is a built-in, so that
+    // error is the signal we are looking for. Any other parse failure is left
+    // to the book-example test, which reports it instead of silently dropping
+    // the block here.
+    return error?.formal === 'permission_error(modify, static_procedure)';
+  }
 }
 
 const files = new Map();

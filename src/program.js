@@ -1879,16 +1879,28 @@ function assertDynamicIndicatorIsDefinable(indicator, strictIso = false) {
 
 function assertPredicateIsDefinable(name, arity, strictIso = false) {
   // false/0 is standardized as a static built-in by Corrigendum 2 and cannot
-  // be redefined in either profile.  Strict core mode extends the same ISO
-  // rule to every Part-1 built-in/control construct; the normal EyeProlog
-  // profile keeps its historical source-compatibility behavior.
-  const strictSyntaxProcedure = strictIso && (
-    (name === ',' && arity === 2) ||
-    (name === ':-' && (arity === 1 || arity === 2))
-  );
+  // be redefined in either profile.
+  //
+  // ISO 7.4.3 requires that the predicate indicator of the head of a clause in
+  // a Prolog text is not that of a built-in predicate or a control construct.
+  // That subclause otherwise defers to assertz/1 and waives only the static
+  // procedure error, so the built-in restriction is a separate requirement and
+  // is not profile-dependent. The strict ISO registry holds exactly the Part 1
+  // built-ins and control constructs, so it is consulted in every mode.
+  //
+  // EyeProlog's library and extension predicates are deliberately absent from
+  // that registry and stay redefinable, which preserves the source
+  // compatibility that user programs rely on.
+  //
+  // (,)/2 is a control construct (table 9) but is recognized by the parser
+  // rather than the registry, so it is named here. (:-)/1-2 come from the STC
+  // #56 working draft rather than published text and stay strict-only.
+  const controlConstruct = name === ',' && arity === 2;
+  const draftSyntaxProcedure = strictIso && name === ':-' && (arity === 1 || arity === 2);
   if ((name === 'false' && arity === 0) ||
-      (strictIso && getStrictIsoRegistry().get(name, arity)) ||
-      strictSyntaxProcedure) {
+      getStrictIsoRegistry().get(name, arity) ||
+      controlConstruct ||
+      draftSyntaxProcedure) {
     throw staticProcedureModificationError(name, arity);
   }
 }

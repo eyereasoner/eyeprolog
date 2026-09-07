@@ -23,7 +23,7 @@ chosen behavior is also indexed by `ISO-IMPLEMENTATION-DEFINED.md`.
 | 7.4.2.7 `include/1` | covered | The included text is prepared at the directive position and shares operator/character/flag preparation state with its parent. |
 | 7.4.2.8 `ensure_loaded/1` | covered | A source is prepared at most once in the current load graph, including repeated references and self/top-level references. |
 | 7.4.2.9 `set_prolog_flag/2` | covered | Preparation-time flag changes affect subsequent text and are replayed into execution state; strict flag names/values/changeability remain governed by the closed 7.11 audit. |
-| 7.4.3 source clauses | covered | Source heads/bodies are validated like program clauses, standardized static/control procedures are protected, declarations can create empty procedures, and body conversion follows 7.6.2 while preserving head/body variable identity. |
+| 7.4.3 source clauses | covered | Source heads/bodies are validated like program clauses, standardized static/control procedures are protected, declarations can create empty procedures, and body conversion follows 7.6.2 while preserving head/body variable identity. The built-in restriction applies in every execution mode, so consulting a clause for a built-in predicate or control construct reports the same `permission_error(modify, static_procedure)` as `assert`ing one; EyeProlog's own library and extension predicates are not standard built-ins and stay redefinable. Corpus: `error/iso/consult_redefines_builtin`. |
 
 The strict release test `closes ISO 7.4 Prolog-text preparation and directive
 rows` exercises the cross-text operator/character/flag state, include and

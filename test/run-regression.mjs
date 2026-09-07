@@ -4908,6 +4908,86 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       },
     },
     {
+      // https://github.com/eyereasoner/eyeprolog/issues/97
+      name: 'a Prolog text cannot supply clauses for a built-in predicate',
+      run: () => {
+        let caught = null;
+        try {
+          Program.parse('clause(elk(1), 2).\n');
+        } catch (error) {
+          caught = error;
+        }
+        if (!caught) throw new Error('a clause for clause/2 was accepted from a Prolog text');
+        assertEqual(caught.formal, 'permission_error(modify, static_procedure)', 'formal error');
+        assertEqual(termToString(caught.culprit), '/(clause, 2)', 'culprit predicate indicator');
+      },
+    },
+    {
+      name: 'consult and asserta/1 agree on redefining a built-in',
+      run: () => {
+        let textFormal = null;
+        try {
+          Program.parse('clause(elk(1), 2).\n');
+        } catch (error) {
+          textFormal = error.formal;
+        }
+        const solver = new Solver(Program.parse('run :- asserta(clause(elk(1), 2)).\n'), {});
+        let assertFormal = null;
+        try {
+          [...solver.solve([parseGoalText('run')], new Env(), 0)];
+        } catch (error) {
+          assertFormal = error.formal;
+        }
+        assertEqual(textFormal, 'permission_error(modify, static_procedure)', 'consult path');
+        assertEqual(assertFormal, textFormal, 'assert path agrees with consult');
+      },
+    },
+    {
+      // Control constructs are covered as well as built-in predicates.
+      name: 'a Prolog text cannot supply clauses for a control construct',
+      run: () => {
+        for (const [source, indicator] of [
+          ["';'(a, b).\n", "/(';', 2)"],
+          ["','(a, b).\n", "/(',', 2)"],
+          ['!.\n', '/(!, 0)'],
+        ]) {
+          let caught = null;
+          try {
+            Program.parse(source);
+          } catch (error) {
+            caught = error;
+          }
+          assertEqual(caught?.formal, 'permission_error(modify, static_procedure)', `formal error for ${indicator}`);
+          assertEqual(termToString(caught.culprit), indicator, `culprit for ${indicator}`);
+        }
+      },
+    },
+    {
+      // EyeProlog's library and extension predicates are not standard
+      // built-ins, so user programs may still define their own versions.
+      name: 'a Prolog text may still redefine library predicates',
+      run: () => {
+        const program = Program.parse('member(X, [X]).\nappend([], L, L).\n');
+        assertEqual(program.findGroup('member', 2) != null, true, 'member/2 defined by the text');
+        assertEqual(program.findGroup('append', 3) != null, true, 'append/3 defined by the text');
+      },
+    },
+    {
+      // A dynamic/1 directive names a procedure the text is about to define,
+      // so it is subject to the same restriction.
+      name: 'a dynamic/1 directive cannot name a built-in predicate',
+      run: () => {
+        let caught = null;
+        try {
+          Program.parse(':- dynamic(atom_length/2).\n');
+        } catch (error) {
+          caught = error;
+        }
+        assertEqual(caught?.formal, 'permission_error(modify, static_procedure)', 'formal error');
+        assertEqual(termToString(caught.culprit), '/(atom_length, 2)', 'culprit predicate indicator');
+      },
+    },
+    {
       // https://github.com/eyereasoner/eyeprolog/issues/96
       name: 'clause/2 keeps static procedures private in the default mode',
       run: () => {
@@ -8170,14 +8250,16 @@ function whiteBoxCases() {
         assertEqual(termToString(candidates.primary[0].head, new Env(), true), 'row(a0, b0, c0, first)', 'first head');
         assertEqual(termToString(candidates.primary[1].head, new Env(), true), 'row(a0, X, c0, wildcard)', 'wildcard head');
 
+        // A user-defined name: ISO 7.4.3 forbids a Prolog text from defining
+        // clauses for a built-in predicate such as open/3.
         const variableHeavy = Program.parse(Array.from(
           { length: 12 },
-          (_, index) => `open(X${index}, Y${index}, value${index}).`,
+          (_, index) => `gate(X${index}, Y${index}, value${index}).`,
         ).join('\n'));
-        const openGroup = variableHeavy.findGroup('open', 3);
-        selectClauseCandidates(openGroup, parseGoalText('open(a, b, Result)'), new Env());
-        assertEqual(openGroup.demandIndexes.size, 0, 'poor wide index discarded');
-        assertEqual(openGroup.rejectedDemandIndexes.has('0,1'), true, 'poor call mode remembered');
+        const gateGroup = variableHeavy.findGroup('gate', 3);
+        selectClauseCandidates(gateGroup, parseGoalText('gate(a, b, Result)'), new Env());
+        assertEqual(gateGroup.demandIndexes.size, 0, 'poor wide index discarded');
+        assertEqual(gateGroup.rejectedDemandIndexes.has('0,1'), true, 'poor call mode remembered');
       },
     },
     {

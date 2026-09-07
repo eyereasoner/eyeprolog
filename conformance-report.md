@@ -32,7 +32,7 @@ spelling therefore changes this report even when no corpus file is added or remo
 | context | 11 | 0 | 0 | 0 | 11 |
 | control | 15 | 0 | 0 | 0 | 15 |
 | explicit-tabling | 6 | 0 | 0 | 0 | 6 |
-| iso | 173 | 218 | 0 | 0 | 391 |
+| iso | 173 | 219 | 0 | 0 | 392 |
 | lists | 52 | 3 | 0 | 0 | 55 |
 | modules | 2 | 0 | 0 | 0 | 2 |
 | negation | 8 | 0 | 19 | 0 | 27 |
@@ -45,7 +45,7 @@ spelling therefore changes this report even when no corpus file is added or remo
 | terms | 26 | 3 | 0 | 0 | 29 |
 | unification | 18 | 0 | 0 | 0 | 18 |
 | variables | 16 | 7 | 0 | 0 | 23 |
-| **Total** | **495** | **273** | **19** | **21** | **808** |
+| **Total** | **495** | **274** | **19** | **21** | **809** |
 
 ## DCG conformance clarification
 

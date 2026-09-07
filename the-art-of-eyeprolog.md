@@ -770,12 +770,17 @@ Equality in the pure Herbrand reading is syntactic identity after substitution.
 Operationally, unification discovers a substitution that makes terms
 identical. EyeProlog performs an occurs check whenever unification would bind a
 variable. It therefore uses finite-tree unification and rejects a binding when
-the variable occurs anywhere in the proposed value. For example, this call
-fails rather than constructing a cyclic term:
+the variable occurs anywhere in the proposed value. For example, the body of this
+clause fails rather than constructing a cyclic term:
 
 ```eyeprolog
-(X = wrapper(X)).
+cyclic_unification :- X = wrapper(X).
 ```
+
+The goal has to be written inside a clause of its own: ISO 7.4.3 forbids a
+Prolog text from supplying clauses for a built-in predicate, so a bare
+`(X = wrapper(X)).` in a program file is a clause for `(=)/2` and is rejected
+with *permission_error(modify, static_procedure, (=)/2)*.
 
 ISO classifies unifications whose outcome depends on an occurs check as
 subject-to-occurs-check (STO). EyeProlog's default remains the sound finite-tree
@@ -10365,7 +10370,7 @@ must preserve the same observable outcome. Additional normal-mode syntax may
 accept texts outside the strict grammar, but it may not reinterpret an accepted
 standard case.
 
-The file-based conformance corpus contains 808 cases, including 391 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
+The file-based conformance corpus contains 809 cases, including 392 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
 Separate exact-output suites check 210 normal examples and 61 proof examples; all executable chapter programs are parsed and their declared goals are executed. The eight-case
 playground contract suite imports the production worker, sends real reasoning
 requests through its message protocol, and crawls the served module graph for
