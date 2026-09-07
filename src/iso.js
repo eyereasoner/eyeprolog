@@ -35,7 +35,7 @@ class ThrownTerm extends Error {
 const succeed = function* ({ env }) { yield env; };
 const fail = function* () {};
 
-export const isoBuiltins = {
+const isoBuiltins = {
   register(registry) {
     registry.add('true', 0, succeed, { deterministic: true });
     registry.add('fail', 0, fail, { deterministic: true });
@@ -956,10 +956,15 @@ function* currentPrologFlagSolutions({ solver, goal, env }, state) {
     .filter(([name, definition]) => definition.value != null && (flag.type === VAR || flag.name === name));
   for (let index = 0; index < definitions.length; index++) {
     const [name, definition] = definitions[index];
-    // ISO 7.11.1.1: when bounded=false, max_integer and min_integer have no
-    // current value and current_prolog_flag/2 must therefore not enumerate
-    // them. The definitions remain registered so attempts to change these
-    // non-changeable flags still receive the normal flag error handling.
+    // Implementation choice: with bounded=false there is no largest integer to
+    // report, so max_integer and min_integer carry no current value and are not
+    // enumerated. ISO 7.11.1.1 defines the bounded flag and does not govern
+    // current_prolog_flag/2; 7.11.1.2 and 7.11.1.3 give both flags an
+    // implementation-defined default unconditionally, so the alternative
+    // reading (expose values, or raise domain_error(prolog_flag)) is equally
+    // available. See conformance-report.md. The definitions remain registered
+    // so attempts to change these non-changeable flags still receive the
+    // normal flag error handling.
     const next = env.clone();
     if (unify(goal.args[0], atom(name), next) && unify(goal.args[1], definition.value, next)) {
       state.pending = index + 1 < definitions.length;
@@ -1800,15 +1805,6 @@ function parseReadTermText(text, solver) {
     // Earlier ambiguous dots must remain available to maximal graphic tokens.
     readTermEnd: converted.length - 1,
   });
-}
-
-export function isCompleteReadTermText(text, solver) {
-  try {
-    parseReadTermText(text, solver);
-    return true;
-  } catch (_) {
-    return false;
-  }
 }
 
 function readTermFromStream(stream, solver) {

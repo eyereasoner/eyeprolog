@@ -6194,8 +6194,15 @@ silently changing a static program.
 - **`occurs_check`** — **Default:** `true`; **Allowed:** `true`, `error`; **Mutable:** yes.
 
 Because `bounded=false`, `current_prolog_flag(max_integer, _)` and
-`current_prolog_flag(min_integer, _)` fail as required by ISO 7.11.1.1;
-EyeProlog does not expose an `unbounded` sentinel as either flag value.
+`current_prolog_flag(min_integer, _)` fail, and EyeProlog does not expose an
+`unbounded` sentinel as either flag value. This is a deliberate implementation
+choice rather than a requirement: ISO 7.11.1.1 defines the `bounded` flag and
+does not govern `current_prolog_flag/2` outcomes, and 7.11.1.2 and 7.11.1.3
+give `max_integer` and `min_integer` an implementation-defined default value
+unconditionally, making the `bounded` condition a constraint on what the value
+*means* rather than on whether the flag exists. A processor with unbounded
+integers has no largest integer to report, so EyeProlog declines to invent one.
+See `conformance-report.md` for the alternative reading.
 Preparation-time `char_conversion/2` mappings affect later unquoted source text
 and also initialize the execution-time conversion mapping; setting the
 `char_conversion` flag to `off` disables conversion for following source text.

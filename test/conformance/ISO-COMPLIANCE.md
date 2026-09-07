@@ -58,7 +58,9 @@ concrete mismatches that are now part of the closed Part 1 review:
 
 - `bounded=false` no longer exposes implementation-specific `unbounded` values
   for `max_integer` or `min_integer`; the corresponding
-  `current_prolog_flag/2` queries fail as specified by 7.11.1.1;
+  `current_prolog_flag/2` queries fail. Part 1 does not require that outcome
+  (7.11.1.1 defines the `bounded` flag and does not govern
+  `current_prolog_flag/2`), so it is recorded as an implementation choice;
 - preparation-time `char_conversion/2` now converts later unquoted source text
   when the `char_conversion` flag is `on`, leaves quoted characters unchanged,
   and feeds the same mapping into execution-time term input.

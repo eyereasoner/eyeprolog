@@ -2325,10 +2325,11 @@ c4 ?- call((!;1)).
         program.quads = maxIntegerQuads;
         const result = publicApi.runQuads(program);
         // The upstream working-draft quad accepts either integer overflow or
-        // Max=unbounded. ISO/IEC 13211-1 7.11.1.1 instead says that when
-        // bounded=false, current_prolog_flag(max_integer, N) fails. Preserve
-        // the upstream fixture unchanged and make that one deliberate
-        // standards-driven divergence explicit in the regression gate.
+        // Max=unbounded. EyeProlog reports no value for max_integer when
+        // bounded=false, so current_prolog_flag(max_integer, N) fails. Part 1
+        // does not mandate that outcome, so this is an implementation choice
+        // rather than a standards requirement. Preserve the upstream fixture
+        // unchanged and make the one deliberate divergence explicit here.
         assertEqual(result.total, 1, 'quad total');
         assertEqual(result.passed, 0, 'quad passed');
         assertEqual(result.failed, 1, 'quad failed');
@@ -9070,7 +9071,9 @@ function declaredDefaultExportNames() {
 function missingDocumentedPackageScripts() {
   const docs = documentationFiles();
   const missing = [];
-  const nativeCommands = new Set(['exec', 'install', 'link']);
+  // Native npm subcommands are not package scripts, so documenting them must
+  // not require a matching entry in package.json.
+  const nativeCommands = new Set(['exec', 'install', 'link', 'pack', 'publish', 'version', 'ci']);
   for (const file of docs) {
     const text = fs.readFileSync(file, 'utf8');
     for (const line of text.split('\n')) {

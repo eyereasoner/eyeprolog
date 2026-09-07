@@ -70,3 +70,24 @@ runs that corpus live through the Neumerkel gate; the offline regression
 suite runs all 58 vendored quads. Neither expectations nor error matching
 are relaxed for quads 41-44.
 
+
+## Integer flag choice under `bounded=false`
+
+EyeProlog reports `bounded=false` and uses arbitrary-precision integers.
+It therefore associates no current value with `max_integer` or
+`min_integer`, so `current_prolog_flag/2` does not enumerate them and
+fails when either is named. Both flags stay registered, so
+`set_prolog_flag/2` still reaches the normal non-changeable-flag errors.
+
+This is an implementation choice, not a requirement of Part 1. Clause
+7.11.1.1 defines the `bounded` flag and does not govern
+`current_prolog_flag/2` outcomes, while 7.11.1.2 and 7.11.1.3 give both
+flags an implementation-defined default value unconditionally; the
+`bounded` condition constrains what that value *means*, not whether the
+flag exists. Two alternative readings are equally defensible: expose
+implementation-defined values so the flags enumerate, or treat them as
+unsupported and raise `domain_error(prolog_flag, Flag)` per 8.17.2.3 b.
+EyeProlog prefers silence over inventing a largest integer that its
+arithmetic does not have. The vendored Prologue corpus records the
+resulting single divergence rather than patching the upstream fixture.
+

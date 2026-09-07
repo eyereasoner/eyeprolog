@@ -32,7 +32,9 @@ included before its examples are run.
 
 The upstream Prologue snapshot contains one `max_integer` quad that accepts an
 implementation-specific `Max = unbounded` result. EyeProlog deliberately does
-not patch that vendored fixture: with its ISO `bounded=false` choice, Part 1
-7.11.1.1 requires `current_prolog_flag(max_integer, _)` to fail. The regression
-gate therefore records this single standards-driven divergence explicitly while
-requiring the other 32 quads to pass.
+not patch that vendored fixture: with `bounded=false` it reports no value for
+`max_integer`, so `current_prolog_flag(max_integer, _)` fails. Part 1 does not
+mandate that outcome -- 7.11.1.1 defines the `bounded` flag and says nothing
+about `current_prolog_flag/2` -- so this is an implementation choice, not a
+standards requirement. The regression gate records the single divergence
+explicitly while requiring the other 32 quads to pass.

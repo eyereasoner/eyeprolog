@@ -16,13 +16,13 @@ export function componentHasNegativeEdge(start, deps, negativeEdges) {
   return negativeEdges.some(([from, to]) => component.has(from) && component.has(to));
 }
 
-export function compactClauseIsDirectRecursive(clause, group) {
+function compactClauseIsDirectRecursive(clause, group) {
   return isCompactBinaryClause(clause) && clause.bodyName === group.name && group.arity === 2;
 }
 
 
 
-export function clauseIsDirectRecursive(clause, group) {
+function clauseIsDirectRecursive(clause, group) {
   if (isCompactBinaryClause(clause)) return compactClauseIsDirectRecursive(clause, group);
   return clause.body.some((goal) =>
     goal.type === COMPOUND && goal.name === group.name && goal.arity === group.arity
@@ -86,7 +86,7 @@ function reachableIndexesTransposed(target, deps, candidates) {
 }
 
 
-export function isFiniteDatalogArgument(term) {
+function isFiniteDatalogArgument(term) {
   return term?.type === VAR || term?.type === ATOM || term?.type === 'string' || term?.type === 'number';
 }
 
@@ -289,7 +289,7 @@ export function isFiniteWfsDatalogGroup(program, group, cache = new Map(), visit
   return finite;
 }
 
-export function collectVariables(term, output) {
+function collectVariables(term, output) {
   if (!term) return;
   if (term.type === VAR) {
     output.add(term.name);
@@ -420,12 +420,12 @@ export function isPortableBetweenGenerator(group) {
     group.clauses.every((clause) => clause.eyePrologLibraryPortable === true);
 }
 
-export function termContainsVariable(term, name) {
+function termContainsVariable(term, name) {
   if (term.type === 'var') return term.name === name;
   return term.args.some((arg) => termContainsVariable(arg, name));
 }
 
-export function sameClauseTerm(left, right) {
+function sameClauseTerm(left, right) {
   if (left.type !== right.type || left.name !== right.name || left.args.length !== right.args.length) return false;
   return left.args.every((arg, index) => sameClauseTerm(arg, right.args[index]));
 }
@@ -446,7 +446,7 @@ export function directGoalDependencyKey(goal) {
 }
 
 // ISO 13211-1, 7.1.6.3: `V1^V2^...^Goal` has the iterated goal Goal.
-export function iteratedGoal(goal) {
+function iteratedGoal(goal) {
   let current = goal;
   while (current?.type === COMPOUND && current.name === '^' && current.arity === 2) {
     current = current.args[1];

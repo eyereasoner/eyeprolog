@@ -23,13 +23,3 @@ export function isStrictIsoPcsCharacter(character) {
   if (typeof character !== 'string' || Array.from(character).length !== 1) return false;
   return isStrictIsoPcsCodePoint(character.codePointAt(0));
 }
-
-// EyeProlog chooses the Unicode scalar value as the collating-sequence integer.
-export function strictIsoCollatingInteger(character) {
-  return isStrictIsoPcsCharacter(character) ? character.codePointAt(0) : null;
-}
-
-export function assertStrictIsoPcsCharacter(character, formal = 'representation_error(character)') {
-  if (!isStrictIsoPcsCharacter(character)) throw new CharacterRepresentationError(formal);
-  return character;
-}

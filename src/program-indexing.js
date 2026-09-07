@@ -68,14 +68,6 @@ export function compactHeadArgName(clause, index) {
   return index === 0 ? clause.head0Name : clause.head1Name;
 }
 
-export function compactBodyArgType(clause, index) {
-  return index === 0 ? clause.body0Type : clause.body1Type;
-}
-
-export function compactBodyArgName(clause, index) {
-  return index === 0 ? clause.body0Name : clause.body1Name;
-}
-
 export function clauseBodyLength(clause) {
   return isCompactBinaryClause(clause) ? (clause.bodyName == null ? 0 : 1) : clause.body.length;
 }

@@ -32,7 +32,7 @@ function sameScalar(left, right) {
   return scalarKey(left) === scalarKey(right);
 }
 
-export class DatalogRelation {
+class DatalogRelation {
   constructor(arity) {
     this.arity = arity;
     this.rows = [];

@@ -95,6 +95,38 @@ export function runIsoStrict(reporter = new TestReporter()) {
   }
 });
 
+  // ISO 7.10.5 and 8.14.2: write_term/2 with quoted(true) shall emit text that
+  // reads back as the same term under the current operator table. Individual
+  // spellings are pinned elsewhere; this is the general property, over a corpus
+  // chosen to stress operator priority, prefix minus, and quoted atoms.
+  reporter.test('writeq output reads back as the identical term', () => {
+    const corpus = [
+      '-(1)', '- (-(1))', '-(a)', '- - 1', '1 - -1', 'f(-1)', '-(1)^2', '2^ -1',
+      '1*(2+3)', '(1*2)+3', '2** -3', 'a* -1', 'a- (-1)', '1 rem 2', 'a mod b',
+      '[a|b]', '[[]]', '[]', '[-]', '[-,+]', '[a,b,c]', '{}', '{a,b}',
+      "f(',')", "','(a,b)", 'f(;)', 'f(!)', 'f(-)', 'f(+)', 'f(*)',
+      'f(a,(b,c))', 'f((a,b))', 'f(g(h(1)))', '(a:-b,c)', '(a;b;c)', '(a->b;c)',
+      '*(1,2)', '+(1)', 'a=..b', "'ABC'", 'abc', "''", "' '", "'/*'", "'%'",
+      '1.0', '-1.0', '0.0', '1.0e-10', '1.5e300',
+      String.raw`'\n'`, String.raw`'\t'`, String.raw`'don''t'`,
+      String.raw`\+ a`, String.raw`f('|')`,
+    ];
+    for (const text of corpus) {
+      let written = '';
+      run('', {
+        isoStrict: true,
+        goal: `writeq(${text})`,
+        ioOptions: { write: (chunk) => { written += chunk; } },
+      });
+      const reread = run('', {
+        isoStrict: true,
+        goal: `read_term(X,[]), X == (${text})`,
+        ioOptions: { input: `${written}.` },
+      });
+      equal(reread.stats.completed_goal_lists, 1, `writeq round-trip ${text} -> ${written}`);
+    }
+  });
+
   reporter.test('keeps Corrigendum 2 core predicates and excludes Part 3 phrase', () => {
     const registry = createStrictIsoRegistry();
     equal(Boolean(registry.get('subsumes_term', 2)), true, 'subsumes_term/2');

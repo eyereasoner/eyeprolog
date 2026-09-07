@@ -1940,7 +1940,3 @@ function predicateIndicator(name, arity) {
 export function makeProgram(source, options = {}) {
   return Program.parse(source, options);
 }
-
-export function parseSourceClauses(source, options = {}) {
-  return parseClauses(source, options);
-}

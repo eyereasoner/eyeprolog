@@ -66,7 +66,7 @@ function sourceTermList(term, env) {
   return null;
 }
 
-export function systemExpandTerm(term, module = 'user') {
+function systemExpandTerm(term, module = 'user') {
   const resolved = deref(term, new Env());
   if (resolved.type === COMPOUND && resolved.name === '-->' && resolved.arity === 2) {
     const expanded = expandDcgRuleClause({ head: resolved, body: [] }, module);
