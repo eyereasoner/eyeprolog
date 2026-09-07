@@ -140,7 +140,7 @@ Selected cases are adapted from the ISO and standard-core suites of Logtalk,
 Scryer Prolog, Trealla Prolog, and SWI-Prolog. Their upstream identifiers and licenses
 are recorded in [THIRD_PARTY.md](THIRD_PARTY.md).
 
-The corpus has 392 cases in `iso/` and 809 file-based conformance cases in total. Of those, 11 cases in `stc/` are explicitly labelled working-draft review evidence rather than normative ISO claims. The separate vendored strict-reader WG17 matrix is a deterministic regression snapshot; the live Neumerkel gate discovers the current upstream inventory at run time; release/report checks separately verify the tracked `NEUMERKEL-LATEST.md`. The generated `conformance-report.md` records local corpus totals and links to that live evidence. Together with regression, documentation-sync, API, example, and book-example checks, `npm test` is the release gate.
+The corpus has 393 cases in `iso/` and 810 file-based conformance cases in total. Of those, 11 cases in `stc/` are explicitly labelled working-draft review evidence rather than normative ISO claims. The separate vendored strict-reader WG17 matrix is a deterministic regression snapshot; the live Neumerkel gate discovers the current upstream inventory at run time; release/report checks separately verify the tracked `NEUMERKEL-LATEST.md`. The generated `conformance-report.md` records local corpus totals and links to that live evidence. Together with regression, documentation-sync, API, example, and book-example checks, `npm test` is the release gate.
 
 ## Updating expected output
 

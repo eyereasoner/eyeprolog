@@ -6151,7 +6151,7 @@ partial list.
 
 #### Dynamic database and procedure information
 
-- **`clause(+Head,?Body)`** — Enumerates fresh copies of source clauses matching the callable `Head`; facts have body `true`. Only *public* procedures can be inspected: a procedure defined by a Prolog text is static unless a *dynamic/1* directive declares it, and a procedure first created by *assertz/1* or *asserta/1* is dynamic. Access to a static user procedure, or to a built-in, raises *permission_error(access,private_procedure)*. This applies in every execution mode, not only under `--iso-strict`, and matches the *permission_error(modify,static_procedure)* that *assertz/1* and *retract/1* already raise for the same procedures.
+- **`clause(+Head,?Body)`** — Enumerates fresh copies of source clauses matching the callable `Head`; facts have body `true`. Only *public* procedures can be inspected: a procedure defined by a Prolog text is static unless a *dynamic/1* directive declares it, and a procedure first created by *assertz/1* or *asserta/1* is dynamic. Access to a static user procedure, or to a built-in, raises *permission_error(access,private_procedure)*. This applies in every execution mode, not only under `--iso-strict`, and matches the *permission_error(modify,static_procedure)* that *assertz/1* and *retract/1* already raise for the same procedures. Normal mode additionally accepts a *public/1* directive and a `default_procedure_access` flag that open static procedures to inspection; see below.
 - **`asserta(+Clause)`, `assertz(+Clause)`** — Insert a copied fact or rule at the beginning or end of a predicate declared *dynamic/1*. Static and built-in procedures cannot be modified.
 - **`retract(+Clause)`** — Removes matching dynamic clauses one at a time on backtracking. A call sees the logical update view captured when it began. A fact pattern matches facts only.
 - **`retractall(+Head)`** — Removes every matching clause from a dynamic procedure, succeeds when none match, and keeps the empty dynamic procedure known.
@@ -6205,6 +6205,58 @@ consults another file or imports a module instead of being reset by the host
 rebuild of the program. Programs that intentionally treat an undefined
 predicate as failure must opt in with `set_prolog_flag(unknown, fail)`; bundled
 examples and non-ISO corpus cases that depend on that policy do so explicitly.
+### Reading static procedures
+
+A procedure defined by a Prolog text is static, so `clause/2` refuses it
+(ISO 7.5.2, 7.5.3, 8.8.1.3). Declaring the procedure `dynamic` lifts the
+restriction, but it also makes the procedure modifiable, and for a
+meta-interpreter it means annotating a program you may not want to edit and
+enumerating every predicate you intend to read.
+
+ISO 7.5.3 has a NOTE observing that a `public/1` directive declaring
+user-defined procedures to be public would be an extension. Normal EyeProlog
+provides it:
+
+```eyeprolog
+:- public(elk/1).
+
+elk(X) :- moose(X).
+
+moose(bertha).
+```
+
+`clause(elk(bertha), Body)` now succeeds with `Body = moose(bertha)`, while
+`moose/1` carries no declaration and stays private. A public procedure is still
+*static*: `assertz(elk(clara))` continues to raise
+*permission_error(modify,static_procedure)*. The directive grants read access
+only.
+
+To open every user-defined procedure at once, set the
+`default_procedure_access` flag to `public`:
+
+```eyeprolog
+:- set_prolog_flag(default_procedure_access, public).
+
+solve(true) :- !.
+solve((A, B)) :- !, solve(A), solve(B).
+solve(H) :- clause(H, Body), solve(Body).
+
+elk(X) :- moose(X).
+moose(bertha).
+grazes(X) :- elk(X).
+```
+
+`solve(grazes(W))` yields `W = bertha` without a single declaration on the
+interpreted program. The flag changes access, not mutability or existence:
+procedures remain static, and built-in procedures remain private, so
+`clause(atom(_), _)` still raises *permission_error(access,private_procedure)*.
+The supported values are `private` (the default, matching ISO) and `public`.
+
+Both the directive and the flag are extensions, so strict ISO core mode offers
+neither: `public/1` is rejected as an implementation-specific directive, and
+`current_prolog_flag(default_procedure_access, _)` raises
+*domain_error(prolog_flag)*.
+
 The `occurs_check` flag is an EyeProlog diagnostic
 extension rather than an ISO-defined core flag: it is absent in strict mode,
 while normal mode keeps its `true` default and optional `error` diagnostic for
@@ -10370,7 +10422,7 @@ must preserve the same observable outcome. Additional normal-mode syntax may
 accept texts outside the strict grammar, but it may not reinterpret an accepted
 standard case.
 
-The file-based conformance corpus contains 809 cases, including 392 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
+The file-based conformance corpus contains 810 cases, including 393 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
 Separate exact-output suites check 210 normal examples and 61 proof examples; all executable chapter programs are parsed and their declared goals are executed. The eight-case
 playground contract suite imports the production worker, sends real reasoning
 requests through its message protocol, and crawls the served module graph for

@@ -234,13 +234,15 @@ npm run generate
 
 ## Chapter 39: Predicate reference
 
-- [01-answer.pl](chapter-39/01-answer.pl) — Library relations by programming role
-- [02-answer-2.pl](chapter-39/02-answer-2.pl)
-- [03-answer-3.pl](chapter-39/03-answer-3.pl)
-- [04-cost.pl](chapter-39/04-cost.pl)
-- [05-message.pl](chapter-39/05-message.pl)
-- [06-task.pl](chapter-39/06-task.pl)
-- [07-program.pl](chapter-39/07-program.pl) — Specialized library implementation notes
+- [01-elk.pl](chapter-39/01-elk.pl) — Reading static procedures
+- [02-solve.pl](chapter-39/02-solve.pl)
+- [03-answer.pl](chapter-39/03-answer.pl) — Library relations by programming role
+- [04-answer-2.pl](chapter-39/04-answer-2.pl)
+- [05-answer-3.pl](chapter-39/05-answer-3.pl)
+- [06-cost.pl](chapter-39/06-cost.pl)
+- [07-message.pl](chapter-39/07-message.pl)
+- [08-task.pl](chapter-39/08-task.pl)
+- [09-program.pl](chapter-39/09-program.pl) — Specialized library implementation notes
 
 ## Chapter 40: Running EyeProlog: command line and corpus
 

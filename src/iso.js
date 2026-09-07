@@ -740,7 +740,13 @@ function* clauseSolutions({ solver, goal, env }, state) {
   // the default in every mode, not only under --iso-strict: assert/1,
   // retract/1, and abolish/1 already reject static procedures unconditionally,
   // and clause/2 now agrees with them.
-  if (isProcessorStaticProcedure(solver, head) || (group && !group.dynamic)) {
+  //
+  // 7.5.3 notes that a public/1 directive would be an extension, so a static
+  // procedure declared public, or any user-defined procedure when the
+  // default_procedure_access flag is public, stays readable here. Either way
+  // the procedure remains static and cannot be modified.
+  if (isProcessorStaticProcedure(solver, head) ||
+      (group && !group.dynamic && !isPublicProcedure(solver, group))) {
     throw new PrologError('permission_error(access, private_procedure)', indicator);
   }
   callableOrVariable(goal.args[1], env);
@@ -796,6 +802,13 @@ function procedureIndicator(head) {
 
 function isGrammarRuleProcedure(solver, head) {
   return !solver.isoStrict && head.name === '-->' && head.arity === 2;
+}
+
+// A user-defined procedure is readable by clause/2 when it was declared public
+// or when the processor grants access to every user-defined procedure.
+function isPublicProcedure(solver, group) {
+  if (group.public) return true;
+  return solver.prologFlags?.get('default_procedure_access')?.value?.name === 'public';
 }
 
 function isProcessorStaticProcedure(solver, head) {

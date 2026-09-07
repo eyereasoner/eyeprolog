@@ -4988,6 +4988,112 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       },
     },
     {
+      // ISO 7.5.3 NOTE: public/1 as an extension.
+      name: 'a public/1 directive grants clause/2 access to a static procedure',
+      run: () => {
+        const program = Program.parse(':- public(elk/1).\nelk(X) :- moose(X).\nmoose(bertha).\n');
+        const solver = new Solver(program, {});
+        const answers = [...solver.solve([parseGoalText('clause(elk(_), _)')], new Env(), 0)];
+        assertEqual(answers.length, 1, 'declared public procedure is readable');
+        assertEqual(program.findGroup('elk', 1).dynamic, false, 'public does not imply dynamic');
+      },
+    },
+    {
+      name: 'a public/1 declaration still refuses database modification',
+      run: () => {
+        const solver = new Solver(Program.parse(':- public(elk/1).\nelk(bertha).\n'), {});
+        for (const goal of ['assertz(elk(clara))', 'retract(elk(bertha))']) {
+          let caught = null;
+          try {
+            [...solver.solve([parseGoalText(goal)], new Env(), 0)];
+          } catch (error) {
+            caught = error;
+          }
+          assertEqual(caught?.formal, 'permission_error(modify, static_procedure)', `${goal} is refused`);
+        }
+      },
+    },
+    {
+      name: 'public/1 applies to clauses that precede the directive',
+      run: () => {
+        const program = Program.parse('elk(bertha).\n:- public(elk/1).\n');
+        const solver = new Solver(program, {});
+        const answers = [...solver.solve([parseGoalText('clause(elk(_), _)')], new Env(), 0)];
+        assertEqual(answers.length, 1, 'earlier clauses become readable');
+      },
+    },
+    {
+      name: 'public/1 leaves undeclared procedures private',
+      run: () => {
+        const solver = new Solver(Program.parse(':- public(elk/1).\nelk(X) :- moose(X).\nmoose(bertha).\n'), {});
+        let caught = null;
+        try {
+          [...solver.solve([parseGoalText('clause(moose(_), _)')], new Env(), 0)];
+        } catch (error) {
+          caught = error;
+        }
+        assertEqual(caught?.formal, 'permission_error(access, private_procedure)', 'sibling stays private');
+      },
+    },
+    {
+      // The meta-interpreter case: no annotation on the interpreted program.
+      name: 'default_procedure_access public opens every user-defined procedure',
+      run: () => {
+        const source = ':- set_prolog_flag(default_procedure_access, public).\n' +
+          'solve(true) :- !.\n' +
+          'solve((A, B)) :- !, solve(A), solve(B).\n' +
+          'solve(H) :- clause(H, Body), solve(Body).\n' +
+          'elk(X) :- moose(X).\nmoose(bertha).\ngrazes(X) :- elk(X).\n';
+        const solver = new Solver(Program.parse(source), {});
+        const goal = parseGoalText('solve(grazes(W))');
+        const answers = [...solver.solve([goal], new Env(), 0)];
+        assertEqual(answers.length, 1, 'meta-interpreter answer count');
+        assertEqual(termToString(copyResolved(goal.args[0], answers[0])), 'grazes(bertha)', 'meta-interpreter answer');
+      },
+    },
+    {
+      name: 'default_procedure_access public keeps procedures static and built-ins private',
+      run: () => {
+        const source = ':- set_prolog_flag(default_procedure_access, public).\nmoose(bertha).\n';
+        const solver = new Solver(Program.parse(source), {});
+        for (const [goal, formal] of [
+          ['retract(moose(bertha))', 'permission_error(modify, static_procedure)'],
+          ['clause(atom(_), _)', 'permission_error(access, private_procedure)'],
+        ]) {
+          let caught = null;
+          try {
+            [...solver.solve([parseGoalText(goal)], new Env(), 0)];
+          } catch (error) {
+            caught = error;
+          }
+          assertEqual(caught?.formal, formal, `${goal} is refused`);
+        }
+      },
+    },
+    {
+      // public/1 and the flag are extensions, so the strict profile omits both.
+      name: 'strict ISO core mode offers neither public/1 nor the access flag',
+      run: () => {
+        let caught = null;
+        try {
+          Program.parse(':- public(elk/1).\nelk(bertha).\n', { isoStrict: true });
+        } catch (error) {
+          caught = error;
+        }
+        if (!caught) throw new Error('public/1 was accepted in strict ISO core mode');
+        // 8.17.4.3: an unknown flag name is a domain error, so the flag being
+        // absent from the strict profile is observable that way.
+        const solver = new Solver(Program.parse('elk(bertha).\n', { isoStrict: true }), { isoStrict: true });
+        let flagError = null;
+        try {
+          [...solver.solve([parseGoalText('current_prolog_flag(default_procedure_access, _)', { isoStrict: true })], new Env(), 0)];
+        } catch (error) {
+          flagError = error;
+        }
+        assertEqual(flagError?.formal, 'domain_error(prolog_flag)', 'flag is absent in strict ISO core mode');
+      },
+    },
+    {
       // https://github.com/eyereasoner/eyeprolog/issues/96
       name: 'clause/2 keeps static procedures private in the default mode',
       run: () => {

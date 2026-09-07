@@ -154,6 +154,10 @@ export class Program {
     this.libraryImports = [];
     this.interopPortabilityWarnings = [];
     this.dynamicPredicates = new Set();
+    // ISO 7.5.3 notes that a public/1 directive declaring user-defined
+    // procedures to be public would be an extension. Such a procedure stays
+    // static -- it cannot be modified -- but clause/2 may inspect it.
+    this.publicPredicates = new Set();
     this.multifilePredicates = new Set();
     this.discontiguousPredicates = new Set();
     this.strictIso = options.isoStrict === true;
@@ -221,6 +225,7 @@ export class Program {
       wfsDatalog: false,
       scalarFactsOnly: true,
       dynamic: this.dynamicPredicates.has(modulePredicateKey(module, name, arity)),
+      public: this.publicPredicates.has(modulePredicateKey(module, name, arity)),
       negationStratum: null,
       hasCut: false,
       cutReachable: null,
@@ -636,6 +641,7 @@ class ProgramBuilder {
     this.options = options;
     this.program = program ?? new Program([], { ...options, [DEFER_PROGRAM_BUILD]: true });
     this.declaredDynamicIndicators = new Map();
+    this.declaredPublicIndicators = new Map();
     this.declaredMultifileIndicators = new Map();
     this.declaredDiscontiguousIndicators = new Map();
     this.declaredTableIndicators = new Map();
@@ -651,7 +657,7 @@ class ProgramBuilder {
     const unit = textUnit ?? '<input>';
     let declarations = this.directiveDeclarationsByText.get(unit);
     if (!declarations) {
-      declarations = { dynamic: new Set(), multifile: new Set(), discontiguous: new Set(), table: new Set() };
+      declarations = { dynamic: new Set(), public: new Set(), multifile: new Set(), discontiguous: new Set(), table: new Set() };
       this.directiveDeclarationsByText.set(unit, declarations);
     }
     return declarations[kind];
@@ -717,6 +723,13 @@ class ProgramBuilder {
       local.add(key);
       targetSet.add(key);
       declaredMap.set(`${textUnit}\u0000${key}`, { ...indicator, key, module, textUnit });
+      if (kind === 'public') {
+        // Unlike dynamic/1, a public declaration says nothing about existence:
+        // it only grants clause/2 access. Groups created later pick the flag up
+        // from program.publicPredicates in makeGroup.
+        const existing = program.groups.get(key);
+        if (existing) existing.public = true;
+      }
       if (kind === 'dynamic') {
         // A dynamic declaration creates the procedure immediately, not only
         // when ProgramBuilder.finish() runs. Compile-time source-expansion
@@ -830,6 +843,10 @@ class ProgramBuilder {
     const module = clause.module ?? 'user';
     const textUnit = clause.textUnit ?? '<input>';
     this.addProcedureDirective(clause, 'dynamic', program.dynamicPredicates, this.declaredDynamicIndicators);
+    // public/1 is an extension, so the strict Part 1 profile does not offer it.
+    if (!program.strictIso) {
+      this.addProcedureDirective(clause, 'public', program.publicPredicates, this.declaredPublicIndicators);
+    }
     this.addProcedureDirective(clause, 'multifile', program.multifilePredicates, this.declaredMultifileIndicators);
     this.addProcedureDirective(clause, 'discontiguous', program.discontiguousPredicates, this.declaredDiscontiguousIndicators);
     this.addProcedureDirective(clause, 'table', program.tabledPredicates, this.declaredTableIndicators);

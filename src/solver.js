@@ -1263,8 +1263,17 @@ function defaultPrologFlags(unknown = 'error', strictIso = false) {
     ['unknown', { value: compound(unknown, []), allowed: ['error', 'fail', 'warning'], changeable: true }],
     ['double_quotes', { value: compound('chars', []), allowed: ['chars', 'codes', 'atom'], changeable: true }],
     ['occurs_check', { value: compound('true', []), allowed: ['true', 'error'], changeable: true }],
+    // ISO 7.5.2 makes every user-defined procedure static, and therefore
+    // private, unless declared otherwise. Setting this flag to public grants
+    // clause/2 access to all of them at once, which meta-interpreters need
+    // without having to enumerate every predicate in a public/1 directive.
+    // The procedures stay static: assert/1 and retract/1 still refuse them.
+    ['default_procedure_access', { value: compound('private', []), allowed: ['private', 'public'], changeable: true }],
   ]);
-  if (strictIso) flags.delete('occurs_check');
+  if (strictIso) {
+    flags.delete('occurs_check');
+    flags.delete('default_procedure_access');
+  }
   return flags;
 }
 

@@ -1130,7 +1130,7 @@ class Parser {
           (['char_conversion', 'set_prolog_flag'].includes(directive.name) && directive.arity === 2)
         );
         const extensionDirective = directive.type === 'compound' && (
-          (['use_module', 'meta_predicate', 'attribute', 'table'].includes(directive.name) && directive.arity === 1) ||
+          (['use_module', 'meta_predicate', 'attribute', 'table', 'public'].includes(directive.name) && directive.arity === 1) ||
           (['module', 'use_module'].includes(directive.name) && directive.arity === 2)
         );
         if (this.strictIso && extensionDirective) {
