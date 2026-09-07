@@ -73,7 +73,6 @@ printf 'human(socrates).\nmortal(X) :- human(X).\n' |
 - [ISO conformance review](test/conformance/ISO-COMPLIANCE.md) — supported Part 1 profile
 - [Latest Neumerkel conformity](test/conformance/NEUMERKEL-LATEST.md) — tracked result from the current live upstream inventory
 - [Conformance report](conformance-report.md) — generated executable conformance status, local corpus summary, and known deviations
-- [Acknowledgements](ACKNOWLEDGEMENTS.md) — funding, standards consulted, and credits for vendored conformance corpora
 - [OpenRuleBench](openrulebench/README.md) — portable benchmark profile
 ## RDF, Prolog, and symbiotic knowledge graphs
 
