@@ -1138,7 +1138,7 @@ class Parser {
         }
         const operator = this.applyOperatorDirective(directive, line);
         if (!coreDirective && !extensionDirective && !operator) {
-          throw new Error(`parse line ${line}: bad term`);
+          throw new Error(`parse line ${line}: ${unsupportedDirectiveMessage(directive, this.strictIso)}`);
         }
         this.expect(TOK.DOT, '.');
         this.applyParserFlagDirective(directive, line);
@@ -1910,4 +1910,77 @@ export function parseGoalText(text, options = {}) {
     throw new Error('bad goal');
   }
   return head.args[0];
+}
+
+// Directives are accepted from a fixed list, so an unrecognized one is a
+// different mistake from unparseable input and deserves a different message.
+// The three cases below cover what people actually write: a bare goal that
+// belongs in initialization/1, a misspelt directive name, and a term that is
+// not a directive at all.
+const CORE_DIRECTIVE_INDICATORS = [
+  'dynamic/1', 'multifile/1', 'discontiguous/1', 'initialization/1', 'include/1',
+  'ensure_loaded/1', 'char_conversion/2', 'set_prolog_flag/2', 'op/3',
+];
+const EXTENSION_DIRECTIVE_INDICATORS = [
+  'use_module/1', 'use_module/2', 'meta_predicate/1', 'attribute/1', 'table/1',
+  'public/1', 'module/2',
+];
+
+function directiveNameDistance(a, b) {
+  // Small Levenshtein distance, used only to suggest a near-miss spelling.
+  const rows = a.length + 1;
+  const cols = b.length + 1;
+  let previous = Array.from({ length: cols }, (_, i) => i);
+  for (let i = 1; i < rows; i++) {
+    const current = [i];
+    for (let j = 1; j < cols; j++) {
+      current[j] = Math.min(
+        previous[j] + 1,
+        current[j - 1] + 1,
+        previous[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+      );
+    }
+    previous = current;
+  }
+  return previous[cols - 1];
+}
+
+function nearestDirectiveName(name, available) {
+  let best = null;
+  let bestDistance = Infinity;
+  for (const indicator of available) {
+    const candidate = indicator.slice(0, indicator.lastIndexOf('/'));
+    const distance = directiveNameDistance(name, candidate);
+    if (distance < bestDistance) {
+      bestDistance = distance;
+      best = candidate;
+    }
+  }
+  // Only suggest a genuinely close spelling, not the alphabetically nearest.
+  return bestDistance <= Math.max(1, Math.floor(name.length / 3)) ? best : null;
+}
+
+function unsupportedDirectiveMessage(directive, strictIso) {
+  const available = strictIso
+    ? CORE_DIRECTIVE_INDICATORS
+    : [...CORE_DIRECTIVE_INDICATORS, ...EXTENSION_DIRECTIVE_INDICATORS];
+  if (directive.type !== COMPOUND && directive.type !== ATOM) {
+    return 'a directive must be a callable term';
+  }
+  const name = directive.name;
+  const arity = directive.type === COMPOUND ? directive.arity : 0;
+  const indicator = `${name}/${arity}`;
+  const known = available.filter((entry) => entry.slice(0, entry.lastIndexOf('/')) === name);
+  if (known.length > 0) {
+    return `directive ${indicator} has the wrong arity; expected ${known.join(' or ')}`;
+  }
+  const suggestion = nearestDirectiveName(name, available);
+  if (suggestion != null) {
+    return `unknown directive ${indicator}; did you mean ${suggestion}?`;
+  }
+  // A goal such as `:- write(hello), nl.` is well-formed but is not one of the
+  // recognized declarations, so point at initialization/1 rather than reporting
+  // a syntax error.
+  return `unknown directive ${indicator}; to run a goal at load time use ` +
+    ':- initialization(Goal).';
 }

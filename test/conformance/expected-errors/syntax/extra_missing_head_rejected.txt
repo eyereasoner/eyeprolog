@@ -1,1 +1,1 @@
-parse line 1: bad term
+parse line 1: unknown directive q/1; to run a goal at load time use :- initialization(Goal).

@@ -4428,6 +4428,42 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       },
     },
     {
+      // Directives come from a fixed list, so an unrecognized one is a
+      // different mistake from unparseable input and gets its own message
+      // instead of the generic parser 'bad term'.
+      name: 'unsupported directives report why they were rejected',
+      run: () => {
+        const goalDirective = runCli(['-'], { input: ':- write(hello), nl.\n' });
+        assertEqual(goalDirective.status, 1, 'goal directive status');
+        assertIncludes(goalDirective.stderr, 'unknown directive write/1', 'goal directive indicator');
+        assertIncludes(goalDirective.stderr, 'initialization(Goal)', 'goal directive remedy');
+        assertNotIncludes(goalDirective.stderr, 'bad term', 'no generic parser message');
+
+        const misspelt = runCli(['-'], { input: ':- dynamc(foo/1).\n' });
+        assertEqual(misspelt.status, 1, 'misspelt status');
+        assertIncludes(misspelt.stderr, 'did you mean dynamic?', 'near-miss suggestion');
+
+        const wrongArity = runCli(['-'], { input: ':- dynamic(foo/1, bar).\n' });
+        assertEqual(wrongArity.status, 1, 'wrong arity status');
+        assertIncludes(wrongArity.stderr, 'expected dynamic/1', 'arity guidance');
+
+        const notCallable = runCli(['-'], { input: ':- 42.\n' });
+        assertEqual(notCallable.status, 1, 'non-callable status');
+        assertIncludes(notCallable.stderr, 'must be a callable term', 'callable guidance');
+      },
+    },
+    {
+      // Genuinely malformed input must keep reporting a syntax error rather
+      // than being misreported as a directive problem.
+      name: 'malformed terms still report a parse error',
+      run: () => {
+        const result = runCli(['-'], { input: 'foo(1). bar(\n' });
+        assertEqual(result.status, 1, 'exit status');
+        assertIncludes(result.stderr, 'parse line', 'parse error');
+        assertNotIncludes(result.stderr, 'unknown directive', 'not a directive message');
+      },
+    },
+    {
       name: 'double dash permits option-shaped file names',
       run: () => {
         const file = path.join(temp.dir, '-h');

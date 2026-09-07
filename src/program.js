@@ -1439,8 +1439,13 @@ function analyzeInteropPortability(program, extraGoals = []) {
 // this only affects user code, but within user code it acts at a distance
 // across included files.
 //
-// How strictly this is treated depends on how explicit the program was, which
-// follows the graded scheme SWI-Prolog uses for the same situation:
+// How strictly this is treated depends on how explicit the program was. The
+// first two tiers match what Trealla and Scryer do for the same program
+// (`:- use_module(library(lists)).` followed by clauses for append/3): both
+// warn and continue, Trealla with `overwriting user:'append'/3` and Scryer with
+// `overwriting append/3 because the clauses are discontiguous`. SWI-Prolog
+// treats imported predicates as weak symbols and warns likewise. No system
+// raises an error there, so neither does EyeProlog:
 //
 //   implicit autoload                          -> warning
 //   use_module(library(L))                     -> warning
@@ -1448,9 +1453,9 @@ function analyzeInteropPortability(program, extraGoals = []) {
 //
 // Only the last case is an outright contradiction: the program asked for that
 // exact predicate to be imported and then supplied clauses for it. The first
-// two stay warnings so that flat, module-free programs -- which load unchanged
-// on Scryer and Trealla, where the library is simply never imported -- keep
-// working. Note that ISO reserves permission_error(modify, static_procedure)
+// two stay warnings so that flat, module-free programs keep loading here
+// exactly as they do on Scryer and Trealla, which was checked directly rather
+// than inferred. Note that ISO reserves permission_error(modify, static_procedure)
 // for built-in predicates (7.5.3); library predicates are not built-ins, so
 // this error is raised only where the program's own import list demands it.
 function analyzeLibraryShadowing(program) {

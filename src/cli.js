@@ -335,6 +335,7 @@ Options:
   --proof-detail mode   Use abstract or expanded proof detail (implies --proof).
   --verify-proof file   Verify why/2 proof certificates against the input program.
   -q, --quads           Run embedded quad tests and fail if any do not hold.
+                        Note: -q is quads, not quiet; --quiet has no short form.
   --quiet               Suppress answer terms while preserving Prolog output.
   -s, --stats           Print solver and memory statistics to stderr after execution.
   --iso-strict          Use ISO/IEC 13211-1 core + Corrigenda 1-3 only;
