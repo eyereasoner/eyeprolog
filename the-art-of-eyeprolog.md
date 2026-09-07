@@ -5883,7 +5883,9 @@ Variables, proper lists, and partial lists pass these checks. Validation
 precedes grammar execution; an otherwise valid failing grammar does not
 suppress the diagnostic. Dedicated regressions enforce this policy separately
 from the portable quads, which accept both checking and non-checking outcomes. See
-[`ISO-PART2-PART3-SCOPE.md`](test/conformance/ISO-PART2-PART3-SCOPE.md).
+[`ISO-PART3.md`](test/conformance/ISO-PART3.md), which also records that the
+2023-08-14 working draft specifies `type_error(terminal_sequence, Culprit)` for
+this condition.
 
 #### A bidirectional expression grammar
 

@@ -131,10 +131,9 @@ Normal mode provides documented module and DCG compatibility profiles whose
 features overlap standardized Part 2 and Part 3 facilities. They are extensions
 relative to the Part 1 strict-core boundary and are tested separately; this
 ledger does not assert complete Part 2 or Part 3 conformance. The concrete
-compatibility boundary, including the normal-profile `phrase/2-3` terminal-sequence
-error choice, is recorded in `ISO-PART2-PART3-SCOPE.md`. The requirements
-clarified by the 2013 Part 2 amendment are tracked separately in the executable
-`ISO-PART2-AMENDMENT-2013.md` ledger.
+per-directive and per-predicate boundary is recorded in `ISO-PART2.md` and
+`ISO-PART3.md`, including the 2013 module-amendment evidence and the
+normal-profile `phrase/2-3` terminal-sequence error choice.
 
 ## Important implementation-dependent behavior (not the 5.4 mandatory table)
 
