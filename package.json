@@ -28,7 +28,6 @@
   "files": [
     "LICENSE.md",
     "README.md",
-    "ACKNOWLEDGEMENTS.md",
     "index.js",
     "index.d.ts",
     "playground.html",
