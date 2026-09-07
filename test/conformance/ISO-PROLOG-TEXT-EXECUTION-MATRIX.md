@@ -1,6 +1,6 @@
 # ISO Part 1 Prolog-text, database, and execution matrix
 
-This matrix closes the remaining row-level audit for ISO/IEC 13211-1:1995
+This matrix closes the remaining row-level review for ISO/IEC 13211-1:1995
 Clauses 7.4-7.8 against the published Part 1 baseline plus Technical
 Corrigenda 1-3. It complements the built-in mode/error matrix: these rows are
 processor semantics above individual predicate definitions.
@@ -22,7 +22,7 @@ chosen behavior is also indexed by `ISO-IMPLEMENTATION-DEFINED.md`.
 | 7.4.2.6 `initialization/1` | covered | Goals are retained in preparation order and run after preparation. Reusing the same prepared `Program` does not run them again accidentally. |
 | 7.4.2.7 `include/1` | covered | The included text is prepared at the directive position and shares operator/character/flag preparation state with its parent. |
 | 7.4.2.8 `ensure_loaded/1` | covered | A source is prepared at most once in the current load graph, including repeated references and self/top-level references. |
-| 7.4.2.9 `set_prolog_flag/2` | covered | Preparation-time flag changes affect subsequent text and are replayed into execution state; strict flag names/values/changeability remain governed by the closed 7.11 audit. |
+| 7.4.2.9 `set_prolog_flag/2` | covered | Preparation-time flag changes affect subsequent text and are replayed into execution state; strict flag names/values/changeability remain governed by the closed 7.11 review. |
 | 7.4.3 source clauses | covered | Source heads/bodies are validated like program clauses, standardized static/control procedures are protected, declarations can create empty procedures, and body conversion follows 7.6.2 while preserving head/body variable identity. The built-in restriction applies in every execution mode, so consulting a clause for a built-in predicate or control construct reports the same `permission_error(modify, static_procedure)` as `assert`ing one; EyeProlog's own library and extension predicates are not standard built-ins and stay redefinable. Corpus: `error/iso/consult_redefines_builtin`. |
 
 The strict release test `closes ISO 7.4 Prolog-text preparation and directive
@@ -70,7 +70,7 @@ converted body.
 | clause order and re-execution | covered | Clauses are tried in prepared/database order; re-executable predicates expose subsequent solutions on backtracking. |
 | empty versus unknown procedure | covered | A defined procedure with zero clauses fails normally. A missing procedure follows the `unknown` flag (`error` by default in the strict profile). |
 | side effects and database changes | covered | Standard side effects occur at their execution point; successful dynamic changes become visible to later activations while preserving the logical-update view of active calls. |
-| built-in/control delegation | covered | Standardized built-ins dispatch through the strict registry and control constructs through the strict execution path; implementation-specific predicates/shortcuts are excluded by the 5.5 boundary audit. |
+| built-in/control delegation | covered | Standardized built-ins dispatch through the strict registry and control constructs through the strict execution path; implementation-specific predicates/shortcuts are excluded by the 5.5 boundary review. |
 
 ## 7.8 - control constructs and exceptions
 
@@ -88,9 +88,9 @@ converted body.
 | 7.8.10 `throw/1` | covered | Throws propagate until a matching catch and use a renamed/fresh term for exception matching. |
 
 The strict test `closes ISO 7.8 general control-construct and exception rows`
-keeps the general semantics visible in addition to the 8.15 built-in audit.
+keeps the general semantics visible in addition to the 8.15 built-in review.
 
-## Audit result
+## Review result
 
 Clauses **7.4-7.8 are covered at row level** for the declared strict Part 1
 profile. Remaining Clause 7 exit work is therefore no longer general

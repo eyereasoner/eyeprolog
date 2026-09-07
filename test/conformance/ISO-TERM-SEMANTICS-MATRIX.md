@@ -1,6 +1,6 @@
-# ISO Part 1 term-semantics audit matrix
+# ISO Part 1 term-semantics coverage matrix
 
-This file closes the Clause 7.1-7.3 audit at a finer granularity than the
+This file closes the Clause 7.1-7.3 review at a finer granularity than the
 release-facing `ISO-COMPLIANCE.md`. The normative baseline is ISO/IEC
 13211-1:1995 plus Technical Corrigenda 1-3.
 

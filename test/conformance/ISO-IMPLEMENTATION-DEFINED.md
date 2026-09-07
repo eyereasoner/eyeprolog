@@ -7,7 +7,7 @@ pages at complang.tuwien.ac.at are useful review input, but draft proposals are
 not silently treated as normative changes to that licensed baseline.
 
 [*The Art of EyeProlog*](../../the-art-of-eyeprolog.md) remains the single
-implementation reference. This file is an audit index: it identifies each
+implementation reference. This file is an review index: it identifies each
 explicitly implementation-defined decision in Part 1, states the EyeProlog
 choice, and points to the implementation boundary that realizes it. Repeated
 references to the same decision are folded into one row. Requirements that the
@@ -19,7 +19,7 @@ Status values are:
 - **defined** — the current behavior is implemented and stated here;
 - **not applicable** — the standard decision is conditional and the condition
   is false for EyeProlog's selected profile;
-- **audit gap** — retained for any future implementation-defined choice whose
+- **gap** — retained for any future implementation-defined choice whose
   code/documentation boundary is still unresolved. Open *normative* shall-by-
   shall work is tracked separately in `ISO-COMPLIANCE.md`.
 

@@ -474,7 +474,7 @@ export function formatNeumerkelMarkdown({ summary }) {
   lines.push(
     '',
     'Exact fetched bytes, SHA-256 hashes, fetch timestamps, and HTTP validators remain under',
-    'Git-ignored `.cache/neumerkel/` for local audit/reproduction and are intentionally not committed.',
+    'Git-ignored `.cache/neumerkel/` for local inspection/reproduction and are intentionally not committed.',
     'A normal test run warns when this tracked report is stale. Refresh directly from live',
     'upstream with `npm run conformance:update:neumerkel`, or sync the exact successful',
     'snapshot already fetched by `npm test` with `npm run conformance:sync:neumerkel`.',

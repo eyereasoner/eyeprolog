@@ -7,8 +7,8 @@ supported ISO Prolog profile, built-ins, extensions, and reasoner behavior.
 
 The suite is intentionally file-based. Exact standard output, errors, warnings,
 and proof output test the behavior of the JavaScript implementation.
-[ISO-COMPLIANCE.md](ISO-COMPLIANCE.md) is the high-level Part 1 audit and coverage map. [ISO-BUILTIN-MODE-ERROR-MATRIX.md](ISO-BUILTIN-MODE-ERROR-MATRIX.md)
-tracks the row-by-row built-in audit,
+[ISO-COMPLIANCE.md](ISO-COMPLIANCE.md) is the high-level Part 1 review and coverage map. [ISO-BUILTIN-MODE-ERROR-MATRIX.md](ISO-BUILTIN-MODE-ERROR-MATRIX.md)
+tracks the row-by-row built-in review,
 [ISO-TERM-SEMANTICS-MATRIX.md](ISO-TERM-SEMANTICS-MATRIX.md) closes 7.1-7.3,
 [ISO-PROLOG-TEXT-EXECUTION-MATRIX.md](ISO-PROLOG-TEXT-EXECUTION-MATRIX.md)
 closes 7.4-7.8, [ISO-EVALUABLE-FUNCTOR-MATRIX.md](ISO-EVALUABLE-FUNCTOR-MATRIX.md)
@@ -31,7 +31,7 @@ review evidence, not normative ISO claims.
 profile and implementation extensions. The default registry covers the exact
 predicate indicators listed in Appendix B of the book across the Part 1 strict-core
 target and the normal-mode module/DCG compatibility families. [ISO-COMPLIANCE.md](ISO-COMPLIANCE.md) is the explicit
-release-facing ledger for the Part 1 strict-core audit. This suite is not an independent certification. The release-facing Part 1
+release-facing ledger for the Part 1 strict-core review. This suite is not an independent certification. The release-facing Part 1
 ledger now has explicit dispositions for Clause 5 processor obligations, Clause 6
 syntax/rejection, Clause 7 semantics, the complete 8.2-8.17 built-in family, and
 Clause 9 evaluable functors. Public comparison material remains supporting review
@@ -99,7 +99,7 @@ npm run test:wg17                 # vendored reviewed WG17 syntax regression
 ```
 
 `test:neumerkel` always fetches the current TU Wien sources. It does not skip a
-fetch because a cache exists. The runner discovers the number of active tests from those sources and fails on any newly introduced case EyeProlog does not pass. If the stable, tracked [NEUMERKEL-LATEST.md](NEUMERKEL-LATEST.md) is stale, normal tests warn rather than turning a passing engine run into a failure. `npm run conformance:update:neumerkel` performs a fresh live run and refreshes the report; after `npm test`, `npm run conformance:sync:neumerkel` refreshes it from the exact successful cached snapshot; and `npm run conformance:check:neumerkel` verifies that snapshot without a second network fetch. Exact bytes, SHA-256 hashes, timestamps, and HTTP validators stay under Git-ignored `.cache/neumerkel/` for audit/reproduction only. See [NEUMERKEL-LIVE.md](NEUMERKEL-LIVE.md).
+fetch because a cache exists. The runner discovers the number of active tests from those sources and fails on any newly introduced case EyeProlog does not pass. If the stable, tracked [NEUMERKEL-LATEST.md](NEUMERKEL-LATEST.md) is stale, normal tests warn rather than turning a passing engine run into a failure. `npm run conformance:update:neumerkel` performs a fresh live run and refreshes the report; after `npm test`, `npm run conformance:sync:neumerkel` refreshes it from the exact successful cached snapshot; and `npm run conformance:check:neumerkel` verifies that snapshot without a second network fetch. Exact bytes, SHA-256 hashes, timestamps, and HTTP validators stay under Git-ignored `.cache/neumerkel/` for inspection/reproduction only. See [NEUMERKEL-LIVE.md](NEUMERKEL-LIVE.md).
 
 The vendored WG17 syntax snapshot is intentionally secondary. Update all upstream conformance evidence with `npm run conformance:update`, or use the focused commands:
 

@@ -1,6 +1,6 @@
-# ISO Part 1 expression/evaluable-functor audit matrix
+# ISO Part 1 expression/evaluable-functor coverage matrix
 
-This file is the row-level audit for Part 1 Clause 7.9 and Clause 9, including
+This file is the row-level review for Part 1 Clause 7.9 and Clause 9, including
 the arithmetic additions and corrections in Technical Corrigenda 1-3. It is
 paired with the strict regression named `closes the ISO 7.9 and Clause 9
 evaluable-functor rows`.

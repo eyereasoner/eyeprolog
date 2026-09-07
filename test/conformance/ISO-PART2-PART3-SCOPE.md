@@ -24,7 +24,7 @@ This amendment coverage is intentionally narrower than a complete Part 2
 conformance claim. In particular, the Part 1 strict registry does not enable
 module directives or the Part 2 `:` operator, and the project does not infer
 full Part 2 coverage from interoperability with Scryer, Trealla, or Logtalk. A
-future complete Part 2 claim would require a clause-by-clause audit of the
+future complete Part 2 claim would require a clause-by-clause review of the
 unchanged ISO/IEC 13211-2:2000 module-interface and re-export facilities as well
 as the amendment.
 

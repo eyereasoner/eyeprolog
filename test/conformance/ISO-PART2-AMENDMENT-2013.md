@@ -4,7 +4,7 @@ This ledger maps EyeProlog's normal module profile to the requirements clarified
 by the attached 2013 ISO/IEC 13211-2 amendment draft (WG17 N251). It is narrowly
 scoped to that amendment. It does **not** turn the broader ISO/IEC 13211-2:2000
 base document into a release-facing certification claim; unchanged Part 2
-facilities outside the amendment still need their own clause-by-clause audit.
+facilities outside the amendment still need their own clause-by-clause review.
 
 Executable evidence lives in `test/run-iso-part2-amendment.mjs` and is included
 in both `npm test` and the conformance aggregate.

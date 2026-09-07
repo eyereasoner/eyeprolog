@@ -1,9 +1,9 @@
-# ISO Part 1 processor-requirements audit
+# ISO Part 1 processor-requirements review
 
 This is the clause-level checklist for the processor requirements that sit
 above the individual built-ins. It complements `ISO-COMPLIANCE.md`: the latter
 is release-facing prose, while this file keeps each Clause 5 requirement or
-extension boundary visible as its own auditable row.
+extension boundary visible as its own reviewable row.
 
 The normative baseline is ISO/IEC 13211-1:1995 plus Technical Corrigenda 1-3.
 `covered` means the requirement has an implementation/documentation decision
@@ -26,7 +26,7 @@ certification claim.
 | Requirement | Status | Current evidence |
 | --- | --- | --- |
 | 5.2 conforming and strictly conforming Prolog text boundary | covered | strict parsing/preparation accepts the Part 1 + Corrigenda language under the documented PCS choices and rejects implementation-specific language facilities; normal-profile preservation is checked against every strict-accepted WG17 case |
-| 5.3 conforming and strictly conforming Prolog goal boundary | covered | strict registry/control/evaluable filtering plus closed 7.1-7.12, 8.2-8.17, and Clause 9 audits define the goal boundary |
+| 5.3 conforming and strictly conforming Prolog goal boundary | covered | strict registry/control/evaluable filtering plus closed 7.1-7.12, 8.2-8.17, and Clause 9 reviews define the goal boundary |
 | 5.4 accompanying documentation for implementation-defined and implementation-specific features | covered | `ISO-IMPLEMENTATION-DEFINED.md`, *The Art of EyeProlog*, strict-boundary documentation, and release-facing conformance ledgers |
 
 ## 5.5 — extension boundaries
@@ -40,15 +40,15 @@ certification claim.
 | 5.5.4 additional term types | covered | the normal JavaScript API's `stringTerm(Text)` is documented as an implementation-specific sixth term type, including disjointness, ordering, clause conversion, lack of source token syntax, expression behavior, and writing; strict program/goal entry rejects that type with `representation_error(term)` |
 | 5.5.5 additional directives | covered | normal module/library directives are documented implementation-specific features and are rejected by strict mode |
 | 5.5.6 additional side effects | covered | normal-profile `statistics/0-2`, cleanup/library state, proof/statistics host instrumentation, and other extension effects are documented outside the Part 1 core; strict registry tests exclude the Prolog-visible statistics/cleanup extensions. Host instrumentation is an embedding observation rather than an extra strict Prolog goal effect |
-| 5.5.7 additional control constructs | covered | `tnot/1`, `wfs_truth/2`, and implementation-specific execution optimizations are absent/disabled in strict mode; standard control constructs remain separately audited |
-| 5.5.8 additional flags | covered | normal `occurs_check` extension is absent from strict mode; the Part 1 flag family is fully audited |
+| 5.5.7 additional control constructs | covered | `tnot/1`, `wfs_truth/2`, and implementation-specific execution optimizations are absent/disabled in strict mode; standard control constructs remain separately reviewed |
+| 5.5.8 additional flags | covered | normal `occurs_check` extension is absent from strict mode; the Part 1 flag family is fully reviewed |
 | 5.5.9 additional built-in predicates and error forms | covered | strict registry excludes normal-profile library/native additions; `ISO-BUILTIN-MODE-ERROR-MATRIX.md` closes the complete 8.2-8.17 family row-by-row; simultaneous-error choices are documented per 7.12 rather than treated as a global table-order mandate |
-| 5.5.10 additional evaluable functors/types | covered | strict mode rejects the normal-profile evaluable `e` extension while retaining the full Part 1 + Corrigenda arithmetic set. `ISO-EVALUABLE-FUNCTOR-MATRIX.md` now closes the Clause 9 semantic/error audit and pins the 9.1.4.2 `resultF`, mixed-type `max/2`/`min/2`, and signed bitwise/shift choices. Post-N289 STC #75 remains separate from the published baseline |
+| 5.5.10 additional evaluable functors/types | covered | strict mode rejects the normal-profile evaluable `e` extension while retaining the full Part 1 + Corrigenda arithmetic set. `ISO-EVALUABLE-FUNCTOR-MATRIX.md` now closes the Clause 9 semantic/error review and pins the 9.1.4.2 `resultF`, mixed-type `max/2`/`min/2`, and signed bitwise/shift choices. Post-N289 STC #75 remains separate from the published baseline |
 | 5.5.11 reserved atoms | not applicable | EyeProlog declares no reserved-atom extension; extension names remain ordinary atoms unless used in a documented syntactic/predicate/directive role |
 
 ## Clause 6 syntax-preservation closure
 
-The production audit is kept here rather than in another status file. The strict
+The production review is kept here rather than in another status file. The strict
 regression gate covers the following families directly, while the complete WG17
 matrix supplies detailed externally sourced syntax expectations.
 

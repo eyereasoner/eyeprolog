@@ -44,11 +44,11 @@ uses this race-free sync path and stages the generated reports into the release
 commit. The tracked report intentionally omits fetch timestamps and HTTP validators,
 so repeated runs against unchanged upstream suites do not dirty the checkout.
 
-## Local audit cache
+## Local inspection cache
 
 Exact downloaded bytes, SHA-256 hashes, fetch timestamps, HTTP validators, and
 machine-readable results are kept under `.cache/neumerkel/`. `.cache/` remains
-Git-ignored: it is an audit/reproduction cache, not published project evidence.
+Git-ignored: it is an inspection/reproduction cache, not published project evidence.
 
 Use:
 

@@ -10403,7 +10403,7 @@ node test/run-conformance-report.mjs
 ```
 
 `test/conformance/ISO-COMPLIANCE.md` is the processor-requirement ledger for the
-Part 1 conformance audit. It records explicit dispositions for the tracked processor, syntax, semantic, built-in, and arithmetic requirements. `test/conformance/ISO-COMPLIANCE.md`
+Part 1 conformance review. It records explicit dispositions for the tracked processor, syntax, semantic, built-in, and arithmetic requirements. `test/conformance/ISO-COMPLIANCE.md`
 maps language families to representative executable cases.
 `test/conformance/ISO-IMPLEMENTATION-DEFINED.md` is the ISO 5.4 decision
 index: it enumerates the Part 1 implementation-defined decisions and the
@@ -10416,7 +10416,7 @@ rows. The exit checklist in `ISO-COMPLIANCE.md` records the closure criteria and
 upstream syntax cases. Reviewed cases can pin exact strict-reader outcomes, while
 newly upgraded cases execute directly against the upstream Codex expectation.
 
-The syntax audit also cross-checks extension safety: each vendored WG17 case
+The syntax review also cross-checks extension safety: each vendored WG17 case
 accepted by the strict Part 1 reader is executed through the normal profile and
 must preserve the same observable outcome. Additional normal-mode syntax may
 accept texts outside the strict grammar, but it may not reinterpret an accepted
@@ -10463,7 +10463,7 @@ expansion/`phrase/2-3`, quads, EyeProlog libraries, the `occurs_check` flag,
 the normal-profile `table` declaration, `call_cleanup/2`, and `setup_call_cleanup/3` are outside
 that Part 1 strict surface.
 
-The strict-core audit has explicit dispositions for the Clause 5 processor
+The strict-core review has explicit dispositions for the Clause 5 processor
 obligations, Clause 6 syntax and rejection families, Clause 7 term/execution/I/O
 and error semantics, the 8.2-8.17 built-in families, and Clause 9 evaluable
 functors. The complete vendored WG17 syntax matrix is checked together with normal-mode safety: each strict-success WG17 observation must keep the same result when normal-mode extensions are enabled. Implementation-defined

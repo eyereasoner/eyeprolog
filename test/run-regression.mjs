@@ -5901,7 +5901,7 @@ ${profile}`;
       },
     },
     {
-      name: 'published ISO Corrigenda have a complete stable audit inventory',
+      name: 'published ISO Corrigenda have a complete stable review inventory',
       run: () => {
         const compliance = fs.readFileSync(path.join(testRoot, 'conformance', 'ISO-COMPLIANCE.md'), 'utf8');
         const matrix = fs.readFileSync(path.join(testRoot, 'conformance', 'ISO-CORRIGENDA-MATRIX.md'), 'utf8');
@@ -5913,7 +5913,7 @@ ${profile}`;
         const rows = matrix.split('\n')
           .filter((line) => /^\| C[123]-\d\d \|/.test(line))
           .map((line) => line.split('|').slice(1, -1).map((cell) => cell.trim()));
-        assertEqual(rows.map(([id]) => id).join(','), expected.join(','), 'Corrigenda stable audit IDs');
+        assertEqual(rows.map(([id]) => id).join(','), expected.join(','), 'Corrigenda stable review IDs');
         for (const [id, clauses, disposition, evidence] of rows) {
           assertEqual(Boolean(clauses), true, `${id} clause/amendment cluster`);
           assertEqual(['covered', 'editorial', 'superseded'].includes(disposition), true, `${id} disposition`);
@@ -5981,7 +5981,7 @@ ${profile}`;
           '| Latest Neumerkel conformity is a live release gate | covered |',
           '| No unexplained deviation remains in the release-facing ledger | covered |',
         ]) assertIncludes(exit, item, item);
-        assertNotIncludes(exit, '| audit |', 'no release-facing audit rows remain');
+        assertNotIncludes(exit, '| gap |', 'no release-facing gap rows remain');
       },
     },
     {
@@ -5996,13 +5996,13 @@ ${profile}`;
           'ISO-EVALUABLE-FUNCTOR-MATRIX.md',
         ]) assertIncludes(book, name, `book ${name}`);
         assertIncludes(readme, 'implementation reference is [*The Art of EyeProlog*]', 'README book hand-off');
-        assertIncludes(readme, 'test/conformance/ISO-COMPLIANCE.md', 'README concise audit link');
+        assertIncludes(readme, 'test/conformance/ISO-COMPLIANCE.md', 'README concise review link');
         for (const heading of ['## Tabling', '## Cleanup-aware control', '## Strict ISO',
           '## Module and definite clause grammar', '## Trealla and Scryer interoperability']) {
           assertNotIncludes(readme, heading, `README delegates ${heading} to the book`);
         }
-        assertEqual(readme.includes('2026-08-23 draft items #73-#76'), false, 'README omits audit-history detail');
-        assertIncludes(profile, 'Part 1 processor, syntax, semantic, built-in, and arithmetic', 'Why EyeProlog audit state');
+        assertEqual(readme.includes('2026-08-23 draft items #73-#76'), false, 'README omits review-history detail');
+        assertIncludes(profile, 'Part 1 processor, syntax, semantic, built-in, and arithmetic', 'Why EyeProlog review state');
       },
     },
     {

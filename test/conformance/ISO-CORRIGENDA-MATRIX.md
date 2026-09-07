@@ -1,4 +1,4 @@
-# ISO/IEC 13211-1 published Corrigenda audit
+# ISO/IEC 13211-1 published Corrigenda review
 
 This matrix records every amendment cluster in Technical Corrigenda 1:2007,
 2:2012, and 3:2017 against EyeProlog's published Part 1 baseline. It separates
@@ -7,24 +7,24 @@ from text superseded by a later Corrigendum. A `covered` behavior row names
 executable evidence; an `editorial` row records that no processor behavior was
 changed; a `superseded` row points to the later published amendment.
 
-The stable audit IDs are checked by the documentation regression suite. They
+The stable review IDs are checked by the documentation regression suite. They
 make omission detectable without reproducing the licensed standard text here.
 
 ## Technical Corrigendum 1:2007
 
-| Audit ID | Clauses / amendment cluster | Disposition | EyeProlog evidence |
+| Review ID | Clauses / amendment cluster | Disposition | EyeProlog evidence |
 | --- | --- | --- | --- |
 | C1-01 | 3.106, 3.108, 3.125, 3.148 terminology and typography | editorial | Definitions/source typography; no processor behavior changes. |
 | C1-02 | 4.1.3.5 non-negative square-root axiom | covered | Strict test `pins behavior-changing Technical Corrigendum 1 corrections` checks `sqrt(0)`. |
 | C1-03 | 6.3.7 priority of a double-quoted atom that names an operator | covered | Same strict test plus `iso/corrigendum1_double_quote_operator`. |
 | C1-04 | 7.2.5 compound-term ordering wording | editorial | The corrected condition is represented by the Clause 7.2 standard-order tests. |
-| C1-05 | 7.8.5.4, table 35, and 7.8.8.4 control-model/example corrections | editorial | Corrected notation; conjunction and if-then-else behavior is independently covered by the strict 7.8 audit. |
+| C1-05 | 7.8.5.4, table 35, and 7.8.8.4 control-model/example corrections | editorial | Corrected notation; conjunction and if-then-else behavior is independently covered by the strict 7.8 review. |
 | C1-06 | 7.9.2 integer- and float-operand type errors | covered | Strict Clause 7.9 tests exercise integer-only and float-only templates. |
 | C1-07 | 7.12.2 representation-error metavariable capitalization | editorial | Error-term representation is covered by the 7.12 envelope; this amendment changes notation only. |
 | C1-08 | 8.8.1.1 selected `clause/2` result is unified with head/body | covered | Strict test `pins behavior-changing Technical Corrigendum 1 corrections`. |
 | C1-09 | 8.9.4.1 `abolish/1` note wording | editorial | Singular/plural note correction only. |
 | C1-10 | 8.10.3.4 set-order example | superseded | Corrigendum 3 explicitly restores the original example; current behavior follows Corrigendum 3. |
-| C1-11 | 8.13.3.4 `put_byte/1-2` example values | editorial | Examples corrected; byte-output semantics are covered by the strict 8.13 audit. |
+| C1-11 | 8.13.3.4 `put_byte/1-2` example values | editorial | Examples corrected; byte-output semantics are covered by the strict 8.13 review. |
 | C1-12 | 8.14.1.4 input-stream names and post-syntax-error example state | editorial | Examples corrected; read-stream behavior is covered by strict term-I/O tests. |
 | C1-13 | 8.14.4.1 selected `current_op/3` result is unified with its arguments | covered | Strict test `pins behavior-changing Technical Corrigendum 1 corrections`. |
 | C1-14 | 8.16.4 `atom_chars/2` accepts a matching supplied list prefix | covered | Strict test `pins behavior-changing Technical Corrigendum 1 corrections`. |
@@ -35,7 +35,7 @@ make omission detectable without reproducing the licensed standard text here.
 
 ## Technical Corrigendum 2:2012
 
-| Audit ID | Clauses / amendment cluster | Disposition | EyeProlog evidence |
+| Review ID | Clauses / amendment cluster | Disposition | EyeProlog evidence |
 | --- | --- | --- | --- |
 | C2-01 | 6.3.4, 6.4, 6.5 bar token/operator rules and protected `[]`/`{}` operators | covered | WG17 lexical output cases, `corrigenda_bar_operator`, and strict `op/3` tests. |
 | C2-02 | 6.3.4.4 predefined unary plus and `div` operators | covered | Strict predefined-operator and arithmetic tests. |
@@ -53,7 +53,7 @@ make omission detectable without reproducing the licensed standard text here.
 | C2-14 | 8.9.3 static `retract/1` uses modify permission | covered | Strict database predicate error tests. |
 | C2-15 | 8.9.5 `retractall/1` | covered | Strict lifetime/error tests and `corrigenda_retractall`. |
 | C2-16 | 8.11.5 non-variable `open/4` stream result | covered | Strict uninstantiation-error test. |
-| C2-17 | 8.14.3 protected operator priority/specifier combinations | covered | Strict `op/3` row audit and bar-operator cases. |
+| C2-17 | 8.14.3 protected operator priority/specifier combinations | covered | Strict `op/3` row review and bar-operator cases. |
 | C2-18 | 8.15.4 `call/2..8` and implementation-dependent higher arities | covered | Strict closure expansion, error, and selected ceiling tests. |
 | C2-19 | 8.15.5 `false/0` | covered | Strict registry, execution, and static-procedure protection tests. |
 | C2-20 | 8.16.4-8.16.8 atomic/number conversion partial-list errors | covered | Individual strict mode/error assertions for all four predicates. |
@@ -63,7 +63,7 @@ make omission detectable without reproducing the licensed standard text here.
 
 ## Technical Corrigendum 3:2017
 
-| Audit ID | Clauses / amendment cluster | Disposition | EyeProlog evidence |
+| Review ID | Clauses / amendment cluster | Disposition | EyeProlog evidence |
 | --- | --- | --- | --- |
 | C3-01 | 5.5.12 implementation-specific options and their error classification | covered | Strict option surfaces reject normal-only options and exercise variable/domain distinctions. |
 | C3-02 | 6.2.1 optional final layout text | covered | Strict test `pins behavior-changing Technical Corrigendum 3 corrections`. |

@@ -235,7 +235,7 @@ tests, and production behavior easier to compare.
 EyeProlog targets the ISO Part 1 core together with Technical Corrigenda 1, 2,
 and 3. It provides separately documented compatibility profiles for Part 2
 modules and Part 3 definite clause grammars in normal mode. The post-N289
-WG17/STC working draft is audit input, not a published Corrigendum silently
+WG17/STC working draft is review input, not a published Corrigendum silently
 added to the strict baseline.
 
 The executable conformance matrix records explicit dispositions for the
@@ -288,7 +288,7 @@ documented embedding hook.
 It should resist duplicate aliases, hidden execution phases, advisory syntax,
 and integrations that can live outside the reasoning engine. The durable idea
 is that useful, proof-producing reasoning does not require an opaque language
-or an enormous runtime. A carefully audited standard core, portable modules,
+or an enormous runtime. A carefully reviewed standard core, portable modules,
 and an ordinary JavaScript API can remain both practical and understandable.
 
 ## References

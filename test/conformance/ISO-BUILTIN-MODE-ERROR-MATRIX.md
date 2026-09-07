@@ -1,6 +1,6 @@
-# ISO Part 1 built-in mode/error audit
+# ISO Part 1 built-in mode/error review
 
-This matrix turns the broad built-in audit in `ISO-COMPLIANCE.md` into smaller,
+This matrix turns the broad built-in review in `ISO-COMPLIANCE.md` into smaller,
 release-gated units. The normative baseline is ISO/IEC 13211-1:1995 plus
 Technical Corrigenda 1:2007, 2:2012, and 3:2017.
 
@@ -15,7 +15,7 @@ does not infer a universal priority merely from the textual order of an error
 table.
 
 The table is intentionally explicit about what has and has not been closed.
-The current audit now covers the complete 8.2-8.17 built-in family at the
+The current review now covers the complete 8.2-8.17 built-in family at the
 level of prescribed modes, success/failure behavior, individual error
 conditions, and explicit not-applicable processor branches. Closely related
 conditions may share a row only when that row names every condition and the
@@ -30,9 +30,9 @@ existing file-based cases remain additional regression evidence.
 | Clause / predicate | Prescribed row | Status | Executable evidence |
 | --- | --- | --- | --- |
 | 8.2.1 `(=)/2` | `?term, ?term`; succeeds/fails according to Prolog unification; no prescribed errors | covered | existing unification corpus and `term_modes_and_ordering` |
-| 8.2.2 `unify_with_occurs_check/2` | `?term, ?term`; succeeds/fails and never reports a prescribed error | covered | strict row-audit success assertion plus unification corpus |
+| 8.2.2 `unify_with_occurs_check/2` | `?term, ?term`; succeeds/fails and never reports a prescribed error | covered | strict row-review success assertion plus unification corpus |
 | 8.2.3 `(\=)/2` | `@term, @term`; succeeds/fails for the defined NSTO cases; no prescribed errors | covered | unification/control corpus |
-| Cor.2 8.2.4 `subsumes_term/2` | `@term, @term`; succeeds/fails without binding its arguments; no prescribed errors | covered | strict row-audit success assertion and Corrigendum 2 term-predicate cases |
+| Cor.2 8.2.4 `subsumes_term/2` | `@term, @term`; succeeds/fails without binding its arguments; no prescribed errors | covered | strict row-review success assertion and Corrigendum 2 term-predicate cases |
 
 ## 8.3 — type testing
 
@@ -147,7 +147,7 @@ The Corrigendum 2 additions have the same shape.
 | 8.8.1 error (c) | private procedure -> access/private-procedure permission error | covered | strict static/private tests |
 | 8.8.1 error (d) | fixed non-callable Body -> callable type error | covered | strict dynamic `clause(p(_),4)` coverage |
 | 8.8.1 clause-to-term conversion | source variable goals become `call/1` while preserving sharing with the head | covered | strict `foo(X):-X` -> `clause(foo(C),call(C))`; nested `;/2` and `->/2` regressions |
-| 8.8.2 `current_predicate/1` | enumerate/query user-defined predicate indicators, including empty declared procedures | covered | strict row audit and empty-procedure lifetime tests |
+| 8.8.2 `current_predicate/1` | enumerate/query user-defined predicate indicators, including empty declared procedures | covered | strict row review and empty-procedure lifetime tests |
 | 8.8.2 error (a) | fixed non-predicate-indicator -> predicate-indicator type error | covered | strict `current_predicate(4)` |
 
 ## 8.9 — database modification
@@ -301,7 +301,7 @@ The Corrigendum 2 additions have the same shape.
 
 | Clause / predicate | Prescribed row | Status | Executable evidence |
 | --- | --- | --- | --- |
-| 8.16.1 `atom_length/2` | atom -> length / check supplied length | covered | `logtalk_atom_length`, strict row audit |
+| 8.16.1 `atom_length/2` | atom -> length / check supplied length | covered | `logtalk_atom_length`, strict row review |
 | 8.16.1 error: atom variable | required atom unavailable -> instantiation error | covered | strict `atom_length(X,4)` |
 | 8.16.1 error: atom type | first argument non-atom -> atom type error | covered | strict `atom_length(1.2,4)` |
 | 8.16.1 error: length type | non-integer length -> integer type error | covered | strict `atom_length(atom,'4')` |
@@ -356,9 +356,9 @@ built-in matrix does not have a gap at 8.17.
 
 | Clause / predicate | Prescribed row | Status | Executable evidence |
 | --- | --- | --- | --- |
-| 8.17.1 `set_prolog_flag/2` | set a supported, changeable flag value | covered | strict flag audit |
+| 8.17.1 `set_prolog_flag/2` | set a supported, changeable flag value | covered | strict flag review |
 | 8.17.1 errors | variable/name type/domain, value type/domain, and non-changeable-flag permission distinctions | covered | `covers the Part 1 flag defaults, value domains, and changeability` plus file-based flag errors |
-| 8.17.2 `current_prolog_flag/2` | enumerate/query current standard flags | covered | strict complete flag audit |
+| 8.17.2 `current_prolog_flag/2` | enumerate/query current standard flags | covered | strict complete flag review |
 | 8.17.2 flag-name type error | fixed non-atom name -> atom type error | covered | strict `current_prolog_flag(1,_)` |
 | 8.17.2 unknown-flag domain error | fixed unsupported flag name -> Prolog-flag domain error | covered | strict `current_prolog_flag(no_such_iso_flag,_)` |
 | 8.17.3 `halt/0` | terminate with implementation-defined successful host status | covered | `halt` conformance case / host runner tests |
@@ -368,10 +368,10 @@ built-in matrix does not have a gap at 8.17.
 
 ## Closure note
 
-The built-in **8.2-8.17 row audit is complete** at the level tracked by this
+The built-in **8.2-8.17 row review is complete** at the level tracked by this
 file: prescribed modes, success/failure behavior, individual error conditions,
 and conditional/not-applicable processor branches all have explicit outcomes.
-“Row audit” means condition-by-condition accounting; it does not promise one
+“Row review” means condition-by-condition accounting; it does not promise one
 Markdown table row per condition when a grouped row enumerates them all.
 ISO 7.12 simultaneous-error selection remains an implementation-dependent
 processor choice unless more specific normative text constrains it.
