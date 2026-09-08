@@ -26,7 +26,7 @@ must_be(Type, Term) :-
         ( var(Type) -> instantiation_error
         ; error__must_be(Type, Term)
         ),
-        must_be/2).
+        predicate-must_be/2).
 
 error__must_be(integer, Term) :- !,
     ( var(Term) -> instantiation_error
@@ -132,7 +132,18 @@ resource_error(Resource, Context) :- throw(error(resource_error(Resource), Conte
 %  free, though: see issue #98 for measurements and the primitive design that
 %  would remove it.
 call_with_error_context(Goal, Pair) :-
+    error__require_pair(Pair),
     catch(Goal,
           error(Error, Context),
           ( copy_term(Pair, Element),
             throw(error(Error, [Element|Context])) )).
+
+%  The element must be a pair (issue #99). This cannot go through must_be/2:
+%  must_be/2 declares its own context with call_with_error_context/2, so
+%  checking with must_be/2 here would recurse. The reported context matches
+%  what must_be(pair, _) would have produced.
+error__require_pair(Pair) :-
+    ( var(Pair) -> throw(error(instantiation_error, [predicate-must_be/2]))
+    ; Pair = _-_ -> true
+    ; throw(error(type_error(pair, Pair), [predicate-must_be/2]))
+    ).

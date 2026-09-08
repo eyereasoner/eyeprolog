@@ -33,8 +33,14 @@ function builtinErrorContext(def, goal) {
     // A one-element list, not a bare indicator: error contexts are lists so
     // that library(error)'s call_with_error_context/2 can prepend its own
     // elements and still yield a proper list (issue #98).
+    // A one-element list holding a predicate-F/A pair: contexts are lists so
+    // call_with_error_context/2 can prepend, and elements are pairs so the
+    // convention is uniform with library-supplied elements (issues #98, #99).
     context = compound('.', [
-      compound('/', [atom(goal.name), numberTerm(goal.arity)]),
+      compound('-', [
+        atom('predicate'),
+        compound('/', [atom(goal.name), numberTerm(goal.arity)]),
+      ]),
       emptyList(),
     ]);
     def._errorContextTerm = context;

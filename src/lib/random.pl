@@ -31,7 +31,7 @@ random(Value) :-
 %  Context declared once per predicate instead of at each raise site, so the
 %  raise sites throw with [] and contexts stay proper composable lists.
 random_integer(Lower, Upper, R) :-
-    call_with_error_context(random__check_integer_range(Lower, Upper), random_integer/3),
+    call_with_error_context(random__check_integer_range(Lower, Upper), predicate-random_integer/3),
     Lower < Upper,
     random__current_seed(Seed0),
     random(Seed0, _, Seed),
@@ -39,7 +39,7 @@ random_integer(Lower, Upper, R) :-
     R is Lower + Seed mod (Upper - Lower).
 
 set_random(Seed) :-
-    call_with_error_context(random__set_seed(Seed), set_random/1).
+    call_with_error_context(random__set_seed(Seed), predicate-set_random/1).
 
 random__check_integer_range(Lower, Upper) :-
     ( var(Lower) -> instantiation_error

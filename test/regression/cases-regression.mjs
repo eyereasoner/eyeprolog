@@ -1891,7 +1891,7 @@ c4 ?- call((!;1)).
         assertIncludes(repl.stdout, 'T = ./*. .', 'REPL dotted graphic atom answer');
         assertNotIncludes(repl.stdout, "T = './*.'", 'REPL dotted graphic atom has no spurious quotes');
         assertIncludes(repl.stdout, 'T = ok.', 'REPL following read answer');
-        assertIncludes(repl.stdout, 'error(syntax_error(read_term), [read/1])', 'REPL syntax error');
+        assertIncludes(repl.stdout, 'error(syntax_error(read_term), [predicate-read/1])', 'REPL syntax error');
         assertEqual(repl.stderr, '', 'REPL stderr');
 
         const continuedGraphic = runCli([], {
@@ -2719,8 +2719,8 @@ c4 ?- call((!;1)).
         });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout,
-          '?-    error(type_error(list, [1, [], _A | 2]), [number_chars/2]).\n' +
-          '?-    error(type_error(list, [1, [], _A | 2]), [number_chars/2]).\n' +
+          '?-    error(type_error(list, [1, [], _A | 2]), [predicate-number_chars/2]).\n' +
+          '?-    error(type_error(list, [1, [], _A | 2]), [predicate-number_chars/2]).\n' +
           '?- ',
           'stdout');
         assertEqual(result.stderr, '', 'stderr');
@@ -2734,8 +2734,8 @@ c4 ?- call((!;1)).
         });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout,
-          '?-    error(instantiation_error, [(is)/2]).\n' +
-          '?-    Error = instantiation_error, Imp_def = [(is)/2].\n' +
+          '?-    error(instantiation_error, [predicate-(is)/2]).\n' +
+          '?-    Error = instantiation_error, Imp_def = [predicate-(is)/2].\n' +
           '?- ',
           'stdout');
         assertEqual(result.stderr, '', 'stderr');
@@ -4044,7 +4044,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         const result = runCli([], { input: 'statistics(nonsense, Value).\nhalt.\n' });
         assertEqual(result.status, 0, 'exit status');
         assertIncludes(result.stdout,
-          'error(domain_error(statistics_key, nonsense), [statistics/2]).',
+          'error(domain_error(statistics_key, nonsense), [predicate-statistics/2]).',
           'statistics key error');
         assertEqual(result.stderr, '', 'stderr');
       },
@@ -4473,7 +4473,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
           'answer(C) :- catch(call_with_error_context(atom_length(1.0,_), outer-1), error(_,C), true).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
-        assertIncludes(result.stdout, 'answer([outer - 1, atom_length / 2])', 'composed context');
+        assertIncludes(result.stdout, 'answer([outer - 1, predicate - atom_length / 2])', 'composed context');
       },
     },
     {
@@ -4487,13 +4487,13 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
           'answer(C) :- catch(must_be(integer, a), error(_,C), true).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
-        assertIncludes(result.stdout, 'answer([must_be / 2])', 'must_be context is a list');
+        assertIncludes(result.stdout, 'answer([predicate - must_be / 2])', 'must_be context is a list');
 
         const composed = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
           'answer(C) :- catch(call_with_error_context(must_be(integer, a), outer-1), error(_,C), true).\n';
         const nested = runCli(['-'], { input: composed });
         assertEqual(nested.status, 0, `nested exit status; stderr=${nested.stderr}`);
-        assertIncludes(nested.stdout, 'answer([outer - 1, must_be / 2])', 'composes as a proper list');
+        assertIncludes(nested.stdout, 'answer([outer - 1, predicate - must_be / 2])', 'composes as a proper list');
       },
     },
     {
@@ -4505,9 +4505,31 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
         const repl = runCli([], {
           input: 'must_be(integer, a).\nthrow(foo).\nhalt.\n',
         });
-        assertIncludes(repl.stdout, 'error(type_error(integer, a), [must_be/2])', 'thrown ISO error');
+        assertIncludes(repl.stdout, 'error(type_error(integer, a), [predicate-must_be/2])', 'thrown ISO error');
         assertNotIncludes(repl.stdout, 'throw(error(type_error', 'no throw/1 wrapper on error/2');
         assertIncludes(repl.stdout, 'throw(foo)', 'non-error ball keeps the wrapper');
+      },
+    },
+    {
+      // Issue #99: the context element must be a pair, as in Scryer and
+      // Trealla, and predicate contexts use the predicate-F/A convention.
+      name: 'call_with_error_context/2 requires a pair as its context element',
+      run: () => {
+        const bad = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+          'answer(C) :- catch(call_with_error_context(true, x), error(E,_), C = E).\n';
+        const result = runCli(['-'], { input: bad });
+        assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
+        assertIncludes(result.stdout, 'answer(type_error(pair, x))', 'non-pair element rejected');
+
+        const unbound = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+          'answer(C) :- catch(call_with_error_context(true, _), error(E,_), C = E).\n';
+        const varResult = runCli(['-'], { input: unbound });
+        assertIncludes(varResult.stdout, 'answer(instantiation_error)', 'unbound element rejected');
+
+        const good = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+          'answer(ok) :- call_with_error_context(true, a-b).\n';
+        const okResult = runCli(['-'], { input: good });
+        assertIncludes(okResult.stdout, 'answer(ok)', 'pair element accepted');
       },
     },
     {
@@ -4518,7 +4540,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
           'answer(C) :- catch(call_with_error_context(call_with_error_context(atom_length(1.0,_), inner-1), outer-2), error(_,C), true).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
-        assertIncludes(result.stdout, 'answer([outer - 2, inner - 1, atom_length / 2])', 'nesting order');
+        assertIncludes(result.stdout, 'answer([outer - 2, inner - 1, predicate - atom_length / 2])', 'nesting order');
       },
     },
     {
@@ -4527,7 +4549,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       name: 'call_with_error_context/2 copies the context element',
       run: () => {
         const input = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
-          'answer(ok) :- catch(call_with_error_context(atom_length(1.0,_), ctx(V)), error(_,[ctx(W)|_]), (V == W -> fail ; true)).\n';
+          'answer(ok) :- catch(call_with_error_context(atom_length(1.0,_), ctx-V), error(_,[ctx-W|_]), (V == W -> fail ; true)).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
         assertIncludes(result.stdout, 'answer(ok)', 'context element is a fresh copy');
@@ -5152,7 +5174,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
             goal: 'answer(T)',
             ioOptions: { input: invalidOctal },
           }).stdout,
-          'answer(error(syntax_error(read_term), [read / 1])).\n',
+          'answer(error(syntax_error(read_term), [predicate - read / 1])).\n',
           'read/1 rejects non-octal numeric escape',
         );
       },
