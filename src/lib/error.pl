@@ -21,34 +21,39 @@
 %  raise site: the raise sites throw with [] and this wrapper prepends its
 %  element, so contexts stay proper lists and compose with any enclosing
 %  call_with_error_context/2 (issue #98).
+%  The context is named in exactly one place -- error__must_be_throw/1 -- so no
+%  raise site hands one over (issue #98). It is a throw helper rather than a
+%  call_with_error_context/2 wrapper because wrapping a Prolog goal in catch/3
+%  costs a child Solver on every call, and must_be/2 succeeds almost always.
 must_be(Type, Term) :-
-    call_with_error_context(
-        ( var(Type) -> instantiation_error
-        ; error__must_be(Type, Term)
-        ),
-        predicate-must_be/2).
+    ( var(Type) -> error__must_be_throw(instantiation_error)
+    ; error__must_be(Type, Term)
+    ).
+
+error__must_be_throw(Formal) :-
+    throw(error(Formal, [predicate-must_be/2])).
 
 error__must_be(integer, Term) :- !,
-    ( var(Term) -> instantiation_error
+    ( var(Term) -> error__must_be_throw(instantiation_error)
     ; integer(Term) -> true
-    ; type_error(integer, Term)
+    ; error__must_be_throw(type_error(integer, Term))
     ).
 error__must_be(atom, Term) :- !,
-    ( var(Term) -> instantiation_error
+    ( var(Term) -> error__must_be_throw(instantiation_error)
     ; atom(Term) -> true
-    ; type_error(atom, Term)
+    ; error__must_be_throw(type_error(atom, Term))
     ).
 error__must_be(number, Term) :- !,
-    ( var(Term) -> instantiation_error
+    ( var(Term) -> error__must_be_throw(instantiation_error)
     ; number(Term) -> true
-    ; type_error(number, Term)
+    ; error__must_be_throw(type_error(number, Term))
     ).
 error__must_be(var, Term) :- !,
     ( var(Term) -> true
     ; throw(error(uninstantiation_error(Term), []))
     ).
 error__must_be(ground, Term) :- !,
-    ( ground(Term) -> true ; instantiation_error ).
+    ( ground(Term) -> true ; error__must_be_throw(instantiation_error) ).
 error__must_be(acyclic, Term) :- !,
     ( acyclic_term(Term) -> true ; type_error(acyclic_term, Term) ).
 error__must_be(list, Term) :- !,
@@ -56,23 +61,23 @@ error__must_be(list, Term) :- !,
 error__must_be(list(Type), Term) :- !,
     error__proper_list_of(Term, Type).
 error__must_be(pair, Term) :- !,
-    ( var(Term) -> instantiation_error
+    ( var(Term) -> error__must_be_throw(instantiation_error)
     ; Term = _-_ -> true
-    ; type_error(pair, Term)
+    ; error__must_be_throw(type_error(pair, Term))
     ).
 error__must_be(not_less_than_zero, Term) :- !,
     must_be(integer, Term),
     ( Term >= 0 -> true ; domain_error(not_less_than_zero, Term) ).
 error__must_be(Type, Term) :-
-    ( var(Term) -> instantiation_error
-    ; type_error(Type, Term)
+    ( var(Term) -> error__must_be_throw(instantiation_error)
+    ; error__must_be_throw(type_error(Type, Term))
     ).
 
 error__proper_list([]) :- !.
 error__proper_list([_|Tail]) :- !, error__proper_list(Tail).
 error__proper_list(Term) :-
-    ( var(Term) -> instantiation_error
-    ; type_error(list, Term)
+    ( var(Term) -> error__must_be_throw(instantiation_error)
+    ; error__must_be_throw(type_error(list, Term))
     ).
 
 error__proper_list_of([], _) :- !.
@@ -80,7 +85,7 @@ error__proper_list_of([Head|Tail], Type) :- !,
     must_be(Type, Head),
     error__proper_list_of(Tail, Type).
 error__proper_list_of(Term, _) :-
-    ( var(Term) -> instantiation_error
+    ( var(Term) -> error__must_be_throw(instantiation_error)
     ; type_error(list, Term)
     ).
 

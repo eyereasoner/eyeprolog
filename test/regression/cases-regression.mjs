@@ -4511,6 +4511,24 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       },
     },
     {
+      // must_be/2 is called constantly by library code, so its context must be
+      // supplied without a catch/3 frame: wrapping a Prolog goal in catch/3
+      // costs a child Solver per call and made the suite ~35% slower.
+      name: 'must_be/2 does not pay for a catch frame on success',
+      run: () => {
+        const input = '%% goal: answer(X)\n' +
+          'loop(0) :- !.\nloop(N) :- must_be(integer, N), M is N - 1, loop(M).\n' +
+          'answer(ok) :- loop(20000).\n';
+        const started = Date.now();
+        const result = runCli(['-'], { input });
+        const elapsed = Date.now() - started;
+        assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
+        assertIncludes(result.stdout, 'answer(ok)', 'loop completes');
+        // Generous bound: the catch/3 wrapper made this roughly 2x slower.
+        if (elapsed >= 20000) throw new Error(`20k must_be/2 calls took ${elapsed}ms`);
+      },
+    },
+    {
       // Issue #99: the context element must be a pair, as in Scryer and
       // Trealla, and predicate contexts use the predicate-F/A convention.
       name: 'call_with_error_context/2 requires a pair as its context element',

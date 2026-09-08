@@ -10,7 +10,7 @@
 :- module(random, [maybe/0, maybe/1, maybe/2, random/1, random/3, random_integer/3, set_random/1]).
 
 :- use_module(library(iso_ext), [bb_get/2, bb_put/2]).
-:- use_module(library(error), [call_with_error_context/2, instantiation_error/0, type_error/2]).
+
 
 maybe :-
     random_integer(0, 2, 0).
@@ -31,7 +31,7 @@ random(Value) :-
 %  Context declared once per predicate instead of at each raise site, so the
 %  raise sites throw with [] and contexts stay proper composable lists.
 random_integer(Lower, Upper, R) :-
-    call_with_error_context(random__check_integer_range(Lower, Upper), predicate-random_integer/3),
+    random__check_integer_range(Lower, Upper),
     Lower < Upper,
     random__current_seed(Seed0),
     random(Seed0, _, Seed),
@@ -39,28 +39,31 @@ random_integer(Lower, Upper, R) :-
     R is Lower + Seed mod (Upper - Lower).
 
 set_random(Seed) :-
-    call_with_error_context(random__set_seed(Seed), predicate-set_random/1).
+    random__set_seed(Seed).
+
+random__throw(Formal, Predicate) :-
+    throw(error(Formal, [predicate-Predicate])).
 
 random__check_integer_range(Lower, Upper) :-
-    ( var(Lower) -> instantiation_error
-    ; var(Upper) -> instantiation_error
+    ( var(Lower) -> random__throw(instantiation_error, random_integer/3)
+    ; var(Upper) -> random__throw(instantiation_error, random_integer/3)
     ; integer(Lower) -> true
-    ; type_error(integer, Lower)
+    ; random__throw(type_error(integer, Lower), random_integer/3)
     ),
     ( integer(Upper) -> true
-    ; type_error(integer, Upper)
+    ; random__throw(type_error(integer, Upper), random_integer/3)
     ).
 
 random__set_seed(Seed) :-
-    ( var(Seed) -> instantiation_error
+    ( var(Seed) -> random__throw(instantiation_error, set_random/1)
     ; Seed = seed(S) ->
-        ( var(S) -> instantiation_error
+        ( var(S) -> random__throw(instantiation_error, set_random/1)
         ; integer(S) ->
             random__random_normalize_seed(S, Normalized),
             bb_put('$random_seed', Normalized)
-        ; type_error(integer, S)
+        ; random__throw(type_error(integer, S), set_random/1)
         )
-    ; type_error(random_state, Seed)
+    ; random__throw(type_error(random_state, Seed), set_random/1)
     ).
 
 random__current_seed(Seed) :- bb_get('$random_seed', Seed), !.
