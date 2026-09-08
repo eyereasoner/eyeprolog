@@ -70,6 +70,7 @@ printf 'human(socrates).\nmortal(X) :- human(X).\n' |
 - [Introduction to EyeProlog](https://eyereasoner.github.io/eyeprolog/examples/deck/introduction-to-eyeprolog) — short presentation deck for first-time audiences
 - [Symbiotic Knowledge Graphs](https://eyereasoner.github.io/eyeprolog/examples/deck/symbiotic-knowledge-graphs) — RDF ↔ Prolog heatwave-response demo for human/AI/KG co-evolution
 - [rdf-prolog-roundtrip](https://github.com/eyereasoner/rdf-prolog-roundtrip) — standalone RDF 1.2 ↔ ISO Prolog bridge used by the RDF examples
+- [RDF and Prolog: Two Standards-Based Legs](https://github.com/eyereasoner/rdf-prolog-roundtrip/blob/main/why-rdf-prolog.md) — why W3C RDF and ISO Prolog form the foundation
 - [ISO conformance review](test/conformance/ISO-COMPLIANCE.md) — supported Part 1 profile
 - [Latest Neumerkel conformity](test/conformance/NEUMERKEL-LATEST.md) — tracked result from the current live upstream inventory
 - [Conformance report](conformance-report.md) — generated executable conformance status, local corpus summary, and known deviations
