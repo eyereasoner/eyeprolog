@@ -861,8 +861,16 @@ function formatError(engine, state, error) {
     // Reuse the same conversion as catch/3 so uncaught errors at the top
     // level cannot lose the implementation-defined context or misplace a
     // culprit as the second argument of error/2.
+    // A thrown ball that is already an error/2 envelope is the same thing a
+    // built-in raises, so display it the same way. Wrapping only that case in
+    // throw/1 made one error print two different ways depending on whether the
+    // engine or Prolog code raised it. Other balls keep the wrapper, because
+    // throw(foo) has no error/2 envelope to show.
+    const thrownBall = error.name === 'ThrownTerm' ? engine.deref(error.term, env) : null;
+    const thrownIsErrorEnvelope = thrownBall != null
+      && thrownBall.type === 'compound' && thrownBall.name === 'error' && thrownBall.arity === 2;
     const term = error.name === 'ThrownTerm'
-      ? engine.compound('throw', [error.term])
+      ? (thrownIsErrorEnvelope ? thrownBall : engine.compound('throw', [error.term]))
       : formalErrorTerm(error);
     collectUnboundVariables(engine, term, env, variableNames, () => `_${letterName(generated++)}`);
     return `${engine.formatTermForWrite(term, env, {

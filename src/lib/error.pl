@@ -17,56 +17,62 @@
 
 :- meta_predicate(call_with_error_context(0, +)).
 
+%  The context is supplied once here rather than handed over manually at every
+%  raise site: the raise sites throw with [] and this wrapper prepends its
+%  element, so contexts stay proper lists and compose with any enclosing
+%  call_with_error_context/2 (issue #98).
 must_be(Type, Term) :-
-    ( var(Type) -> instantiation_error(must_be/2)
-    ; error__must_be(Type, Term)
-    ).
+    call_with_error_context(
+        ( var(Type) -> instantiation_error
+        ; error__must_be(Type, Term)
+        ),
+        must_be/2).
 
 error__must_be(integer, Term) :- !,
-    ( var(Term) -> instantiation_error(must_be/2)
+    ( var(Term) -> instantiation_error
     ; integer(Term) -> true
-    ; type_error(integer, Term, must_be/2)
+    ; type_error(integer, Term)
     ).
 error__must_be(atom, Term) :- !,
-    ( var(Term) -> instantiation_error(must_be/2)
+    ( var(Term) -> instantiation_error
     ; atom(Term) -> true
-    ; type_error(atom, Term, must_be/2)
+    ; type_error(atom, Term)
     ).
 error__must_be(number, Term) :- !,
-    ( var(Term) -> instantiation_error(must_be/2)
+    ( var(Term) -> instantiation_error
     ; number(Term) -> true
-    ; type_error(number, Term, must_be/2)
+    ; type_error(number, Term)
     ).
 error__must_be(var, Term) :- !,
     ( var(Term) -> true
-    ; throw(error(uninstantiation_error(Term), must_be/2))
+    ; throw(error(uninstantiation_error(Term), []))
     ).
 error__must_be(ground, Term) :- !,
-    ( ground(Term) -> true ; instantiation_error(must_be/2) ).
+    ( ground(Term) -> true ; instantiation_error ).
 error__must_be(acyclic, Term) :- !,
-    ( acyclic_term(Term) -> true ; type_error(acyclic_term, Term, must_be/2) ).
+    ( acyclic_term(Term) -> true ; type_error(acyclic_term, Term) ).
 error__must_be(list, Term) :- !,
     error__proper_list(Term).
 error__must_be(list(Type), Term) :- !,
     error__proper_list_of(Term, Type).
 error__must_be(pair, Term) :- !,
-    ( var(Term) -> instantiation_error(must_be/2)
+    ( var(Term) -> instantiation_error
     ; Term = _-_ -> true
-    ; type_error(pair, Term, must_be/2)
+    ; type_error(pair, Term)
     ).
 error__must_be(not_less_than_zero, Term) :- !,
     must_be(integer, Term),
-    ( Term >= 0 -> true ; domain_error(not_less_than_zero, Term, must_be/2) ).
+    ( Term >= 0 -> true ; domain_error(not_less_than_zero, Term) ).
 error__must_be(Type, Term) :-
-    ( var(Term) -> instantiation_error(must_be/2)
-    ; type_error(Type, Term, must_be/2)
+    ( var(Term) -> instantiation_error
+    ; type_error(Type, Term)
     ).
 
 error__proper_list([]) :- !.
 error__proper_list([_|Tail]) :- !, error__proper_list(Tail).
 error__proper_list(Term) :-
-    ( var(Term) -> instantiation_error(must_be/2)
-    ; type_error(list, Term, must_be/2)
+    ( var(Term) -> instantiation_error
+    ; type_error(list, Term)
     ).
 
 error__proper_list_of([], _) :- !.
@@ -74,8 +80,8 @@ error__proper_list_of([Head|Tail], Type) :- !,
     must_be(Type, Head),
     error__proper_list_of(Tail, Type).
 error__proper_list_of(Term, _) :-
-    ( var(Term) -> instantiation_error(must_be/2)
-    ; type_error(list, Term, must_be/2)
+    ( var(Term) -> instantiation_error
+    ; type_error(list, Term)
     ).
 
 can_be(Type, Term) :-
@@ -122,9 +128,9 @@ resource_error(Resource) :- throw(error(resource_error(Resource), [])).
 resource_error(Resource, Context) :- throw(error(resource_error(Resource), Context)).
 
 %  Context elements are assembled only when an error actually propagates, so
-%  the success path costs nothing. The added element is copied so that
-%  variables in it are not shared with the goal's bindings, which would
-%  otherwise be undone as the error unwinds.
+%  the prepend costs nothing on success. The enclosing catch/3 frame is not
+%  free, though: see issue #98 for measurements and the primitive design that
+%  would remove it.
 call_with_error_context(Goal, Pair) :-
     catch(Goal,
           error(Error, Context),

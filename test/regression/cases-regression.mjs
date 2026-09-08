@@ -4477,6 +4477,40 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       },
     },
     {
+      // Issue #98: library predicates declare their context once with
+      // call_with_error_context/2 rather than handing it over manually at each
+      // raise site. Manual handover produced a bare, non-list context, so it
+      // composed into an improper list.
+      name: 'library predicates yield composable contexts, not manual ones',
+      run: () => {
+        const input = ':- use_module(library(error)).\n:- use_module(library(random)).\n%% goal: answer(X)\n' +
+          'answer(C) :- catch(must_be(integer, a), error(_,C), true).\n';
+        const result = runCli(['-'], { input });
+        assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
+        assertIncludes(result.stdout, 'answer([must_be / 2])', 'must_be context is a list');
+
+        const composed = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+          'answer(C) :- catch(call_with_error_context(must_be(integer, a), outer-1), error(_,C), true).\n';
+        const nested = runCli(['-'], { input: composed });
+        assertEqual(nested.status, 0, `nested exit status; stderr=${nested.stderr}`);
+        assertIncludes(nested.stdout, 'answer([outer - 1, must_be / 2])', 'composes as a proper list');
+      },
+    },
+    {
+      // An error/2 ball raised by Prolog throw/1 is the same thing a built-in
+      // raises, so the top level must display it the same way. Only balls
+      // without an error/2 envelope keep the throw/1 wrapper.
+      name: 'uncaught error/2 balls display without a throw/1 wrapper',
+      run: () => {
+        const repl = runCli([], {
+          input: 'must_be(integer, a).\nthrow(foo).\nhalt.\n',
+        });
+        assertIncludes(repl.stdout, 'error(type_error(integer, a), [must_be/2])', 'thrown ISO error');
+        assertNotIncludes(repl.stdout, 'throw(error(type_error', 'no throw/1 wrapper on error/2');
+        assertIncludes(repl.stdout, 'throw(foo)', 'non-error ball keeps the wrapper');
+      },
+    },
+    {
       // Nesting prepends outermost-first and keeps the raising predicate last.
       name: 'nested call_with_error_context/2 accumulates outermost first',
       run: () => {

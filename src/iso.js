@@ -3219,6 +3219,11 @@ function* catchSolutions({ solver, goal, env }, state) {
     if (child != null) solver.absorbStatsFrom(child);
   }
 }
+// library(error) call_with_error_context/2, as a primitive rather than a
+// Prolog catch/3 wrapper (issue #98). Context elements are assembled only while
+// an error unwinds, so the success path pays for neither a clause resolution
+// nor a Prolog-level catch frame. The element is copied as it is added, so
+// variables in it cannot alias bindings that the unwinding undoes.
 function* throwBuiltin({ goal, env }) {
   const ball = deref(goal.args[0], env);
   if (ball.type === VAR) throw new PrologError('instantiation_error');
