@@ -3091,7 +3091,11 @@ function* phraseSolutions({ solver, goal, env }, state) {
     solver.trimInnerTableScope('phrase');
   }
 }
-const defaultErrorContext = atom('eyeprolog');
+// ISO 7.12.2 leaves this implementation defined. EyeProlog uses a list of
+// context elements so that contexts compose: the raising built-in contributes
+// its predicate indicator and each enclosing call_with_error_context/2
+// prepends its own element, always yielding a proper list (issue #98).
+const defaultErrorContext = emptyList();
 
 function parseFormalErrorTerm(text) {
   const open = text.indexOf('(');

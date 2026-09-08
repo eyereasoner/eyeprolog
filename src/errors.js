@@ -2,7 +2,7 @@
 // Keep these independent of the ISO builtin registry so syntax, DCG, program,
 // and solver layers can report Prolog errors without importing the whole ISO
 // implementation (and without creating semantic-layer import cycles).
-import { atom, compound, numberTerm, termToString } from './term.js';
+import { atom, compound, emptyList, numberTerm, termToString } from './term.js';
 
 export class PrologError extends Error {
   constructor(formal, culprit = null) {
@@ -30,7 +30,13 @@ export class HaltSignal extends Error {
 function builtinErrorContext(def, goal) {
   let context = def._errorContextTerm;
   if (context === undefined) {
-    context = compound('/', [atom(goal.name), numberTerm(goal.arity)]);
+    // A one-element list, not a bare indicator: error contexts are lists so
+    // that library(error)'s call_with_error_context/2 can prepend its own
+    // elements and still yield a proper list (issue #98).
+    context = compound('.', [
+      compound('/', [atom(goal.name), numberTerm(goal.arity)]),
+      emptyList(),
+    ]);
     def._errorContextTerm = context;
   }
   return context;

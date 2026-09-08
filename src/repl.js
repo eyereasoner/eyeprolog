@@ -867,6 +867,10 @@ function formatError(engine, state, error) {
     collectUnboundVariables(engine, term, env, variableNames, () => `_${letterName(generated++)}`);
     return `${engine.formatTermForWrite(term, env, {
       quoted: true,
+      // Match the spacing successful answers use: operator layout only where
+      // ISO 6.3.4/6.4 needs it to keep the text readable back as the same
+      // term, so contexts print as [outer-1, atom_length/2].
+      minimalOperatorSpacing: true,
       operators: [...state.program.operators.values()],
       variableNames,
       doubleBar: !state.strictIso,

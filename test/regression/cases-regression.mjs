@@ -1475,7 +1475,7 @@ c4 ?- call((!;1)).
         });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout,
-          '?-    error(type_error(callable, (write(3), 3)), eyeprolog).\n' +
+          '?-    error(type_error(callable, (write(3),3)), []).\n' +
           '?- ',
           'fully instantiated call/1 culprit');
         assertEqual(result.stderr, '', 'stderr');
@@ -1891,7 +1891,7 @@ c4 ?- call((!;1)).
         assertIncludes(repl.stdout, 'T = ./*. .', 'REPL dotted graphic atom answer');
         assertNotIncludes(repl.stdout, "T = './*.'", 'REPL dotted graphic atom has no spurious quotes');
         assertIncludes(repl.stdout, 'T = ok.', 'REPL following read answer');
-        assertIncludes(repl.stdout, 'error(syntax_error(read_term), read / 1)', 'REPL syntax error');
+        assertIncludes(repl.stdout, 'error(syntax_error(read_term), [read/1])', 'REPL syntax error');
         assertEqual(repl.stderr, '', 'REPL stderr');
 
         const continuedGraphic = runCli([], {
@@ -2719,8 +2719,8 @@ c4 ?- call((!;1)).
         });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout,
-          '?-    error(type_error(list, [1, [], _A | 2]), number_chars / 2).\n' +
-          '?-    error(type_error(list, [1, [], _A | 2]), number_chars / 2).\n' +
+          '?-    error(type_error(list, [1, [], _A | 2]), [number_chars/2]).\n' +
+          '?-    error(type_error(list, [1, [], _A | 2]), [number_chars/2]).\n' +
           '?- ',
           'stdout');
         assertEqual(result.stderr, '', 'stderr');
@@ -2734,8 +2734,8 @@ c4 ?- call((!;1)).
         });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout,
-          '?-    error(instantiation_error, (is) / 2).\n' +
-          '?-    Error = instantiation_error, Imp_def = (is)/2.\n' +
+          '?-    error(instantiation_error, [(is)/2]).\n' +
+          '?-    Error = instantiation_error, Imp_def = [(is)/2].\n' +
           '?- ',
           'stdout');
         assertEqual(result.stderr, '', 'stderr');
@@ -3710,7 +3710,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
           '?-    V = fail.\n' +
           '?-    true.\n' +
           '?-    true.\n' +
-          '?-    error(existence_error(procedure, missing_after_consult / 0), eyeprolog).\n' +
+          '?-    error(existence_error(procedure, missing_after_consult/0), []).\n' +
           '?- ',
           'stdout');
         assertEqual(result.stderr, '', 'stderr');
@@ -4044,7 +4044,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         const result = runCli([], { input: 'statistics(nonsense, Value).\nhalt.\n' });
         assertEqual(result.status, 0, 'exit status');
         assertIncludes(result.stdout,
-          'error(domain_error(statistics_key, nonsense), statistics / 2).',
+          'error(domain_error(statistics_key, nonsense), [statistics/2]).',
           'statistics key error');
         assertEqual(result.stderr, '', 'stderr');
       },
@@ -4461,6 +4461,42 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
         assertEqual(result.status, 1, 'exit status');
         assertIncludes(result.stderr, 'parse line', 'parse error');
         assertNotIncludes(result.stderr, 'unknown directive', 'not a directive message');
+      },
+    },
+    {
+      // Issue #98: error contexts are lists of context elements, so a built-in
+      // error composes with library(error)'s call_with_error_context/2 into a
+      // proper list instead of the improper [Element|eyeprolog] it used to be.
+      name: 'error contexts compose into proper lists (issue #98)',
+      run: () => {
+        const input = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+          'answer(C) :- catch(call_with_error_context(atom_length(1.0,_), outer-1), error(_,C), true).\n';
+        const result = runCli(['-'], { input });
+        assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
+        assertIncludes(result.stdout, 'answer([outer - 1, atom_length / 2])', 'composed context');
+      },
+    },
+    {
+      // Nesting prepends outermost-first and keeps the raising predicate last.
+      name: 'nested call_with_error_context/2 accumulates outermost first',
+      run: () => {
+        const input = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+          'answer(C) :- catch(call_with_error_context(call_with_error_context(atom_length(1.0,_), inner-1), outer-2), error(_,C), true).\n';
+        const result = runCli(['-'], { input });
+        assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
+        assertIncludes(result.stdout, 'answer([outer - 2, inner - 1, atom_length / 2])', 'nesting order');
+      },
+    },
+    {
+      // UWN asked for copy_term/2 semantics on the added element so that
+      // variables in it are not shared with bindings undone during unwinding.
+      name: 'call_with_error_context/2 copies the context element',
+      run: () => {
+        const input = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+          'answer(ok) :- catch(call_with_error_context(atom_length(1.0,_), ctx(V)), error(_,[ctx(W)|_]), (V == W -> fail ; true)).\n';
+        const result = runCli(['-'], { input });
+        assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
+        assertIncludes(result.stdout, 'answer(ok)', 'context element is a fresh copy');
       },
     },
     {
@@ -5082,7 +5118,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
             goal: 'answer(T)',
             ioOptions: { input: invalidOctal },
           }).stdout,
-          'answer(error(syntax_error(read_term), read / 1)).\n',
+          'answer(error(syntax_error(read_term), [read / 1])).\n',
           'read/1 rejects non-octal numeric escape',
         );
       },

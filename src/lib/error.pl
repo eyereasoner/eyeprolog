@@ -121,5 +121,12 @@ representation_error(Flag) :- throw(error(representation_error(Flag), [])).
 resource_error(Resource) :- throw(error(resource_error(Resource), [])).
 resource_error(Resource, Context) :- throw(error(resource_error(Resource), Context)).
 
+%  Context elements are assembled only when an error actually propagates, so
+%  the success path costs nothing. The added element is copied so that
+%  variables in it are not shared with the goal's bindings, which would
+%  otherwise be undone as the error unwinds.
 call_with_error_context(Goal, Pair) :-
-    catch(Goal, error(Error, Context), throw(error(Error, [Pair|Context]))).
+    catch(Goal,
+          error(Error, Context),
+          ( copy_term(Pair, Element),
+            throw(error(Error, [Element|Context])) )).

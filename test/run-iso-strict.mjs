@@ -649,7 +649,7 @@ export function runIsoStrict(reporter = new TestReporter()) {
           'close(tmp_in)',
           'current_input(C)',
           'stream_property(C,alias(user_input))',
-          'catch(set_input(tmp_in),error(existence_error(stream,tmp_in),set_input/1),true)',
+          'catch(set_input(tmp_in),error(existence_error(stream,tmp_in),[set_input/1]),true)',
         ].join(','),
       }).stats.completed_goal_lists, 1, 'stream-term, alias lifetime, target/current input, and close fallback');
 
@@ -856,14 +856,14 @@ export function runIsoStrict(reporter = new TestReporter()) {
 
   reporter.test('closes the ISO 7.12 processor error envelope and classification rows', () => {
     const caught = [
-      "catch(atom_length(X,N),error(instantiation_error,atom_length/2),true)",
-      "catch(atom_length(1,N),error(type_error(atom,1),atom_length/2),true)",
-      "catch(op(1300,xfx,foo),error(domain_error(operator_priority,1300),op/3),true)",
-      "catch(call(no_such_predicate),error(existence_error(procedure,no_such_predicate/0),eyeprolog),true)",
-      "catch(abolish(atom/1),error(permission_error(modify,static_procedure,atom/1),abolish/1),true)",
-      "catch(char_code(C,1114112),error(representation_error(character_code),char_code/2),true)",
-      "catch(X is 1/0,error(evaluation_error(zero_divisor),(is)/2),true)",
-      "catch(X is 1<<4294967296,error(resource_error(memory),(is)/2),true)",
+      "catch(atom_length(X,N),error(instantiation_error,[atom_length/2]),true)",
+      "catch(atom_length(1,N),error(type_error(atom,1),[atom_length/2]),true)",
+      "catch(op(1300,xfx,foo),error(domain_error(operator_priority,1300),[op/3]),true)",
+      "catch(call(no_such_predicate),error(existence_error(procedure,no_such_predicate/0),[]),true)",
+      "catch(abolish(atom/1),error(permission_error(modify,static_procedure,atom/1),[abolish/1]),true)",
+      "catch(char_code(C,1114112),error(representation_error(character_code),[char_code/2]),true)",
+      "catch(X is 1/0,error(evaluation_error(zero_divisor),[(is)/2]),true)",
+      "catch(X is 1<<4294967296,error(resource_error(memory),[(is)/2]),true)",
     ];
     for (const goal of caught) {
       equal(run('', { isoStrict: true, goal }).stats.completed_goal_lists, 1, goal);
@@ -871,14 +871,14 @@ export function runIsoStrict(reporter = new TestReporter()) {
 
     equal(run('', {
       isoStrict: true,
-      goal: "catch(read_term(T,[]),error(syntax_error(read_term),read_term/2),true)",
+      goal: "catch(read_term(T,[]),error(syntax_error(read_term),[read_term/2]),true)",
       ioOptions: { input: "'unterminated." },
     }).stats.completed_goal_lists, 1, 'syntax error uses error/2 envelope and implementation-defined context');
 
     const systemSolver = new Solver(Program.parse('', { isoStrict: true }), { isoStrict: true });
     systemSolver.io.flush = () => { throw new Error('simulated host I/O failure'); };
     equal([...systemSolver.solve([
-      parseGoalText('catch(flush_output(user_output),error(system_error,flush_output/1),true)', { isoStrict: true }),
+      parseGoalText('catch(flush_output(user_output),error(system_error,[flush_output/1]),true)', { isoStrict: true }),
     ], new Env(), 0)].length, 1, 'system error uses error/2 envelope and implementation-defined context');
 
     // ISO 7.12 deliberately leaves the choice implementation-dependent when
