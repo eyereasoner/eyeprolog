@@ -178,7 +178,7 @@ export const eyePrologPortableLibraryIndicators = Object.freeze([
   ',/3', ';/3', '=/3', 'cond_t/3', 'dif/3', 'if_/3', 'memberd_t/3',
   'tfilter/3', 'tmember/2', 'tmember_t/3', 'tpartition/4',
   'atom_si/1', 'integer_si/1', 'atomic_si/1', 'list_si/1', 'character_si/1',
-  'term_si/1', 'chars_si/1', 'dif_si/2', 'not_si/1', 'when_si/2',
+  'term_si/1', 'chars_si/1', 'compare_si/3', 'dif_si/2', 'not_si/1', 'when_si/2',
   'matches/3', 'split/3', 'replace/4', 'lowercase/2', 'uppercase/2', 'trim/2',
   'number_string/2', 'atom_string/2', 'term_string/2', 'string_concat/3',
   'contains/2', 'matches/2', 'join/3', 'substring/4',

@@ -4529,6 +4529,66 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       },
     },
     {
+      // The pair check runs on every call_with_error_context/2 call, so it is
+      // written as indexed clauses. An if-then-else costs several times what
+      // clause selection does, and this guard used to dominate the wrapper.
+      name: 'call_with_error_context/2 pair check stays off the hot path',
+      run: () => {
+        const input = '%% goal: answer(X)\np(X) :- integer(X).\n' +
+          'loop(0) :- !.\nloop(N) :- call_with_error_context(p(N), c-1), M is N - 1, loop(M).\n' +
+          'answer(ok) :- loop(20000).\n';
+        const started = Date.now();
+        const result = runCli(['-'], { input });
+        const elapsed = Date.now() - started;
+        assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
+        assertIncludes(result.stdout, 'answer(ok)', 'loop completes');
+        if (elapsed >= 20000) throw new Error(`20k wrapped calls took ${elapsed}ms`);
+      },
+    },
+    {
+      // Issue #100: compare_si/3 decides the standard order only when no
+      // instantiation could change it, and raises instantiation_error as
+      // rarely as possible.
+      name: 'compare_si/3 decides the order only when instantiation cannot change it',
+      run: () => {
+        const decided = [
+          ['compare_si(O, 1, a)', '<'],
+          ['compare_si(O, X, X)', '='],
+          ['compare_si(O, f(X), g(Y))', '<'],
+          ['compare_si(O, f(X,a), f(X,b))', '<'],
+          ['compare_si(O, f(a,b), f(a,b,c))', '<'],
+          ['compare_si(O, [a|X], [b|Y])', '<'],
+          ['compare_si(O, 1, 1.0)', '>'],
+        ];
+        for (const [goal, order] of decided) {
+          const input = ':- use_module(library(si)).\n%% goal: answer(X)\n' +
+            `answer(O) :- ${goal}.\n`;
+          const result = runCli(['-'], { input });
+          assertEqual(result.status, 0, `${goal} status; stderr=${result.stderr}`);
+          assertIncludes(result.stdout, `answer(${order})`, `${goal} order`);
+        }
+        for (const goal of ['compare_si(O, X, 1)', 'compare_si(O, f(a), f(Y))',
+          'compare_si(O, X, Y)', 'compare_si(O, [a|X], [a|Y])']) {
+          const input = ':- use_module(library(si)).\n%% goal: answer(X)\n' +
+            `answer(E) :- catch(${goal}, error(E,_), true).\n`;
+          const result = runCli(['-'], { input });
+          assertEqual(result.status, 0, `${goal} status; stderr=${result.stderr}`);
+          assertIncludes(result.stdout, 'answer(instantiation_error)', `${goal} is undecided`);
+        }
+      },
+    },
+    {
+      // compare_si/3 must not bind anything while deciding.
+      name: 'compare_si/3 leaves its arguments unbound',
+      run: () => {
+        const input = ':- use_module(library(si)).\n%% goal: answer(X)\n' +
+          'answer(ok) :- X = f(Y), compare_si(<, X, g(1)), var(Y).\n';
+        const result = runCli(['-'], { input });
+        assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
+        assertIncludes(result.stdout, 'answer(ok)', 'no bindings made');
+      },
+    },
+    {
       // Issue #99: the context element must be a pair, as in Scryer and
       // Trealla, and predicate contexts use the predicate-F/A convention.
       name: 'call_with_error_context/2 requires a pair as its context element',

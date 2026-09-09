@@ -61,15 +61,15 @@ export function documentationSyncCases() {
           encoding: 'utf8',
         });
         assertEqual(result.status, 0, 'exit status');
-        assertIncludes(result.stdout, 'predicate reference is up to date (532 predicates)', 'stdout');
+        assertIncludes(result.stdout, 'predicate reference is up to date (533 predicates)', 'stdout');
         assertEqual(result.stderr, '', 'stderr');
 
         const book = fs.readFileSync(path.join(packageRoot, 'the-art-of-eyeprolog.md'), 'utf8');
         const section = between(book, '<!-- eyeprolog-predicate-reference:start -->', '<!-- eyeprolog-predicate-reference:end -->');
         assertEqual(section.split('\n').some((line) => line.trimStart().startsWith('|')), false, 'predicate reference avoids wide table markup');
-        assertEqual((section.match(/^- \*\*`/gm) ?? []).length, 532, 'one reference entry per predicate');
-        assertEqual((section.match(/<a id="predicate-reference-\d{4}"><\/a>/g) ?? []).length, 532, 'one explicit anchor per predicate');
-        assertEqual((section.match(/\]\(#predicate-reference-\d{4}\)/g) ?? []).length, 532, 'one direct index link per predicate');
+        assertEqual((section.match(/^- \*\*`/gm) ?? []).length, 533, 'one reference entry per predicate');
+        assertEqual((section.match(/<a id="predicate-reference-\d{4}"><\/a>/g) ?? []).length, 533, 'one explicit anchor per predicate');
+        assertEqual((section.match(/\]\(#predicate-reference-\d{4}\)/g) ?? []).length, 533, 'one direct index link per predicate');
         assertNotIncludes(section, '[Symbols](#predicate-reference-symbols)', 'predicate index does not rely on renderer-generated group anchors');
 
         const chapter = between(book, '## 39. Predicate reference', '## 40. Running EyeProlog: command line and corpus');

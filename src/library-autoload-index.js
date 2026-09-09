@@ -90,6 +90,7 @@ export const eyePrologLibraryAutoload = Object.freeze({
   "chars_utf8bytes/2": "charsio",
   "circuit/1": "clpz",
   "clpz_t/2": "clpz",
+  "compare_si/3": "si",
   "complement/2": "ugraphs",
   "compose/3": "ugraphs",
   "cond_t/3": "reif",

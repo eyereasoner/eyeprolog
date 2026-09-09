@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "surface_count": 532,
+  "surface_count": 533,
   "generated_from": {
     "core_registry": "src/iso.js createDefaultRegistry()",
     "library_index": "src/library-autoload-index.js"
@@ -4692,6 +4692,15 @@
       "call": "when_si(+Condition,+Goal)",
       "solutions": "delayed",
       "contract": "Runs Goal once Condition is sufficiently instantiated according to the SI condition language.",
+      "source": "src/lib/si.pl",
+      "profile": "library"
+    },
+    {
+      "indicator": "compare_si/3",
+      "origin": "library(si)",
+      "call": "compare_si(?Order,?A,?B)",
+      "solutions": "semidet",
+      "contract": "Unifies Order with the standard order of terms between A and B when that order holds for every instance of A and B, and raises an instantiation_error when further instantiation could change it. Arguments are never bound by the comparison.",
       "source": "src/lib/si.pl",
       "profile": "library"
     },

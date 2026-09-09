@@ -11,7 +11,7 @@ const bookFile = path.join(root, 'the-art-of-eyeprolog.md');
 const START = '<!-- eyeprolog-predicate-reference:start -->';
 const END = '<!-- eyeprolog-predicate-reference:end -->';
 const CHAPTER_END = '\n## 40. Running EyeProlog: command line and corpus';
-const EXPECTED_COUNT = 532;
+const EXPECTED_COUNT = 533;
 const allowedSolutions = new Set([
   'det', 'semidet', 'multi', 'nondet', 'delayed', 'meta', 'mode-dependent',
   'declaration', 'terminal',

@@ -143,12 +143,15 @@ call_with_error_context(Goal, Pair) :-
           ( copy_term(Pair, Element),
             throw(error(Error, [Element|Context])) )).
 
-%  The element must be a pair (issue #99). This cannot go through must_be/2:
-%  must_be/2 declares its own context with call_with_error_context/2, so
-%  checking with must_be/2 here would recurse. The reported context matches
-%  what must_be(pair, _) would have produced.
+%  The element must be a pair (issue #99). The test is inlined rather than
+%  delegated to must_be(pair, _) so that the wrapper stays independent of the
+%  rest of this module. The reported context matches what must_be(pair, _)
+%  produces.
+%  Written as indexed clauses rather than an if-then-else: this runs on every
+%  call_with_error_context/2 call, and an if-then-else costs several times what
+%  first-argument clause selection does.
+error__require_pair(Pair) :- var(Pair), !,
+    throw(error(instantiation_error, [predicate-must_be/2])).
+error__require_pair(_-_) :- !.
 error__require_pair(Pair) :-
-    ( var(Pair) -> throw(error(instantiation_error, [predicate-must_be/2]))
-    ; Pair = _-_ -> true
-    ; throw(error(type_error(pair, Pair), [predicate-must_be/2]))
-    ).
+    throw(error(type_error(pair, Pair), [predicate-must_be/2])).

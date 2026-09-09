@@ -69,15 +69,15 @@ printf 'human(socrates).\nmortal(X) :- human(X).\n' |
 - [Example decks](examples/deck/README.md) — explainable RDF/Prolog scenarios with reproducible roundtrips
 - [Introduction to EyeProlog](https://eyereasoner.github.io/eyeprolog/examples/deck/introduction-to-eyeprolog) — short presentation deck for first-time audiences
 - [Symbiotic Knowledge Graphs](https://eyereasoner.github.io/eyeprolog/examples/deck/symbiotic-knowledge-graphs) — RDF ↔ Prolog heatwave-response demo for human/AI/KG co-evolution
-- [rdf-prolog-roundtrip](https://github.com/eyereasoner/rdf-prolog-roundtrip) — standalone RDF 1.2 ↔ ISO Prolog bridge used by the RDF examples
-- [RDF and Prolog: Two Standards-Based Legs](https://github.com/eyereasoner/rdf-prolog-roundtrip/blob/main/why-rdf-prolog.md) — why W3C RDF and ISO Prolog form the foundation
+- [rdf-prolog-interchange](https://github.com/eyereasoner/rdf-prolog-interchange) — standalone RDF 1.2 ↔ ISO Prolog bridge used by the RDF examples
+- [RDF and Prolog: Two Standards-Based Legs](https://github.com/eyereasoner/rdf-prolog-interchange/blob/main/why-rdf-prolog.md) — why W3C RDF and ISO Prolog form the foundation
 - [ISO conformance review](test/conformance/ISO-COMPLIANCE.md) — supported Part 1 profile
 - [Latest Neumerkel conformity](test/conformance/NEUMERKEL-LATEST.md) — tracked result from the current live upstream inventory
 - [Conformance report](conformance-report.md) — generated executable conformance status, local corpus summary, and known deviations
 - [OpenRuleBench](openrulebench/README.md) — portable benchmark profile
 ## RDF, Prolog, and symbiotic knowledge graphs
 
-EyeProlog can sit behind an RDF knowledge graph without inventing a private graph representation. [`rdf-prolog-roundtrip`](https://github.com/eyereasoner/rdf-prolog-roundtrip) converts RDF 1.2 datasets to ordinary `rdf(Subject, Predicate, Object, Graph)` facts, EyeProlog applies portable rules, and ground `rdf/4` results can be converted back to RDF.
+EyeProlog can sit behind an RDF knowledge graph without inventing a private graph representation. [`rdf-prolog-interchange`](https://github.com/eyereasoner/rdf-prolog-interchange) converts RDF 1.2 datasets to ordinary `rdf(Subject, Predicate, Object, Graph)` facts, EyeProlog applies portable rules, and ground `rdf/4` results can be converted back to RDF.
 
 The checked [Symbiotic Knowledge Graphs example](examples/symbiotic-knowledge-graph.pl) uses named graphs and RDF 1.2 triple terms to distinguish trusted knowledge, AI-proposed statements, and human review. Its [wide-audience companion](https://eyereasoner.github.io/eyeprolog/examples/deck/symbiotic-knowledge-graphs) explains why this is a useful present-day software model for human/AI/KG co-evolution: RDF supplies shared semantic memory, Prolog supplies explicit deliberation, AI supplies new hypotheses, and people remain participants in meaning and judgment.
 

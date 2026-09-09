@@ -1331,7 +1331,7 @@ answer(ok) :-
         assertEqual(registry.get('setup_call_cleanup', 3), null, 'setup_call_cleanup/3 is absent from the ISO registry');
         assertEqual(Boolean(library.get('setup_call_cleanup', 3)), true, 'setup_call_cleanup/3 is an EyeProlog cleanup control');
         assertEqual(registeredNativeEyePrologLibraryNames().length, 122, 'public host-supported EyeProlog library count');
-        assertEqual(eyePrologPortableLibraryIndicators.length, 281, 'portable Prolog library count');
+        assertEqual(eyePrologPortableLibraryIndicators.length, 282, 'portable Prolog library count');
         assertEqual(eyePrologInteropLibraryIndicators.length, 221, 'cross-implementation interop profile count');
         assertEqual(eyePrologInteropLibraryModules.length, 27, 'common explicit library module profile count');
         assertEqual(eyePrologInteropAutoload['member/2'], 'lists', 'member/2 canonical autoload');
@@ -1349,7 +1349,7 @@ answer(ok) :-
         assertEqual(eyePrologNativeLibraryIndicators.length, 122, 'host-supported library count');
         assertEqual(eyePrologNativeLibraryIndicators.includes('call_nth/2'), true, 'call_nth/2 remains classified as host-supported');
         assertEqual(eyePrologNativeLibraryIndicators.includes('random/1'), true, 'stateful random/1 is classified as host-supported');
-        assertEqual(eyePrologLibraryIndicators.length, 403, 'complete non-ISO EyeProlog library surface');
+        assertEqual(eyePrologLibraryIndicators.length, 404, 'complete non-ISO EyeProlog library surface');
         assertEqual(registry.get('eyeprolog__call_nth', 2), null, 'private call_nth adapter is absent from ISO registry');
         assertEqual(Boolean(library.get('eyeprolog__call_nth', 2)), true, 'private call_nth adapter is registered for EyeProlog');
         assertEqual(Boolean(library.get('eyeprolog__call_residue_vars', 2)), true, 'private call_residue_vars adapter is registered for EyeProlog');

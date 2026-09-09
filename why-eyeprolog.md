@@ -71,7 +71,7 @@ ISO/IEC 13211 family of international standards, while RDF belongs to the W3C
 standards ecosystem.
 
 EyeProlog and
-[`rdf-prolog-roundtrip`](https://github.com/eyereasoner/rdf-prolog-roundtrip)
+[`rdf-prolog-interchange`](https://github.com/eyereasoner/rdf-prolog-interchange)
 connect those two standardized worlds through a deliberately simple pipeline:
 
 ```text

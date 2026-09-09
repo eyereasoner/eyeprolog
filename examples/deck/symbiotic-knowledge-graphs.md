@@ -10,7 +10,7 @@ The demonstration does not claim that EyeProlog is a brain-computer interface. I
 
 The architecture uses two small projects with deliberately separate jobs:
 
-- [`rdf-prolog-roundtrip`](https://github.com/eyereasoner/rdf-prolog-roundtrip) moves RDF 1.2 datasets to and from ordinary `rdf/4` Prolog facts. It contains no Prolog solver.
+- [`rdf-prolog-interchange`](https://github.com/eyereasoner/rdf-prolog-interchange) moves RDF 1.2 datasets to and from ordinary `rdf/4` Prolog facts. It contains no Prolog solver.
 - [EyeProlog](https://github.com/eyereasoner/eyeprolog) reasons over those facts with explicit ISO Prolog rules.
 
 That separation is the central design choice. **RDF remains the shared interchange and publication layer; Prolog becomes the transparent reasoning layer.**
@@ -105,7 +105,7 @@ p2 confidencePercent 93
 
 The embedded triple is a **statement being talked about**. It is not yet an asserted operational fact.
 
-After `rdf-prolog-roundtrip`, the same structure is an ordinary Prolog term:
+After `rdf-prolog-interchange`, the same structure is an ordinary Prolog term:
 
 ```prolog
 rdf(
@@ -246,10 +246,10 @@ That closeness makes it easier for a person to enter the machine's reasoning loo
 
 Without RDF, the Prolog example could be dismissed as a hand-written toy knowledge base.
 
-With `rdf-prolog-roundtrip`, the roles are clearer:
+With `rdf-prolog-interchange`, the roles are clearer:
 
 - RDF provides Web identifiers, graph boundaries, literals, RDF 1.2 triple terms, and interoperable publication;
-- `rdf-prolog-roundtrip` preserves those structures as ordinary ISO Prolog terms;
+- `rdf-prolog-interchange` preserves those structures as ordinary ISO Prolog terms;
 - EyeProlog applies explicit rules and explores alternatives;
 - materialized conclusions return to RDF.
 
@@ -279,7 +279,7 @@ A direct neural interface would change the input/output channel. It would not re
 
 ## Reproduce the roundtrip
 
-Assuming `rdf-prolog-roundtrip` and EyeProlog are available on `PATH`:
+Assuming `rdf-prolog-interchange` and EyeProlog are available on `PATH`:
 
 ```sh
 rdf-to-prolog \
@@ -327,5 +327,5 @@ The deepest reason Prolog fits this vision is not nostalgia or syntax. It is tha
 ## References
 
 - Ruben Taelman, [*Symbiotic Knowledge Graphs: A Vision for Semantic Brain-Computer Interfaces*](https://rubensworks.github.io/article-iswc2026-vision-symbiotic-knowledge-graphs/).
-- [`eyereasoner/rdf-prolog-roundtrip`](https://github.com/eyereasoner/rdf-prolog-roundtrip) — standalone RDF 1.2 ↔ ISO Prolog roundtripping toolkit.
+- [`eyereasoner/rdf-prolog-interchange`](https://github.com/eyereasoner/rdf-prolog-interchange) — standalone RDF 1.2 ↔ ISO Prolog roundtripping toolkit.
 - [`eyereasoner/eyeprolog`](https://github.com/eyereasoner/eyeprolog) — ISO Prolog reasoning and proof engine.

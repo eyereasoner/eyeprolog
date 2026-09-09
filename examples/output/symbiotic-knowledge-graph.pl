@@ -29,10 +29,10 @@ knowledge_exchange(machine_to_human, recommendation(after_review, riverside, ope
 knowledge_exchange(rdf_to_prolog, ordinary_rdf4_facts).
 knowledge_exchange(prolog_to_rdf, materialized_ground_rdf4).
 pipeline_step(1, 'RDF 1.2 N-Quads: named graphs keep source and governance boundaries explicit').
-pipeline_step(2, 'rdf-prolog-roundtrip: RDF becomes ordinary rdf/4 Prolog facts without a solver').
+pipeline_step(2, 'rdf-prolog-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver').
 pipeline_step(3, 'EyeProlog: ISO Prolog rules validate candidates, apply review policy, and derive actions').
 pipeline_step(4, 'EyeProlog: result_rdf/4 materializes accepted knowledge and decisions as ground RDF-shaped facts').
-pipeline_step(5, 'rdf-prolog-roundtrip: ground rdf/4 facts become RDF again for publication or federation').
+pipeline_step(5, 'rdf-prolog-interchange: ground rdf/4 facts become RDF again for publication or federation').
 cognitive_parallel(fact, remembered_assertion).
 cognitive_parallel(rule, reusable_generalization).
 cognitive_parallel(query, explicit_question).
