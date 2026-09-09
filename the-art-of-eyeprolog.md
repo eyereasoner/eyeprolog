@@ -10794,8 +10794,10 @@ The host decides whether to reject, report, or inspect those answers.
 definite program; equivalently, the fixed point obtained by repeatedly adding
 supported ground consequences.
 
-**List.** Either `[]` or a cons cell written `[Head | Tail]`. A proper list
-eventually ends in `[]`.
+**List.** Either `[]` or `[Head | Tail]` where `Tail` is a list. A list
+ends in `[]`. A partial list ends in a variable, for example `[X,Y|Xs]`;
+a variable alone is also a partial list. `[X,Y|non_list]` is an instance
+of a partial list that is not a list.
 
 **Mode.** An intended direction of use described by which arguments are
 supplied and which are produced.

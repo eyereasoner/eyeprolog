@@ -69,11 +69,21 @@ si__condition((A;B)) :- si__condition(A), si__condition(B).
 %  names, f(X,a) @< f(X,b) by the second arguments, and X == X gives (=), while
 %  f(a) vs f(Y) and X vs 1 are genuinely undecided.
 compare_si(Order, A, B) :-
+    si__require_order(Order),
     (  A == B
     -> Order = (=)
     ;  si__order_decided(A, B)
     -> compare(Order, A, B)
     ;  throw(error(instantiation_error, [predicate-compare_si/3]))
+    ).
+
+si__require_order(Order) :- var(Order), !.
+si__require_order(Order) :-
+    ( atom(Order) ->
+        ( (Order == (<) ; Order == (=) ; Order == (>)) -> true
+        ; throw(error(domain_error(order, Order), [predicate-compare_si/3]))
+        )
+    ; throw(error(type_error(atom, Order), [predicate-compare_si/3]))
     ).
 
 %  Both arguments are known to be non-identical here.

@@ -29,6 +29,65 @@ import {
 export function regressionCases() {
   return [
     {
+      name: 'compare_si/3 validates Order before term instantiation (issue #100)',
+      run: () => {
+        for (const terms of ['A,B', 'A,A', '1,2']) {
+          for (const [order, formal] of [['x', 'domain_error(order, x)'], ['1', 'type_error(atom, 1)']]) {
+            const result = runCli([], { input: `compare_si(${order},${terms}).\nhalt.\n` });
+            assertIncludes(result.stdout, `error(${formal}, [predicate-compare_si/3])`, 'order error');
+          }
+        }
+      },
+    },
+    {
+      name: 'list and chars type checks preserve partial lists and report precise errors (issues #102 and #103)',
+      run: () => {
+        const goals = [
+          'catch(must_be(list,L),error(instantiation_error,[predicate-must_be/2]),true),var(L)',
+          'catch(must_be(list,[a|L]),error(instantiation_error,[predicate-must_be/2]),true),var(L)',
+          'catch(must_be(list(integer),L),error(instantiation_error,[predicate-must_be/2]),true),var(L)',
+          'catch(must_be(list(integer),[1|L]),error(instantiation_error,[predicate-must_be/2]),true),var(L)',
+          'must_be(list,[X]),var(X)',
+          'must_be(chars,[a,b])',
+          'catch(must_be(chars,[C]),error(instantiation_error,[predicate-must_be/2]),true),var(C)',
+          'catch(must_be(chars,[C,ab]),error(type_error(character,ab),[predicate-must_be/2]),true),var(C)',
+          'can_be(chars,[C|L]),var(C),var(L)',
+          'can_be(list(integer),[C|L]),var(C),var(L)',
+          'catch(can_be(chars,[C|1]),error(type_error(list,[D|1]),[predicate-can_be/2]),true),var(C),var(D)',
+          'catch(must_be(chars,[C|1]),error(type_error(list,[D|1]),[predicate-must_be/2]),true),var(C),var(D)',
+          'catch(can_be(chars,[ab|L]),error(type_error(character,ab),[predicate-can_be/2]),true),var(L)',
+          'catch(can_be(pair,a),error(type_error(pair,a),[predicate-can_be/2]),true)',
+          'catch(can_be(integer,a),error(type_error(integer,a),[predicate-can_be/2]),true)',
+        ];
+        for (const goal of goals) {
+          const result = runCli(['-'], { input: `:- use_module(library(error)).\n%% goal: answer(X)\nanswer(ok) :- ${goal}.\n` });
+          assertEqual(result.status, 0, `${goal}: ${result.stderr}`);
+          assertIncludes(result.stdout, 'answer(ok)', goal);
+        }
+      },
+    },
+    {
+      name: 'call_with_error_context/2 preserves repeated variables in context pairs (issue #104)',
+      run: () => {
+        const result = runCli(['-'], { input: ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+          'answer(ok) :- catch(call_with_error_context(throw(error(problem(X),[inner-X])),outer-f(Y,Y)),error(problem(A),[outer-f(B,C),inner-D]),true),B==C,A==D,var(Y).\n' });
+        assertEqual(result.status, 0, result.stderr);
+        assertIncludes(result.stdout, 'answer(ok)', 'shared error variables');
+      },
+    },
+    {
+      name: 'time/1 autoloads compare_si/3 on its first call (issue #105)',
+      run: () => {
+        const goal = 'length(P,8),append(P,[1],L1),append(P,[2],L2),time(compare(R,L1,L2)),time(compare_si(S,L1,L2))';
+        const repl = runCli([], { input: `${goal}.\n.\nhalt.\n` });
+        assertNotIncludes(repl.stdout, 'existence_error', 'first REPL call');
+        assertIncludes(repl.stdout, 'S = (<)', 'timed comparison');
+        const file = runCli(['-'], { input: `%% goal: answer(X)\nanswer(ok) :- ${goal},R==S.\n` });
+        assertEqual(file.status, 0, file.stderr);
+        assertIncludes(file.stdout, 'answer(ok)', 'file autoload');
+      },
+    },
+    {
       name: 'dif/2 passes the WG17 finite-tree comparison cases (issue #68)',
       run: () => {
         // Comparison cases from
@@ -4638,9 +4697,9 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       },
     },
     {
-      // UWN asked for copy_term/2 semantics on the added element so that
-      // variables in it are not shared with bindings undone during unwinding.
-      name: 'call_with_error_context/2 copies the context element',
+      // Throwing the error ball already freshens its variables; the wrapper
+      // does not need a separate copy_term/2 call (issue #104).
+      name: 'throw/1 freshens variables in the propagated context element',
       run: () => {
         const input = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
           'answer(ok) :- catch(call_with_error_context(atom_length(1.0,_), ctx-V), error(_,[ctx-W|_]), (V == W -> fail ; true)).\n';

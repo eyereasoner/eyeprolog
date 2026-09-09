@@ -17,10 +17,6 @@
 
 :- meta_predicate(call_with_error_context(0, +)).
 
-%  The context is supplied once here rather than handed over manually at every
-%  raise site: the raise sites throw with [] and this wrapper prepends its
-%  element, so contexts stay proper lists and compose with any enclosing
-%  call_with_error_context/2 (issue #98).
 %  The context is named in exactly one place -- error__must_be_throw/1 -- so no
 %  raise site hands one over (issue #98). It is a throw helper rather than a
 %  call_with_error_context/2 wrapper because wrapping a Prolog goal in catch/3
@@ -57,9 +53,20 @@ error__must_be(ground, Term) :- !,
 error__must_be(acyclic, Term) :- !,
     ( acyclic_term(Term) -> true ; type_error(acyclic_term, Term) ).
 error__must_be(list, Term) :- !,
-    error__proper_list(Term).
+    error__list(Term, Term, must_be/2, complete).
 error__must_be(list(Type), Term) :- !,
+    error__list(Term, Term, must_be/2, complete),
     error__proper_list_of(Term, Type).
+error__must_be(character, Term) :- !,
+    ( var(Term) -> error__must_be_throw(instantiation_error)
+    ; atom(Term), atom_length(Term, 1) -> true
+    ; error__must_be_throw(type_error(character, Term))
+    ).
+error__must_be(chars, Term) :- !,
+    error__list(Term, Term, must_be/2, partial),
+    error__partial_list_of(Term, character, must_be/2),
+    error__list(Term, Term, must_be/2, complete),
+    error__proper_list_of(Term, character).
 error__must_be(pair, Term) :- !,
     ( var(Term) -> error__must_be_throw(instantiation_error)
     ; Term = _-_ -> true
@@ -73,12 +80,17 @@ error__must_be(Type, Term) :-
     ; error__must_be_throw(type_error(Type, Term))
     ).
 
-error__proper_list([]) :- !.
-error__proper_list([_|Tail]) :- !, error__proper_list(Tail).
-error__proper_list(Term) :-
-    ( var(Term) -> error__must_be_throw(instantiation_error)
-    ; error__must_be_throw(type_error(list, Term))
-    ).
+% A list ends in []; a partial list ends in a variable (including a variable
+% alone). Inspect before matching so validation never completes a partial list.
+% Keep the original term as the culprit when a tail cannot become a list.
+error__list(Term, _, Predicate, Mode) :- var(Term), !,
+    ( Mode == partial -> true
+    ; throw(error(instantiation_error, [predicate-Predicate])) ).
+error__list([], _, _, _) :- !.
+error__list([_|Tail], Original, Predicate, Mode) :- !,
+    error__list(Tail, Original, Predicate, Mode).
+error__list(_, Original, Predicate, _) :-
+    throw(error(type_error(list, Original), [predicate-Predicate])).
 
 error__proper_list_of([], _) :- !.
 error__proper_list_of([Head|Tail], Type) :- !,
@@ -90,37 +102,46 @@ error__proper_list_of(Term, _) :-
     ).
 
 can_be(Type, Term) :-
-    ( var(Type) -> instantiation_error(can_be/2)
+    ( var(Type) -> error__can_be_throw(instantiation_error)
     ; var(Term) -> true
     ; error__can_be(Type, Term)
     ).
 
+error__can_be_throw(Formal) :-
+    throw(error(Formal, [predicate-can_be/2])).
+
 error__can_be(integer, Term) :- !,
-    ( integer(Term) -> true ; type_error(integer, Term, can_be/2) ).
+    ( integer(Term) -> true ; error__can_be_throw(type_error(integer, Term)) ).
 error__can_be(atom, Term) :- !,
-    ( atom(Term) -> true ; type_error(atom, Term, can_be/2) ).
+    ( atom(Term) -> true ; error__can_be_throw(type_error(atom, Term)) ).
 error__can_be(number, Term) :- !,
-    ( number(Term) -> true ; type_error(number, Term, can_be/2) ).
-error__can_be(list, Term) :- !, error__partial_list(Term).
-error__can_be(list(Type), Term) :- !, error__partial_list_of(Term, Type).
+    ( number(Term) -> true ; error__can_be_throw(type_error(number, Term)) ).
+error__can_be(list, Term) :- !, error__list(Term, Term, can_be/2, partial).
+error__can_be(list(Type), Term) :- !,
+    error__list(Term, Term, can_be/2, partial),
+    error__partial_list_of(Term, Type, can_be/2).
+error__can_be(character, Term) :- !,
+    ( atom(Term), atom_length(Term, 1) -> true
+    ; error__can_be_throw(type_error(character, Term)) ).
+error__can_be(chars, Term) :- !,
+    error__list(Term, Term, can_be/2, partial),
+    error__partial_list_of(Term, character, can_be/2).
 error__can_be(not_less_than_zero, Term) :- !,
     ( integer(Term) ->
-        ( Term >= 0 -> true ; domain_error(not_less_than_zero, Term, can_be/2) )
-    ; type_error(integer, Term, can_be/2)
+        ( Term >= 0 -> true ; error__can_be_throw(domain_error(not_less_than_zero, Term)) )
+    ; error__can_be_throw(type_error(integer, Term))
     ).
-error__can_be(Type, Term) :- error__must_be(Type, Term).
+error__can_be(Type, Term) :-
+    catch(error__must_be(Type, Term), error(Formal, _), error__can_be_throw(Formal)).
 
-error__partial_list(Term) :- var(Term), !.
-error__partial_list([]) :- !.
-error__partial_list([_|Tail]) :- !, error__partial_list(Tail).
-error__partial_list(Term) :- type_error(list, Term, can_be/2).
-
-error__partial_list_of(Term, _) :- var(Term), !.
-error__partial_list_of([], _) :- !.
-error__partial_list_of([Head|Tail], Type) :- !,
-    can_be(Type, Head),
-    error__partial_list_of(Tail, Type).
-error__partial_list_of(Term, _) :- type_error(list, Term, can_be/2).
+error__partial_list_of(Term, _, _) :- var(Term), !.
+error__partial_list_of([], _, _) :- !.
+error__partial_list_of([Head|Tail], Type, Predicate) :-
+    ( var(Head) -> true
+    ; Predicate == must_be/2 -> must_be(Type, Head)
+    ; can_be(Type, Head)
+    ),
+    error__partial_list_of(Tail, Type, Predicate).
 
 instantiation_error :- throw(error(instantiation_error, [])).
 instantiation_error(Context) :- throw(error(instantiation_error, Context)).
@@ -140,8 +161,7 @@ call_with_error_context(Goal, Pair) :-
     error__require_pair(Pair),
     catch(Goal,
           error(Error, Context),
-          ( copy_term(Pair, Element),
-            throw(error(Error, [Element|Context])) )).
+          throw(error(Error, [Pair|Context]))).
 
 %  The element must be a pair (issue #99). The test is inlined rather than
 %  delegated to must_be(pair, _) so that the wrapper stays independent of the

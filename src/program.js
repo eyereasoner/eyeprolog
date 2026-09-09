@@ -1219,7 +1219,7 @@ function collectAutoloadGoalDependencies(goal, out = []) {
     collectAutoloadGoalDependencies(goal.args[2], out);
   } else if ((goal.name === 'call_cleanup' || goal.name === 'setup_call_cleanup') && (goal.arity === 2 || goal.arity === 3)) {
     for (const arg of goal.args) collectAutoloadGoalDependencies(arg, out);
-  } else if (goal.name === 'call' && goal.arity === 1) {
+  } else if ((goal.name === 'call' || goal.name === 'time') && goal.arity === 1) {
     collectAutoloadGoalDependencies(goal.args[0], out);
   }
   return out;
