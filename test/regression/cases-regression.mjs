@@ -114,8 +114,12 @@ export function regressionCases() {
     {
       name: 'REPL prints the complete 8192-cell timed comparison answer (issue #105)',
       run: () => {
+        // Keep the large variable-list answer that overflowed REPL printing,
+        // but prepend the differing elements to avoid expensive append/3 setup.
+        // The adjacent cases cover long shared-prefix comparison and append/3
+        // backtracking separately.
         const result = runCli([], { input:
-          'length(_,I),I=13,N is 2^I,length(P,N),append(P,[1],L1),append(P,[2],L2),' +
+          'length(_,I),I=13,N is 2^I,length(P,N),L1=[1|P],L2=[2|P],' +
           'time(compare(R,L1,L2)),time(compare_si(S,L1,L2)).\n.\nhalt.\n',
           timeout: 60000,
         });
