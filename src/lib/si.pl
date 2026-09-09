@@ -70,12 +70,7 @@ si__condition((A;B)) :- si__condition(A), si__condition(B).
 %  f(a) vs f(Y) and X vs 1 are genuinely undecided.
 compare_si(Order, A, B) :-
     si__require_order(Order),
-    (  A == B
-    -> Order = (=)
-    ;  si__order_decided(A, B)
-    -> compare(Order, A, B)
-    ;  throw(error(instantiation_error, [predicate-compare_si/3]))
-    ).
+    si__compare(Order, [A-B]).
 
 si__require_order(Order) :- var(Order), !.
 si__require_order(Order) :-
@@ -86,25 +81,38 @@ si__require_order(Order) :-
     ; throw(error(type_error(atom, Order), [predicate-compare_si/3]))
     ).
 
-%  Both arguments are known to be non-identical here.
-si__order_decided(A, B) :- ( var(A) ; var(B) ), !, fail.
-si__order_decided(A, B) :-
+% Keep pending argument pairs in a work list. Recursing inside an if-then-else
+% condition retains a child Solver per list cell; testing whole-tail identity
+% at each step also repeatedly scans the same suffix (issue #105).
+si__compare(=, []).
+si__compare(Order, [A-B|Pairs]) :-
+    si__compare_pair(A, B, Comparison, Pairs, Next),
+    si__compare_next(Comparison, Order, Next).
+
+si__compare_next(=, Order, Pairs) :- si__compare(Order, Pairs).
+si__compare_next(<, <, _).
+si__compare_next(>, >, _).
+
+si__compare_pair(A, B, =, Pairs, Pairs) :-
+    ( var(A) ; var(B) ), !,
+    ( A == B -> true
+    ; throw(error(instantiation_error, [predicate-compare_si/3])) ).
+si__compare_pair([A|As], [B|Bs], =, Pairs, [A-B,As-Bs|Pairs]) :- !.
+si__compare_pair(A, B, Comparison, Pairs, Next) :-
     compound(A), compound(B), !,
     functor(A, NameA, ArityA),
     functor(B, NameB, ArityB),
-    (  ArityA =\= ArityB -> true
-    ;  NameA \== NameB -> true
+    (  ArityA =\= ArityB -> compare(Comparison, ArityA, ArityB), Next = Pairs
+    ;  NameA \== NameB -> compare(Comparison, NameA, NameB), Next = Pairs
     ;  A =.. [_|ArgsA],
        B =.. [_|ArgsB],
-       si__args_decided(ArgsA, ArgsB)
+       Comparison = (=),
+       si__prepend_pairs(ArgsA, ArgsB, Next, Pairs)
     ).
-%  Otherwise both are non-variables and at least one is atomic, so either the
-%  type order or the values themselves settle it and no instantiation can
-%  change the outcome.
-si__order_decided(_, _).
+si__compare_pair(A, _, >, Pairs, Pairs) :- compound(A), !.
+si__compare_pair(_, B, <, Pairs, Pairs) :- compound(B), !.
+si__compare_pair(A, B, Comparison, Pairs, Pairs) :- compare(Comparison, A, B).
 
-si__args_decided([A|As], [B|Bs]) :-
-    (  A == B
-    -> si__args_decided(As, Bs)
-    ;  si__order_decided(A, B)
-    ).
+si__prepend_pairs([], [], Pairs, Pairs).
+si__prepend_pairs([A|As], [B|Bs], [A-B|Pairs], Tail) :-
+    si__prepend_pairs(As, Bs, Pairs, Tail).

@@ -29,6 +29,44 @@ import {
 export function regressionCases() {
   return [
     {
+      name: 'timed compare_si/3 backtracks over growing prefixes without exhausting the host stack (issue #105)',
+      run: () => {
+        // Bound the reported generator so the regression exhausts every
+        // answer, including sizes beyond the original 256-cell failure.
+        const result = runCli(['-'], { input:
+          '%% goal: answer(I,R,S)\n' +
+          'answer(I,R,S) :- length(_,I), (I =< 9 -> true ; !, fail), ' +
+          'N is 2^I, length(P,N), append(P,[1],L1), append(P,[2],L2), ' +
+          'time(compare(R,L1,L2)), time(compare_si(S,L1,L2)).\n',
+          timeout: 20000,
+        });
+        assertEqual(result.status, 0, `exit status; error=${result.error}; stderr=${result.stderr}`);
+        for (let i = 0; i <= 9; i++) {
+          assertIncludes(result.stdout, `answer(${i}, <, <).`, 'comparison result');
+        }
+        assertNotIncludes(result.stderr + result.stdout, 'Maximum call stack', 'host stack');
+      },
+    },
+    {
+      name: 'compare_si/3 work list preserves argument priority and instantiation errors',
+      run: () => {
+        const goals = [
+          'compare_si(=,f(X,g(Y)),f(X,g(Y))),var(X),var(Y)',
+          'compare_si(<,f(g(X),a),f(g(X),b)),var(X)',
+          'compare_si(>,f(g(b),a),f(g(a),z))',
+          'compare_si(<,[a|X],[b|Y]),var(X),var(Y)',
+          'compare_si(>,f(X),a),var(X)',
+          'compare_si(<,a,f(X)),var(X)',
+          '\\+ compare_si(>,f(g(X),a),f(g(X),b))',
+          'catch((compare_si(_,f(g(X),a),f(g(Y),b)),fail),error(instantiation_error,[predicate-compare_si/3]),true),var(X),var(Y)',
+        ];
+        for (const goal of goals) {
+          const result = runEyeProlog(`answer(ok) :- ${goal}.`, { goals: ['answer(X)'] });
+          assertIncludes(result.stdout, 'answer(ok)', goal);
+        }
+      },
+    },
+    {
       name: 'compare_si/3 validates Order before term instantiation (issue #100)',
       run: () => {
         for (const terms of ['A,B', 'A,A', '1,2']) {
