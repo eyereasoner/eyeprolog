@@ -29,6 +29,104 @@ import {
 export function regressionCases() {
   return [
     {
+      name: 'autoload follows declared meta-predicates and closure arities (issue #105)',
+      run: () => {
+        const wrappers = ':- meta_predicate(mytime(0)).\nmytime(G) :- time(G).\n' +
+          ':- meta_predicate(apply_one(1,?)).\napply_one(G,X) :- call(G,X).\n';
+        for (const goal of ['mytime(mytime(compare_si(<,a,b)))',
+          'apply_one(compare_si(<,a),b)', 'call(compare_si(<),a,b)', 'time(compare_si(<,a,b))']) {
+          const result = runEyeProlog(wrappers, { goals: [goal] });
+          assertIncludes(result.stdout, goal.startsWith('apply_one') ? 'apply_one' : goal.split('(')[0], goal);
+        }
+        const initialized = runEyeProlog(wrappers + ':- initialization((mytime(compare_si(<,a,b)),write(ok))).', { goals: [] });
+        assertIncludes(initialized.stdout, 'ok', 'initialization meta-goal');
+        // A predicate with the same name as a library wrapper can take data.
+        const data = Program.parse('time(_). answer :- time(compare_si(O,a,b)).');
+        assertEqual(data.autoloadedPredicates.some(({ indicator }) => indicator === 'compare_si/3'), false, 'data argument is not a goal');
+      },
+    },
+    {
+      name: 'imported user meta-wrappers autoload caller goals on the first REPL invocation',
+      run: () => {
+        const file = path.join(temp.dir, 'mytime.pl');
+        fs.writeFileSync(file, ':- module(timing_wrapper,[mytime/1]).\n:- meta_predicate(mytime(0)).\nmytime(G) :- time(G).\n');
+        const source = `:- use_module(${sourceAtom(file)}).\nanswer(ok) :- mytime(compare_si(<,a,b)).\n`;
+        assertIncludes(runEyeProlog(source, { goals: ['answer(X)'] }).stdout, 'answer(ok)', 'imported wrapper');
+        const repl = runCli([], { input: `use_module(${sourceAtom(file)}).\nmytime(compare_si(O,a,b)).\n.\nhalt.\n` });
+        assertEqual(repl.status, 0, repl.stderr);
+        assertIncludes(repl.stdout, 'O = (<)', 'first meta-call');
+        assertNotIncludes(repl.stdout + repl.stderr, 'existence_error', 'meta autoload');
+      },
+    },
+    {
+      name: 'bundled compare_si/3 matches the portable definition and respects user definitions',
+      run: () => {
+        const terms = ['X', 'Y', '1', '1.0', '-2', 'a', 'b', '[]', '[X,a]', '[X|Y]',
+          'f(X)', 'f(Y)', 'g(X)', 'f(X,a)', 'f(X,b)', 'f(g(X),a)'];
+        const clauses = [];
+        for (const left of terms) for (const right of terms) {
+          clauses.push(`answer(${clauses.length},R) :- catch((compare_si(O,${left},${right})->R=O;R=failed),error(E,C),R=error(E,C)).`);
+        }
+        const source = clauses.join('\n');
+        const optimized = runEyeProlog(source, { goals: ['answer(I,R)'] });
+        const portable = runEyeProlog(source, { goals: ['answer(I,R)'], registry: createDefaultRegistry() });
+        assertEqual(optimized.stdout, portable.stdout, 'all scalar, variable, compound and list comparisons');
+        const custom = runEyeProlog('compare_si(custom,_,_).', { goals: ['compare_si(O,a,b)'] });
+        assertIncludes(custom.stdout, 'compare_si(custom, a, b)', 'user definition');
+      },
+    },
+    {
+      name: 'compare/3 and compare_si/3 compare large lists and deep terms with a bounded host stack',
+      run: () => {
+        // A separate process bounds regressions in both memory and time. Build
+        // the operands directly so this measures comparison, not append/3.
+        const script = `
+          import {Program,Solver,Env,getEyePrologRegistry,variable,atom,compound,listFromItems,termToString} from './src/index.js';
+          const program = Program.parse(':- use_module(library(si)).');
+          const solver = new Solver(program,{registry:getEyePrologRegistry()});
+          function check(a,b,expected) {
+            for(const name of ['compare','compare_si']) {
+              const order=variable('Order');
+              const answers=[...solver.solve([compound(name,[order,a,b])],new Env(),0)];
+              if (answers.length!==1 || termToString(order,answers[0])!==expected) throw new Error(name+': wrong order');
+            }
+          }
+          for (const n of [16384,65536]) {
+            const prefix=Array.from({length:n},(_,i)=>variable('X'+i));
+            const a=listFromItems([...prefix,atom('a')]);
+            const b=listFromItems([...prefix,atom('b')]);
+            check(a,b,'<'); check(b,a,'>');
+            check(a,listFromItems([...prefix,atom('a')]),'=');
+          }
+          let a=atom('a'), b=atom('b');
+          for(let i=0;i<16384;i++) {a=compound('f',[a]);b=compound('f',[b]);}
+          check(a,b,'<');
+          console.log('ok');
+        `;
+        const result = spawnSync(process.execPath, ['--max-old-space-size=128', '--stack-size=256', '--input-type=module', '--eval', script], {
+          cwd: packageRoot, encoding: 'utf8', timeout: 15000,
+        });
+        if (result.error) throw result.error;
+        assertEqual(result.status, 0, `large comparison: ${result.stderr}`);
+        assertIncludes(result.stdout, 'ok', 'large comparison completes');
+      },
+    },
+    {
+      name: 'REPL prints the complete 8192-cell timed comparison answer (issue #105)',
+      run: () => {
+        const result = runCli([], { input:
+          'length(_,I),I=13,N is 2^I,length(P,N),append(P,[1],L1),append(P,[2],L2),' +
+          'time(compare(R,L1,L2)),time(compare_si(S,L1,L2)).\n.\nhalt.\n',
+          timeout: 60000,
+        });
+        if (result.error) throw result.error;
+        assertEqual(result.status, 0, result.stderr);
+        assertNotIncludes(result.stdout + result.stderr, 'Maximum call stack', 'host stack');
+        assertIncludes(result.stdout, 'I = 13, N = 8192', 'large answer');
+        assertIncludes(result.stdout, 'R = (<), S = (<)', 'both comparison results');
+      },
+    },
+    {
       name: 'timed compare_si/3 backtracks over growing prefixes without exhausting the host stack (issue #105)',
       run: () => {
         // Bound the reported generator so the regression exhausts every

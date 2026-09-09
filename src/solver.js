@@ -1,7 +1,7 @@
 // Depth-first EyeProlog solver with builtin dispatch, memoization, and guarded recursion handling.
 // Most semantic decisions still flow through unification; optimizations only select candidates earlier.
 import {
-  ATOM, COMPOUND, NUMBER, STRING, VAR, Env, Term, atom, compactListLength, compactVariableList, compound, cons, copyResolved, deref, emptyList,
+  ATOM, COMPOUND, NUMBER, STRING, VAR, Env, Term, atom, compareTerms, compactListLength, compactVariableList, compound, cons, copyResolved, deref, emptyList,
   flattenConjunction, freshTerm, isCons, isDecimalInteger, isEmptyList, isScalar,
   numberTerm, numberTextFromDouble, properListItems, termIsGround, termToString, unify, variable, variantTerms,
 } from './term.js';
@@ -832,6 +832,16 @@ export class Solver {
           const firstResult = memberIterator.next();
           if (firstResult.done) break;
           pushResumeBuiltinFrame(stack, memberIterator, rest, depth + 1, active);
+          goals = rest;
+          env = firstResult.value;
+          depth++;
+          continue;
+        }
+
+        const comparisonIterator = bundledCompareSiIterator(this, group, goal, env);
+        if (comparisonIterator != null) {
+          const firstResult = comparisonIterator.next();
+          if (firstResult.done) break;
           goals = rest;
           env = firstResult.value;
           depth++;
@@ -1775,6 +1785,60 @@ function pushWfsAnswerFrames(stack, model, group, goal, rest, env, depth, active
       depth: depth + 1,
       active,
     });
+  }
+}
+
+// Like the bundled length/member specializations, this keeps the portable
+// Prolog definition available to other registries and user definitions. A
+// direct walk avoids allocating fresh clause variables and doing occurs checks
+// over the remaining list suffix on each comparison step (issue #105).
+function bundledCompareSiIterator(solver, group, goal, env) {
+  if (solver.registry.eyePrologLibrary !== true || group.bundledLibrary !== true ||
+      group.module !== 'si' || group.name !== 'compare_si' || group.arity !== 3 ||
+      group.tabled || group.clauses.length !== 1) return null;
+  return bundledCompareSiSolutions(solver, goal, env);
+}
+
+const compareSiErrorContext = {};
+function* bundledCompareSiSolutions(solver, goal, env) {
+  try {
+    const order = deref(goal.args[0], env);
+    if (order.type !== VAR) {
+      if (order.type !== ATOM) throw new PrologError('type_error(atom)', order);
+      if (!['<', '=', '>'].includes(order.name)) throw new PrologError('domain_error(order)', order);
+    }
+    const pending = [goal.args[1], goal.args[2]];
+    let comparison = 0;
+    while (pending.length !== 0) {
+      const right = deref(pending.pop(), env);
+      const left = deref(pending.pop(), env);
+      if (left === right) continue;
+      if (left.type === VAR || right.type === VAR) {
+        if (left.type === VAR && right.type === VAR && left.name === right.name) continue;
+        throw new PrologError('instantiation_error');
+      }
+      if (left.type === COMPOUND && right.type === COMPOUND) {
+        if (left.arity !== right.arity) {
+          comparison = left.arity < right.arity ? -1 : 1;
+        } else if (left.name !== right.name) {
+          comparison = compareTerms(atom(left.name), atom(right.name));
+        } else {
+          // Push right-to-left so the first differing argument decides the
+          // result. Later variables must not cause premature errors.
+          for (let i = left.arity - 1; i >= 0; i--) pending.push(left.args[i], right.args[i]);
+          continue;
+        }
+      } else {
+        // At least one operand is atomic: type/value order is already fixed.
+        comparison = compareTerms(left, right);
+      }
+      if (comparison !== 0) break;
+    }
+    const next = env.clone();
+    solver.stats.unify_calls++;
+    if (unify(goal.args[0], atom(comparison < 0 ? '<' : comparison > 0 ? '>' : '='), next)) yield next;
+  } catch (error) {
+    throw attachBuiltinErrorContext(error, compareSiErrorContext, goal);
   }
 }
 

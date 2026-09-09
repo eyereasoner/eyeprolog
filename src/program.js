@@ -320,7 +320,7 @@ export class Program {
         // Numeric closure modes are a widely implemented compatibility
         // extension. Keep their existing hidden lexical qualification while
         // reserving explicit Module:Goal wrapping for ISO Part 2 ':' modes.
-        modes.push({ index, kind: 'closure' });
+        modes.push({ index, kind: 'closure', extraArguments: Number(spec.name) });
       }
     }
     const definitions = this.moduleMetaPredicates.get(module) ?? new Map();
@@ -1179,6 +1179,12 @@ function collectAutoloadGoalDependencies(goal, out = []) {
     return out;
   }
   if (goal?.type !== COMPOUND) return out;
+  if (goal.name === ':' && goal.arity === 2 && goal.args[0]?.type === ATOM) {
+    const start = out.length;
+    collectAutoloadGoalDependencies(goal.args[1], out);
+    for (let i = start; i < out.length; i++) out[i].module ??= goal.args[0].name;
+    return out;
+  }
   if (goal.name === ',' && goal.arity === 2) {
     collectAutoloadGoalDependencies(goal.args[0], out);
     collectAutoloadGoalDependencies(goal.args[1], out);
@@ -1198,7 +1204,7 @@ function collectAutoloadGoalDependencies(goal, out = []) {
     return out;
   }
 
-  out.push({ key: `${goal.name}/${goal.arity}`, name: goal.name, arity: goal.arity, module: goal.module });
+  out.push({ key: `${goal.name}/${goal.arity}`, name: goal.name, arity: goal.arity, module: goal.module, goal });
 
   if (goal.name === 'forall' && goal.arity === 2) {
     collectAutoloadGoalDependencies(goal.args[0], out);
@@ -1219,10 +1225,48 @@ function collectAutoloadGoalDependencies(goal, out = []) {
     collectAutoloadGoalDependencies(goal.args[2], out);
   } else if ((goal.name === 'call_cleanup' || goal.name === 'setup_call_cleanup') && (goal.arity === 2 || goal.arity === 3)) {
     for (const arg of goal.args) collectAutoloadGoalDependencies(arg, out);
-  } else if ((goal.name === 'call' || goal.name === 'time') && goal.arity === 1) {
-    collectAutoloadGoalDependencies(goal.args[0], out);
+  } else if (goal.name === 'call' && goal.arity >= 1) {
+    collectAutoloadClosureDependencies(goal.args[0], goal.arity - 1, out, goal.module);
   }
   return out;
+}
+
+function collectAutoloadClosureDependencies(closure, extraArguments, out, module) {
+  if (closure?.type === COMPOUND && closure.name === ':' && closure.arity === 2 && closure.args[0]?.type === ATOM) {
+    collectAutoloadClosureDependencies(closure.args[1], extraArguments, out, closure.args[0].name);
+    return;
+  }
+  if (closure?.type !== ATOM && closure?.type !== COMPOUND) return;
+  const start = out.length;
+  if (extraArguments === 0) {
+    collectAutoloadGoalDependencies(closure, out);
+  } else {
+    const arity = closure.arity + extraArguments;
+    // Extra closure arguments are unknown here. Record the final indicator
+    // without allocating placeholder terms or treating data arguments as goals.
+    out.push({ key: `${closure.name}/${arity}`, name: closure.name, arity, module: closure.module, goal: closure });
+  }
+  for (let i = start; i < out.length; i++) out[i].module ??= module;
+}
+
+function expandAutoloadMetaDependencies(program, dependencies, module = 'user') {
+  const seen = new WeakMap();
+  for (let i = 0; i < dependencies.length; i++) {
+    const dependency = dependencies[i];
+    if (dependency.goal == null) continue;
+    const caller = dependency.module ?? module;
+    const visitKey = `${caller}\u0000${dependency.key}`;
+    const visits = seen.get(dependency.goal) ?? new Set();
+    if (visits.has(visitKey)) continue;
+    visits.add(visitKey);
+    seen.set(dependency.goal, visits);
+    const group = program.findGroup(dependency.name, dependency.arity, caller);
+    for (const mode of group?.metaArgumentModes ?? []) {
+      if (mode.kind !== 'closure' || !Number.isSafeInteger(mode.extraArguments) || mode.extraArguments < 0) continue;
+      collectAutoloadClosureDependencies(dependency.goal?.args[mode.index], mode.extraArguments, dependencies, caller);
+    }
+  }
+  return dependencies;
 }
 
 function groupAutoloadDependencies(group) {
@@ -1288,7 +1332,7 @@ function libraryAutoloadRequests(program, extraGoals = []) {
   const requests = new Map();
   for (const group of program.groups.values()) {
     if (bundledLibraryModule(program, group.module)) continue;
-    for (const dependency of groupAutoloadDependencies(group)) {
+    for (const dependency of expandAutoloadMetaDependencies(program, groupAutoloadDependencies(group), group.module)) {
       const targetModule = dependency.module ?? group.module;
       if (procedureResolvedBeforeAutoload(program, dependency, targetModule)) continue;
       const library = autoloadLibraryFor(dependency);
@@ -1304,7 +1348,7 @@ function libraryAutoloadRequests(program, extraGoals = []) {
     }
   }
   for (const goal of program.initializations) {
-    for (const dependency of collectAutoloadGoalDependencies(goal)) {
+    for (const dependency of expandAutoloadMetaDependencies(program, collectAutoloadGoalDependencies(goal))) {
       const targetModule = dependency.module ?? 'user';
       if (procedureResolvedBeforeAutoload(program, dependency, targetModule)) continue;
       const library = autoloadLibraryFor(dependency);
@@ -1319,7 +1363,7 @@ function libraryAutoloadRequests(program, extraGoals = []) {
       });
     }
   }
-  for (const dependency of extraGoalDependencies(extraGoals)) {
+  for (const dependency of expandAutoloadMetaDependencies(program, extraGoalDependencies(extraGoals))) {
     const targetModule = dependency.module ?? 'user';
     if (procedureResolvedBeforeAutoload(program, dependency, targetModule)) continue;
     const library = autoloadLibraryFor(dependency);

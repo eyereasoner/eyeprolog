@@ -1586,29 +1586,34 @@ const TYPE_ORDER = { [VAR]: 0, [NUMBER]: 1, [ATOM]: 2, [STRING]: 3, [COMPOUND]: 
 const EMPTY_ENV = new Env();
 
 function compareTermsWithRanks(left, right, variableRanks) {
-  left = deref(left, EMPTY_ENV);
-  right = deref(right, EMPTY_ENV);
-  const lr = TYPE_ORDER[left.type] ?? 0;
-  const rr = TYPE_ORDER[right.type] ?? 0;
-  if (lr !== rr) return lr < rr ? -1 : 1;
-  if (left.type === NUMBER) {
-    const leftInteger = isDecimalInteger(left.name);
-    const rightInteger = isDecimalInteger(right.name);
-    if (leftInteger !== rightInteger) return leftInteger ? 1 : -1;
-    return compareNumberText(left.name, right.name);
-  }
-  if (left.type === VAR) {
-    if (left.name === right.name) return 0;
-    const leftOrder = variableRank(left.name, variableRanks);
-    const rightOrder = variableRank(right.name, variableRanks);
-    return leftOrder < rightOrder ? -1 : 1;
-  }
-  if (left.type === ATOM || left.type === STRING) return compareCharacterText(left.name, right.name);
-  if (left.arity !== right.arity) return left.arity < right.arity ? -1 : 1;
-  if (left.name !== right.name) return compareCharacterText(left.name, right.name);
-  for (let i = 0; i < left.arity; i++) {
-    const cmp = compareTermsWithRanks(left.args[i], right.args[i], variableRanks);
-    if (cmp) return cmp;
+  // Standard compare/3 is used alongside compare_si/3 in issue #105. Walk
+  // argument pairs explicitly so long lists do not exhaust the host stack.
+  const pending = [left, right];
+  while (pending.length !== 0) {
+    right = deref(pending.pop(), EMPTY_ENV);
+    left = deref(pending.pop(), EMPTY_ENV);
+    const lr = TYPE_ORDER[left.type] ?? 0;
+    const rr = TYPE_ORDER[right.type] ?? 0;
+    if (lr !== rr) return lr < rr ? -1 : 1;
+    if (left.type === NUMBER) {
+      const leftInteger = isDecimalInteger(left.name);
+      const rightInteger = isDecimalInteger(right.name);
+      if (leftInteger !== rightInteger) return leftInteger ? 1 : -1;
+      const cmp = compareNumberText(left.name, right.name);
+      if (cmp) return cmp;
+    } else if (left.type === VAR) {
+      if (left.name === right.name) continue;
+      const leftOrder = variableRank(left.name, variableRanks);
+      const rightOrder = variableRank(right.name, variableRanks);
+      return leftOrder < rightOrder ? -1 : 1;
+    } else if (left.type === ATOM || left.type === STRING) {
+      const cmp = compareCharacterText(left.name, right.name);
+      if (cmp) return cmp;
+    } else {
+      if (left.arity !== right.arity) return left.arity < right.arity ? -1 : 1;
+      if (left.name !== right.name) return compareCharacterText(left.name, right.name);
+      for (let i = left.arity - 1; i >= 0; i--) pending.push(left.args[i], right.args[i]);
+    }
   }
   return 0;
 }
