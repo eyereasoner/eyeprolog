@@ -4546,6 +4546,22 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       },
     },
     {
+      name: 'sufficient-instantiation list checks reject unknown tails without binding elements',
+      run: () => {
+        const input = ':- use_module(library(si)).\n%% goal: answer(X)\n' +
+          'answer(ok) :- ' +
+          'catch(list_si(X), error(instantiation_error,_), C1 = caught), C1 == caught, var(X), ' +
+          'catch(list_si([a|T]), error(instantiation_error,_), C2 = caught), C2 == caught, var(T), ' +
+          'catch(chars_si(Cs), error(instantiation_error,_), C3 = caught), C3 == caught, var(Cs), ' +
+          'catch(chars_si([a|Tail]), error(instantiation_error,_), C4 = caught), C4 == caught, var(Tail), ' +
+          'list_si([]), list_si([Element]), var(Element), chars_si([a,b]), ' +
+          '\\+ list_si([a|bad]), \\+ chars_si([ab]).\n';
+        const result = runCli(['-'], { input });
+        assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
+        assertIncludes(result.stdout, 'answer(ok)', 'list checks preserve sufficient instantiation');
+      },
+    },
+    {
       // Issue #100: compare_si/3 decides the standard order only when no
       // instantiation could change it, and raises instantiation_error as
       // rarely as possible.

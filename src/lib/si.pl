@@ -22,10 +22,10 @@ integer_si(I) :- ( var(I) -> throw(error(instantiation_error, [predicate-integer
 atomic_si(A) :- ( var(A) -> throw(error(instantiation_error, [predicate-atomic_si/1])) ; atomic(A) ).
 
 list_si(List) :- si__list(List).
+si__list(Term) :-
+    var(Term), !, throw(error(instantiation_error, [predicate-list_si/1])).
 si__list([]).
 si__list([_|Tail]) :- !, si__list(Tail).
-si__list(Term) :-
-    ( var(Term) -> throw(error(instantiation_error, [predicate-list_si/1])) ; fail ).
 
 character_si(C) :-
     ( var(C) -> throw(error(instantiation_error, [predicate-character_si/1]))
