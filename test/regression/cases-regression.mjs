@@ -29,6 +29,18 @@ import {
 export function regressionCases() {
   return [
     {
+      name: 'top level never mints a generated variable name that collides with a query variable\'s own name (issue #108)',
+      run: () => {
+        const result = runCli([], { input: 'length(L,1),_A=99.\nhalt.\n' });
+        assertEqual(result.status, 0, result.stderr);
+        // `_A` is a real query variable here, not the top level's own first
+        // generated name. Printing the anonymous variable inside L as `_A` as
+        // well would misleadingly suggest it is the same variable as the
+        // query's own `_A`, which is bound to 99 and unrelated to L.
+        assertIncludes(result.stdout, '?-    L = [_B], _A = 99.\n', 'generated name skips the query\'s own _A');
+      },
+    },
+    {
       name: 'REPL current_input/1 and current_output/1 fail on closed stream handles (issue #107)',
       run: () => {
         const file = sourceAtom(path.join(temp.dir, 'closed-stream-107.txt'));

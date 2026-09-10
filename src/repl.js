@@ -773,6 +773,18 @@ function formatAnswer(engine, state, variables, env) {
     doubleBar: !state.strictIso,
   };
   let generated = 0;
+  // Names generated for otherwise-anonymous variables (`_A`, `_B`, ...) must
+  // never collide with a name the query itself is already using for a
+  // *different* variable (e.g. a query literally naming `_A`) — printing an
+  // internal fresh variable as `_A` right next to the user's own `_A` binding
+  // falsely suggests they are the same variable (issue #108).
+  const usedDisplayNames = new Set(names.values());
+  const nextGeneratedName = () => {
+    let candidate;
+    do { candidate = `_${letterName(generated++)}`; } while (usedDisplayNames.has(candidate));
+    usedDisplayNames.add(candidate);
+    return candidate;
+  };
 
   // Meta-predicate wrappers can make a query variable alias an internal fresh
   // variable. Keep residual constraints tied to the query's visible name.
@@ -780,7 +792,7 @@ function formatAnswer(engine, state, variables, env) {
     const root = engine.deref(variable, env);
     if (root.type === 'var' && !names.has(root.name)) names.set(root.name, variable.name);
   }
-  for (const variable of variables) collectUnboundVariables(engine, variable, env, names, () => `_${letterName(generated++)}`);
+  for (const variable of variables) collectUnboundVariables(engine, variable, env, names, nextGeneratedName);
   for (const variable of variables) {
     const value = engine.deref(variable, env);
     if (value.type === 'var' &&
@@ -796,7 +808,7 @@ function formatAnswer(engine, state, variables, env) {
   for (const constraint of env.variableConstraints?.() ?? []) {
     const residual = constraint.residualGoal?.(env);
     if (residual == null) continue;
-    collectUnboundVariables(engine, residual, env, names, () => `_${letterName(generated++)}`);
+    collectUnboundVariables(engine, residual, env, names, nextGeneratedName);
     bindings.push(engine.formatTermForWrite(residual, env, answerWriteOptions));
   }
   // Residual attributes are part of the answer even when the attributed
@@ -821,9 +833,9 @@ function formatAnswer(engine, state, variables, env) {
   for (const root of attributeRoots) {
     if (projectedAttributeRoots.has(root.name) || !env.hasPrologAttributes?.(root.name)) continue;
     projectedAttributeRoots.add(root.name);
-    if (!names.has(root.name)) names.set(root.name, `_${letterName(generated++)}`);
+    if (!names.has(root.name)) names.set(root.name, nextGeneratedName());
     for (const residual of state.solver.attributeResidualGoals(root, env)) {
-      collectUnboundVariables(engine, residual, env, names, () => `_${letterName(generated++)}`);
+      collectUnboundVariables(engine, residual, env, names, nextGeneratedName);
       bindings.push(engine.formatTermForWrite(residual, env, answerWriteOptions));
     }
   }
