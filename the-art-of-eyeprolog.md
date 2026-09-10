@@ -29,8 +29,8 @@ EyeProlog implements a broad ISO Prolog profile with facts, clauses, terms, list
 control, arithmetic, dynamic predicates, operators, streams, and standard
 built-ins. Explicit
 tabling, explicit integrity checks, and proof output are implementation
-capabilities around that standards-based foundation. EyeProlog does not attempt to
-claim formal certification of every ISO processor edge case.
+capabilities around that standards-based foundation. EyeProlog does not
+claim formal certification against every ISO processor edge case.
 
 Standards are crucial because knowledge and rules often outlive the software
 that first processes them. Using ISO Prolog keeps programs teachable,
@@ -148,8 +148,10 @@ tricks. By the end, a reader should be able to:
 
 That is the stake in the ground: a focused implementation of standard Prolog
 is enough to teach the large ideas when semantics, execution, and evidence
-remain visible together.
-The implementation is therefore part of the argument: the examples are executable programs, the reference chapters describe the running system, and proof terms remain available for inspection.
+remain visible together. The implementation is therefore part of the
+argument: the examples are executable programs, the reference chapters
+describe the running system, and proof terms remain available for
+inspection.
 
 ### A working discipline
 
@@ -574,7 +576,7 @@ alternative answers and already has the inputs its registered mode requires.
 
 Both readings matter. The declarative reading checks the model. The operational
 reading helps make search finite and selective. Put a generator before a
-built-in that needs its input:
+built-in that needs its input.
 
 <figure>
   <img src="book-assets/logic-and-control.svg" alt="One recursive path rule points to its logical and operational readings.">
@@ -1139,8 +1141,8 @@ normal mode, EyeProlog provides explicit `tnot/1` for that case. When the
 reachable component is finite, function-free, and range-restricted Datalog,
 cycles through `tnot/1` are evaluated with the well-founded semantics (WFS)
 rather than ordinary negation-as-failure. WFS has three truth states: true,
-false, and undefined. A negative cycle may therefore produce a conditional
-answer instead of forcing an arbitrary true/false choice.
+false, and undefined. A negative cycle may therefore leave the query
+undefined instead of forcing an arbitrary true/false choice.
 
 ```eyeprolog
 move(a, b).
@@ -1149,9 +1151,10 @@ win(X) :- move(X, Y), tnot(win(Y)).
 ```
 
 Here neither `win(a)` nor `win(b)` is unconditionally established; both belong
-to the undefined part of the well-founded model. EyeProlog retains that state
-internally but does not expose undefined atoms as successful query answers or
-run the remaining goals of a conjunction through them.
+to the undefined part of the well-founded model. EyeProlog retains that
+undefined state internally, but it does not treat an undefined atom as a
+successful query answer, nor does it continue evaluating the rest of a
+conjunction as though that atom had succeeded.
 Use `wfs_truth/2` when the truth state itself is data:
 
 ```text
@@ -1404,7 +1407,8 @@ Part II turned relations into finite computations:
 - generators state where finite candidates come from;
 - failure prunes a branch, while `\+/1` makes finite failure a closed-world
   test;
-- `once/1` makes search order observable;
+- recursion through negation is handled by `tnot/1` and the well-founded
+  semantics, whose undefined truth state is retained rather than forced;
 - aggregates turn a finite solution space into a list, count, sum, or optimum;
 - structured terms and contexts belong at explicit modeling boundaries;
 - puzzles become programs by separating generation, constraint, and witness.
@@ -1599,7 +1603,7 @@ must be handled before trusted downstream decisions.
 To see the explicit validation path, run:
 
 ```sh
-node bin/eyeprolog.js examples/integrity-check.pl
+eyeprolog examples/integrity-check.pl
 ```
 
 It prints the invalid-state witness and the resulting diagnostic status. Nothing
@@ -1628,8 +1632,7 @@ positive recursive domain, repeated rounds can compute the least fixed point.
 It is therefore especially natural for reachability, grammars, dependency
 analysis, and other recursive relations with overlapping subproblems.
 
-Ordinary goals use indexed depth-first resolution, including ordinary recursive
-goals. Tabling is opt-in: declare a predicate with `:- table p/n.` when its
+Ordinary goals, including recursive ones, use indexed depth-first resolution. Tabling is opt-in: declare a predicate with `:- table p/n.` when its
 recursive calls should share answers and cyclic calls should iterate toward a
 fixed point. For sufficiently large finite, function-free Datalog dependency
 cones rooted at an explicitly tabled predicate, EyeProlog may share one
@@ -2211,19 +2214,12 @@ when those boundaries became named rather than implicit.
 
 This Part turns from implementation features to habits of construction. A good
 program rarely arrives whole; it is discovered through examples, corrected by
-invariants, and refined without losing sight of the relation it means.
+invariants, and refined without losing sight of the relation it is meant to express.
 
 ## 17. Logic and control
 
 The central pleasure—and central difficulty—of logic programming is that a
 short definition plays two roles. Consider:
-
-This distinction is one of logic programming's oldest and most durable design
-ideas. The logical component describes admissible answers; the control
-component determines which consequences are explored, in what order, and with
-what resource cost. A change in indexing, goal order, or tabling policy should
-ideally preserve the first while improving the second. In practice, modeful
-built-ins and incomplete searches mean that programmers must reason about both.
 
 ```eyeprolog
 
@@ -2236,6 +2232,13 @@ path(X, Z) :- edge(X, Y), path(Y, Z).
 As logic, the clauses say that every edge is a path and that an edge followed
 by a path is a path. As control, they tell the solver to try a direct edge
 first, then choose an outgoing edge and continue from its endpoint.
+
+This distinction is one of logic programming's oldest and most durable design
+ideas. The logical component describes admissible answers; the control
+component determines which consequences are explored, in what order, and with
+what resource cost. A change in indexing, goal order, or tabling policy should
+ideally preserve the first while improving the second. In practice, modeful
+built-ins and incomplete searches mean that programmers must reason about both.
 
 It is useful to write the relation first as a sentence:
 
@@ -2492,15 +2495,15 @@ Testing examples is necessary, but a reusable relation deserves a stronger
 argument. Two questions should be asked separately:
 
 <figure>
-  <img src="book-assets/correctness-obligations.svg" alt="Overlapping circles for soundness, completeness, and termination meet at a dependable operational contract.">
-  <figcaption>Soundness, completeness, and termination are independent promises; a dependable intended call needs all three.</figcaption>
+  <img src="book-assets/correctness-obligations.svg" alt="Overlapping circles for partial correctness, completeness, and termination meet at a dependable operational contract.">
+  <figcaption>Partial correctness, completeness, and termination are independent promises; a dependable intended call needs all three.</figcaption>
 </figure>
 
 1. **Partial correctness:** if the program returns an answer, is it justified?
 2. **Completeness:** for the intended finite calls, can it find every answer
    required by the specification?
 
-For `prefix/2`, partial correctness follows by the clauses. The base clause
+For `prefix/2`, partial correctness follows from the clauses by induction. The base clause
 returns only the empty prefix. The recursive clause adds the same head to a
 smaller valid prefix, so the result remains a prefix. Completeness follows in
 the opposite direction: every nonempty prefix shares its first element with
@@ -2694,9 +2697,12 @@ invariants and modes. Sterling and Shapiro made construction and improvement
 central to *The Art of Prolog*, showing that declarative clarity and
 procedural competence mature together.
 
-EyeProlog removes several classic Prolog control devices, especially cut. The
-smaller surface changes the techniques but not the problem: authors must still
-turn a true relation into a productive computation and say what was preserved.
+EyeProlog keeps ISO cut, but Chapter 34 disciplines it: it commits only within
+the clause that contains it, never across a disjunction branch or a
+meta-call's own boundary, and it is presented as a last resort next to
+`once/1` and if-then-else. That discipline changes the techniques but not the
+problem: authors must still turn a true relation into a productive computation
+and say what was preserved.
 
 # Part V — Advanced relational design
 
@@ -2718,9 +2724,10 @@ requirements clarified by the 2013 ISO/IEC 13211-2 module amendment are covered
 by a dedicated release-gated suite, including public imports through
 `ensure_loaded/1` and caller-module qualification of `:` meta-arguments. The
 unchanged remainder of Part 2 is still treated as a compatibility surface, not
-as a claim of complete ISO/IEC 13211-2:2000 conformance. Definite-clause grammar notation remains
-outside this profile. The examples still prefer explicit domain
-relations, state, and syntax trees where that makes assumptions easier to
+as a claim of complete ISO/IEC 13211-2:2000 conformance. Definite-clause grammar notation is
+also part of the normal profile, though the running examples have avoided it so far;
+Chapter 22 introduces it explicitly rather than assuming it. The examples still prefer
+explicit domain relations, state, and syntax trees where that makes assumptions easier to
 inspect.
 
 ## 21. Reading the computation
@@ -3625,7 +3632,7 @@ mathematical acts inside the running machine:
 | Perform induction | base and recursive clauses | reduce to smaller calls |
 | Construct a witness | bind an output term | return evidence, not only truth |
 | Refute a universal guess | search for a counterexample | one answer is enough |
-| Check consistency | an explicit integrity query | let the host reject or report invalid input |
+| Check consistency | an explicit integrity query | reject or report invalid input |
 | Explain a conclusion | a proof term | expose the successful derivation |
 
 The table is a correspondence, not an identity. A mathematical proof and an
@@ -3793,11 +3800,11 @@ calculation.
 There is an important lifetime distinction between a table that is needed to
 finish one fixed point and a cache of tables retained for possible later reuse.
 DCG nonterminals are ordinary predicates after expansion, so they are depth-first
-unless their expanded predicate indicator is explicitly tabled. For an
-explicitly tabled grammar invoked through `phrase/2-3`, EyeProlog uses a
-separate invocation-keyed table scope rather than retaining tables for unrelated
-input sequences. Untabled list-tail DCGs such as `... --> [_], ...` therefore
-run directly with standard Prolog control, while a declared table remains a
+unless their expanded predicate indicator is explicitly tabled. Untabled
+list-tail DCGs such as `... --> [_], ...` therefore run directly with standard
+Prolog control. For an explicitly tabled grammar invoked through `phrase/2-3`,
+EyeProlog instead uses a separate invocation-keyed table scope rather than
+retaining tables for unrelated input sequences — a declared table remains a
 conscious source-level choice.
 
 **Exercises.**
@@ -4037,7 +4044,7 @@ A function privileges one direction. An equation or relation contains several:
 rectangle(W, H, Area) :- (Area is W * H).
 ```
 
-In a supported arithmetic mode, this relation may verify an area or calculate
+When `W` and `H` are already bound, this relation may verify an area or calculate
 it from width and height. With a finite generator it can also search for
 factorizations:
 
@@ -4556,7 +4563,7 @@ This is a test over a ground, terminating goal. It does not turn negation as
 failure into classical negation; it records that this finite theory derives no
 such path.
 
-For a reusable package, prefer a dedicated test program that loads or repeats
+For a reusable package, prefer a dedicated test program that loads or reproduces
 the relevant theory and declares only test queries. For a small example, the
 golden answer file is an executable specification of the expected answer set.
 
@@ -4874,7 +4881,7 @@ testing is a powerful guard during program transformation.
 `--stats` reports work, not meaning. A high solution count may be necessary or
 may indicate a generator that should be constrained. Many table hits may show
 effective reuse; many distinct table entries may reveal an argument that
-prevents calls from sharing. On the Node CLI it also reports current heap use,
+prevents calls from sharing table entries. On the Node CLI it also reports current heap use,
 non-young/old-generation use, the amount currently compared with the memory
 guard, resident-set size, and the soft and hard memory ceilings in bytes. These
 memory figures are printed even when execution ends by raising a Prolog error.
@@ -4930,7 +4937,7 @@ choice, repaired invariant, and test that would fail if the defect returned.
 
 A pattern is not a copied code fragment. It is a recurring arrangement of
 meaning, representation, and control that solves a named design problem. The
-following patterns summarize recurring constructions that are especially useful in practice.
+following patterns collect constructions that are especially useful in practice.
 
 <figure>
   <img src="book-assets/pattern-selection-map.svg" alt="Six recurring design symptoms point to patterns for meaning, tabling, closed boundaries, finite search, proof-carrying answers, and canonical representation.">
@@ -5244,7 +5251,7 @@ the language/runtime surface to ISO/IEC 13211-1:1995 plus Technical Corrigenda
 normal and strict profiles: EyeProlog uses Unicode scalar values U+0000..U+10FFFF
 excluding surrogates, with the scalar value as the collating-sequence integer.
 Strict mode restricts implementation-specific language facilities, but it does
-not narrow this processor-defined character repertoire. Isolated mode and error cases live in `test/conformance/cases/iso/`.
+not narrow this processor-defined character repertoire. Isolation and error cases live in `test/conformance/cases/iso/`.
 The examples here compose those operations into programs worth changing and
 rerunning.
 
@@ -5280,8 +5287,9 @@ The two can produce the same first answer without expressing the same control
 boundary. Keep cut close to the choice it documents and test the complete
 answer set before and after introducing it. A cut executed inside a predicate
 called by one disjunction branch remains local to that predicate: if the branch
-later fails, `Left ; Right` must still try `Right`. This remains true for
-cut-bearing validation helpers used by generators such as `between/3`.
+later fails, `Left ; Right` must still try `Right`. This also holds when a
+cut-bearing validation helper is called from a branch driven by a generator
+such as `between/3`: the helper's own cut still stays local to it.
 
 Exceptions separate an exceptional call from ordinary logical failure:
 
@@ -5484,12 +5492,14 @@ same context rules: with `quoted(true)`, an operator atom is not quoted merely
 because it occurs as a functional argument, list element, or sole curly-bracket
 content. Thus `writeq({*})` emits `{*}`, `writeq([:-,-])` emits `[:-,-]`, and
 `writeq(f(;,'|',';;'))` emits `f(;,'|',';;')`; the bar stays quoted because
-ISO treats the unquoted `|` token as a list separator rather than an atom. The ISO initial operator table also
+ISO treats the unquoted `|` token as a list separator rather than an atom.
+
+The ISO initial operator table also
 contains `?-` at priority 1200 with specifier `fx`, so
 `current_op(1200, fx, ?-)` succeeds. EyeProlog's embedded quad syntax permits
-an optional label before the query marker (`Label ?- Query.`), so while quad
-syntax is supported it additionally exposes `?-` at priority 1200 with
-specifier `xfx` as an implementation-specific operator. Consequently
+an optional label before the query marker (`Label ?- Query.`); supporting that
+syntax additionally exposes `?-` at priority 1200 with specifier `xfx` as an
+implementation-specific operator. Consequently
 `current_op(Priority, Specifier, ?-)` enumerates both definitions. At top level in the normal EyeProlog profile, the quad marker is recognized
 from the parsed `?-/1` or `?-/2` term rather than from one privileged surface
 spelling. Thus `Label ?- Query.`, `?-(Label, Query).`, mixed forms such as
@@ -5680,7 +5690,7 @@ lists; strict ISO mode accepts neither syntax extension.
 
 The processor character set is shared by normal and `--iso-strict` modes because
 Part 1 makes it implementation defined rather than an extension boundary.
-EyeProlog's PCS is the Unicode scalar repertoire. Printable ASCII keeps the Part
+EyeProlog's PCS (processor character set) is the Unicode scalar repertoire. Printable ASCII keeps the Part
 1 lexical classes; Unicode letters extend alphanumeric name syntax, Unicode
 white-space characters are layout, and remaining non-ASCII symbols/punctuation
 are extended graphic characters. Character-code and collation values are the
@@ -5794,7 +5804,7 @@ variable to a term containing that same variable fails.
 
 An **atom constant** such as `pat` is a term. An **atomic formula** such as
 `parent(pat, jan)` is a proposition that may be a fact, rule head, or goal.
-The surface form `pair(pat, jan)` may also be compound data when nested inside
+The same surface form, `parent(pat, jan)`, may also be compound data when nested inside
 another term; its role comes from context. Predicate identity includes arity,
 so `edge/2` and `edge/3` are different predicates.
 
@@ -5876,7 +5886,7 @@ look_ahead(X), [X] --> [X].
 `phrase(+Body,?Sequence,?Rest)` leaves `Rest` unconsumed and is steadfast in
 that argument. A variable body raises `instantiation_error`; a non-callable
 body raises `type_error(callable)`. EyeProlog elects to perform the optional
-terminal-sequence checks of ISO/IEC TS 13211-3:2025, 8.18.1.3 g and h.
+terminal-sequence checks of the ISO/IEC TS 13211-3 working draft, 8.18.1.3 g and h.
 It consistently reports `type_error(list, Culprit)` for invalid input in both
 arities and invalid remainder in `phrase/3`, including improper lists.
 Variables, proper lists, and partial lists pass these checks. Validation
@@ -5918,7 +5928,7 @@ round-tripping. The checked answers are in
 
 #### Deep sequence hand-off
 
-`library(iso_ext)` provides the common `... //0` helper, which describes an
+`library(dcgs)` provides the common `... //0` helper, which describes an
 arbitrary number of input elements. It is not part of ISO Part 3, but it is a
 useful interoperability and stress-test relation. A compact hand-off test is:
 
@@ -5936,10 +5946,10 @@ constructing a fresh general clause-resolution frame at every suffix. The list
 spine is still traversed; this is a control/allocation optimization rather than
 an O(1) semantic shortcut.
 
-The optimization is deliberately narrow.  `phrase(..., Sequence, Rest)` still
+The optimization is deliberately narrow. `phrase(..., Sequence, Rest)` still
 enumerates the valid remainders, open or non-compact inputs retain ordinary
 relational behavior, and grammars that can consume or constrain the remainder
-are not treated as identity continuations.  `time/1` can be used in normal mode
+are not treated as identity continuations. `time/1` can be used in normal mode
 to measure such runs; its inference counter records solver-level inferences and
 does not count every internal step of an optimized scanner.
 
@@ -10336,7 +10346,7 @@ hand.
 
 #### Running and extending the corpus
 
-Run all 210 normal answer goldens and the 61 selected proof goldens with:
+Run all 228 normal answer goldens and the 61 selected proof goldens with:
 
 ```sh
 node test/run-examples.mjs
@@ -10393,7 +10403,7 @@ When adding an example:
 6. include both a positive case and a meaningful boundary or failure case;
 7. run the full corpus before treating the example as documentation.
 
-Every top-level program under `examples/` appears in the thematic lists and the alphabetical index. Apply the same reading discipline to every example—sentence, mode, finite domain, answer, proof, and revision.
+Every top-level program under `examples/` appears in the thematic lists above. Apply the same reading discipline to every example—sentence, mode, finite domain, answer, proof, and revision.
 
 ## 42. Standards, limits, and implementation boundaries
 
@@ -10416,8 +10426,7 @@ node test/run-conformance-report.mjs
 ```
 
 `test/conformance/ISO-COMPLIANCE.md` is the processor-requirement ledger for the
-Part 1 conformance review. It records explicit dispositions for the tracked processor, syntax, semantic, built-in, and arithmetic requirements. `test/conformance/ISO-COMPLIANCE.md`
-maps language families to representative executable cases.
+Part 1 conformance review. It records explicit dispositions for the tracked processor, syntax, semantic, built-in, and arithmetic requirements, and maps language families to representative executable cases.
 `test/conformance/ISO-IMPLEMENTATION-DEFINED.md` is the ISO 5.4 decision
 index: it enumerates the Part 1 implementation-defined decisions and the
 implementation-specific extension families without turning draft WG17/STC
@@ -10436,7 +10445,7 @@ accept texts outside the strict grammar, but it may not reinterpret an accepted
 standard case.
 
 The file-based conformance corpus contains 810 cases, including 393 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
-Separate exact-output suites check 210 normal examples and 61 proof examples; all executable chapter programs are parsed and their declared goals are executed. The eight-case
+Separate exact-output suites check 228 normal examples and 61 proof examples; all executable chapter programs are parsed and their declared goals are executed. The nine-case
 playground contract suite imports the production worker, sends real reasoning
 requests through its message protocol, and crawls the served module graph for
 missing assets, bad MIME types, and static Node-only imports. `conformance-report.md` records the current executable WG17 syntax result and file-based conformance category totals.
