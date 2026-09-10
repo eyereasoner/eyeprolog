@@ -9,16 +9,6 @@
     "expectedSha256": "a0aa24fcbc87c394a4da789ac861b8e18cabad5e0d73b25ddc02df5dd4376c1b"
   },
   {
-    "name": "classic-nrev",
-    "group": "recursion/lips",
-    "file": "examples/bench.pl",
-    "goals": [
-      "bench_result(X0)"
-    ],
-    "expectedSha256": "8045dc0730e4996a7b01fb2348311fb175ed53f4c49d14f82e01a3d470602255",
-    "logicalInferences": 496
-  },
-  {
     "name": "clpz-sudoku",
     "group": "clpz",
     "file": "examples/clpz-sudoku-9x9.pl",
@@ -172,5 +162,32 @@
       "bulk_write_result(X0, X1)"
     ],
     "expectedSha256": "8471da130a4a3a92dd31ee6cf285b1e129886177d7be367d51650a48b8920324"
+  },
+  {
+    "name": "quine-mccluskey",
+    "group": "dynamic-database",
+    "file": "examples/quine-mccluskey.pl",
+    "goals": [
+      "answer(X0)"
+    ],
+    "expectedSha256": "9ebf4a55f6f15a78ad614da02b418650d77cae39eb0d49cbf9eb614865bec501"
+  },
+  {
+    "name": "fibonacci",
+    "group": "tabling",
+    "file": "examples/fibonacci.pl",
+    "goals": [
+      "fibonacci(X0, X1)"
+    ],
+    "expectedSha256": "3adc819083c11d6bf4195e2718904d1712c21553d8fcad970c11a4a4e79e2a3f"
+  },
+  {
+    "name": "iso-atomic-conversion",
+    "group": "term-io",
+    "file": "examples/iso-atomic-conversion.pl",
+    "goals": [
+      "report(X0, X1)"
+    ],
+    "expectedSha256": "68c82dac7dd666cae5af51786f4fbc75423aac12309cedda1e342aba08ea4253"
   }
 ]

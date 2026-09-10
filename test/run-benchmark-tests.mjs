@@ -42,10 +42,8 @@ function runWorker(item) {
   ]);
 }
 
-ok(Array.isArray(manifest) && manifest.length === 19, 'benchmark manifest should contain exactly 19 representative workloads');
+ok(Array.isArray(manifest) && manifest.length === 21, 'benchmark manifest should contain exactly 21 representative workloads');
 ok(new Set(manifest.map((item) => item.name)).size === manifest.length, 'benchmark names should be unique');
-const classicNrev = manifest.find((item) => item.name === 'classic-nrev');
-ok(classicNrev?.logicalInferences === 496, 'classic nrev should retain the traditional 496-call LIPS accounting');
 
 for (const item of manifest) {
   ok(/^[0-9a-f]{64}$/.test(item.expectedSha256), `${item.name} should have a committed semantic checksum`);
@@ -71,18 +69,6 @@ ok(adaptive.results.length === 1, 'adaptive benchmark smoke test should select o
 ok(adaptive.results[0].batchSize > 1, 'adaptive benchmark smoke test should batch a short workload');
 ok(adaptive.results[0].sha256 === manifest.find((item) => item.name === 'dcg-expression').expectedSha256,
   'adaptive batching should preserve the semantic checksum');
-
-const nrev = await spawnJson([
-  path.join(root, 'test', 'benchmark.mjs'),
-  '--filter', 'classic-nrev',
-  '--runs', '1',
-  '--warmup', '0',
-  '--target-ms', '0',
-  '--json',
-]);
-ok(nrev.results.length === 1, 'classic nrev benchmark should be selectable');
-ok(nrev.results[0].logicalInferences === 496, 'classic nrev JSON should expose its logical-inference count');
-ok(Number.isFinite(nrev.results[0].lips) && nrev.results[0].lips > 0, 'classic nrev JSON should report positive LIPS');
 
 const classicLips = await spawnJson([
   path.join(root, 'test', 'lips-benchmark.mjs'),

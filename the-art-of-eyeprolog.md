@@ -10358,7 +10358,7 @@ npm run benchmark -- --save .benchmarks/baseline.json
 node test/lips-benchmark.mjs
 ```
 
-The benchmark suite contains 19 representative workloads and stores their
+The benchmark suite contains 21 representative workloads and stores their
 semantic output digests in the repository, while wall-clock baselines remain
 machine-local under `.benchmarks/` because absolute timings are machine-specific.
 Each benchmark runs in its own fresh Node worker. Inside that worker, one untimed

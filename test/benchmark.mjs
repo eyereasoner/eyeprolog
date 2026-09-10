@@ -69,9 +69,6 @@ for (const item of manifest) {
   if (!/^[0-9a-f]{64}$/.test(item.expectedSha256)) {
     throw new Error(`invalid expectedSha256 for benchmark ${item.name}`);
   }
-  if (item.logicalInferences != null && (!Number.isInteger(item.logicalInferences) || item.logicalInferences <= 0)) {
-    throw new Error(`invalid logicalInferences for benchmark ${item.name}`);
-  }
 }
 
 const selected = manifest.filter((item) => {
@@ -118,16 +115,6 @@ function formatMs(value) {
   return `${value.toFixed(1)} ms`;
 }
 
-function lipsFor(logicalInferences, medianMs) {
-  if (!Number.isFinite(logicalInferences) || !Number.isFinite(medianMs) || medianMs <= 0) return null;
-  return logicalInferences * 1000 / medianMs;
-}
-
-function formatLips(value) {
-  if (value == null) return '—';
-  return Math.round(value).toLocaleString('en-US');
-}
-
 function changePercent(medianMs, baselineMs) {
   if (baselineMs == null || baselineMs === 0) return null;
   return ((medianMs - baselineMs) / baselineMs) * 100;
@@ -139,6 +126,28 @@ function changeText(item) {
   const value = `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
   if (Math.abs(change) < 5) return `≈ ${value}`;
   return `${change < 0 ? '↓' : '↑'} ${value}`;
+}
+
+// A regression (slower) reads red, an improvement (faster) reads green, and a
+// change too small to trust (< 5%) reads dim rather than either color, so the
+// palette itself does not editorialize about noise-level swings.
+function changeColor(item) {
+  if (item.changePercent == null) return null;
+  if (Math.abs(item.changePercent) < 5) return 'dim';
+  return item.changePercent < 0 ? 'green' : 'red';
+}
+
+const supportsColor = !options.json && process.stdout.isTTY &&
+  process.env.NO_COLOR == null && process.env.TERM !== 'dumb';
+const ANSI = { bold: '1', dim: '2', green: '32', red: '31' };
+function paint(name, text) {
+  return name && supportsColor ? `\x1b[${ANSI[name]}m${text}\x1b[0m` : text;
+}
+function visibleLength(text) {
+  return text.replace(/\x1b\[[0-9;]*m/g, '').length;
+}
+function padVisible(text, width) {
+  return text + ' '.repeat(Math.max(0, width - visibleLength(text)));
 }
 
 function summarizeResults(results) {
@@ -226,8 +235,6 @@ for (const item of selected) {
     answerLines: worker.answerLines,
     outputBytes: worker.outputBytes,
     sha256: worker.digest,
-    logicalInferences: item.logicalInferences ?? null,
-    lips: lipsFor(item.logicalInferences, medianMs),
     baselineMs: baselineItem?.medianMs ?? null,
     changePercent: changePercent(medianMs, baselineItem?.medianMs ?? null),
   });
@@ -265,42 +272,36 @@ if (options.json) {
     results,
   }, null, 2)}\n`);
 } else {
-  const headers = ['Benchmark', 'Median/op', 'LIPS', 'Range/op', 'Batch', 'Baseline', 'Change', 'Answers'];
+  const headers = ['Benchmark', 'Median/op', 'Range/op', 'Batch', 'Baseline', 'Change', 'Answers'];
   const rows = results.map((item) => [
     item.name,
     formatMs(item.medianMs),
-    formatLips(item.lips),
     `${formatMs(item.minMs)}–${formatMs(item.maxMs)}`,
     String(item.batchSize),
     formatMs(item.baselineMs),
-    changeText(item),
+    paint(changeColor(item), changeText(item)),
     String(item.answerLines),
   ]);
-  const widths = headers.map((header, index) => Math.max(header.length, ...rows.map((row) => row[index].length)));
-  const printRow = (row) => process.stdout.write(`${row.map((cell, index) => cell.padEnd(widths[index])).join('  ')}\n`);
-  printRow(headers);
-  printRow(widths.map((width) => '-'.repeat(width)));
+  const widths = headers.map((header, index) => Math.max(header.length, ...rows.map((row) => visibleLength(row[index]))));
+  const printRow = (row, style) => process.stdout.write(
+    `${row.map((cell, index) => paint(style, padVisible(cell, widths[index]))).join('  ')}\n`,
+  );
+  printRow(headers, 'bold');
+  printRow(widths.map((width) => '-'.repeat(width)), 'dim');
   for (const row of rows) printRow(row);
 
   if (summary.comparable > 0) {
     process.stdout.write(
       `\nSuite score: ${summary.ratio.toFixed(3)}x baseline ` +
-      `(${changeText({ changePercent: summary.changePercent })}); ` +
-      `equal-weight geometric mean across ${summary.comparable}/${summary.total} comparable benchmarks.\n`,
-    );
-    process.stdout.write(
-      `Time-weighted total: ${formatMs(summary.currentTotalMs)} vs ${formatMs(summary.baselineTotalMs)} ` +
-      `(${changeText({ changePercent: summary.totalChangePercent })}).\n`,
+      `(${paint(changeColor({ changePercent: summary.changePercent }), changeText({ changePercent: summary.changePercent }))}), ` +
+      `${summary.comparable}/${summary.total} comparable. ` +
+      `Time-weighted: ${formatMs(summary.currentTotalMs)} vs ${formatMs(summary.baselineTotalMs)} ` +
+      `(${paint(changeColor({ changePercent: summary.totalChangePercent }), changeText({ changePercent: summary.totalChangePercent }))}).\n`,
     );
   }
 
-  process.stdout.write(`\n${results.length} benchmarks; ${options.runs} measured batch${options.runs === 1 ? '' : 'es'} each after ${options.warmup} warm-up batch${options.warmup === 1 ? '' : 'es'}, calibrated after one priming execution toward ${options.targetMs} ms per batch.\n`);
-  if (baselineWarning) process.stdout.write(`${baselineWarning}\n`);
-  if (baselinePath == null && !baselineWarning) process.stdout.write('No timing baseline found; run npm run benchmark -- --save .benchmarks/baseline.json to create .benchmarks/baseline.json.\n');
-  if (options.save != null) process.stdout.write(`Saved timing baseline: ${path.relative(root, options.save)}\n`);
-  process.stdout.write('Change compares the current median/op directly with the saved baseline median/op; the measured range is shown separately.\n');
-  process.stdout.write('The classic-nrev LIPS column is a quick wall-clock estimate. Use node test/lips-benchmark.mjs for the Quintus-style dummy-subtracted CPU measurement.\n');
-  if (summary.comparable > 0) {
-    process.stdout.write('Suite score is the geometric mean of current/baseline ratios, so every benchmark has equal relative weight; Time-weighted total compares summed medians and is dominated by longer workloads.\n');
-  }
+  process.stdout.write(`\n${results.length} benchmarks, ${options.runs}× after ${options.warmup}× warm-up, ~${options.targetMs} ms/batch.\n`);
+  if (baselineWarning) process.stdout.write(paint('dim', `${baselineWarning}\n`));
+  else if (baselinePath == null) process.stdout.write(paint('dim', 'No baseline: npm run benchmark -- --save .benchmarks/baseline.json\n'));
+  if (options.save != null) process.stdout.write(`Saved baseline: ${path.relative(root, options.save)}\n`);
 }
