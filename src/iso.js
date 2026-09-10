@@ -1153,24 +1153,32 @@ function streamHandle(id) {
   return compound('$stream', [numberTerm(id)]);
 }
 
+function streamHandleId(value, env) {
+  // A `$stream(Id)` term is an ordinary compound, not an opaque blob, so
+  // general term-construction predicates such as functor/3 and arg/3 can
+  // rebuild one whose argument is a variable that only later gets unified
+  // with the real stream number (issue #109). Deref that argument, the same
+  // as any other compound argument, instead of inspecting the raw arg term
+  // and rejecting an equally valid stream reference as malformed.
+  if (value.type !== COMPOUND || value.name !== '$stream' || value.arity !== 1) return null;
+  const id = deref(value.args[0], env);
+  return id.type === NUMBER && isDecimalInteger(id.name) ? Number(id.name) : null;
+}
+
 function streamReference(term, env) {
   const value = deref(term, env);
   if (value.type === VAR) throw new PrologError('instantiation_error');
   if (value.type === ATOM) return value.name;
-  if (value.type === COMPOUND && value.name === '$stream' && value.arity === 1 &&
-      value.args[0].type === NUMBER && isDecimalInteger(value.args[0].name)) {
-    return Number(value.args[0].name);
-  }
+  const id = streamHandleId(value, env);
+  if (id != null) return id;
   throw new PrologError('domain_error(stream_or_alias)', value);
 }
 
 function streamTermReference(term, env) {
   const value = deref(term, env);
   if (value.type === VAR) return null;
-  if (value.type === COMPOUND && value.name === '$stream' && value.arity === 1 &&
-      value.args[0].type === NUMBER && isDecimalInteger(value.args[0].name)) {
-    return Number(value.args[0].name);
-  }
+  const id = streamHandleId(value, env);
+  if (id != null) return id;
   throw new PrologError('domain_error(stream)', value);
 }
 

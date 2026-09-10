@@ -29,6 +29,24 @@ import {
 export function regressionCases() {
   return [
     {
+      name: 'close/1 accepts a $stream/1 term rebuilt via functor/3 and arg/3 that is structurally == to the real handle (issue #109)',
+      run: () => {
+        const file = sourceAtom(path.join(temp.dir, `stream-109-${++temp.counter}.txt`));
+        const result = runCli([], { input:
+          `open(${file},write,S),functor(S,Fn,A),functor(S2,Fn,A),arg(1,S,A1),arg(1,S2,A1),S==S2,close(S2).\n` +
+          'halt.\n',
+        });
+        assertEqual(result.status, 0, result.stderr);
+        // S2's argument only becomes the real stream number through
+        // unification rather than being built in place by open/3, so
+        // close/1 must deref it like any other compound argument instead of
+        // rejecting an equally valid, structurally-== stream reference as
+        // malformed.
+        assertNotIncludes(result.stdout + result.stderr, 'error(', 'no domain_error(stream_or_alias, ...) from close/1');
+        assertIncludes(result.stdout, 'A1 = ', 'query succeeds and reports the shared stream number');
+      },
+    },
+    {
       name: 'top level never mints a generated variable name that collides with a query variable\'s own name (issue #108)',
       run: () => {
         const result = runCli([], { input: 'length(L,1),_A=99.\nhalt.\n' });
