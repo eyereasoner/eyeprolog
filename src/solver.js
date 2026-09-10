@@ -838,6 +838,16 @@ export class Solver {
           continue;
         }
 
+        const appendIterator = bundledAppendIterator(this, group, goal, env);
+        if (appendIterator != null) {
+          const firstResult = appendIterator.next();
+          if (firstResult.done) break;
+          goals = rest;
+          env = firstResult.value;
+          depth++;
+          continue;
+        }
+
         const comparisonIterator = bundledCompareSiIterator(this, group, goal, env);
         if (comparisonIterator != null) {
           const firstResult = comparisonIterator.next();
@@ -1894,6 +1904,44 @@ function* bundledBetweenSolutions(solver, goal, env, state) {
     }
   }
   state.pending = false;
+}
+
+function bundledAppendIterator(solver, group, goal, env) {
+  if (solver.registry.eyePrologLibrary !== true || group.bundledLibrary !== true ||
+      group.module !== 'lists' || group.name !== 'append' || group.arity !== 3 ||
+      group.tabled || group.clauses.length !== 2) return null;
+  // Preserve source-defined hook ordering and occurs-check diagnostics. Only
+  // forward construction with a plain, unbound result is specialized.
+  if (env._prologAttributes != null || env._delays != null ||
+      solver.prologFlags.get('occurs_check')?.value?.name === 'error' ||
+      deref(goal.args[2], env).type !== VAR) return null;
+
+  const items = [];
+  const seen = new Set();
+  let cursor = deref(goal.args[0], env);
+  while (isCons(cursor)) {
+    if (seen.has(cursor)) return null;
+    seen.add(cursor);
+    items.push(cursor.args[0]);
+    if ((items.length & 255) === 0) solver.checkMemoryLimit(true);
+    cursor = deref(cursor.args[1], env);
+  }
+  if (!isEmptyList(cursor)) return null;
+  return bundledAppendSolutions(solver, goal, env, items);
+}
+
+function* bundledAppendSolutions(solver, goal, env, items) {
+  // Copy just the prefix spine, preserving its variables and sharing the
+  // suffix. One normal, occurs-checked unification replaces repeated clause
+  // freshening and scans over every remaining variable-list suffix.
+  let joined = goal.args[1];
+  for (let i = items.length - 1; i >= 0; i--) {
+    joined = cons(items[i], joined);
+    if ((i & 255) === 0) solver.checkMemoryLimit(true);
+  }
+  const next = env.clone();
+  solver.stats.unify_calls++;
+  if (unify(goal.args[2], joined, next)) yield next;
 }
 
 function bundledMemberIterator(solver, group, goal, env) {

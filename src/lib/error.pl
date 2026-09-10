@@ -55,6 +55,7 @@ error__must_be(acyclic, Term) :- !,
 error__must_be(list, Term) :- !,
     error__list(Term, Term, must_be/2, complete).
 error__must_be(list(Type), Term) :- !,
+    error__require_type(Type, must_be/2),
     error__list(Term, Term, must_be/2, complete),
     error__proper_list_of(Term, Type).
 error__must_be(character, Term) :- !,
@@ -75,10 +76,30 @@ error__must_be(pair, Term) :- !,
 error__must_be(not_less_than_zero, Term) :- !,
     must_be(integer, Term),
     ( Term >= 0 -> true ; domain_error(not_less_than_zero, Term) ).
-error__must_be(Type, Term) :-
-    ( var(Term) -> error__must_be_throw(instantiation_error)
-    ; error__must_be_throw(type_error(Type, Term))
-    ).
+error__must_be(Type, _) :-
+    error__must_be_throw(type_error(type, Type)).
+
+% Check the type descriptor before accepting a variable or an empty list.
+% The variable guard also prevents validation from instantiating a descriptor.
+error__require_type(Type, Predicate) :- var(Type), !,
+    throw(error(instantiation_error, [predicate-Predicate])).
+error__require_type(list(Type), Predicate) :- !,
+    error__require_type(Type, Predicate).
+error__require_type(Type, Predicate) :-
+    ( error__known_type(Type) -> true
+    ; throw(error(type_error(type, Type), [predicate-Predicate])) ).
+
+error__known_type(integer).
+error__known_type(atom).
+error__known_type(number).
+error__known_type(var).
+error__known_type(ground).
+error__known_type(acyclic).
+error__known_type(list).
+error__known_type(character).
+error__known_type(chars).
+error__known_type(pair).
+error__known_type(not_less_than_zero).
 
 % A list ends in []; a partial list ends in a variable (including a variable
 % alone). Inspect before matching so validation never completes a partial list.
@@ -102,8 +123,8 @@ error__proper_list_of(Term, _) :-
     ).
 
 can_be(Type, Term) :-
-    ( var(Type) -> error__can_be_throw(instantiation_error)
-    ; var(Term) -> true
+    error__require_type(Type, can_be/2),
+    ( var(Term) -> true
     ; error__can_be(Type, Term)
     ).
 

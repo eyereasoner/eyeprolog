@@ -29,6 +29,89 @@ import {
 export function regressionCases() {
   return [
     {
+      name: 'must_be/2 and can_be/2 reject invalid type descriptors before checking values (issue #106)',
+      run: () => {
+        for (const predicate of ['must_be', 'can_be']) {
+          for (const type of ['nontype', '42', 'foo(integer)', 'list(nontype)', 'list(list(nontype))']) {
+            const culprit = type.startsWith('list(') ? 'nontype' : type;
+            for (const value of ['0', 'X', '[]']) {
+              const result = runEyeProlog(`answer(ok) :- catch((${predicate}(${type},${value}),fail),error(type_error(type,${culprit}),[predicate-${predicate}/2]),true),var(X).`, { goals: ['answer(X)'] });
+              assertIncludes(result.stdout, 'answer(ok)', `${predicate}(${type},${value})`);
+            }
+          }
+          for (const type of ['T', 'list(T)', 'list(list(T))']) {
+            const result = runEyeProlog(`answer(ok) :- catch((${predicate}(${type},[]),fail),error(instantiation_error,[predicate-${predicate}/2]),true),var(T).`, { goals: ['answer(X)'] });
+            assertIncludes(result.stdout, 'answer(ok)', `${predicate}(${type},[])`);
+          }
+        }
+        const valid = [
+          ['integer', '1'], ['atom', 'a'], ['number', '1.5'], ['var', 'X'],
+          ['ground', 'f(a)'], ['acyclic', 'f(X)'], ['list', '[X]'],
+          ['character', 'a'], ['chars', '[a,b]'], ['pair', 'a-b'],
+          ['not_less_than_zero', '0'], ['list(integer)', '[1,2]'],
+          ['list(list(integer))', '[[1],[]]'],
+        ];
+        for (const [type, value] of valid) {
+          const result = runEyeProlog(`answer(ok) :- must_be(${type},${value}),can_be(${type},${value}),can_be(${type},Fresh),var(Fresh).`, { goals: ['answer(X)'] });
+          assertIncludes(result.stdout, 'answer(ok)', `supported type ${type}`);
+        }
+        const context = runEyeProlog('answer(ok) :- catch((call_with_error_context(can_be(nontype,X),outer-1),fail),error(type_error(type,nontype),[outer-1,predicate-can_be/2]),true),var(X).', { goals: ['answer(X)'] });
+        assertIncludes(context.stdout, 'answer(ok)', 'composable error context');
+      },
+    },
+    {
+      name: 'forward bundled append/3 matches the portable relation across sharing and fallback modes',
+      run: () => {
+        const goals = [
+          'append([],Y,Z),Y=tail',
+          'append([X,Y],[Y,X],Z),X=a,Y=b',
+          'append([X],T,Z),T=[X|Rest],Rest=tail',
+          'append([a,b],tail,Z)',
+          'append([X],[],X)',
+          'append([a],Z,Z)',
+          'append([X],[],Z),X=Z',
+          'append([a],T,Z),T=Z',
+          'append([a],[],[b])',
+          'append([a|T],[b],[a,c,b])',
+          'append([a|bad],[],Z)',
+          'append(X,Y,[a,b])',
+          '(append([a],[],Z);append([b],[],Z))',
+          'freeze(X,Y=woke),append([X],[],Z),X=a',
+          'dif(X,a),append([X],[],Z),X=b',
+          'set_prolog_flag(occurs_check,error),catch(append([X],[],X),error(E,_),true)',
+        ];
+        for (const goal of goals) {
+          const source = `answer(X,Y,Z,T,Rest,E) :- ${goal}.`;
+          const options = { goals: ['answer(X,Y,Z,T,Rest,E)'] };
+          const optimized = runEyeProlog(source, options);
+          const portable = runEyeProlog(
+            'portable_append([],Ys,Ys). portable_append([X|Xs],Ys,[X|Zs]) :- portable_append(Xs,Ys,Zs).\n' +
+            source.replaceAll('append(', 'portable_append('), options);
+          assertEqual(optimized.stdout, portable.stdout, goal);
+          assertEqual(optimized.stderr, portable.stderr, `${goal} diagnostics`);
+        }
+        const custom = runEyeProlog('append(custom,_,ok).', { goals: ['append(custom,[],Z)'] });
+        assertIncludes(custom.stdout, 'append(custom, [], ok)', 'user definition');
+      },
+    },
+    {
+      name: 'forward append/3 constructs long shared-variable lists within a bounded heap and time',
+      run: () => {
+        const script = `
+          import {run} from './src/index.js';
+          const result=run('answer(ok) :- length(P,8192),append(P,[1],L1),append(P,[2],L2),compare(R,L1,L2),compare_si(S,L1,L2),R==(<),S==(<).', {goals:['answer(X)']});
+          if (!result.stdout.includes('answer(ok)')) throw new Error(result.stdout+'\\n'+result.stderr);
+          console.log('ok');
+        `;
+        const result = spawnSync(process.execPath, ['--max-old-space-size=128', '--stack-size=256', '--input-type=module', '--eval', script], {
+          cwd: packageRoot, encoding: 'utf8', timeout: 10000,
+        });
+        if (result.error) throw result.error;
+        assertEqual(result.status, 0, result.stderr);
+        assertIncludes(result.stdout, 'ok', 'long forward append');
+      },
+    },
+    {
       name: 'autoload follows declared meta-predicates and closure arities (issue #105)',
       run: () => {
         const wrappers = ':- meta_predicate(mytime(0)).\nmytime(G) :- time(G).\n' +
