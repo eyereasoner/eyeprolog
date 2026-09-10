@@ -1,6 +1,6 @@
 {
   "source": "https://www.complang.tuwien.ac.at/ulrich/iso-prolog/conformity_testing",
-  "checkedOn": "2026-09-01",
+  "checkedOn": "2026-09-10",
   "protocol": "Each query is read and executed in strict ISO mode; /**/ rows reuse the preceding setup.",
   "cases": [
     {
@@ -5557,8 +5557,112 @@
           }
         ]
       }
+    },
+    {
+      "id": 369,
+      "query": "writeq(?-).",
+      "input": "writeq(?-).",
+      "readCount": 1,
+      "expected": "?-",
+      "assertion": "upstream"
+    },
+    {
+      "id": 370,
+      "query": "writeq(./*).",
+      "input": "writeq(./*).",
+      "readCount": 1,
+      "expected": "./*",
+      "assertion": "upstream"
+    },
+    {
+      "id": 371,
+      "query": "writeq({*}).",
+      "input": "writeq({*}).",
+      "readCount": 1,
+      "expected": "{*}",
+      "assertion": "upstream"
+    },
+    {
+      "id": 372,
+      "query": "writeq(.*).",
+      "input": "writeq(.*).",
+      "readCount": 1,
+      "expected": ".*",
+      "assertion": "upstream"
+    },
+    {
+      "id": 373,
+      "query": "writeq(...*).",
+      "input": "writeq(...*).",
+      "readCount": 1,
+      "expected": "...*",
+      "assertion": "upstream"
+    },
+    {
+      "id": 374,
+      "query": "[.",
+      "input": "[.",
+      "readCount": 1,
+      "expected": "syntax err.",
+      "assertion": "upstream"
+    },
+    {
+      "id": 375,
+      "query": "{.",
+      "input": "{.",
+      "readCount": 1,
+      "expected": "syntax err.",
+      "assertion": "upstream"
+    },
+    {
+      "id": 376,
+      "query": "writeq(E).",
+      "input": "writeq(E).",
+      "readCount": 1,
+      "expected": "e.g. _1",
+      "assertion": "upstream"
+    },
+    {
+      "id": 377,
+      "query": "write_term(., [ignore_ops(true)]).",
+      "input": "write_term(., [ignore_ops(true)]).",
+      "readCount": 1,
+      "expected": ".",
+      "assertion": "upstream"
+    },
+    {
+      "id": 380,
+      "query": "write_term([' '], [ignore_ops(true)]).",
+      "input": "write_term([' '], [ignore_ops(true)]).",
+      "readCount": 1,
+      "expected": ".( ,[])",
+      "assertion": "upstream"
+    },
+    {
+      "id": 378,
+      "query": "writeq(--> /2).",
+      "input": "writeq(--> /2).",
+      "readCount": 1,
+      "expected": "syntax err.",
+      "assertion": "upstream"
+    },
+    {
+      "id": 379,
+      "query": "writeq((-->)/2).",
+      "input": "writeq((-->)/2).",
+      "readCount": 1,
+      "expected": "(-->)/2",
+      "assertion": "upstream"
+    },
+    {
+      "id": 381,
+      "query": "Finis ().",
+      "input": "Finis ().",
+      "readCount": 1,
+      "expected": "syntax err.",
+      "assertion": "upstream"
     }
   ],
   "sourceRevision": "1.300",
-  "sourceSha256": "b6590c1c5269e8e62a1ec72a8f04f21f123a77709854a8a66c436df25f3ff418"
+  "sourceSha256": "db1edfc48e065b90169be55cd93a2a62b32f9dacb2fd0707667590c1a7536e69"
 }

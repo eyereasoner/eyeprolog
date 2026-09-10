@@ -8,7 +8,7 @@ import { createDefaultRegistry, eyePrologLibraryIndicators, eyePrologNativeLibra
 import { assertEqual, assertIncludes, assertNotIncludes } from '../test-style.mjs';
 import { buildConformanceReport, formatConformanceReport } from '../run-conformance-report.mjs';
 import { renderWg17SyntaxStatus } from '../../tools/report-wg17-syntax-coverage.mjs';
-import { parseWg17SyntaxTable } from '../../tools/upgrade-wg17.mjs';
+import { parseWg17SyntaxTable, updateWg17InventoryReferences } from '../../tools/upgrade-wg17.mjs';
 import { executeWg17Item, matchesUpstreamExpectation, readWg17SyntaxFixture } from '../run-wg17.mjs';
 import {
   assertArrayEqual,
@@ -167,6 +167,18 @@ ${profile}`;
       run: () => {
         const filename = path.join(testRoot, 'conformance', 'WG17-SYNTAX-STATUS.md');
         assertEqual(fs.readFileSync(filename, 'utf8'), renderWg17SyntaxStatus(), 'WG17 syntax status');
+      },
+    },
+    {
+      name: 'WG17 inventory documentation accepts omitted counts and repairs partial updates',
+      run: () => {
+        const countFree = 'The vendored WG17 syntax snapshot is intentionally secondary.';
+        assertEqual(updateWg17InventoryReferences(countFree, 379), countFree, 'no count required');
+        const stale = 'The 366-case vendored WG17 matrix and 365-case WG17 syntax matrix; WG17 matrix has 366 executable cases. An unrelated 366-case suite stays unchanged.';
+        const expected = 'The 379-case vendored WG17 matrix and 379-case WG17 syntax matrix; WG17 matrix has 379 executable cases. An unrelated 366-case suite stays unchanged.';
+        const updated = updateWg17InventoryReferences(stale, 379);
+        assertEqual(updated, expected, 'all stale WG17 counts repaired independently of fixture state');
+        assertEqual(updateWg17InventoryReferences(updated, 379), updated, 'retry is idempotent');
       },
     },
     {

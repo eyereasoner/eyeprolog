@@ -396,17 +396,20 @@ function formatIdList(ids) {
   return ids.length === 0 ? 'none' : ids.map((id) => `#${id}`).join(', ');
 }
 
-function updateDocumentedInventoryCount(previousCount, nextCount) {
-  if (previousCount === nextCount) return;
+export function updateWg17InventoryReferences(text, nextCount) {
+  // Some documents deliberately omit a count. Update only explicit WG17
+  // inventory references, independently of the previous fixture count: a
+  // retry may follow a partial update that already wrote the new fixture.
+  return text
+    .replace(/\b\d+-case(?=\s+(?:vendored\s+)?WG17\b)/g, `${nextCount}-case`)
+    .replace(/\bWG17 matrix has \d+ executable/g, `WG17 matrix has ${nextCount} executable`);
+}
+
+function updateDocumentedInventoryCount(nextCount) {
   for (const filename of countDocumentationPaths) {
     const original = fs.readFileSync(filename, 'utf8');
-    const updated = original
-      .replaceAll(`${previousCount}-case`, `${nextCount}-case`)
-      .replaceAll(`WG17 matrix has ${previousCount} executable`, `WG17 matrix has ${nextCount} executable`);
-    if (updated === original) {
-      throw new Error(`WG17 inventory count was not found in ${path.relative(packageRoot, filename)}`);
-    }
-    fs.writeFileSync(filename, updated);
+    const updated = updateWg17InventoryReferences(original, nextCount);
+    if (updated !== original) fs.writeFileSync(filename, updated);
   }
 }
 
@@ -507,7 +510,7 @@ export async function upgradeWg17({ check = false, source = syntaxSource } = {})
   // Generate status after the fixture/manifest are synchronized.
   const { renderWg17SyntaxStatus } = await import('./report-wg17-syntax-coverage.mjs');
   fs.writeFileSync(syntaxStatusPath, renderWg17SyntaxStatus());
-  updateDocumentedInventoryCount(previous.cases.length, fixture.cases.length);
+  updateDocumentedInventoryCount(fixture.cases.length);
 
   // The public report executes the refreshed fixture, so keep its measured row
   // synchronized as part of the same explicit upgrade operation.

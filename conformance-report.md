@@ -15,9 +15,9 @@ cached source bytes, avoiding a second live fetch and its race window.
 
 | Gate | Passed | Total | Status |
 |---|---:|---:|---|
-| WG17 syntax | 366 | 366 | pass |
+| WG17 syntax | 379 | 379 | pass |
 
-The WG17 syntax row executes the vendored 366-case conformity-testing matrix
+The WG17 syntax row executes the vendored 379-case conformity-testing matrix
 against EyeProlog's strict ISO reader/writer. A behavior fix such as operator-token
 spelling therefore changes this report even when no corpus file is added or removed.
 
