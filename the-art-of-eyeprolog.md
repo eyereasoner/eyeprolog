@@ -7034,7 +7034,7 @@ library dependency should be explicit. `--iso-strict` always disables EyeProlog
 library autoloading, so strict ISO execution never gains procedures from this
 implementation convenience.
 
-`-w` / `--warnings` reports explicit dependencies on non-profile libraries and calls to non-profile predicates from otherwise common modules. `--portable` turns those diagnostics into a failing run, making the conservative profile suitable for continuous integration. Cross-engine portability can be exercised with `npm run test:interop` when EyeProlog, Trealla, and Scryer are installed.
+`-w` / `--warnings` reports explicit dependencies on non-profile libraries and calls to non-profile predicates from otherwise common modules. `--portable` turns those diagnostics into a failing run, making the conservative profile suitable for continuous integration. Cross-engine portability can be exercised with `node test/run-interop.mjs` when EyeProlog, Trealla, and Scryer are installed.
 
 ### Specialized library implementation notes
 
@@ -10339,7 +10339,7 @@ hand.
 Run all 210 normal answer goldens and the 61 selected proof goldens with:
 
 ```sh
-npm run test:examples
+node test/run-examples.mjs
 ```
 
 Run the complete conformance, regression, example, and proof corpus
@@ -10354,8 +10354,8 @@ and fast:
 
 ```sh
 npm run benchmark
-npm run benchmark:baseline
-npm run benchmark:lips
+npm run benchmark -- --save .benchmarks/baseline.json
+node test/lips-benchmark.mjs
 ```
 
 The benchmark suite contains 19 representative workloads and stores their
@@ -10368,7 +10368,7 @@ warm-up batch, five measured batches are reported as milliseconds per workload
 execution. Naturally long workloads keep a batch size of one.
 
 The classic `examples/bench.pl` workload also has a dedicated LIPS harness.
-`npm run benchmark:lips` follows the 1984 Quintus method more closely than the
+`node test/lips-benchmark.mjs` follows the 1984 Quintus method more closely than the
 generic runner: `dobench/1` and `dodummy/1` execute failure-driven loops inside
 Prolog, the dummy CPU time is subtracted, and the remaining time is converted
 using 496 procedure calls for one reversal of the 30-element list. Node's
@@ -10409,9 +10409,9 @@ lists, terms, atoms, variables, negation, queries, rules, and
 syntax. Separate corpora cover expected errors, warnings, and proofs:
 
 ```sh
-npm run test:conformance
-npm run test:iso
-npm run test:wg17
+node test/run-conformance-all.mjs
+node test/run-iso-strict.mjs
+node test/run-wg17.mjs
 node test/run-conformance-report.mjs
 ```
 
@@ -10452,7 +10452,7 @@ The repository exposes several forms of executable evidence:
 Run the browser contract independently with:
 
 ```sh
-npm run test:playground
+node test/run-playground.mjs
 ```
 
 ### Supported ISO Prolog implementation

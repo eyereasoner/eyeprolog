@@ -291,7 +291,7 @@ rdf-to-prolog \
 Run the checked EyeProlog example:
 
 ```sh
-npm run test:examples
+node test/run-examples.mjs
 ```
 
 Materialize only the RDF-shaped results:

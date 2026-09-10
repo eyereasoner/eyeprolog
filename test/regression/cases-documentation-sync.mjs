@@ -649,7 +649,10 @@ ${profile}`;
         const publishIndex = publishWorkflow.indexOf('run: npm publish');
         assertEqual(testIndex >= 0 && testIndex < publishIndex, true, 'publish workflow test gate');
         assertEqual(packIndex >= 0 && packIndex < publishIndex, true, 'publish workflow package gate');
-        assertEqual(pkg.scripts?.['test:openrulebench'], 'node test/run-openrulebench.mjs', 'OpenRuleBench test script');
+        assertArrayEqual(Object.keys(pkg.scripts).sort(), ['benchmark', 'conformance:update:wg17', 'generate', 'postversion', 'preversion', 'test'], 'small npm command surface');
+        assertEqual(pkg.scripts.test, 'node test/run-all.mjs', 'full release gate');
+        const runner = fs.readFileSync(path.join(packageRoot, 'test', 'run-all.mjs'), 'utf8');
+        assertIncludes(runner, 'runOpenRuleBenchChecks(reporter)', 'OpenRuleBench remains in release gate');
       },
     },
     {

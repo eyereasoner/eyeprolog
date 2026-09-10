@@ -209,7 +209,7 @@ const wanted = expectedBook(book, generated);
 
 if (process.argv.includes('--check')) {
   if (wanted !== book) {
-    console.error(`${path.relative(root, bookFile)} predicate reference is stale; run npm run generate:reference`);
+    console.error(`${path.relative(root, bookFile)} predicate reference is stale; run npm run generate`);
     process.exit(1);
   }
   console.log(`${path.relative(root, bookFile)} predicate reference is up to date (${surface.indicators.length} predicates)`);

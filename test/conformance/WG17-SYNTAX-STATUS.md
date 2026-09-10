@@ -46,6 +46,6 @@ None.
 
 ## Maintenance
 
-1. Run `npm run conformance:update` to reconcile the dated fixture with upstream.
+1. Run `npm run conformance:update:wg17` to reconcile the dated fixture with upstream.
 2. Review every new or changed ISO expectation before adding its expected outcome.
-3. Run `npm run test:wg17` and keep this generated status page synchronized.
+3. Run `node test/run-wg17.mjs` and keep this generated status page synchronized.

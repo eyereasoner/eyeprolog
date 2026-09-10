@@ -59,8 +59,8 @@ async function fetchOne(source) {
   } catch (error) {
     throw new Error(
       `Neumerkel live fetch failed for ${source.key} (${source.url}). ` +
-      'The canonical conformance gate requires network access; use npm run test:offline ' +
-      'for a network-free local run or npm run test:neumerkel:cached to reproduce the last live fetch.',
+      'The canonical conformance gate requires network access; use npm test -- --offline ' +
+      'for a network-free local run or node test/run-neumerkel.mjs --cached to reproduce the last live fetch.',
       { cause: error },
     );
   }
@@ -88,7 +88,7 @@ async function fetchOne(source) {
 function readCachedOne(source, cacheDir) {
   const filename = path.join(cacheDir, source.filename);
   if (!fs.existsSync(filename)) {
-    throw new Error(`Neumerkel cache is incomplete: missing ${path.relative(packageRoot, filename)}; run npm run test:neumerkel online first`);
+    throw new Error(`Neumerkel cache is incomplete: missing ${path.relative(packageRoot, filename)}; run node test/run-neumerkel.mjs online first`);
   }
   const bytes = new Uint8Array(fs.readFileSync(filename));
   return {
@@ -476,9 +476,9 @@ export function formatNeumerkelMarkdown({ summary }) {
     'Exact fetched bytes, SHA-256 hashes, fetch timestamps, and HTTP validators remain under',
     'Git-ignored `.cache/neumerkel/` for local inspection/reproduction and are intentionally not committed.',
     'A normal test run warns when this tracked report is stale. Refresh directly from live',
-    'upstream with `npm run conformance:update:neumerkel`, or sync the exact successful',
-    'snapshot already fetched by `npm test` with `npm run conformance:sync:neumerkel`.',
-    '`npm run conformance:check:neumerkel` verifies the tracked report against that last',
+    'upstream with `node test/run-neumerkel.mjs --update-report`, or sync the exact successful',
+    'snapshot already fetched by `npm test` with `node test/run-neumerkel.mjs --cached --update-report`.',
+    '`node test/run-neumerkel.mjs --cached --verify-report` verifies the tracked report against that last',
     'successful live snapshot without fetching upstream a second time.',
     '',
   );

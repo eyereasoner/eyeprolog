@@ -83,39 +83,39 @@ npm test
 For an offline-only development pass:
 
 ```sh
-npm run test:offline
+npm test -- --offline
 ```
 
 The conformance commands are:
 
 ```sh
-npm run test:conformance          # live Neumerkel + local ISO/conformance layers
-npm run test:conformance:offline  # same local layers, no network
-npm run test:neumerkel            # the seven live upstream suites only
-npm run test:neumerkel:cached     # exact last fetched bytes; reproduction only
-npm run conformance:check:neumerkel # verify tracked report against last successful live snapshot
-npm run test:iso                  # Part 1 + Corrigenda strict-core processor gate
-npm run test:iso-part2-amendment  # 2013 Part 2 amendment module requirements
-npm run test:wg17                 # vendored reviewed WG17 syntax regression
+node test/run-conformance-all.mjs          # live Neumerkel + local ISO/conformance layers
+node test/run-conformance-all.mjs --offline  # same local layers, no network
+node test/run-neumerkel.mjs            # the seven live upstream suites only
+node test/run-neumerkel.mjs --cached     # exact last fetched bytes; reproduction only
+node test/run-neumerkel.mjs --cached --verify-report # verify tracked report against last successful live snapshot
+node test/run-iso-strict.mjs                  # Part 1 + Corrigenda strict-core processor gate
+node test/run-iso-part2-amendment.mjs  # 2013 Part 2 amendment module requirements
+node test/run-wg17.mjs                 # vendored reviewed WG17 syntax regression
 ```
 
-`test:neumerkel` always fetches the current TU Wien sources. It does not skip a
-fetch because a cache exists. The runner discovers the number of active tests from those sources and fails on any newly introduced case EyeProlog does not pass. If the stable, tracked [NEUMERKEL-LATEST.md](NEUMERKEL-LATEST.md) is stale, normal tests warn rather than turning a passing engine run into a failure. `npm run conformance:update:neumerkel` performs a fresh live run and refreshes the report; after `npm test`, `npm run conformance:sync:neumerkel` refreshes it from the exact successful cached snapshot; and `npm run conformance:check:neumerkel` verifies that snapshot without a second network fetch. Exact bytes, SHA-256 hashes, timestamps, and HTTP validators stay under Git-ignored `.cache/neumerkel/` for inspection/reproduction only. See [NEUMERKEL-LIVE.md](NEUMERKEL-LIVE.md).
+`node test/run-neumerkel.mjs` always fetches the current TU Wien sources. It does not skip a
+fetch because a cache exists. The runner discovers the number of active tests from those sources and fails on any newly introduced case EyeProlog does not pass. If the stable, tracked [NEUMERKEL-LATEST.md](NEUMERKEL-LATEST.md) is stale, normal tests warn rather than turning a passing engine run into a failure. `node test/run-neumerkel.mjs --update-report` performs a fresh live run and refreshes the report; after `npm test`, `node test/run-neumerkel.mjs --cached --update-report` refreshes it from the exact successful cached snapshot; and `node test/run-neumerkel.mjs --cached --verify-report` verifies that snapshot without a second network fetch. Exact bytes, SHA-256 hashes, timestamps, and HTTP validators stay under Git-ignored `.cache/neumerkel/` for inspection/reproduction only. See [NEUMERKEL-LIVE.md](NEUMERKEL-LIVE.md).
 
-The vendored WG17 syntax snapshot is intentionally secondary. Update all upstream conformance evidence with `npm run conformance:update`, or use the focused commands:
+The vendored WG17 syntax snapshot is intentionally secondary. Update it with `npm run conformance:update:wg17`. For focused upstream report maintenance and verification:
 
 ```sh
 npm run conformance:update:wg17
-npm run conformance:update:neumerkel
-npm run conformance:sync:neumerkel
-npm run test:wg17
+node test/run-neumerkel.mjs --update-report
+node test/run-neumerkel.mjs --cached --update-report
+node test/run-wg17.mjs
 ```
 
 Every vendored syntax case is still checked against its upstream Codex
 expectation; reviewed exact outcomes are an additional regression lock rather
 than an alternative acceptance rule.
 
-Regenerate the top-level local-corpus report with `npm run conformance:report`. It links to [NEUMERKEL-LATEST.md](NEUMERKEL-LATEST.md) rather than duplicating live evidence. Counts in the tracked Neumerkel report are generated evidence, not permanent constants in project policy.
+Regenerate the top-level local-corpus report with `node test/run-conformance-report.mjs conformance-report.md`. It links to [NEUMERKEL-LATEST.md](NEUMERKEL-LATEST.md) rather than duplicating live evidence. Counts in the tracked Neumerkel report are generated evidence, not permanent constants in project policy.
 
 Run a matching local file-based conformance subset directly with:
 

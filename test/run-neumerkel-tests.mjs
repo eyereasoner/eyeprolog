@@ -123,17 +123,13 @@ export function runNeumerkelHarnessTests(reporter = new TestReporter()) {
   reporter.test('release workflow reuses the successful live snapshot instead of refetching', () => {
     const pkg = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
     const scripts = pkg.scripts ?? {};
-    if (scripts['conformance:sync:neumerkel'] !== 'node test/run-neumerkel.mjs --cached --update-report') {
-      throw new Error('Neumerkel sync must update from the cached successful live snapshot');
-    }
-    if (scripts['conformance:check:neumerkel'] !== 'node test/run-neumerkel.mjs --cached --verify-report') {
-      throw new Error('Neumerkel report check must not refetch live upstream');
-    }
-    if (!String(scripts.preversion ?? '').includes('conformance:sync:neumerkel')) {
+    const releaseSteps = String(scripts.preversion ?? '').split(' && ');
+    if (releaseSteps[0] !== 'npm test' || releaseSteps[1] !== 'node test/run-neumerkel.mjs --cached --update-report') {
       throw new Error('preversion must synchronize the tracked report from the successful npm test snapshot');
     }
-    if (String(scripts.preversion ?? '').includes('conformance:check:neumerkel')) {
-      throw new Error('preversion must not perform a second report check/fetch cycle after synchronization');
+    if (releaseSteps[2] !== 'node test/run-conformance-report.mjs conformance-report.md' ||
+        releaseSteps[3] !== 'git add test/conformance/NEUMERKEL-LATEST.md conformance-report.md' || releaseSteps.length !== 4) {
+      throw new Error('preversion must generate and stage both reports without another fetch');
     }
   });
 

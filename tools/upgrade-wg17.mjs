@@ -457,7 +457,7 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
-  process.stdout.write(`Usage: npm run conformance:update -- [--check] [--source URL_OR_FILE]\n\n` +
+  process.stdout.write(`Usage: npm run conformance:update:wg17 -- [--check] [--source URL_OR_FILE]\n\n` +
     `Refreshes the vendored WG17 conformity tests from the TU Wien table.\n` +
     `New or changed rows are executable immediately against the upstream\n` +
     `Codex expectation; existing reviewed exact outcomes remain pinned only as additional regression checks.\n`);
@@ -477,7 +477,7 @@ export async function upgradeWg17({ check = false, source = syntaxSource } = {})
 
   if (check) {
     if (semanticChanges > 0) {
-      process.stderr.write('WG17 snapshot is stale; run npm run conformance:update.\n');
+      process.stderr.write('WG17 snapshot is stale; run npm run conformance:update:wg17.\n');
       process.exitCode = 1;
       return { changed: true, ...reconciliation };
     }
@@ -524,7 +524,7 @@ export async function upgradeWg17({ check = false, source = syntaxSource } = {})
   process.stdout.write(`Updated WG17 snapshot (${fixture.cases.length} cases).\n`);
   if (upstreamAssertions.length > 0) {
     process.stdout.write(
-      `Direct upstream assertions used by test:wg17: ${formatIdList(upstreamAssertions)}\n`,
+      `Direct upstream assertions used by the WG17 runner: ${formatIdList(upstreamAssertions)}\n`,
     );
   }
   return { changed: semanticChanges > 0, upstreamAssertions, ...reconciliation };

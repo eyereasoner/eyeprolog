@@ -102,7 +102,7 @@ if (baselinePath != null) {
   const loaded = JSON.parse(await fs.readFile(baselinePath, 'utf8'));
   if (loaded.format === 2) baseline = loaded;
   else {
-    baselineWarning = `Ignoring legacy timing baseline format ${loaded.format ?? 'unknown'}; regenerate it with npm run benchmark:baseline.`;
+    baselineWarning = `Ignoring legacy timing baseline format ${loaded.format ?? 'unknown'}; regenerate it with npm run benchmark -- --save .benchmarks/baseline.json.`;
     baselinePath = null;
   }
 }
@@ -296,10 +296,10 @@ if (options.json) {
 
   process.stdout.write(`\n${results.length} benchmarks; ${options.runs} measured batch${options.runs === 1 ? '' : 'es'} each after ${options.warmup} warm-up batch${options.warmup === 1 ? '' : 'es'}, calibrated after one priming execution toward ${options.targetMs} ms per batch.\n`);
   if (baselineWarning) process.stdout.write(`${baselineWarning}\n`);
-  if (baselinePath == null && !baselineWarning) process.stdout.write('No timing baseline found; run npm run benchmark:baseline to create .benchmarks/baseline.json.\n');
+  if (baselinePath == null && !baselineWarning) process.stdout.write('No timing baseline found; run npm run benchmark -- --save .benchmarks/baseline.json to create .benchmarks/baseline.json.\n');
   if (options.save != null) process.stdout.write(`Saved timing baseline: ${path.relative(root, options.save)}\n`);
   process.stdout.write('Change compares the current median/op directly with the saved baseline median/op; the measured range is shown separately.\n');
-  process.stdout.write('The classic-nrev LIPS column is a quick wall-clock estimate. Use npm run benchmark:lips for the Quintus-style dummy-subtracted CPU measurement.\n');
+  process.stdout.write('The classic-nrev LIPS column is a quick wall-clock estimate. Use node test/lips-benchmark.mjs for the Quintus-style dummy-subtracted CPU measurement.\n');
   if (summary.comparable > 0) {
     process.stdout.write('Suite score is the geometric mean of current/baseline ratios, so every benchmark has equal relative weight; Time-weighted total compares summed medians and is dominated by longer workloads.\n');
   }

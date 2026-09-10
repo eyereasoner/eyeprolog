@@ -286,14 +286,14 @@ architecture gates. The upstream case counts are discovered dynamically.
 Useful focused commands are:
 
 ```sh
-npm run test:conformance
-npm run test:neumerkel
-npm run test:iso
-npm run test:wg17
-npm run test:offline
+node test/run-conformance-all.mjs
+node test/run-neumerkel.mjs
+node test/run-iso-strict.mjs
+node test/run-wg17.mjs
+npm test -- --offline
 ```
 
-`test:offline` is a development/reproduction aid; it is not sufficient for a
+`npm test -- --offline` is a development/reproduction aid; it is not sufficient for a
 release claim that says EyeProlog passes the latest Neumerkel suites. Expected
 conformance outputs are never auto-accepted.
 

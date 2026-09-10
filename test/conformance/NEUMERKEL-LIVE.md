@@ -4,7 +4,7 @@ EyeProlog treats Ulrich Neumerkel's current ISO/WG17 conformity material as a
 moving upstream release gate, not as a frozen snapshot with permanent case
 counts.
 
-`npm run test:neumerkel` fetches these seven TU Wien sources on every live run:
+`node test/run-neumerkel.mjs` fetches these seven TU Wien sources on every live run:
 
 1. `conformity_testing` — Part 1 syntax/reader/writer matrix;
 2. `number_chars_cont_quad.pl` — `number_chars/2` continuation corpus;
@@ -32,13 +32,13 @@ Markdown no longer matches, the test still reflects engine conformance and print
 warning with the refresh command:
 
 ```sh
-npm run conformance:update:neumerkel
+node test/run-neumerkel.mjs --update-report
 ```
 
 Commit the resulting `test/conformance/NEUMERKEL-LATEST.md` after reviewing the
-change. After a successful `npm test`, `npm run conformance:sync:neumerkel` writes
+change. After a successful `npm test`, `node test/run-neumerkel.mjs --cached --update-report` writes
 the tracked report from the exact cached source bytes that just passed, avoiding a
-second network fetch. `npm run conformance:check:neumerkel` verifies the tracked
+second network fetch. `node test/run-neumerkel.mjs --cached --verify-report` verifies the tracked
 report against that same last successful snapshot. The npm version lifecycle
 uses this race-free sync path and stages the generated reports into the release
 commit. The tracked report intentionally omits fetch timestamps and HTTP validators,
@@ -53,14 +53,14 @@ Git-ignored: it is an inspection/reproduction cache, not published project evide
 Use:
 
 ```sh
-npm run test:neumerkel
+node test/run-neumerkel.mjs
 ```
 
 for the canonical live check. For offline reproduction of the exact last live
 fetch, use:
 
 ```sh
-npm run test:neumerkel:cached
+node test/run-neumerkel.mjs --cached
 ```
 
 The cached command never claims to check the latest upstream suites by itself.

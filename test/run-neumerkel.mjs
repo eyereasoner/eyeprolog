@@ -29,7 +29,7 @@ function parseArgs(argv) {
 
 function printHelp() {
   process.stdout.write(
-    'Usage: npm run test:neumerkel -- [--cached] [--source-dir DIR] [--verify-report] [--update-report]\n\n' +
+    'Usage: node test/run-neumerkel.mjs [--cached] [--source-dir DIR] [--verify-report] [--update-report]\n\n' +
     'Default: fetch all seven current Neumerkel conformity sources live and run\n' +
     'every discovered case. A stale tracked report is reported as a warning, not\n' +
     'an engine-test failure. --verify-report makes report freshness mandatory;\n' +
@@ -54,7 +54,7 @@ export async function runNeumerkel(reporter, options = {}) {
     if (committed !== result.reportText) {
       const message =
         `tracked Neumerkel report is stale: ${relativeReportPath}\n` +
-        'Run npm run conformance:update:neumerkel and commit the updated report.';
+        'Run node test/run-neumerkel.mjs --update-report and commit the updated report.';
       if (effective.verifyReport) throw new Error(message);
       reporter.stdout.write(`WARN ${message}\n`);
     } else {
