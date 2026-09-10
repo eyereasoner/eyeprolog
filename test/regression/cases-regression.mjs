@@ -29,6 +29,19 @@ import {
 export function regressionCases() {
   return [
     {
+      name: 'REPL current_input/1 and current_output/1 fail on closed stream handles (issue #107)',
+      run: () => {
+        const file = sourceAtom(path.join(temp.dir, 'closed-stream-107.txt'));
+        const result = runCli([], { input:
+          `open(${file},write,S),close(S),current_input(S).\n` +
+          `open(${file},write,S),close(S),current_output(S).\nhalt.\n`,
+        });
+        assertEqual(result.status, 0, result.stderr);
+        assertEqual((result.stdout.match(/false\./g) ?? []).length, 2, 'both closed-handle queries fail');
+        assertNotIncludes(result.stdout + result.stderr, 'error(', 'no stream domain error');
+      },
+    },
+    {
       name: 'must_be/2 and can_be/2 reject invalid type descriptors before checking values (issue #106)',
       run: () => {
         for (const predicate of ['must_be', 'can_be']) {

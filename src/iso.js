@@ -1345,9 +1345,9 @@ function* currentInputBuiltin({ solver, goal, env }) {
   const value = deref(goal.args[0], env);
   if (value.type !== VAR) {
     const id = streamTermReference(goal.args[0], env);
-    const stream = solver.io.resolve(id);
-    if (!stream) throw new PrologError('domain_error(stream)', value);
-    if (stream.id === solver.io.currentInput) yield env;
+    // A closed handle is still a stream-term, but cannot be current (#107).
+    // Validate its shape, then test identity rather than requiring an open stream.
+    if (id === solver.io.currentInput) yield env;
     return;
   }
   const next = env.clone();
@@ -1357,9 +1357,7 @@ function* currentOutputBuiltin({ solver, goal, env }) {
   const value = deref(goal.args[0], env);
   if (value.type !== VAR) {
     const id = streamTermReference(goal.args[0], env);
-    const stream = solver.io.resolve(id);
-    if (!stream) throw new PrologError('domain_error(stream)', value);
-    if (stream.id === solver.io.currentOutput) yield env;
+    if (id === solver.io.currentOutput) yield env;
     return;
   }
   const next = env.clone();

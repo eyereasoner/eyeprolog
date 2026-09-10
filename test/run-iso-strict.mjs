@@ -23,6 +23,35 @@ import { TestReporter, isMainModule, runStandalone } from './test-style.mjs';
 export function runIsoStrict(reporter = new TestReporter()) {
   reporter.section('Strict ISO core');
 
+  reporter.test('current stream queries fail for closed handles while stream operations report existence errors (issue #107)', () => {
+    const directory = mkdtempSync(join(tmpdir(), 'eyeprolog-stream-107-'));
+    const file = `'${join(directory, 'stream.txt').replaceAll("'", "''")}'`;
+    try {
+      writeFileSync(join(directory, 'stream.txt'), '');
+      for (const isoStrict of [false, true]) {
+        for (const predicate of ['current_input', 'current_output']) {
+          equal(run('', { isoStrict, goal: `open(${file},write,S),close(S),${predicate}(S)` }).stdout,
+            '', `${predicate}/1 fails on the reported closed handle`);
+          const mode = predicate === 'current_input' ? 'read' : 'write';
+          const setter = mode === 'read' ? 'set_input' : 'set_output';
+          const source = `answer(ok) :- ${predicate}(Original),open(${file},${mode},S),` +
+            `\\+ ${predicate}(S),${setter}(S),${predicate}(S),close(S),` +
+            `\\+ ${predicate}(S),${predicate}(Original),` +
+            `catch((${setter}(S),fail),error(existence_error(stream,_),_),true),` +
+            'catch((close(S),fail),error(existence_error(stream,_),_),true).';
+          equal(run(source, { isoStrict, goal: 'answer(X)' }).stdout, 'answer(ok).\n',
+            `${predicate}/1 recognizes live handles and restores the standard stream after close`);
+          for (const term of ['foo', '42', "'$stream'(foo)"]) {
+            equal(capture(() => run('', { isoStrict, goal: `${predicate}(${term})` })).formal,
+              'domain_error(stream)', `${predicate}/1 rejects malformed stream term ${term}`);
+          }
+        }
+      }
+    } finally {
+      rmSync(directory, { recursive: true, force: true });
+    }
+  });
+
   reporter.test('executes ordinary Part 1 clauses', () => {
     const result = run('p(X) :- X = 1.\n', { isoStrict: true, goal: 'p(1)' });
     equal(result.stdout, 'p(1).\n', 'stdout');
