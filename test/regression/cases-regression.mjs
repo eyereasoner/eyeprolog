@@ -47,6 +47,21 @@ export function regressionCases() {
       },
     },
     {
+      name: 'close/1 raises instantiation_error, not domain_error(stream_or_alias), for a $stream/1 term whose argument is unbound (issue #109 follow-up)',
+      run: () => {
+        const result = runCli([], { input:
+          "S='$stream'(X),close(S).\nhalt.\n",
+        });
+        assertEqual(result.status, 0, result.stderr);
+        // The argument that would identify the stream is still unbound, so
+        // whether this term is a valid stream reference cannot be decided
+        // yet — that calls for instantiation_error, not a domain_error
+        // claiming the term itself is already known to be invalid.
+        assertIncludes(result.stdout, 'error(instantiation_error,', 'unbound $stream/1 argument reports instantiation_error');
+        assertNotIncludes(result.stdout, 'domain_error(stream_or_alias', 'no domain_error(stream_or_alias, ...) once the argument is still unbound');
+      },
+    },
+    {
       name: 'top level never mints a generated variable name that collides with a query variable\'s own name (issue #108)',
       run: () => {
         const result = runCli([], { input: 'length(L,1),_A=99.\nhalt.\n' });

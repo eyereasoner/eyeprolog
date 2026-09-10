@@ -1162,6 +1162,12 @@ function streamHandleId(value, env) {
   // and rejecting an equally valid stream reference as malformed.
   if (value.type !== COMPOUND || value.name !== '$stream' || value.arity !== 1) return null;
   const id = deref(value.args[0], env);
+  // The shape is right, but the argument that would identify the stream is
+  // still unbound: whether this term is a valid stream reference cannot be
+  // decided yet, so that is an instantiation error, not a domain error (see
+  // issue #109's stc#72 follow-up) — unlike a wrong functor/arity above,
+  // which can never become valid no matter how any variable gets bound.
+  if (id.type === VAR) throw new PrologError('instantiation_error');
   return id.type === NUMBER && isDecimalInteger(id.name) ? Number(id.name) : null;
 }
 
