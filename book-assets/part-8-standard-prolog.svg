@@ -47,7 +47,7 @@
   <g transform="translate(270 325)">
     <circle cx="0" cy="-28" r="18" fill="#FFFDF8" stroke="#17324D" stroke-width="2"/>
     <path d="M-28 0Q0-25 28 0L22 72H-22Z" fill="#DDF7FB" stroke="#17324D" stroke-width="2"/>
-    <path class="line" d="M-12 72L-15 105M12 72L15 105M-22 15L-70-10M22 15L72-8"/>
+    <path class="line" d="M-12 72L-15 105M12 72L15 105"/>
   </g>
   <rect class="blue" x="350" y="337" width="400" height="66" rx="10"/>
   <text class="small-label" x="550" y="363" text-anchor="middle">ONE STANDARD, FOUR PRACTICES</text>

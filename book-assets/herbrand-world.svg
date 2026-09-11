@@ -43,9 +43,9 @@
   <text class="title" x="755" y="155" text-anchor="middle">LEAST MODEL</text>
   <text class="box-sub" x="755" y="180" text-anchor="middle">facts + rule</text>
   <text class="box-sub" x="755" y="200" text-anchor="middle">consequences</text>
-  <text class="text" x="675" y="235">person(pat)</text>
-  <text class="text" x="675" y="275">parent(pat,jan)</text>
-  <text class="text" x="675" y="315">ancestor(pat,jan)</text>
+  <text class="text" x="755" y="235" text-anchor="middle">person(pat)</text>
+  <text class="text" x="755" y="275" text-anchor="middle">parent(pat,jan)</text>
+  <text class="text" x="755" y="315" text-anchor="middle">ancestor(pat,jan)</text>
 
   <path class="line" d="M278 245 L325 245"/>
   <path class="line" d="M593 245 L640 245"/>

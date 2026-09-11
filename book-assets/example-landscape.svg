@@ -32,11 +32,11 @@
   <text class="small" x="755" y="353" text-anchor="middle">models · measurements</text>
   <text class="small" x="755" y="374" text-anchor="middle">equations · evidence</text>
 
-  <path class="link" d="M270 145L355 205M630 145L545 205M270 355L355 295M630 355L545 295"/>
-  <rect class="core" x="335" y="175" width="230" height="150" rx="18"/>
+  <path class="link" d="M270 145L340 205M630 145L560 205M270 355L340 295M630 355L560 295"/>
+  <rect class="core" x="320" y="175" width="260" height="150" rx="18"/>
   <text class="code" x="450" y="212" text-anchor="middle">source.pl</text>
-  <path class="path" d="M372 235H528"/>
-  <text class="code" x="450" y="268" text-anchor="middle">eyeprolog --goal 'Question' program.pl</text>
+  <path class="path" d="M357 235H543"/>
+  <text class="code" x="450" y="268" text-anchor="middle" style="font-size:12px">eyeprolog --goal Q file.pl</text>
   <text class="code" x="450" y="300" text-anchor="middle">rule :- evidence.</text>
 
   <rect x="305" y="385" width="140" height="55" rx="10" fill="#FFFDF8" stroke="#008EAA" stroke-width="2"/>
