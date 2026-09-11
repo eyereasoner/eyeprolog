@@ -48,7 +48,17 @@ export class TestReporter {
     const total = this.total - this.currentSection.totalAtStart;
     const ms = elapsedMs ?? nowMs() - this.currentSection.startedAt;
     const suite = label ?? defaultSectionLabel(this.currentSection.name);
-    this.stdout.write(`${colors.green}OK${colors.reset} ${ok}/${total} ${suite} tests passed ${colors.dim}(${ms} ms)${colors.reset}\n`);
+    // A section can finish without throwing (still an overall OK) while
+    // ok < total: a batch may tolerate a small, explicitly named number of
+    // documented divergences (see test/neumerkel.mjs's KNOWN_QUAD_DIVERGENCES)
+    // rather than requiring every counted item to individually pass. Naming
+    // that gap here keeps "OK x/y ... passed" from reading as self-contradictory
+    // when x is less than y.
+    const shortfall = total - ok;
+    const outcome = shortfall === 0
+      ? 'passed'
+      : `passed (${shortfall} known divergence${shortfall === 1 ? '' : 's'})`;
+    this.stdout.write(`${colors.green}OK${colors.reset} ${ok}/${total} ${suite} tests ${outcome} ${colors.dim}(${ms} ms)${colors.reset}\n`);
   }
 
   test(name, run) {
@@ -105,7 +115,13 @@ export class TestReporter {
   totalLine() {
     const ms = nowMs() - this.startedAt;
     this.stdout.write(`\n${colors.yellow}== Total${colors.reset}\n`);
-    this.stdout.write(`${colors.green}OK${colors.reset} ${this.ok}/${this.total} tests passed ${colors.dim}(${ms} ms)${colors.reset}\n`);
+    // See the matching note in sectionTotal(): a known, documented divergence
+    // can leave ok below total without the run having failed.
+    const shortfall = this.total - this.ok;
+    const outcome = shortfall === 0
+      ? 'passed'
+      : `passed (${shortfall} known divergence${shortfall === 1 ? '' : 's'})`;
+    this.stdout.write(`${colors.green}OK${colors.reset} ${this.ok}/${this.total} tests ${outcome} ${colors.dim}(${ms} ms)${colors.reset}\n`);
   }
 }
 
