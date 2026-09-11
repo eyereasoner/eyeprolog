@@ -11,7 +11,7 @@ import { PrologError, getStrictIsoRegistry } from './iso.js';
 import { getEyePrologRegistry } from './standard-library.js';
 import { selectClauseCandidates, selectClauseCandidatesForValues, selectGroundClauseCandidates } from './program-indexing.js';
 import { StreamManager } from './io.js';
-import { hardHeapLimit, softHeapLimit, usedHeapSize } from './platform.js';
+import { forceGarbageCollection, hardHeapLimit, softHeapLimit, usedHeapSize } from './platform.js';
 import { evaluateWfs, relationForGroup, truthOfGroundGoal } from './wfs.js';
 import { ISO_MAX_ARITY } from './iso-limits.js';
 import { evaluatePositiveDatalog, relationForDatalogGroup, datalogCandidateIndexes } from './datalog.js';
@@ -124,7 +124,7 @@ export class Solver {
     // same process heap. Share their sampling deadline so each short-lived
     // child does not repeat an expensive host memory query before the parent
     // has advanced the guard interval.
-    this.memoryCheckState = options.memoryCheckState ?? { nextObservation: 0 };
+    this.memoryCheckState = options.memoryCheckState ?? { nextObservation: 0, reclaimed: false };
     // Do not impose an implicit answer cap. Infinite and very large searches are
     // part of normal Prolog semantics; callers that need a resource bound can
     // still supply solutionLimit explicitly.
@@ -1080,9 +1080,17 @@ export class Solver {
     if (!force && observation < this.memoryCheckState.nextObservation) return;
     this.memoryCheckState.nextObservation = observation + 256;
     if (!Number.isFinite(this.maxMemoryBytes)) return;
-    const used = usedHeapSize();
+    let used = usedHeapSize();
     if (used != null && used < this.maxMemoryBytes) this.finishMemoryRecovery();
     if (used != null && used >= this.currentMemoryLimit()) {
+      // Ambient heap usage also counts already-abandoned garbage (an earlier
+      // query's discarded search branches, for example) that a real
+      // out-of-memory condition would not have left reclaimable. Reclaim it
+      // once before finally giving up, so that garbage cannot cost this (or,
+      // in a caller that runs many queries in one process, a later) query a
+      // false resource_error(memory).
+      used = this.reclaimMemory();
+      if (used != null && used < this.currentMemoryLimit()) return;
       if (this.memoryRecovery.active && this.memoryRecovery.checks > 0) {
         this.memoryRecovery.checks--;
         return;
@@ -1093,15 +1101,34 @@ export class Solver {
 
   checkMemoryReservation(bytes) {
     if (!Number.isFinite(this.maxMemoryBytes) || !Number.isFinite(bytes) || bytes <= 0) return;
-    const used = usedHeapSize();
+    let used = usedHeapSize();
     if (used != null && used < this.maxMemoryBytes) this.finishMemoryRecovery();
     if (used != null && bytes > Math.max(0, this.currentMemoryLimit() - used)) {
+      used = this.reclaimMemory();
+      if (used != null && bytes <= Math.max(0, this.currentMemoryLimit() - used)) return;
       if (this.memoryRecovery.active && bytes <= this.memoryRecovery.reservationBytes) {
         this.memoryRecovery.reservationBytes -= bytes;
         return;
       }
       throw new PrologError('resource_error(memory)');
     }
+  }
+
+  // Force a garbage-collection pass and re-measure, once per query (shared
+  // across this query's own nested meta-call solvers via memoryCheckState),
+  // right before a memory check would otherwise throw. A full collection
+  // pass is not free, so this only ever runs at most once on the rare path
+  // that was already about to fail; it never runs on the common path where
+  // memory stays under budget. It only ever makes the guard more accurate,
+  // never less: a genuinely exhausted heap still measures as exhausted
+  // afterward.
+  reclaimMemory() {
+    if (this.memoryCheckState.reclaimed) return usedHeapSize();
+    this.memoryCheckState.reclaimed = true;
+    if (!forceGarbageCollection()) return usedHeapSize();
+    const reclaimed = usedHeapSize();
+    if (reclaimed != null && reclaimed < this.maxMemoryBytes) this.finishMemoryRecovery();
+    return reclaimed;
   }
 
   currentMemoryLimit() {
@@ -1825,7 +1852,7 @@ function* bundledMemberSolutions(solver, goal, env, state) {
         yield next;
       }
       candidate = cons(variable(`__member${id}_head_${before}`), candidate);
-      generatedLengthAllocationCheckpoint(solver, before + 1n);
+      if (generatedLengthAllocationCheckpoint(solver, before + 1n)) break;
     }
   }
   state.pending = false;
@@ -2063,7 +2090,7 @@ function* generatedLengthSolutions(solver, list, length, env) {
     const answer = bindGeneratedLength(solver, length, count + extra, next);
     if (answer != null) yield answer;
     suffix = cons(variable(`__length${id}_${extra}`), suffix);
-    generatedLengthAllocationCheckpoint(solver, extra + 1n);
+    if (generatedLengthAllocationCheckpoint(solver, extra + 1n)) return;
   }
 }
 
@@ -2081,8 +2108,23 @@ function lengthAllocationCheckpoint(solver, steps) {
   if ((steps & 255n) === 0n) solver.checkMemoryLimit(true);
 }
 
+// Each generated answer is one inference, the same as an ordinary clause
+// resolution step, so this native loop is bounded by maxInferences exactly
+// like the general solve loop is (see the `this.inferences++` accounting
+// there). Without this, a caller that deliberately tightens maxInferences to
+// get a fast, bounded probe for nontermination (quads.js's `loops` detection,
+// for example) could not do that for this generator: it produced no
+// inference-count evidence at all and depended entirely on eventually
+// hitting the much larger general memory ceiling. Returns true once the
+// caller should stop generating further answers.
 function generatedLengthAllocationCheckpoint(solver, steps) {
-  if ((steps & 255n) !== 0n) return;
+  solver.inferences++;
+  solver.inferenceObservation.value++;
+  if (solver.inferences > solver.maxInferences) {
+    solver.inferenceLimitExceeded = true;
+    return true;
+  }
+  if ((steps & 255n) !== 0n) return false;
   // The open-ended generator retains its current list spine between answers.
   // Reserve room proportional to that live spine so the protected length/2
   // call raises resource_error(memory) before its caller's outer solver hits
@@ -2092,6 +2134,7 @@ function generatedLengthAllocationCheckpoint(solver, steps) {
     : Number(steps) * GENERATED_LENGTH_CELL_RESERVE_BYTES;
   solver.checkMemoryReservation(estimatedSpineBytes);
   solver.checkMemoryLimit(true);
+  return false;
 }
 
 function pushFastPiFrames(stack, goal, rest, env, depth, active) {

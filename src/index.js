@@ -28,7 +28,7 @@ export {
   eyePrologInteropLibraryModules,
 } from './standard-library.js';
 export { StreamManager } from './io.js';
-export { runQuads } from './quads.js';
+export { formatQuadTerm, runQuads } from './quads.js';
 export { executeForwardRules, hasForwardRules } from './execute.js';
 
 import { installCleanupLifecycle } from './cleanup.js';

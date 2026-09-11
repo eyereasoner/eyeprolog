@@ -7,11 +7,13 @@ let fs = null;
 let path = null;
 let BufferCtor = null;
 let v8 = null;
+let vm = null;
 
 if (isNode) {
   ({ default: fs } = await import('node:fs'));
   ({ default: path } = await import('node:path'));
   ({ default: v8 } = await import('node:v8'));
+  ({ default: vm } = await import('node:vm'));
   BufferCtor = globalThis.Buffer ?? null;
 }
 
@@ -45,6 +47,38 @@ export function usedHeapSize() {
   }
   const memory = globalThis.performance?.memory;
   return Number.isFinite(memory?.usedJSHeapSize) ? memory.usedJSHeapSize : null;
+}
+
+let forcedGc = null;
+let forcedGcUnavailable = false;
+
+// A resource_error(memory) decision reads ambient process heap usage, which
+// also includes still-unreclaimed garbage from work that already finished
+// (for example a prior query's abandoned search branches). Without this, one
+// short-lived, memory-heavy query can leave enough uncollected garbage behind
+// that an unrelated, actually-modest query run immediately afterward in the
+// same process sees a false positive. Node does not expose a synchronous GC
+// by default; this obtains one without requiring the host process to have
+// been launched with --expose-gc, so the guard sees genuinely live memory
+// before it gives up.
+export function forceGarbageCollection() {
+  if (!isNode || forcedGcUnavailable) return false;
+  try {
+    if (forcedGc == null) {
+      if (typeof globalThis.gc === 'function') {
+        forcedGc = globalThis.gc;
+      } else {
+        v8.setFlagsFromString('--expose-gc');
+        forcedGc = vm.runInNewContext('gc');
+        v8.setFlagsFromString('--no-expose-gc');
+      }
+    }
+    forcedGc();
+    return true;
+  } catch (_) {
+    forcedGcUnavailable = true;
+    return false;
+  }
 }
 
 export function memoryStatistics() {

@@ -4,7 +4,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { run } from '../src/index.js';
+import { Program, formatQuadTerm, run, runQuads } from '../src/index.js';
 import {
   countTopLevelTerms,
   decodeDocument,
@@ -31,6 +31,7 @@ export const NEUMERKEL_SOURCES = Object.freeze([
   { key: 'dif', filename: 'dif.html', url: `${baseUrl}dif`, kind: 'dif' },
   { key: 'length', filename: 'length_quad.pl', url: `${baseUrl}length_quad.pl`, kind: 'quad' },
   { key: 'phrase', filename: 'phrase_quad.pl', url: `${baseUrl}phrase_quad.pl`, kind: 'quad' },
+  { key: 'prologue', filename: 'prologue_quad.pl', url: `${baseUrl}prologue_quad.pl`, kind: 'quad' },
   { key: 'cleanup', filename: 'cleanup.html', url: `${baseUrl}cleanup`, kind: 'cleanup' },
 ]);
 
@@ -305,45 +306,83 @@ function expectedMatches(expected, actual) {
   return expected === actual.type;
 }
 
-// Issue #111: making quads.js's `sto` handling precise exposed one genuine,
-// permanent divergence from this upstream quad. EyeProlog's frozen goal
-// unifies L with a term containing itself and fails via occurs-check well
-// within budget, a real (if approximate) implementation choice; the quad only
-// anticipates looping or resource exhaustion for this STO example. The
-// mirroring regression test lives in test/regression/cases-regression.mjs.
+// A permanent, deliberate divergence from an upstream quad: EyeProlog's own
+// implementation choice, not a bug to chase. Keyed by corpus key, then by the
+// answer description's source line. Reported as its own test either way, so a
+// future upstream change that makes the divergence stop reproducing (as
+// happened with the length corpus's occurs-check quad) is caught immediately
+// instead of silently masked.
 const KNOWN_QUAD_DIVERGENCES = {
-  length: { failed: 1, mustInclude: 'quads: FAILED 30,' },
+  prologue: new Map([
+    [118, 'bounded=false: EyeProlog reports no max_integer value at all (ISO 7.11.1.1), ' +
+      'so this quad\'s evaluation_error(int_overflow) | Max = unbounded pair never applies'],
+  ]),
 };
 
-function ensureQuadSuccess(label, item) {
-  const cli = path.join(packageRoot, 'bin', 'eyeprolog.js');
+// Report each answer description as its own test, the same way the syntax and
+// dif cases below do, instead of one aggregate pass/fail line for the whole
+// corpus: a single upstream change then points straight at the one quad that
+// moved instead of leaving a reader to dig through a raw quad-report string.
+function runQuadCorpus(reporter, label, item, knownDivergences = new Map()) {
   const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'eyeprolog-neumerkel-'));
+  const previousCwd = process.cwd();
+  let result;
+  let program;
   try {
-    // Some upstream option tests deliberately open a relative file named `f`.
-    // Run every live quad in an isolated cwd so conformance cannot dirty the checkout.
-    const child = spawnSync(process.execPath, [cli, '-q', item.localPath], { encoding: 'utf8', cwd: scratch });
-    const divergence = KNOWN_QUAD_DIVERGENCES[label] ?? null;
-    const expectedStatus = divergence == null ? 0 : 1;
-    if (child.status !== expectedStatus) {
-      throw new Error(`${label}: EyeProlog quad runner exited ${child.status}\n${child.stdout}${child.stderr}`);
-    }
-    const match = String(child.stdout).match(/quads:\s+(\d+) run,\s+(\d+) passed,\s+(\d+) failed(?:,\s+(\d+) undecided)?\./);
-    if (match == null) throw new Error(`${label}: could not parse quad report\n${child.stdout}${child.stderr}`);
-    const total = Number(match[1]);
-    const passed = Number(match[2]);
-    const failed = Number(match[3]);
-    const undecided = Number(match[4] ?? 0);
-    const expectedFailed = divergence?.failed ?? 0;
-    if (failed !== expectedFailed || undecided !== 0 || passed !== total - expectedFailed) {
-      throw new Error(`${label}: ${passed}/${total} passed, ${failed} failed, ${undecided} undecided\n${child.stdout}${child.stderr}`);
-    }
-    if (divergence != null && !String(child.stdout).includes(divergence.mustInclude)) {
-      throw new Error(`${label}: expected documented divergence (${divergence.mustInclude}) not found\n${child.stdout}${child.stderr}`);
-    }
-    return { total, passed, failed, undecided, stdout: child.stdout };
+    // These upstream quad files assume the Prologue predicates are available
+    // as system predicates and carry no use_module/1 directive of their own,
+    // the same reason the CLI's -q mode prepends this for a quad file (see
+    // src/cli.js). Parse against the real package root so library/module
+    // resolution keeps working, then only switch directories for execution:
+    // some upstream option tests deliberately open a relative file named `f`,
+    // and EyeProlog's file predicates resolve against process.cwd(). Isolate
+    // that in a scratch cwd so conformance cannot dirty the checkout.
+    // A separate source part (rather than a concatenated prelude line) keeps
+    // the quad file's own line numbers unshifted for reporting.
+    const source = fs.readFileSync(item.localPath, 'utf8');
+    program = Program.parseSources([
+      { text: ':- use_module(library(prologue)).\n', filename: '<quad-prelude>' },
+      { text: source, filename: item.localPath, baseDir: packageRoot },
+    ]);
+    process.chdir(scratch);
+    result = runQuads(program);
   } finally {
+    process.chdir(previousCwd);
     fs.rmSync(scratch, { recursive: true, force: true });
   }
+
+  const failures = [];
+  let passed = 0;
+  result.results.forEach((description, index) => {
+    const locator = description.id != null ? formatQuadTerm(program, description.id) : `#${index + 1}`;
+    const divergence = knownDivergences.get(description.line);
+    const name = divergence == null
+      ? `${label} ${locator} (line ${description.line ?? '?'}) ?- ${formatQuadTerm(program, description.query)}`
+      : `${label} ${locator} (line ${description.line ?? '?'}, documented divergence) ?- ${formatQuadTerm(program, description.query)}`;
+    try {
+      reporter.test(name, () => {
+        if (divergence != null) {
+          // Verify the divergence itself, not just tolerate it: if it stops
+          // reproducing, that is exactly the kind of change worth noticing.
+          if (description.ok) {
+            throw new Error(`documented divergence (${divergence}) no longer reproduces; remove it from KNOWN_QUAD_DIVERGENCES`);
+          }
+          return;
+        }
+        if (!description.ok) {
+          const reason = description.reason ? `: ${description.reason}` : '';
+          throw new Error(`${description.kind ?? 'failed'}${reason}`);
+        }
+      });
+      passed++;
+    } catch (error) {
+      // Upstream changes often arrive in small clusters. Keep running the
+      // corpus so one live test run exposes every new mismatch instead of
+      // forcing a fix/rerun cycle for each row.
+      failures.push(error);
+    }
+  });
+  return { total: result.results.length, passed, failures };
 }
 
 export async function executeNeumerkel({ reporter, mode = 'live', cacheDir = defaultCacheDir, sourceDir = null } = {}) {
@@ -379,10 +418,19 @@ export async function executeNeumerkel({ reporter, mode = 'live', cacheDir = def
     );
   }
 
-  for (const key of ['number_chars', 'variable_names', 'length', 'phrase']) {
-    const result = reporter.batch(`${key.replace('_', ' ')} live corpus`, () =>
-      ensureQuadSuccess(key, sources.get(key)));
-    summary[key] = { passed: result.passed, total: result.total };
+  const quadFailures = [];
+  for (const key of ['number_chars', 'variable_names', 'length', 'phrase', 'prologue']) {
+    const { total, passed, failures } = runQuadCorpus(
+      reporter, key.replace('_', ' '), sources.get(key), KNOWN_QUAD_DIVERGENCES[key],
+    );
+    summary[key] = { passed, total };
+    quadFailures.push(...failures);
+  }
+  if (quadFailures.length > 0) {
+    throw new AggregateError(
+      quadFailures,
+      `${quadFailures.length} live Neumerkel quad case${quadFailures.length === 1 ? '' : 's'} failed`,
+    );
   }
 
   const difCases = parseDifCases(sources.get('dif').text);
@@ -443,6 +491,7 @@ export function formatNeumerkelSummary(summary) {
     ['dif', 'dif/2'],
     ['length', 'length/2'],
     ['phrase', 'phrase/2,3'],
+    ['prologue', 'Prologue draft'],
     ['cleanup', 'setup_call_cleanup/3'],
   ];
   return labels.map(([key, label]) => {
@@ -459,6 +508,7 @@ export function formatNeumerkelMarkdown({ summary }) {
     ['dif', 'dif/2'],
     ['length', 'length/2'],
     ['phrase', 'phrase/2,3'],
+    ['prologue', 'Prologue draft'],
     ['cleanup', 'setup_call_cleanup/3'],
   ];
   const rows = labels.map(([key, label]) => ({ key, label, ...summary[key] }));
@@ -470,7 +520,7 @@ export function formatNeumerkelMarkdown({ summary }) {
     `Status: **${passed === total ? 'PASS' : 'FAIL'}** — **${passed}/${total}** discovered upstream cases passed.`,
     '',
     'This tracked report records the latest upstream inventory successfully checked by EyeProlog.',
-    '`npm test` fetches the seven TU Wien sources again and executes the discovered cases.',
+    '`npm test` fetches the eight TU Wien sources again and executes the discovered cases.',
     'Release/report checks can additionally require these tracked counts to match the live suites.',
     'Counts are output from upstream, not hard-coded test constants.',
     '',

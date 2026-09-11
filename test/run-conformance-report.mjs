@@ -84,7 +84,7 @@ export function formatConformanceReport(report = buildConformanceReport()) {
     '## Latest Neumerkel evidence',
     '',
     'See the tracked [latest Neumerkel conformity report](test/conformance/NEUMERKEL-LATEST.md).',
-    '`npm test` fetches all seven TU Wien sources once and executes the discovered inventory.',
+    '`npm test` fetches all eight TU Wien sources once and executes the discovered inventory.',
     'The release workflow then synchronizes this tracked report from those exact successful',
     'cached source bytes, avoiding a second live fetch and its race window.',
     '',

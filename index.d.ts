@@ -96,6 +96,12 @@ export interface EyePrologQuadResult {
   kind?: 'failed' | 'malformed' | 'bad_identifier' | 'unsupported' | 'undecided';
   expected?: EyePrologTerm;
   reason?: string;
+  /** The quad's query term, for a caller building its own per-result label. */
+  query?: EyePrologTerm;
+  /** The quad's identifier, or null when the quad has none. */
+  id?: EyePrologTerm | null;
+  /** The source line this answer description starts on, when known. */
+  line?: number | null;
 }
 
 export interface EyePrologQuadRunResult {
@@ -312,6 +318,8 @@ export function hasForwardRules(program: Program): boolean;
 /** Execute EyeProlog `:+/2` rules to closure using an existing solver. */
 export function executeForwardRules(program: Program, solver: Solver, options?: EyePrologForwardRunOptions): EyePrologForwardRunResult;
 export function runQuads(source: string | Program, options?: EyePrologQuadRunOptions): EyePrologQuadRunResult;
+/** Render a quad term (query, identifier, or expected answer) the way quad failure reports do. */
+export function formatQuadTerm(program: Program, term: EyePrologTerm): string;
 export interface EyePrologProofMethod {
   type: 'source' | 'builtin' | 'library' | 'conjunction';
   kind?: 'fact' | 'rule';
@@ -433,6 +441,7 @@ declare const eyeprolog: {
   hasForwardRules: typeof hasForwardRules;
   executeForwardRules: typeof executeForwardRules;
   runQuads: typeof runQuads;
+  formatQuadTerm: typeof formatQuadTerm;
   proofCertificate: typeof proofCertificate;
   proofCertificatesFromText: typeof proofCertificatesFromText;
   verifyProof: typeof verifyProof;

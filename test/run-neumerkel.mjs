@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import { executeNeumerkel } from './neumerkel.mjs';
-import { isMainModule, nowMs, runStandalone } from './test-style.mjs';
+import { isMainModule, runStandalone } from './test-style.mjs';
 
 function parseArgs(argv) {
   const options = {
@@ -30,7 +30,7 @@ function parseArgs(argv) {
 function printHelp() {
   process.stdout.write(
     'Usage: node test/run-neumerkel.mjs [--cached] [--source-dir DIR] [--verify-report] [--update-report]\n\n' +
-    'Default: fetch all seven current Neumerkel conformity sources live and run\n' +
+    'Default: fetch all eight current Neumerkel conformity sources live and run\n' +
     'every discovered case. A stale tracked report is reported as a warning, not\n' +
     'an engine-test failure. --verify-report makes report freshness mandatory;\n' +
     '--update-report refreshes the tracked Markdown. --cached is reproduction only.\n',
@@ -42,7 +42,7 @@ export async function runNeumerkel(reporter, options = {}) {
   if (effective.sourceDir == null && process.env.EYEPROLOG_NEUMERKEL_SOURCE_DIR) {
     effective.sourceDir = path.resolve(process.env.EYEPROLOG_NEUMERKEL_SOURCE_DIR);
   }
-  const result = await executeNeumerkel({ reporter: quietNeumerkelReporter(reporter), ...effective });
+  const result = await executeNeumerkel({ reporter, ...effective });
   const relativeReportPath = path.relative(process.cwd(), result.reportPath);
 
   if (effective.updateReport) {
@@ -62,45 +62,6 @@ export async function runNeumerkel(reporter, options = {}) {
     }
   }
   return result;
-}
-
-function quietNeumerkelReporter(reporter) {
-  return {
-    section(name) {
-      reporter.section(name);
-    },
-    sectionTotal(label, elapsedMs = null) {
-      reporter.sectionTotal(label, elapsedMs);
-    },
-    test(name, run) {
-      reporter.total++;
-      const nr = String(reporter.total).padStart(3, '0');
-      const startedAt = nowMs();
-      try {
-        run();
-        reporter.ok++;
-      } catch (error) {
-        const ms = nowMs() - startedAt;
-        reporter.stderr.write(`FAIL ${nr} ${name} (${ms} ms)\n`);
-        reporter.stderr.write(`${error?.stack ?? String(error)}\n`);
-        throw error;
-      }
-    },
-    batch(name, run) {
-      const startedAt = nowMs();
-      try {
-        const result = run();
-        reporter.total += result.total;
-        reporter.ok += result.passed;
-        return result;
-      } catch (error) {
-        const ms = nowMs() - startedAt;
-        reporter.stderr.write(`FAIL ${name} (${ms} ms)\n`);
-        reporter.stderr.write(`${error?.stack ?? String(error)}\n`);
-        throw error;
-      }
-    },
-  };
 }
 
 if (isMainModule(import.meta.url)) {

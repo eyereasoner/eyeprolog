@@ -1,9 +1,9 @@
 # EyeProlog — latest Neumerkel conformity
 
-Status: **FAIL** — **685/686** discovered upstream cases passed.
+Status: **PASS** — **719/719** discovered upstream cases passed.
 
 This tracked report records the latest upstream inventory successfully checked by EyeProlog.
-`npm test` fetches the seven TU Wien sources again and executes the discovered cases.
+`npm test` fetches the eight TU Wien sources again and executes the discovered cases.
 Release/report checks can additionally require these tracked counts to match the live suites.
 Counts are output from upstream, not hard-coded test constants.
 
@@ -13,10 +13,11 @@ Counts are output from upstream, not hard-coded test constants.
 | number_chars/2 | 86 | 86 |
 | variable_names/1 | 75 | 75 |
 | dif/2 | 26 | 26 |
-| length/2 | 36 | 37 |
+| length/2 | 37 | 37 |
 | phrase/2,3 | 58 | 58 |
+| Prologue draft | 33 | 33 |
 | setup_call_cleanup/3 | 25 | 25 |
-| **Total** | **685** | **686** |
+| **Total** | **719** | **719** |
 
 ## Upstream sources
 
@@ -26,6 +27,7 @@ Counts are output from upstream, not hard-coded test constants.
 - [dif](https://www.complang.tuwien.ac.at/ulrich/iso-prolog/dif)
 - [length](https://www.complang.tuwien.ac.at/ulrich/iso-prolog/length_quad.pl)
 - [phrase](https://www.complang.tuwien.ac.at/ulrich/iso-prolog/phrase_quad.pl)
+- [prologue](https://www.complang.tuwien.ac.at/ulrich/iso-prolog/prologue_quad.pl)
 - [cleanup](https://www.complang.tuwien.ac.at/ulrich/iso-prolog/cleanup)
 
 Exact fetched bytes, SHA-256 hashes, fetch timestamps, and HTTP validators remain under

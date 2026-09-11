@@ -48,6 +48,13 @@ export function runQuads(source, options = {}) {
     // prevent later expectations for the same query from being checked.
     for (const description of quad.answers) {
       const result = checkQuadDescription(program, quad, description, options, context);
+      // A caller that wants to report each answer description as its own
+      // test (rather than only the aggregate counts below) needs enough to
+      // build a label and re-derive the same failure text formatFailure
+      // would have printed.
+      result.query = quad.query;
+      result.id = quad.id ?? null;
+      result.line = description?.answerLine ?? quad.source?.line ?? null;
       results.push(result);
       if (!result.ok) lines.push(formatFailure(program, quad, result, description));
     }
@@ -192,6 +199,12 @@ function checkAlternative(program, quad, alternative, options, context, unordere
       return { ok: false };
     }
     if (leaf.more) return { ok: true };
+    // A bare `sto` leaf claims nothing beyond "this outcome is occurs-check
+    // dependent" (see matchLeaf); it accepts unconditionally, including when
+    // the search never actually settled within budget. Otherwise an
+    // inconclusive search behind such a leaf would report undecided over a
+    // claim that was never making a claim to begin with.
+    if (leaf.sto && !leaf.hasExpectation) return { ok: true };
     if (!leaf.unexpected && (leaf.false || leaf.loops || leaf.error != null)) {
       if (actual.undecided) return undecidedResult(actual, alternative);
       return { ok: position === leaves.length - 1 };
@@ -963,7 +976,7 @@ function formatFailure(program, quad, result, description = quad.answers[0]) {
     `   ?- ${formatQuadTerm(program, quad.query)}.\n` + detail;
 }
 
-function formatQuadTerm(program, term) {
+export function formatQuadTerm(program, term) {
   const operators = [...program.operators.values()];
   if (!operators.some(({ name, specifier }) => name === '~' && ['xfx', 'xfy', 'yfx'].includes(specifier))) {
     operators.push({ priority: 700, specifier: 'xfx', name: '~' });

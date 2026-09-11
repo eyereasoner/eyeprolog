@@ -2397,7 +2397,7 @@ c4 ?- call((!;1)).
       },
     },
     {
-      name: 'vendored Prolog Prologue corpus records the bounded=false max_integer divergence',
+      name: 'runQuads passes the complete vendored Prolog Prologue corpus, with one documented max_integer divergence',
       run: () => {
         const filename = path.join(testRoot, 'fixtures', 'prologue_quad_runner.pl');
         const source = fs.readFileSync(filename, 'utf8');
@@ -2411,25 +2411,26 @@ c4 ?- call((!;1)).
           termToString(query).includes('current_prolog_flag(max_integer, Max)'));
         assertEqual(maxIntegerQuads.length, 1, 'max_integer quad count');
 
-        // This regression is about the one deliberate ISO divergence in the
-        // upstream Prologue fixture. Running all 33 records also explores two
-        // intentionally non-terminating STO examples and used to dominate the
-        // regression suite by several seconds, without adding evidence for
-        // max_integer. Keep the full vendored corpus intact, but execute only
-        // the relevant record here.
-        program.quads = maxIntegerQuads;
+        // The full 33-quad corpus, including its two STO examples
+        // (member(X,X) and select(E,Xs,Xs), both open-ended native-generator
+        // searches -- see the maxInferences accounting added to
+        // generatedLengthAllocationCheckpoint in src/solver.js) is bounded and
+        // takes on the order of several seconds, not the indefinite hang it
+        // used to depend on ambient heap pressure to avoid (see
+        // Solver#reclaimMemory in src/solver.js).
         const result = publicApi.runQuads(program);
-        // The upstream working-draft quad accepts either integer overflow or
-        // Max=unbounded. EyeProlog reports no value for max_integer when
-        // bounded=false, so current_prolog_flag(max_integer, N) fails. Part 1
-        // does not mandate that outcome, so this is an implementation choice
-        // rather than a standards requirement. Preserve the upstream fixture
-        // unchanged and make the one deliberate divergence explicit here.
-        assertEqual(result.total, 1, 'quad total');
-        assertEqual(result.passed, 0, 'quad passed');
+        // The upstream working-draft max_integer quad accepts either integer
+        // overflow or Max=unbounded. EyeProlog reports no value for
+        // max_integer when bounded=false, so
+        // current_prolog_flag(max_integer, N) fails. Part 1 does not mandate
+        // that outcome, so this is an implementation choice rather than a
+        // standards requirement. Preserve the upstream fixture unchanged and
+        // record the one deliberate divergence explicitly.
+        assertEqual(result.total, 33, 'quad total');
+        assertEqual(result.passed, 32, 'quad passed');
         assertEqual(result.failed, 1, 'quad failed');
         assertIncludes(result.stdout, 'current_prolog_flag(max_integer, Max)', 'max_integer divergence');
-        assertIncludes(result.stdout, 'quads: 1 run, 0 passed, 1 failed.', 'quad report');
+        assertIncludes(result.stdout, 'quads: 33 run, 32 passed, 1 failed.', 'quad report');
       },
     },
     {
@@ -2448,25 +2449,14 @@ c4 ?- call((!;1)).
       },
     },
     {
-      name: 'CLI runs the complete authoritative length quad corpus, with one documented occurs-check divergence',
+      name: 'CLI passes the complete authoritative length quad corpus',
       run: () => {
         const filename = path.join(testRoot, 'fixtures', 'length_quad.pl');
         const source = fs.readFileSync(filename, 'utf8');
         assertEqual(Program.parse(source).quads.length, 37, 'vendored quad total');
         const result = runCli(['-q', filename]);
-        // Making quads.js's `sto` handling precise (issue #111) exposed one
-        // genuine divergence here: `freeze(L,L=[_|L]), length(L,N)` unifies L
-        // with a term containing itself inside the frozen goal and fails via
-        // occurs-check well within the loop-detection budget. The upstream
-        // quad only anticipates looping or resource exhaustion for this STO
-        // example, not a clean finite failure, so neither offered alternative
-        // describes EyeProlog's actual (implementation-defined) behavior.
-        // Preserve the upstream fixture unchanged and record the one
-        // deliberate divergence explicitly, the same way the vendored
-        // Prologue corpus records its max_integer divergence above.
-        assertEqual(result.status, 1, 'quad exit status');
-        assertIncludes(result.stdout, 'quads: FAILED 30, length_quad.pl:86', 'documented occurs-check divergence');
-        assertIncludes(result.stdout, 'quads: 37 run, 36 passed, 1 failed.\n', 'quad report');
+        assertEqual(result.status, 0, 'quad exit status');
+        assertEqual(result.stdout, 'quads: 37 run, 37 passed, 0 failed.\n', 'quad report');
         assertEqual(result.stderr, '', 'quad stderr');
       },
     },

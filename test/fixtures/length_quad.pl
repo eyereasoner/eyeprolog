@@ -84,7 +84,8 @@ a5 ?- atom_length(1,N).
       false.
 30 ?- freeze(L,L=[_|L]), length(L,N).
       sto, loops
-   |  sto, resource_error(...).
+   |  sto, resource_error(...)
+   |  sto, false.
 31 ?- freeze(L,L=[_|L]), N is 2^64, length(L,N).
       sto, false.
 32 ?- length([a,b|L], N).

@@ -28,10 +28,10 @@ function syntaxHtmlWithBareAnchors() {
 export function runNeumerkelHarnessTests(reporter = new TestReporter()) {
   reporter.section('Neumerkel harness');
 
-  reporter.test('live manifest tracks exactly seven upstream suite sources', () => {
-    if (NEUMERKEL_SOURCES.length !== 7) throw new Error(`expected 7 sources, got ${NEUMERKEL_SOURCES.length}`);
+  reporter.test('live manifest tracks exactly eight upstream suite sources', () => {
+    if (NEUMERKEL_SOURCES.length !== 8) throw new Error(`expected 8 sources, got ${NEUMERKEL_SOURCES.length}`);
     const keys = new Set(NEUMERKEL_SOURCES.map(({ key }) => key));
-    if (keys.size !== 7) throw new Error('Neumerkel source keys are not unique');
+    if (keys.size !== 8) throw new Error('Neumerkel source keys are not unique');
   });
 
   reporter.test('syntax inventory is discovered dynamically and reconstructs /**/ setup', () => {
@@ -106,13 +106,15 @@ export function runNeumerkelHarnessTests(reporter = new TestReporter()) {
       dif: { passed: 26, total: 26 },
       length: { passed: 37, total: 37 },
       phrase: { passed: 58, total: 58 },
+      prologue: { passed: 33, total: 33 },
       cleanup: { passed: 25, total: 25 },
     };
     const text = formatNeumerkelMarkdown({
       summary,
       manifest: { fetchedAt: '2026-09-03T12:00:00.000Z', sources: [{ etag: '"volatile-tag"' }] },
     });
-    if (!text.includes('**675/675**')) throw new Error('Markdown total is not derived from suite counts');
+    if (!text.includes('**708/708**')) throw new Error('Markdown total is not derived from suite counts');
+    if (!text.includes('| Prologue draft | 33 | 33 |')) throw new Error('prologue row missing');
     if (!text.includes('| setup_call_cleanup/3 | 25 | 25 |')) throw new Error('cleanup row missing');
     if (!text.includes('https://www.complang.tuwien.ac.at/ulrich/iso-prolog/conformity_testing')) throw new Error('upstream source link missing');
     if (text.includes('2026-09-03T12:00:00.000Z') || text.includes('volatile-tag')) {

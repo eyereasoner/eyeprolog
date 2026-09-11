@@ -9935,7 +9935,7 @@ Review questions:
 </figure>
 
 The [examples directory](https://github.com/eyereasoner/eyeprolog/tree/main/examples/) is the book's executable companion. The
-top-level directory contains **228 self-contained runnable programs**. Every
+top-level directory contains **229 self-contained runnable programs**. Every
 source program has an exact answer file under
 [examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **61 selected programs** have a checked
 explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/). The thematic lists link every top-level program and open the program
@@ -10238,6 +10238,7 @@ decisions, reasons, integrity conditions, and proof.
 | [Access control policy](https://github.com/eyereasoner/eyeprolog/blob/main/examples/access-control-policy.pl) | Attribute and policy facts derive permit status and reasons. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/access-control-policy.pl) · [proof](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/access-control-policy.pl) |
 | [Clinical-trial screening](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clinical-trial-screening.pl) | Inclusion and exclusion criteria produce an evidence-backed eligibility result. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clinical-trial-screening.pl) · [proof](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/clinical-trial-screening.pl) |
 | [Data negotiation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/data-negotiation.pl) | Offered and required data conditions derive an agreement or mismatch. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/data-negotiation.pl) · [proof](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/data-negotiation.pl) |
+| [Defeasible reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/defeasible-reasoning.pl) | A reimbursement policy overrides defaults by specificity, then compares three ways to handle one unresolved conflict between two independent defaults: an unstratified `\+/1` cycle, `tnot/1` with WFS's `undefined`, and this codebase's usual explicit conflict predicate. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/defeasible-reasoning.pl) |
 | [Deontic Logic](https://github.com/eyereasoner/eyeprolog/blob/main/examples/deontic-logic.pl) | Deontic logic: obligations, prohibitions, compensations, and violations. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/deontic-logic.pl) · [proof](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/deontic-logic.pl) |
 | [GDPR compliance](https://github.com/eyereasoner/eyeprolog/blob/main/examples/gdpr-compliance.pl) | Purpose, basis, and processing facts support compliance conclusions. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/gdpr-compliance.pl) · [proof](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/gdpr-compliance.pl) |
 | [Illegitimate Reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/illegitimate-reasoning.pl) | Illegitimate reasoning detector. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/illegitimate-reasoning.pl) |
@@ -10346,7 +10347,7 @@ hand.
 
 #### Running and extending the corpus
 
-Run all 228 normal answer goldens and the 61 selected proof goldens with:
+Run all 229 normal answer goldens and the 61 selected proof goldens with:
 
 ```sh
 node test/run-examples.mjs
@@ -10445,7 +10446,7 @@ accept texts outside the strict grammar, but it may not reinterpret an accepted
 standard case.
 
 The file-based conformance corpus contains 810 cases, including 393 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
-Separate exact-output suites check 228 normal examples and 61 proof examples; all executable chapter programs are parsed and their declared goals are executed. The nine-case
+Separate exact-output suites check 229 normal examples and 61 proof examples; all executable chapter programs are parsed and their declared goals are executed. The nine-case
 playground contract suite imports the production worker, sends real reasoning
 requests through its message protocol, and crawls the served module graph for
 missing assets, bad MIME types, and static Node-only imports. `conformance-report.md` records the current executable WG17 syntax result and file-based conformance category totals.

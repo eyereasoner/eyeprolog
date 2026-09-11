@@ -91,7 +91,7 @@ The conformance commands are:
 ```sh
 node test/run-conformance-all.mjs          # live Neumerkel + local ISO/conformance layers
 node test/run-conformance-all.mjs --offline  # same local layers, no network
-node test/run-neumerkel.mjs            # the seven live upstream suites only
+node test/run-neumerkel.mjs            # the eight live upstream suites only
 node test/run-neumerkel.mjs --cached     # exact last fetched bytes; reproduction only
 node test/run-neumerkel.mjs --cached --verify-report # verify tracked report against last successful live snapshot
 node test/run-iso-strict.mjs                  # Part 1 + Corrigenda strict-core processor gate

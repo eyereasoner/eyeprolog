@@ -315,7 +315,7 @@ post-N289 STC drafts remain review input until standardized.
 | Implementation-specific strict/normal boundary is documented and tested | covered | all 5.5 hooks have explicit dispositions; the WG17 cross-profile gate verifies syntax-preservation for standard text accepted by the strict reader. |
 | Published Corrigenda 1-3 are incorporated | covered | `ISO-CORRIGENDA-MATRIX.md` inventories every published amendment cluster with executable, editorial, or superseded disposition |
 | Current post-N289 draft is tracked without silently changing the published baseline | covered | `STC-DRAFT-STATUS.md` tracks reviewed draft items separately from normative requirements |
-| Latest Neumerkel conformity is a live release gate | covered | `npm test` fetches and executes the seven current TU Wien conformity sources with dynamic inventories; the vendored WG17 matrix remains an offline reviewed-outcome regression layer |
+| Latest Neumerkel conformity is a live release gate | covered | `npm test` fetches and executes the eight current TU Wien conformity sources with dynamic inventories; the vendored WG17 matrix remains an offline reviewed-outcome regression layer |
 | Third-party standard-core regression provenance is retained | covered | adapted Logtalk, Scryer, Trealla, and SWI-Prolog cases retain source identifiers and licenses in `THIRD_PARTY.md` |
 | No unexplained deviation remains in the release-facing ledger | covered | the release-facing ledger contains no remaining `review` rows; documented variation points are implementation-defined/specific or draft-only rather than unexplained deviations. |
 

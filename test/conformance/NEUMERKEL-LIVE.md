@@ -4,7 +4,7 @@ EyeProlog treats Ulrich Neumerkel's current ISO/WG17 conformity material as a
 moving upstream release gate, not as a frozen snapshot with permanent case
 counts.
 
-`node test/run-neumerkel.mjs` fetches these seven TU Wien sources on every live run:
+`node test/run-neumerkel.mjs` fetches these eight TU Wien sources on every live run:
 
 1. `conformity_testing` — Part 1 syntax/reader/writer matrix;
 2. `number_chars_cont_quad.pl` — `number_chars/2` continuation corpus;
@@ -12,7 +12,16 @@ counts.
 4. `dif` — `dif/2` comparison table;
 5. `length_quad.pl` — `length/2` corpus;
 6. `phrase_quad.pl` — `phrase/2,3` corpus;
-7. `cleanup` — `setup_call_cleanup/3` examples.
+7. `prologue_quad.pl` — Prolog Prologue working-draft corpus;
+8. `cleanup` — `setup_call_cleanup/3` examples.
+
+The Prologue corpus carries one permanent, documented divergence (its
+`max_integer` quad — see `KNOWN_QUAD_DIVERGENCES` in `test/neumerkel.mjs`):
+EyeProlog's `bounded=false` reports no `max_integer` value at all, which
+neither of the quad's two anticipated answers describes. That quad is still
+executed and verified every run; it is reported as a passing, documented
+divergence for as long as it keeps reproducing, and would fail loudly if it
+ever stopped.
 
 The runner discovers the inventory at run time. A new upstream row is therefore
 executed automatically and a removed row disappears automatically. The syntax
