@@ -19,9 +19,12 @@ The Prologue corpus carries one permanent, documented divergence (its
 `max_integer` quad — see `KNOWN_QUAD_DIVERGENCES` in `test/neumerkel.mjs`):
 EyeProlog's `bounded=false` reports no `max_integer` value at all, which
 neither of the quad's two anticipated answers describes. That quad is still
-executed and verified every run; it is reported as a passing, documented
-divergence for as long as it keeps reproducing, and would fail loudly if it
-ever stopped.
+executed every run and counted honestly (it does not report as passing), but
+it does not abort the run the way an unexplained failure would; the tracked
+report and console summary both say "N divergence(s) to be addressed" rather
+than a bare pass/fail count. See `NEUMERKEL-LATEST.md`'s own "Known
+divergences" section for the explanation. If the divergence ever stopped
+reproducing, the counts would simply climb back to a plain, unqualified PASS.
 
 The runner discovers the inventory at run time. A new upstream row is therefore
 executed automatically and a removed row disappears automatically. The syntax

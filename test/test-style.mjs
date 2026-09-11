@@ -57,7 +57,7 @@ export class TestReporter {
     const shortfall = total - ok;
     const outcome = shortfall === 0
       ? 'passed'
-      : `passed (${shortfall} known divergence${shortfall === 1 ? '' : 's'})`;
+      : `passed with ${shortfall} divergence${shortfall === 1 ? '' : 's'} to be addressed`;
     this.stdout.write(`${colors.green}OK${colors.reset} ${ok}/${total} ${suite} tests ${outcome} ${colors.dim}(${ms} ms)${colors.reset}\n`);
   }
 
@@ -120,7 +120,7 @@ export class TestReporter {
     const shortfall = this.total - this.ok;
     const outcome = shortfall === 0
       ? 'passed'
-      : `passed (${shortfall} known divergence${shortfall === 1 ? '' : 's'})`;
+      : `passed with ${shortfall} divergence${shortfall === 1 ? '' : 's'} to be addressed`;
     this.stdout.write(`${colors.green}OK${colors.reset} ${this.ok}/${this.total} tests ${outcome} ${colors.dim}(${ms} ms)${colors.reset}\n`);
   }
 }

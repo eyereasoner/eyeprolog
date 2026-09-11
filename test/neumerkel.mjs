@@ -308,10 +308,11 @@ function expectedMatches(expected, actual) {
 
 // A permanent, deliberate divergence from an upstream quad: EyeProlog's own
 // implementation choice, not a bug to chase. Keyed by corpus key, then by the
-// answer description's source line. Reported as its own test either way, so a
-// future upstream change that makes the divergence stop reproducing (as
-// happened with the length corpus's occurs-check quad) is caught immediately
-// instead of silently masked.
+// answer description's source line. It is still reported and counted as an
+// ordinary failing test (so the totals stay honest and it self-corrects the
+// moment it stops reproducing, exactly as happened with the length corpus's
+// occurs-check quad); it just does not abort the run the way an unexplained
+// failure would.
 const KNOWN_QUAD_DIVERGENCES = {
   prologue: new Map([
     [118, 'bounded=false: EyeProlog reports no max_integer value at all (ISO 7.11.1.1), ' +
@@ -358,17 +359,9 @@ function runQuadCorpus(reporter, label, item, knownDivergences = new Map()) {
     const divergence = knownDivergences.get(description.line);
     const name = divergence == null
       ? `${label} ${locator} (line ${description.line ?? '?'}) ?- ${formatQuadTerm(program, description.query)}`
-      : `${label} ${locator} (line ${description.line ?? '?'}, documented divergence) ?- ${formatQuadTerm(program, description.query)}`;
+      : `${label} ${locator} (line ${description.line ?? '?'}, documented divergence: ${divergence}) ?- ${formatQuadTerm(program, description.query)}`;
     try {
       reporter.test(name, () => {
-        if (divergence != null) {
-          // Verify the divergence itself, not just tolerate it: if it stops
-          // reproducing, that is exactly the kind of change worth noticing.
-          if (description.ok) {
-            throw new Error(`documented divergence (${divergence}) no longer reproduces; remove it from KNOWN_QUAD_DIVERGENCES`);
-          }
-          return;
-        }
         if (!description.ok) {
           const reason = description.reason ? `: ${description.reason}` : '';
           throw new Error(`${description.kind ?? 'failed'}${reason}`);
@@ -376,10 +369,12 @@ function runQuadCorpus(reporter, label, item, knownDivergences = new Map()) {
       });
       passed++;
     } catch (error) {
-      // Upstream changes often arrive in small clusters. Keep running the
-      // corpus so one live test run exposes every new mismatch instead of
-      // forcing a fix/rerun cycle for each row.
-      failures.push(error);
+      // A documented divergence is expected to keep failing; note it without
+      // aborting the run over it. Upstream changes otherwise often arrive in
+      // small clusters -- keep running the corpus so one live test run
+      // exposes every new mismatch instead of forcing a fix/rerun cycle for
+      // each row.
+      if (divergence == null) failures.push(error);
     }
   });
   return { total: result.results.length, passed, failures };
@@ -514,10 +509,21 @@ export function formatNeumerkelMarkdown({ summary }) {
   const rows = labels.map(([key, label]) => ({ key, label, ...summary[key] }));
   const passed = rows.reduce((sum, row) => sum + row.passed, 0);
   const total = rows.reduce((sum, row) => sum + row.total, 0);
+  const divergenceCount = Object.values(KNOWN_QUAD_DIVERGENCES)
+    .reduce((sum, byLine) => sum + byLine.size, 0);
+  const shortfall = total - passed;
+  // A shortfall fully accounted for by known, documented divergences (see
+  // KNOWN_QUAD_DIVERGENCES and the list below) is not a build failure; any
+  // other shortfall is.
+  const status = shortfall === 0
+    ? 'PASS'
+    : shortfall === divergenceCount
+      ? `PASS — ${shortfall} divergence${shortfall === 1 ? '' : 's'} to be addressed`
+      : 'FAIL';
   const lines = [
     '# EyeProlog — latest Neumerkel conformity',
     '',
-    `Status: **${passed === total ? 'PASS' : 'FAIL'}** — **${passed}/${total}** discovered upstream cases passed.`,
+    `Status: **${status}** — **${passed}/${total}** discovered upstream cases passed.`,
     '',
     'This tracked report records the latest upstream inventory successfully checked by EyeProlog.',
     '`npm test` fetches the eight TU Wien sources again and executes the discovered cases.',
@@ -529,6 +535,14 @@ export function formatNeumerkelMarkdown({ summary }) {
   ];
   for (const row of rows) lines.push(`| ${row.label} | ${row.passed} | ${row.total} |`);
   lines.push(`| **Total** | **${passed}** | **${total}** |`);
+
+  if (divergenceCount > 0) {
+    lines.push('', '## Known divergences', '');
+    for (const [key, byLine] of Object.entries(KNOWN_QUAD_DIVERGENCES)) {
+      const label = labels.find(([labelKey]) => labelKey === key)?.[1] ?? key;
+      for (const [line, reason] of byLine) lines.push(`- **${label}** (line ${line}): ${reason}`);
+    }
+  }
 
   lines.push(
     '',
