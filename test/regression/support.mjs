@@ -512,7 +512,6 @@ export function documentedConformanceMetricIssues() {
   const report = buildConformanceReport();
   const iso = report.rows.find((row) => row.category === 'iso')?.total;
   const total = report.total.total;
-  const wg17 = report.executable.find((gate) => gate.name === 'WG17 syntax')?.total;
   const checks = [
     {
       file: path.join(packageRoot, 'the-art-of-eyeprolog.md'),
@@ -542,6 +541,9 @@ export function documentedConformanceMetricIssues() {
       }
     }
   }
+  // WG17 syntax cases are discovered live (test/neumerkel.mjs), never
+  // vendored, so no document should hard-code a specific count for them: it
+  // would just go stale the next time upstream adds or removes a case.
   for (const file of [
     path.join(packageRoot, 'test', 'conformance', 'README.md'),
     path.join(packageRoot, 'test', 'conformance', 'ISO-COMPLIANCE.md'),
@@ -552,13 +554,9 @@ export function documentedConformanceMetricIssues() {
       ...[...text.matchAll(/\b(\d+)-case[^\n|]*WG17/g)].map((match) => Number(match[1])),
       ...[...text.matchAll(/WG17[^\n|]*?\b(\d+) executable/g)].map((match) => Number(match[1])),
     ];
-    if (claims.length === 0) {
-      const dynamicPolicy = /live Neumerkel|current upstream inventory|discovered dynamically/i.test(text);
-      if (!dynamicPolicy) issues.push(`${relative}: WG17 total or dynamic-upstream policy not found`);
-    }
-    for (const claim of claims) {
-      if (claim !== wg17) issues.push(`${relative}: WG17 count ${claim} != ${wg17}`);
-    }
+    const dynamicPolicy = /live Neumerkel|current upstream inventory|discovered dynamically/i.test(text);
+    if (!dynamicPolicy) issues.push(`${relative}: WG17 dynamic-upstream policy not found`);
+    for (const claim of claims) issues.push(`${relative}: WG17 count ${claim} is hard-coded, not dynamic`);
   }
   return issues.sort();
 }

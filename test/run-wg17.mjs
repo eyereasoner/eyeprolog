@@ -1,8 +1,15 @@
 #!/usr/bin/env node
-// Offline execution of the vendored WG17 conformity-testing syntax matrix.
-// Every case is checked against the upstream Codex expectation. Reviewed
-// exact EyeProlog outcomes are an additional regression lock, never a
-// replacement for the upstream assertion.
+// Execution and upstream-matching for WG17 conformity-testing syntax cases.
+// The live, current case inventory is discovered fresh by test/neumerkel.mjs
+// (its 'syntax' corpus) every run, not vendored here. wg17-syntax-cases.json
+// is a separate, static offline regression corpus: a frozen set of cases with
+// reviewed exact EyeProlog outcomes, used by the offline regression suite and
+// cross-referenced by id against the live cases for an additional regression
+// lock. It is not required to track upstream's current state -- unlike the
+// live check, nothing here needs to change just because upstream added or
+// reworded a case. Every case (live or from this corpus) is still checked
+// against the upstream Codex expectation via matchesUpstreamExpectation; a
+// reviewed outcome is an additional, stronger check, never a replacement.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,10 +18,8 @@ import {
 } from '../src/index.js';
 import { parseTermText } from '../src/parser.js';
 import { variantTerms } from '../src/term.js';
-import { TestReporter, isMainModule, runStandalone } from './test-style.mjs';
 
 const testRoot = path.dirname(fileURLToPath(import.meta.url));
-const fixturePath = path.join(testRoot, 'conformance', 'wg17-syntax-cases.json');
 
 function runnerStage(index, maximum) {
   if (index > maximum) return `write('\\n<WG17-COMPLETE>')`;
@@ -410,26 +415,7 @@ export function executeWg17Item(item, options = {}) {
     : executeFinite(item, isoStrict);
 }
 
-function assertOutcome(item) {
-  const actual = executeWg17Item(item);
-
-  if (!matchesUpstreamExpectation(item.expected, actual, item)) {
-    throw new Error(
-      `WG17 #${item.id} (${item.expected})\n` +
-      `upstream Codex expectation did not match\n` +
-      `actual ${JSON.stringify(actual)}`,
-    );
-  }
-
-  if (item.outcome != null && JSON.stringify(actual) !== JSON.stringify(item.outcome)) {
-    throw new Error(
-      `WG17 #${item.id} (${item.expected})\n` +
-      `reviewed regression outcome changed\n` +
-      `expected ${JSON.stringify(item.outcome)}\n` +
-      `actual   ${JSON.stringify(actual)}`,
-    );
-  }
-}
+const fixturePath = path.join(testRoot, 'conformance', 'wg17-syntax-cases.json');
 
 export function readWg17SyntaxFixture() {
   const fixture = JSON.parse(fs.readFileSync(fixturePath, 'utf8'));
@@ -456,20 +442,15 @@ export function readWg17SyntaxFixture() {
   return fixture;
 }
 
-function runWg17Syntax(reporter = new TestReporter()) {
+// A Map<id, outcome> for the reviewed cases in the offline corpus, for
+// cross-referencing against a live-discovered case by id (see
+// test/neumerkel.mjs's syntax check). A live case id with no entry here
+// relies on the upstream Codex assertion (matchesUpstreamExpectation) alone.
+export function readWg17SyntaxOutcomes() {
   const fixture = readWg17SyntaxFixture();
-
-  reporter.section('WG17 syntax');
+  const outcomes = new Map();
   for (const item of fixture.cases) {
-    reporter.test(wg17TestDescription(item), () => assertOutcome(item));
+    if (item.outcome != null) outcomes.set(item.id, item.outcome);
   }
-  reporter.sectionTotal('WG17 syntax');
-}
-
-export function runWg17(reporter = new TestReporter()) {
-  runWg17Syntax(reporter);
-}
-
-if (isMainModule(import.meta.url)) {
-  await runStandalone(runWg17);
+  return outcomes;
 }

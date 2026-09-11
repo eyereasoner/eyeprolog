@@ -22,8 +22,10 @@ implements of Part 2 (modules) and Part 3 (definite clause grammar rules),
 including the 2013 module-amendment evidence and the known gaps and deviations.
 Neither part carries a conformance claim. Built-in rows may group closely related conditions only when the
 row names every grouped condition and its executable evidence.
-The exit checklist is embedded in [ISO-COMPLIANCE.md](ISO-COMPLIANCE.md). [WG17-SYNTAX-STATUS.md](WG17-SYNTAX-STATUS.md) records the
-complete one-to-one trace for the vendored active upstream WG17 syntax cases.
+The exit checklist is embedded in [ISO-COMPLIANCE.md](ISO-COMPLIANCE.md). WG17
+syntax cases are discovered live and executed as part of the Neumerkel
+conformity gate (see [NEUMERKEL-LIVE.md](NEUMERKEL-LIVE.md)); there is no
+separate offline coverage ledger to keep in sync.
 [STC-DRAFT-STATUS.md](STC-DRAFT-STATUS.md) separately tracks executable
 implementation questions from the post-N289 working draft (reviewed through the 2026-08-23 items #73-#76); those cases are
 review evidence, not normative ISO claims.
@@ -96,24 +98,19 @@ node test/run-neumerkel.mjs --cached     # exact last fetched bytes; reproductio
 node test/run-neumerkel.mjs --cached --verify-report # verify tracked report against last successful live snapshot
 node test/run-iso-strict.mjs                  # Part 1 + Corrigenda strict-core processor gate
 node test/run-iso-part2-amendment.mjs  # 2013 Part 2 amendment module requirements
-node test/run-wg17.mjs                 # vendored reviewed WG17 syntax regression
 ```
 
 `node test/run-neumerkel.mjs` always fetches the current TU Wien sources. It does not skip a
 fetch because a cache exists. The runner discovers the number of active tests from those sources and fails on any newly introduced case EyeProlog does not pass. If the stable, tracked [NEUMERKEL-LATEST.md](NEUMERKEL-LATEST.md) is stale, normal tests warn rather than turning a passing engine run into a failure. `node test/run-neumerkel.mjs --update-report` performs a fresh live run and refreshes the report; after `npm test`, `node test/run-neumerkel.mjs --cached --update-report` refreshes it from the exact successful cached snapshot; and `node test/run-neumerkel.mjs --cached --verify-report` verifies that snapshot without a second network fetch. Exact bytes, SHA-256 hashes, timestamps, and HTTP validators stay under Git-ignored `.cache/neumerkel/` for inspection/reproduction only. See [NEUMERKEL-LIVE.md](NEUMERKEL-LIVE.md).
 
-The vendored WG17 syntax snapshot is intentionally secondary. Update it with `npm run conformance:update:wg17`. For focused upstream report maintenance and verification:
-
-```sh
-npm run conformance:update:wg17
-node test/run-neumerkel.mjs --update-report
-node test/run-neumerkel.mjs --cached --update-report
-node test/run-wg17.mjs
-```
-
-Every vendored syntax case is still checked against its upstream Codex
-expectation; reviewed exact outcomes are an additional regression lock rather
-than an alternative acceptance rule.
+WG17 syntax cases are discovered live, the same way the other seven TU Wien
+sources are: there is no separate vendored snapshot or update step. A small
+offline corpus, `test/conformance/wg17-syntax-cases.json`, additionally pins
+the exact reviewed EyeProlog outcome for most cases, cross-referenced by id
+against the live-discovered cases in `test/neumerkel.mjs`. Every case, live or
+reviewed, is still checked against its upstream Codex expectation
+(`matchesUpstreamExpectation` in `test/run-wg17.mjs`); a reviewed exact outcome
+is an additional regression lock, never an alternative acceptance rule.
 
 Regenerate the top-level local-corpus report with `node test/run-conformance-report.mjs conformance-report.md`. It links to [NEUMERKEL-LATEST.md](NEUMERKEL-LATEST.md) rather than duplicating live evidence. Counts in the tracked Neumerkel report are generated evidence, not permanent constants in project policy.
 
@@ -141,7 +138,7 @@ Selected cases are adapted from the ISO and standard-core suites of Logtalk,
 Scryer Prolog, Trealla Prolog, and SWI-Prolog. Their upstream identifiers and licenses
 are recorded in [THIRD_PARTY.md](THIRD_PARTY.md).
 
-The corpus has 393 cases in `iso/` and 810 file-based conformance cases in total. Of those, 11 cases in `stc/` are explicitly labelled working-draft review evidence rather than normative ISO claims. The separate vendored strict-reader WG17 matrix is a deterministic regression snapshot; the live Neumerkel gate discovers the current upstream inventory at run time; release/report checks separately verify the tracked `NEUMERKEL-LATEST.md`. The generated `conformance-report.md` records local corpus totals and links to that live evidence. Together with regression, documentation-sync, API, example, and book-example checks, `npm test` is the release gate.
+The corpus has 395 cases in `iso/` and 812 file-based conformance cases in total. Of those, 11 cases in `stc/` are explicitly labelled working-draft review evidence rather than normative ISO claims. The strict-reader WG17 syntax matrix is discovered dynamically and executed live by the Neumerkel gate, the same as its other seven TU Wien sources; release/report checks separately verify the tracked `NEUMERKEL-LATEST.md`. The generated `conformance-report.md` records local corpus totals and links to that live evidence. Together with regression, documentation-sync, API, example, and book-example checks, `npm test` is the release gate.
 
 ## Updating expected output
 

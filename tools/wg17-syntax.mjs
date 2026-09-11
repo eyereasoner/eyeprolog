@@ -1,22 +1,7 @@
-#!/usr/bin/env node
-// Refresh the vendored WG17 conformity fixtures from their public upstream
-// tables. The vendored snapshot remains an offline deterministic regression layer; the release gate also runs live upstream suites.
-import crypto from 'node:crypto';
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
-
-const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const syntaxSource = 'https://www.complang.tuwien.ac.at/ulrich/iso-prolog/conformity_testing';
-const syntaxFixturePath = path.join(packageRoot, 'test', 'conformance', 'wg17-syntax-cases.json');
-const syntaxCoveragePath = path.join(packageRoot, 'test', 'conformance', 'wg17-syntax-coverage.json');
-const syntaxStatusPath = path.join(packageRoot, 'test', 'conformance', 'WG17-SYNTAX-STATUS.md');
-const conformanceReportPath = path.join(packageRoot, 'conformance-report.md');
-const countDocumentationPaths = [
-  path.join(packageRoot, 'test', 'conformance', 'README.md'),
-  path.join(packageRoot, 'test', 'conformance', 'ISO-COMPLIANCE.md'),
-];
-
+// Parsing utilities shared by everything that reads the public WG17
+// conformity-testing syntax table (currently test/neumerkel.mjs's live
+// 'syntax' corpus). There is no vendored snapshot and no separate upgrade
+// step: the table is fetched and parsed fresh on every run.
 const namedEntities = new Map([
   ['amp', '&'], ['lt', '<'], ['gt', '>'], ['quot', '"'], ['apos', "'"],
   ['nbsp', '\u00a0'], ['ndash', '–'], ['mdash', '—'], ['minus', '−'],
@@ -191,15 +176,6 @@ export function parseWg17SyntaxTable(html) {
   return cases;
 }
 
-function canonicalQuery(query) {
-  return String(query).replace(/\r\n?/g, '\n').replace(/\u00a0/g, ' ').trim();
-}
-
-
-function canonicalExpected(expected) {
-  return String(expected).replace(/\s+/g, ' ').trim();
-}
-
 function isLayoutStart(source, index) {
   if (index >= source.length) return true;
   const ch = source[index];
@@ -329,106 +305,6 @@ export function setupInput(query, precedingBaseQuery) {
   return `(catch((${setup}), _, true) -> true ; true).\n${tail}`;
 }
 
-function reconcileSyntaxCases(upstream, previous) {
-  const previousById = new Map(previous.cases.map((item) => [item.id, item]));
-  const nextCases = [];
-  const added = [];
-  const changed = [];
-  let precedingBaseQuery = null;
-
-  for (const row of upstream) {
-    const old = previousById.get(row.id);
-    const same = old != null &&
-      canonicalQuery(old.query) === canonicalQuery(row.query) &&
-      canonicalExpected(old.expected) === canonicalExpected(row.expected);
-
-    if (same) {
-      nextCases.push(old);
-    } else {
-      const input = setupInput(row.query, precedingBaseQuery);
-      const item = {
-        id: row.id,
-        query: row.query,
-        input,
-        readCount: countTopLevelTerms(input),
-        expected: row.expected,
-        assertion: 'upstream',
-      };
-      nextCases.push(item);
-      if (old == null) added.push(row.id);
-      else changed.push(row.id);
-    }
-
-    if (!row.query.includes('/**/')) precedingBaseQuery = row.query;
-    previousById.delete(row.id);
-  }
-
-  return {
-    cases: nextCases,
-    added,
-    changed,
-    removed: [...previousById.keys()].sort((a, b) => a - b),
-  };
-}
-
-function inventoryFromCases(cases) {
-  const ids = cases.map(({ id }) => id);
-  if (ids.length === 0) throw new Error('WG17 syntax inventory is empty');
-  const firstId = Math.min(...ids);
-  const lastId = Math.max(...ids);
-  const active = new Set(ids);
-  const deletedIds = [];
-  for (let id = firstId; id <= lastId; id++) if (!active.has(id)) deletedIds.push(id);
-  return { firstId, lastId, deletedIds, activeCases: cases.length };
-}
-
-function sourceRevision(html) {
-  const text = htmlCellText(html);
-  const revisions = [...text.matchAll(/\brevision\s+([0-9]+(?:\.[0-9]+)*)/gi)];
-  return revisions.at(-1)?.[1] ?? null;
-}
-
-function dateStamp() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function formatIdList(ids) {
-  return ids.length === 0 ? 'none' : ids.map((id) => `#${id}`).join(', ');
-}
-
-export function updateWg17InventoryReferences(text, nextCount) {
-  // Some documents deliberately omit a count. Update only explicit WG17
-  // inventory references, independently of the previous fixture count: a
-  // retry may follow a partial update that already wrote the new fixture.
-  return text
-    .replace(/\b\d+-case(?=\s+(?:vendored\s+)?WG17\b)/g, `${nextCount}-case`)
-    .replace(/\bWG17 matrix has \d+ executable/g, `WG17 matrix has ${nextCount} executable`);
-}
-
-function updateDocumentedInventoryCount(nextCount) {
-  for (const filename of countDocumentationPaths) {
-    const original = fs.readFileSync(filename, 'utf8');
-    const updated = updateWg17InventoryReferences(original, nextCount);
-    if (updated !== original) fs.writeFileSync(filename, updated);
-  }
-}
-
-async function readSource(source) {
-  if (/^https?:\/\//i.test(source)) {
-    const response = await fetch(source, {
-      headers: { 'user-agent': 'EyeProlog-WG17-upgrader/1' },
-      redirect: 'follow',
-    });
-    if (!response.ok) throw new Error(`WG17 fetch failed: ${response.status} ${response.statusText}`);
-    const bytes = new Uint8Array(await response.arrayBuffer());
-    const header = response.headers.get('content-type') ?? '';
-    return { bytes, html: decodeDocument(bytes, header) };
-  }
-  const filename = path.resolve(source);
-  const bytes = new Uint8Array(fs.readFileSync(filename));
-  return { bytes, html: decodeDocument(bytes, '') };
-}
-
 export function decodeDocument(bytes, contentType = '') {
   const prefix = Buffer.from(bytes.subarray(0, Math.min(bytes.length, 8192))).toString('latin1');
   const headerCharset = contentType.match(/charset\s*=\s*["']?([^;"'\s]+)/i)?.[1];
@@ -439,105 +315,5 @@ export function decodeDocument(bytes, contentType = '') {
     return new TextDecoder(label).decode(bytes);
   } catch (_) {
     return new TextDecoder('windows-1252').decode(bytes);
-  }
-}
-
-function parseArgs(argv) {
-  const options = { check: false, source: syntaxSource };
-  for (let index = 0; index < argv.length; index++) {
-    const arg = argv[index];
-    if (arg === '--check') options.check = true;
-    else if (arg === '--source') {
-      if (argv[index + 1] == null) throw new Error('--source requires a URL or filename');
-      options.source = argv[++index];
-    } else if (arg === '--help' || arg === '-h') options.help = true;
-    else throw new Error(`unknown option ${arg}`);
-  }
-  return options;
-}
-
-function printHelp() {
-  process.stdout.write(`Usage: npm run conformance:update:wg17 -- [--check] [--source URL_OR_FILE]\n\n` +
-    `Refreshes the vendored WG17 conformity tests from the TU Wien table.\n` +
-    `New or changed rows are executable immediately against the upstream\n` +
-    `Codex expectation; existing reviewed exact outcomes remain pinned only as additional regression checks.\n`);
-}
-
-export async function upgradeWg17({ check = false, source = syntaxSource } = {}) {
-  const previous = JSON.parse(fs.readFileSync(syntaxFixturePath, 'utf8'));
-  const { bytes, html } = await readSource(source);
-  const upstream = parseWg17SyntaxTable(html);
-  const reconciliation = reconcileSyntaxCases(upstream, previous);
-  const semanticChanges = reconciliation.added.length + reconciliation.changed.length + reconciliation.removed.length;
-
-  process.stdout.write(`WG17 syntax: ${upstream.length} active upstream cases\n`);
-  process.stdout.write(`  added:   ${formatIdList(reconciliation.added)}\n`);
-  process.stdout.write(`  changed: ${formatIdList(reconciliation.changed)}\n`);
-  process.stdout.write(`  removed: ${formatIdList(reconciliation.removed)}\n`);
-
-  if (check) {
-    if (semanticChanges > 0) {
-      process.stderr.write('WG17 snapshot is stale; run npm run conformance:update:wg17.\n');
-      process.exitCode = 1;
-      return { changed: true, ...reconciliation };
-    }
-    process.stdout.write('WG17 snapshot matches the upstream test inventory.\n');
-    return { changed: false, ...reconciliation };
-  }
-
-  const checkedOn = dateStamp();
-  const fixture = {
-    ...previous,
-    source: syntaxSource,
-    checkedOn,
-    sourceRevision: sourceRevision(html),
-    sourceSha256: crypto.createHash('sha256').update(bytes).digest('hex'),
-    protocol: 'Each query is read and executed in strict ISO mode; /**/ rows reuse the preceding setup.',
-    cases: reconciliation.cases,
-  };
-  fs.writeFileSync(syntaxFixturePath, `${JSON.stringify(fixture, null, 2)}\n`);
-
-  const coverage = JSON.parse(fs.readFileSync(syntaxCoveragePath, 'utf8'));
-  coverage.source = syntaxSource;
-  coverage.checkedOn = checkedOn;
-  coverage.upstream = inventoryFromCases(fixture.cases);
-  for (const evidence of coverage.evidence ?? []) {
-    if (['all-active', 'all-reviewed'].includes(evidence.ids)) evidence.ids = 'all-executable';
-    if (evidence.path === 'test/conformance/wg17-syntax-cases.json') evidence.link = '../run-wg17.mjs';
-  }
-  fs.writeFileSync(syntaxCoveragePath, `${JSON.stringify(coverage, null, 2)}\n`);
-
-  // Generate status after the fixture/manifest are synchronized.
-  const { renderWg17SyntaxStatus } = await import('./report-wg17-syntax-coverage.mjs');
-  fs.writeFileSync(syntaxStatusPath, renderWg17SyntaxStatus());
-  updateDocumentedInventoryCount(fixture.cases.length);
-
-  // The public report executes the refreshed fixture, so keep its measured row
-  // synchronized as part of the same explicit upgrade operation.
-  const { buildConformanceReport, formatConformanceReport } = await import('../test/run-conformance-report.mjs');
-  const conformanceReport = buildConformanceReport();
-  fs.writeFileSync(conformanceReportPath, formatConformanceReport(conformanceReport));
-
-  const upstreamAssertions = fixture.cases
-    .filter((item) => item.outcome == null)
-    .map(({ id }) => id);
-  process.stdout.write(`Updated WG17 snapshot (${fixture.cases.length} cases).\n`);
-  if (upstreamAssertions.length > 0) {
-    process.stdout.write(
-      `Direct upstream assertions used by the WG17 runner: ${formatIdList(upstreamAssertions)}\n`,
-    );
-  }
-  return { changed: semanticChanges > 0, upstreamAssertions, ...reconciliation };
-}
-
-const isMain = process.argv[1] != null && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url;
-if (isMain) {
-  try {
-    const options = parseArgs(process.argv.slice(2));
-    if (options.help) printHelp();
-    else await upgradeWg17(options);
-  } catch (error) {
-    process.stderr.write(`${error?.stack ?? error}\n`);
-    process.exitCode = 1;
   }
 }

@@ -1,25 +1,17 @@
 # EyeProlog conformance report
 
-This report combines an executable external conformance gate with the file-based
-conformance corpus under `test/conformance/`. The executable result is measured
-when this report is generated; it is not inferred from fixture counts.
+This report combines a live external conformance gate with the file-based
+conformance corpus under `test/conformance/`. The file-based corpus is
+measured when this report is generated; it is not inferred from fixture counts.
 
 ## Latest Neumerkel evidence
 
-See the tracked [latest Neumerkel conformity report](test/conformance/NEUMERKEL-LATEST.md).
-`npm test` fetches all eight TU Wien sources once and executes the discovered inventory.
-The release workflow then synchronizes this tracked report from those exact successful
-cached source bytes, avoiding a second live fetch and its race window.
-
-## Executable conformance status
-
-| Gate | Passed | Total | Status |
-|---|---:|---:|---|
-| WG17 syntax | 379 | 379 | pass |
-
-The WG17 syntax row executes the vendored 379-case conformity-testing matrix
-against EyeProlog's strict ISO reader/writer. A behavior fix such as operator-token
-spelling therefore changes this report even when no corpus file is added or removed.
+See the tracked [latest Neumerkel conformity report](test/conformance/NEUMERKEL-LATEST.md)
+for the executable external gate, including WG17 syntax conformance: `npm test`
+fetches all eight TU Wien sources (syntax discovered and executed live, not a
+vendored fixture) and executes the discovered inventory. The release workflow
+then synchronizes this tracked report from those exact successful cached source
+bytes, avoiding a second live fetch and its race window.
 
 ## File-based corpus inventory
 
@@ -32,7 +24,7 @@ spelling therefore changes this report even when no corpus file is added or remo
 | context | 11 | 0 | 0 | 0 | 11 |
 | control | 15 | 0 | 0 | 0 | 15 |
 | explicit-tabling | 6 | 0 | 0 | 0 | 6 |
-| iso | 174 | 219 | 0 | 0 | 393 |
+| iso | 176 | 219 | 0 | 0 | 395 |
 | lists | 52 | 3 | 0 | 0 | 55 |
 | modules | 2 | 0 | 0 | 0 | 2 |
 | negation | 8 | 0 | 19 | 0 | 27 |
@@ -45,7 +37,7 @@ spelling therefore changes this report even when no corpus file is added or remo
 | terms | 26 | 3 | 0 | 0 | 29 |
 | unification | 18 | 0 | 0 | 0 | 18 |
 | variables | 16 | 7 | 0 | 0 | 23 |
-| **Total** | **496** | **274** | **19** | **21** | **810** |
+| **Total** | **498** | **274** | **19** | **21** | **812** |
 
 ## DCG conformance clarification
 

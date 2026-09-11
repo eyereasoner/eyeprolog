@@ -1,7 +1,8 @@
 # Test runners
 
-Normally, run `npm test`. Use `npm test -- --offline` to skip live upstream fetching.
-`npm run conformance:update:wg17` refreshes the vendored WG17 snapshot.
+Normally, run `npm test`. Use `npm test -- --offline` to skip live upstream fetching
+(this also skips the WG17 syntax check, which is discovered live and has no
+offline snapshot).
 
 For development, run a focused check directly from the repository root:
 
@@ -9,7 +10,6 @@ For development, run a focused check directly from the repository root:
 node test/run-regression.mjs        # all regression sections
 node test/run-regression.mjs docs   # documentation checks only
 node test/run-conformance-all.mjs   # conformance layers; accepts --offline
-node test/run-wg17.mjs              # vendored WG17 syntax
 node test/run-iso-strict.mjs        # strict ISO core
 node test/run-iso-part2-amendment.mjs
 node test/run-neumerkel.mjs         # live upstream; --cached reproduces last fetch

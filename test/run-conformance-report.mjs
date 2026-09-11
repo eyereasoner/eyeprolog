@@ -1,12 +1,10 @@
 #!/usr/bin/env node
-// Executable conformance status plus static corpus inventory.
-// The WG17 row is run when this report is generated, so a syntax-conformance
-// regression changes the public report even when the fixture inventory itself
-// has not changed.
+// Static corpus inventory report. Executable conformance status (including
+// WG17 syntax) is measured live and tracked in NEUMERKEL-LATEST.md instead;
+// see the "Latest Neumerkel evidence" section below.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { runWg17 } from './run-wg17.mjs';
 import { listPrologFiles } from './test-support.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
@@ -20,7 +18,7 @@ const KINDS = [
   { kind: 'proofs', expectedKind: 'expected-proofs', expectedExt: '.pl', column: 'proofs' },
 ];
 
-export function buildConformanceReport({ wg17Suite = runWg17 } = {}) {
+export function buildConformanceReport() {
   const categories = new Map();
   const corpusIssues = [];
 
@@ -54,59 +52,33 @@ export function buildConformanceReport({ wg17Suite = runWg17 } = {}) {
     total: acc.total + row.total,
   }), { positive: 0, errors: 0, warnings: 0, proofs: 0, total: 0 });
 
-  const executable = [executeGate('WG17 syntax', wg17Suite)];
-  const executionIssues = executable.flatMap((gate) => gate.failures.map((failure) =>
-    `${gate.name}: ${failure.name}: ${failure.message}`));
-
   return {
     rows,
     total,
-    executable,
     corpusIssues: corpusIssues.sort(),
-    executionIssues,
-    issues: [...corpusIssues.sort(), ...executionIssues],
+    issues: corpusIssues.sort(),
   };
 }
 
 export function formatConformanceReport(report = buildConformanceReport()) {
-  const wg17 = report.executable.find((gate) => gate.name === 'WG17 syntax');
-  const wg17Total = wg17?.total ?? 0;
   const lines = [
     '# EyeProlog conformance report',
     '',
-    'This report combines an executable external conformance gate with the file-based',
-    'conformance corpus under `test/conformance/`. The executable result is measured',
-    'when this report is generated; it is not inferred from fixture counts.',
+    'This report combines a live external conformance gate with the file-based',
+    'conformance corpus under `test/conformance/`. The file-based corpus is',
+    'measured when this report is generated; it is not inferred from fixture counts.',
     '',
   ];
 
   lines.push(
     '## Latest Neumerkel evidence',
     '',
-    'See the tracked [latest Neumerkel conformity report](test/conformance/NEUMERKEL-LATEST.md).',
-    '`npm test` fetches all eight TU Wien sources once and executes the discovered inventory.',
-    'The release workflow then synchronizes this tracked report from those exact successful',
-    'cached source bytes, avoiding a second live fetch and its race window.',
-    '',
-  );
-
-  lines.push(
-    '## Executable conformance status',
-    '',
-    '| Gate | Passed | Total | Status |',
-    '|---|---:|---:|---|',
-  );
-
-  for (const gate of report.executable) {
-    const status = gate.passed === gate.total ? 'pass' : 'fail';
-    lines.push(`| ${gate.name} | ${gate.passed} | ${gate.total} | ${status} |`);
-  }
-
-  lines.push(
-    '',
-    `The WG17 syntax row executes the vendored ${wg17Total}-case conformity-testing matrix`,
-    'against EyeProlog\'s strict ISO reader/writer. A behavior fix such as operator-token',
-    'spelling therefore changes this report even when no corpus file is added or removed.',
+    'See the tracked [latest Neumerkel conformity report](test/conformance/NEUMERKEL-LATEST.md)',
+    'for the executable external gate, including WG17 syntax conformance: `npm test`',
+    'fetches all eight TU Wien sources (syntax discovered and executed live, not a',
+    'vendored fixture) and executes the discovered inventory. The release workflow',
+    'then synchronizes this tracked report from those exact successful cached source',
+    'bytes, avoiding a second live fetch and its race window.',
     '',
     '## File-based corpus inventory',
     '',
@@ -125,10 +97,6 @@ export function formatConformanceReport(report = buildConformanceReport()) {
   if (report.corpusIssues.length > 0) {
     lines.push('', '## Corpus issues', '');
     for (const issue of report.corpusIssues) lines.push(`- ${issue}`);
-  }
-  if (report.executionIssues.length > 0) {
-    lines.push('', '## Executable conformance failures', '');
-    for (const issue of report.executionIssues) lines.push(`- ${issue}`);
   }
 
   return `${lines.join('\n')}\n`;
@@ -190,35 +158,6 @@ function integerFlagChoiceSection() {
     'resulting single divergence rather than patching the upstream fixture.',
     '',
   ];
-}
-
-function executeGate(name, runSuite) {
-  const failures = [];
-  const reporter = {
-    passed: 0,
-    total: 0,
-    section() {},
-    sectionTotal() {},
-    test(testName, run) {
-      this.total++;
-      try {
-        run();
-        this.passed++;
-      } catch (error) {
-        failures.push({
-          name: testName,
-          message: String(error?.message ?? error).split('\n', 1)[0],
-        });
-      }
-    },
-  };
-
-  try {
-    runSuite(reporter);
-  } catch (error) {
-    failures.push({ name: 'suite setup', message: String(error?.message ?? error).split('\n', 1)[0] });
-  }
-  return { name, passed: reporter.passed, total: reporter.total, failures };
 }
 
 function categoryOf(file) {

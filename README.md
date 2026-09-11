@@ -95,11 +95,10 @@ npm test
 ```
 The npm command list is deliberately small:
 
-- `npm test` (or `npm run test`): run the release gate, including live upstream conformity checks.
-- `npm run conformance:update:wg17`: update the vendored WG17 syntax cases and their inventory documentation.
+- `npm test` (or `npm run test`): run the release gate, including live upstream conformity checks (WG17 syntax among them).
 - `npm run generate`: rebuild generated library and book files.
 - `npm run benchmark`: run the wall-clock benchmarks.
 
-Use `npm test -- --offline` for a network-free local pass. Focused checks remain available directly, for example `node test/run-regression.mjs docs` or `node test/run-wg17.mjs`; see [test runners](test/README.md). The automatic version hooks still run the release gate, refresh and stage conformance reports, and push the release. Detailed upstream report maintenance is documented in the [conformance guide](test/conformance/README.md).
+Use `npm test -- --offline` for a network-free local pass (this also skips the live-discovered WG17 syntax check, since it has no offline snapshot). Focused checks remain available directly, for example `node test/run-regression.mjs docs`; see [test runners](test/README.md). The automatic version hooks still run the release gate, refresh and stage conformance reports, and push the release. Detailed upstream report maintenance is documented in the [conformance guide](test/conformance/README.md).
 
 EyeProlog is released under the [MIT License](LICENSE.md).

@@ -10422,7 +10422,6 @@ syntax. Separate corpora cover expected errors, warnings, and proofs:
 ```sh
 node test/run-conformance-all.mjs
 node test/run-iso-strict.mjs
-node test/run-wg17.mjs
 node test/run-conformance-report.mjs
 ```
 
@@ -10435,27 +10434,31 @@ proposals into the licensed baseline. `ISO-TERM-SEMANTICS-MATRIX.md` closes the 
 rows, `ISO-PROLOG-TEXT-EXECUTION-MATRIX.md` closes 7.4-7.8 preparation,
 database, conversion, execution, and control, and
 `ISO-EVALUABLE-FUNCTOR-MATRIX.md` closes 7.9/Clause 9 expression and arithmetic
-rows. The exit checklist in `ISO-COMPLIANCE.md` records the closure criteria and their evidence. `test/conformance/WG17-SYNTAX-STATUS.md` separately traces the vendored active
-upstream syntax cases. Reviewed cases can pin exact strict-reader outcomes, while
-newly upgraded cases execute directly against the upstream Codex expectation.
+rows. The exit checklist in `ISO-COMPLIANCE.md` records the closure criteria and their evidence. WG17 syntax cases
+are discovered live and executed as part of the Neumerkel conformity gate
+rather than a vendored, periodically refreshed snapshot; a small offline
+corpus (`test/conformance/wg17-syntax-cases.json`) additionally pins exact
+reviewed strict-reader outcomes for most cases, cross-referenced by id against
+the live-discovered ones. Every case, live or reviewed, is checked directly
+against the upstream Codex expectation.
 
-The syntax review also cross-checks extension safety: each vendored WG17 case
+The syntax review also cross-checks extension safety: each WG17 case
 accepted by the strict Part 1 reader is executed through the normal profile and
 must preserve the same observable outcome. Additional normal-mode syntax may
 accept texts outside the strict grammar, but it may not reinterpret an accepted
 standard case.
 
-The file-based conformance corpus contains 810 cases, including 393 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
+The file-based conformance corpus contains 812 cases, including 395 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
 Separate exact-output suites check 229 normal examples and 61 proof examples; all executable chapter programs are parsed and their declared goals are executed. The nine-case
 playground contract suite imports the production worker, sends real reasoning
 requests through its message protocol, and crawls the served module graph for
-missing assets, bad MIME types, and static Node-only imports. `conformance-report.md` records the current executable WG17 syntax result and file-based conformance category totals.
+missing assets, bad MIME types, and static Node-only imports. `conformance-report.md` inventories the file-based conformance corpus and links to the live Neumerkel evidence, which includes the current WG17 syntax result.
 
 ### Conformance artifacts
 
 The repository exposes several forms of executable evidence:
 
-- `conformance-report.md` records the vendored WG17 syntax result and inventories the file-based conformance corpus;
+- `conformance-report.md` inventories the file-based conformance corpus and links to `NEUMERKEL-LATEST.md`, which records the current WG17 syntax result among the other live TU Wien sources;
 - `examples/book/` contains the executable code displays associated with the chapters;
 - `examples/output/` and `examples/proof/` contain reviewed exact-output goldens that make behavior changes visible in version control.
 
@@ -10489,7 +10492,7 @@ that Part 1 strict surface.
 The strict-core review has explicit dispositions for the Clause 5 processor
 obligations, Clause 6 syntax and rejection families, Clause 7 term/execution/I/O
 and error semantics, the 8.2-8.17 built-in families, and Clause 9 evaluable
-functors. The complete vendored WG17 syntax matrix is checked together with normal-mode safety: each strict-success WG17 observation must keep the same result when normal-mode extensions are enabled. Implementation-defined
+functors. The complete, live-discovered WG17 syntax matrix is checked together with normal-mode safety: each strict-success WG17 observation must keep the same result when normal-mode extensions are enabled. Implementation-defined
 choices—including the Unicode-scalar processor character set, stream details,
 flag defaults, floating behavior, and signed bitwise/shift semantics—are indexed
 in `test/conformance/ISO-IMPLEMENTATION-DEFINED.md`. The conformance closure ledger is `test/conformance/ISO-COMPLIANCE.md`.

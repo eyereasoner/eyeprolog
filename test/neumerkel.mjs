@@ -11,10 +11,11 @@ import {
   htmlCellText,
   parseWg17SyntaxTable,
   setupInput,
-} from '../tools/upgrade-wg17.mjs';
+} from '../tools/wg17-syntax.mjs';
 import {
   executeWg17Item,
   matchesUpstreamExpectation,
+  readWg17SyntaxOutcomes,
   wg17TestDescription,
 } from './run-wg17.mjs';
 
@@ -387,6 +388,7 @@ export async function executeNeumerkel({ reporter, mode = 'live', cacheDir = def
   reporter.section(`Neumerkel conformity (${mode === 'live' && sourceDir == null ? 'live upstream' : sourceDir != null ? 'source fixtures' : 'cached'})`);
 
   const syntaxCases = materializeSyntaxCases(sources.get('syntax').text);
+  const syntaxOutcomes = readWg17SyntaxOutcomes();
   const syntaxFailures = [];
   let syntaxPassed = 0;
   for (const item of syntaxCases) {
@@ -395,6 +397,16 @@ export async function executeNeumerkel({ reporter, mode = 'live', cacheDir = def
         const actual = executeWg17Item(item);
         if (!matchesUpstreamExpectation(item.expected, actual, item)) {
           throw new Error(`syntax #${item.id} expected ${item.expected}; actual ${JSON.stringify(actual)}`);
+        }
+        // A case can also carry a reviewed exact-behavior lock (see
+        // wg17-syntax-outcomes.json): a stronger regression check than the
+        // upstream assertion alone, catching a change that still happens to
+        // satisfy the loose Codex expectation.
+        const reviewed = syntaxOutcomes.get(item.id);
+        if (reviewed != null && JSON.stringify(actual) !== JSON.stringify(reviewed)) {
+          throw new Error(
+            `syntax #${item.id} reviewed outcome changed; expected ${JSON.stringify(reviewed)}; actual ${JSON.stringify(actual)}`,
+          );
         }
       });
       syntaxPassed++;

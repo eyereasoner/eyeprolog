@@ -23,7 +23,7 @@ relevant implementation-dependent overlap choice to an explicit review outcome.
 
 | Requirement | Status | EyeProlog evidence / remaining work |
 | --- | --- | --- |
-| 5.1(a) prepare conforming Prolog text | covered | Clause 6 token/term production and rejection families are mapped by the strict production gate and the complete 379-case vendored WG17 syntax matrix; 7.4 preparation/directive behavior is separately closed. |
+| 5.1(a) prepare conforming Prolog text | covered | Clause 6 token/term production and rejection families are mapped by the strict production gate and the complete WG17 syntax matrix, discovered dynamically and executed live as part of the Neumerkel conformity gate; 7.4 preparation/directive behavior is separately closed. |
 | 5.1(b) execute conforming Prolog goals | covered | Clause 7 term/control/execution semantics, the higher-level 7.10 stream model, 7.11 flags, the 7.12 error envelope, all 8.2-8.17 built-in rows, and Clause 9 arithmetic have explicit executable dispositions. |
 | 5.1(c) reject nonconforming text/read-terms | covered | WG17 negative syntax cases, focused malformed-production/escape/comment/operator cases, read-term syntax errors, and strict rejection of implementation-specific syntax provide explicit rejection evidence across the Clause 6 families. |
 | 5.1(d) document permitted variations | covered | The clause-by-clause [ISO 5.4 decision index](ISO-IMPLEMENTATION-DEFINED.md) records every explicit implementation-defined decision found in the Part 1 + Corrigenda baseline and separately inventories implementation-specific extension families. The index retains an `gap` category for future discoveries; no current release-facing row depends on one. |
@@ -35,7 +35,7 @@ relevant implementation-dependent overlap choice to an explicit review outcome.
 
 | Standard area | Status | Current evidence |
 | --- | --- | --- |
-| Clause 6 — tokens, terms, lists, operators, quoted text | covered | The strict Clause 6 gate maps atomic/variable/compound/operator/list/curly/double-quoted term forms, layout/comments, quoted escapes, integer bases/character codes, floating tokens, and solo/meta token boundaries, with malformed counterparts rejected. The complete 379-case WG17 syntax matrix provides externally sourced production-level expectations, and a cross-profile gate verifies that normal syntax extensions preserve every strict-accepted standard observation. The implementation-defined 6.5/6.6 PCS/collation choices are documented separately. |
+| Clause 6 — tokens, terms, lists, operators, quoted text | covered | The strict Clause 6 gate maps atomic/variable/compound/operator/list/curly/double-quoted term forms, layout/comments, quoted escapes, integer bases/character codes, floating tokens, and solo/meta token boundaries, with malformed counterparts rejected. The complete WG17 syntax matrix, discovered dynamically at run time, provides externally sourced production-level expectations, and a cross-profile gate verifies that normal syntax extensions preserve every strict-accepted standard observation. The implementation-defined 6.5/6.6 PCS/collation choices are documented separately. |
 | 7.1-7.3 — term types, term order, unification | covered | [ISO-TERM-SEMANTICS-MATRIX.md](ISO-TERM-SEMANTICS-MATRIX.md) records the five mutually exclusive strict term types, derived variable/compound/list notions, the complete standard-order classes and implementation-dependent variable-order choice, NSTO MGU/failure behavior, and EyeProlog's permitted consistent occurs-check failure for Part 1's undefined STO ordinary-unification cases. The normal JavaScript API string term is documented as a 5.5.4 extension and rejected at strict program/goal entry. |
 | 7.4 — Prolog text and directives | covered | [ISO-PROLOG-TEXT-EXECUTION-MATRIX.md](ISO-PROLOG-TEXT-EXECUTION-MATRIX.md) closes the preparation/directive rows: declaration semantics, source clauses, cross-text operators/character conversion/flags, initialization order/lifetime, `include/1`, and one-time `ensure_loaded/1`, with implementation-defined cross-text choices indexed under 5.4. |
 | 7.5-7.6 — database and term/clause conversion | covered | [ISO-PROLOG-TEXT-EXECUTION-MATRIX.md](ISO-PROLOG-TEXT-EXECUTION-MATRIX.md) closes static/dynamic and private/public procedure semantics, clause order, logical-update visibility, empty/unknown lifetime, and term/body/clause conversion. Source and runtime assertion conversion recurse through `,/2`, `;/2`, and `->/2`, preserve variable identity, and protect standardized static/control procedures. |
@@ -278,10 +278,11 @@ A release intended to advance ISO conformance uses one canonical command:
 npm test
 ```
 
-That command first fetches and runs the **latest seven Neumerkel conformity
-sources**, then executes the deterministic local conformance, strict ISO,
-vendored WG17 regression, regression/API, examples, documentation and
-architecture gates. The upstream case counts are discovered dynamically.
+That command first fetches and runs the **latest eight Neumerkel conformity
+sources** (WG17 syntax among them, discovered live, not vendored), then
+executes the deterministic local conformance, strict ISO,
+regression/API, examples, documentation and architecture gates. The upstream
+case counts are discovered dynamically.
 
 Useful focused commands are:
 
@@ -289,7 +290,6 @@ Useful focused commands are:
 node test/run-conformance-all.mjs
 node test/run-neumerkel.mjs
 node test/run-iso-strict.mjs
-node test/run-wg17.mjs
 npm test -- --offline
 ```
 
@@ -307,7 +307,7 @@ post-N289 STC drafts remain review input until standardized.
 | Criterion | Status | Evidence |
 | --- | --- | --- |
 | Clause 5 processor obligations have explicit dispositions | covered | `ISO-PROCESSOR-REQUIREMENTS.md` gives explicit outcomes for 5.1-5.5, including the strict/normal extension boundary. |
-| Clause 6 lexical/syntactic requirements have explicit dispositions | covered | the strict Clause 6 production/rejection gate and the 379-case vendored WG17 matrix cover the standard families; cross-profile preservation verifies that normal extensions do not reinterpret strict-accepted text. |
+| Clause 6 lexical/syntactic requirements have explicit dispositions | covered | the strict Clause 6 production/rejection gate and the live-discovered WG17 matrix cover the standard families; cross-profile preservation verifies that normal extensions do not reinterpret strict-accepted text. |
 | Clause 7 semantic requirements have explicit dispositions | covered | 7.1-7.12 now have explicit semantic, implementation-defined, or error-envelope dispositions backed by strict tests and the specialized matrices. |
 | Clause 8 built-in modes/errors have explicit dispositions | covered | `ISO-BUILTIN-MODE-ERROR-MATRIX.md` accounts for 8.2-8.17 condition by condition, using grouped rows only where every grouped condition and its evidence are named |
 | Clause 9 evaluable-functor requirements have explicit dispositions | covered | `ISO-EVALUABLE-FUNCTOR-MATRIX.md` plus the strict arithmetic regression closes the published Part 1 + Corrigenda arithmetic rows |
@@ -315,7 +315,7 @@ post-N289 STC drafts remain review input until standardized.
 | Implementation-specific strict/normal boundary is documented and tested | covered | all 5.5 hooks have explicit dispositions; the WG17 cross-profile gate verifies syntax-preservation for standard text accepted by the strict reader. |
 | Published Corrigenda 1-3 are incorporated | covered | `ISO-CORRIGENDA-MATRIX.md` inventories every published amendment cluster with executable, editorial, or superseded disposition |
 | Current post-N289 draft is tracked without silently changing the published baseline | covered | `STC-DRAFT-STATUS.md` tracks reviewed draft items separately from normative requirements |
-| Latest Neumerkel conformity is a live release gate | covered | `npm test` fetches and executes the eight current TU Wien conformity sources with dynamic inventories; the vendored WG17 matrix remains an offline reviewed-outcome regression layer |
+| Latest Neumerkel conformity is a live release gate | covered | `npm test` fetches and executes the eight current TU Wien conformity sources with dynamic inventories, including WG17 syntax; a small offline corpus of reviewed cases (`test/conformance/wg17-syntax-cases.json`) supplies an additional exact-outcome regression lock, cross-referenced by id against the live-discovered cases |
 | Third-party standard-core regression provenance is retained | covered | adapted Logtalk, Scryer, Trealla, and SWI-Prolog cases retain source identifiers and licenses in `THIRD_PARTY.md` |
 | No unexplained deviation remains in the release-facing ledger | covered | the release-facing ledger contains no remaining `review` rows; documented variation points are implementation-defined/specific or draft-only rather than unexplained deviations. |
 

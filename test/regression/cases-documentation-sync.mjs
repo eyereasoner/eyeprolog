@@ -7,8 +7,7 @@ import * as publicApi from '../../src/index.js';
 import { createDefaultRegistry, eyePrologLibraryIndicators, eyePrologNativeLibraryIndicators, eyePrologPortableLibraryIndicators, standardLibrarySources } from '../../src/index.js';
 import { assertEqual, assertIncludes, assertNotIncludes } from '../test-style.mjs';
 import { buildConformanceReport, formatConformanceReport } from '../run-conformance-report.mjs';
-import { renderWg17SyntaxStatus } from '../../tools/report-wg17-syntax-coverage.mjs';
-import { parseWg17SyntaxTable, updateWg17InventoryReferences } from '../../tools/upgrade-wg17.mjs';
+import { parseWg17SyntaxTable } from '../../tools/wg17-syntax.mjs';
 import { executeWg17Item, matchesUpstreamExpectation, readWg17SyntaxFixture } from '../run-wg17.mjs';
 import {
   assertArrayEqual,
@@ -163,29 +162,10 @@ ${profile}`;
       },
     },
     {
-      name: 'WG17 syntax status matches its executable-coverage manifest',
-      run: () => {
-        const filename = path.join(testRoot, 'conformance', 'WG17-SYNTAX-STATUS.md');
-        assertEqual(fs.readFileSync(filename, 'utf8'), renderWg17SyntaxStatus(), 'WG17 syntax status');
-      },
-    },
-    {
-      name: 'WG17 inventory documentation accepts omitted counts and repairs partial updates',
-      run: () => {
-        const countFree = 'The vendored WG17 syntax snapshot is intentionally secondary.';
-        assertEqual(updateWg17InventoryReferences(countFree, 379), countFree, 'no count required');
-        const stale = 'The 366-case vendored WG17 matrix and 365-case WG17 syntax matrix; WG17 matrix has 366 executable cases. An unrelated 366-case suite stays unchanged.';
-        const expected = 'The 379-case vendored WG17 matrix and 379-case WG17 syntax matrix; WG17 matrix has 379 executable cases. An unrelated 366-case suite stays unchanged.';
-        const updated = updateWg17InventoryReferences(stale, 379);
-        assertEqual(updated, expected, 'all stale WG17 counts repaired independently of fixture state');
-        assertEqual(updateWg17InventoryReferences(updated, 379), updated, 'retry is idempotent');
-      },
-    },
-    {
-      name: 'WG17 upgrader accepts omitted HTML table end tags',
+      name: 'WG17 syntax parser accepts omitted HTML table end tags',
       run: () => {
         // HTML permits </td> and </tr> to be omitted. TU Wien uses this
-        // compact form, so the upgrader must not depend on explicit closes.
+        // compact form, so the parser must not depend on explicit closes.
         const rows = Array.from({ length: 120 }, (_, index) =>
           `<tr><td>${index + 1}<td><code>write(${index + 1}).</code><td>ok`).join('\n');
         const html = `<table><tr><th>#<th>Query<th>Codex${rows}</table>`;
@@ -197,7 +177,7 @@ ${profile}`;
       },
     },
     {
-      name: 'WG17 upgrader normalizes presentation non-breaking spaces',
+      name: 'WG17 syntax parser normalizes presentation non-breaking spaces',
       run: () => {
         const rows = Array.from({ length: 120 }, (_, index) =>
           `<tr><td>${index + 1}<td>set_prolog_flag(&nbsp;double_quotes,chars).<td>succeeds`).join('\n');
@@ -207,7 +187,7 @@ ${profile}`;
       },
     },
     {
-      name: 'WG17 upgrader removes presentation footnote markers from Codex text',
+      name: 'WG17 syntax parser removes presentation footnote markers from Codex text',
       run: () => {
         const rows = Array.from({ length: 120 }, (_, index) =>
           `<tr><td>${index + 1}<td>writeq(-(1^2)).<td>- (1^2)&sup3;`).join('\n');
@@ -649,7 +629,7 @@ ${profile}`;
         const publishIndex = publishWorkflow.indexOf('run: npm publish');
         assertEqual(testIndex >= 0 && testIndex < publishIndex, true, 'publish workflow test gate');
         assertEqual(packIndex >= 0 && packIndex < publishIndex, true, 'publish workflow package gate');
-        assertArrayEqual(Object.keys(pkg.scripts).sort(), ['benchmark', 'conformance:update:wg17', 'generate', 'postversion', 'preversion', 'test'], 'small npm command surface');
+        assertArrayEqual(Object.keys(pkg.scripts).sort(), ['benchmark', 'generate', 'postversion', 'preversion', 'test'], 'small npm command surface');
         assertEqual(pkg.scripts.test, 'node test/run-all.mjs', 'full release gate');
         const runner = fs.readFileSync(path.join(packageRoot, 'test', 'run-all.mjs'), 'utf8');
         assertIncludes(runner, 'runOpenRuleBenchChecks(reporter)', 'OpenRuleBench remains in release gate');
@@ -667,28 +647,11 @@ ${profile}`;
         assertEqual(report.total.total >= 475, true, 'conformance case count');
         assertEqual(report.total.positive + report.total.errors + report.total.warnings + report.total.proofs, report.total.total, 'conformance total');
         assertEqual(report.rows.some((row) => row.category === 'legacy-numbered'), false, 'legacy-numbered category');
-        const wg17 = report.executable.find((gate) => gate.name === 'WG17 syntax');
-        const wg17FixtureTotal = readWg17SyntaxFixture().cases.length;
-        assertEqual(wg17?.total, wg17FixtureTotal, 'WG17 executable total');
-        assertEqual(wg17?.passed, wg17FixtureTotal, 'WG17 executable passed');
-        assertArrayEqual(wg17?.failures ?? [], [], 'WG17 executable failures');
         const text = formatConformanceReport(report);
-        assertIncludes(text, `| WG17 syntax | ${wg17FixtureTotal} | ${wg17FixtureTotal} | pass |`, 'report');
+        assertIncludes(text, 'latest Neumerkel conformity report', 'report links live evidence');
         assertIncludes(text, '| variables |', 'report');
         assertIncludes(text, '| Proofs |', 'report');
         assertIncludes(text, '| **Total** |', 'report');
-
-        const failing = buildConformanceReport({
-          wg17Suite: (reporter) => {
-            reporter.section('WG17 syntax');
-            reporter.test('synthetic syntax failure', () => { throw new Error('synthetic mismatch'); });
-            reporter.sectionTotal('WG17 syntax');
-          },
-        });
-        assertEqual(failing.executable[0].passed, 0, 'failing WG17 executable passed');
-        assertEqual(failing.executable[0].total, 1, 'failing WG17 executable total');
-        assertEqual(failing.executionIssues.length, 1, 'failing WG17 report issue count');
-        assertIncludes(formatConformanceReport(failing), '| WG17 syntax | 0 | 1 | fail |', 'failing report');
       },
     },
 
