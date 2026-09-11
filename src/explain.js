@@ -69,7 +69,7 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
         env: proofEnv,
         node: {
           goal: resolveForProof(goal, proofEnv),
-          method: builtinMethod(goal),
+          method: goalMethod('builtin', goal),
           sourceHead: resolveForProof(goal, proofEnv),
           sourceBody: [],
           bindings: [],
@@ -97,7 +97,7 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
         env: proofEnv,
         node: {
           goal: resolveForProof(goal, proofEnv),
-          method: libraryMethod(goal),
+          method: goalMethod('library', goal),
           sourceHead: resolveForProof(goal, proofEnv),
           sourceBody: [],
           bindings: [],
@@ -254,17 +254,9 @@ function sourceMethod(clause, kind) {
   };
 }
 
-function builtinMethod(goal) {
+function goalMethod(type, goal) {
   return {
-    type: 'builtin',
-    name: goal.type === COMPOUND ? goal.name : 'goal',
-    arity: goal.type === COMPOUND ? goal.arity : 0,
-  };
-}
-
-function libraryMethod(goal) {
-  return {
-    type: 'library',
+    type,
     name: goal.type === COMPOUND ? goal.name : 'goal',
     arity: goal.type === COMPOUND ? goal.arity : 0,
   };
@@ -380,15 +372,15 @@ function certificateText(term) {
   throw new Error('expected certificate text');
 }
 
-function containsLibraryBoundary(node) {
-  if (node.method?.type === 'library') return true;
-  return node.children.some(containsLibraryBoundary);
+function proofTreeContains(node, predicate) {
+  return predicate(node) || node.children.some((child) => proofTreeContains(child, predicate));
 }
 
-function containsExpandedLibrarySource(node) {
-  if (node.method?.type === 'source' && String(node.method.filename ?? '').startsWith('src/lib/')) return true;
-  return node.children.some(containsExpandedLibrarySource);
-}
+const containsLibraryBoundary = (node) => proofTreeContains(node, (n) => n.method?.type === 'library');
+
+const containsExpandedLibrarySource = (node) => proofTreeContains(
+  node, (n) => n.method?.type === 'source' && String(n.method.filename ?? '').startsWith('src/lib/'),
+);
 
 export function verifyProof(program, input, options = {}) {
   const certificate = input?.certificate ?? input;
@@ -557,8 +549,9 @@ function verifyBindings(bindings, variables, env, program) {
 
 function renderMethodTerm(method) {
   if (method && method.type === 'source') return `${method.kind}(${quoteString(method.filename)}, clause(${method.clause}))`;
-  if (method && method.type === 'builtin') return `builtin(${quoteAtomText(method.name)}, ${method.arity})`;
-  if (method && method.type === 'library') return `library(${quoteAtomText(method.name)}, ${method.arity})`;
+  if (method && (method.type === 'builtin' || method.type === 'library')) {
+    return `${method.type}(${quoteAtomText(method.name)}, ${method.arity})`;
+  }
   return String(method);
 }
 

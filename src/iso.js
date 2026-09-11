@@ -680,10 +680,7 @@ function validPredicateIndicator(term) {
       (term.args[1].type === NUMBER && isDecimalInteger(term.args[1].name) && BigInt(term.args[1].name) >= 0n));
 }
 
-function currentPredicateBuiltin(context) {
-  const state = { pending: false };
-  return withPendingState(currentPredicateSolutions(context, state), state);
-}
+const currentPredicateBuiltin = pendingBuiltin(currentPredicateSolutions);
 
 function* currentPredicateSolutions({ solver, goal, env }, state) {
   const indicator = copyResolved(goal.args[0], env);
@@ -719,10 +716,7 @@ function clauseBodyTerm(body) {
   return result;
 }
 
-function clauseBuiltin(context) {
-  const state = { pending: false };
-  return withPendingState(clauseSolutions(context, state), state);
-}
+const clauseBuiltin = pendingBuiltin(clauseSolutions);
 
 function* clauseSolutions({ solver, goal, env }, state) {
   const head = deref(goal.args[0], env);
@@ -851,12 +845,7 @@ function assertBuiltin(atStart) {
   };
 }
 
-function retractBuiltin(context) {
-  const state = { pending: true };
-  const iterator = retractSolutions(context, state);
-  iterator.hasPendingAlternatives = () => state.pending;
-  return iterator;
-}
+const retractBuiltin = pendingBuiltin(retractSolutions, true);
 
 function* retractSolutions({ solver, goal, env }, state) {
   const parts = clauseParts(goal.args[0], env);
@@ -941,10 +930,7 @@ function* abolishBuiltin({ solver, goal, env }) {
   yield env;
 }
 
-function currentPrologFlagBuiltin(context) {
-  const state = { pending: false };
-  return withPendingState(currentPrologFlagSolutions(context, state), state);
-}
+const currentPrologFlagBuiltin = pendingBuiltin(currentPrologFlagSolutions);
 
 function* currentPrologFlagSolutions({ solver, goal, env }, state) {
   const flag = deref(goal.args[0], env);
@@ -1058,10 +1044,7 @@ function* opBuiltin({ solver, goal, env }) {
   yield env;
 }
 
-function currentOpBuiltin(context) {
-  const state = { pending: false };
-  return withPendingState(currentOpSolutions(context, state), state);
-}
+const currentOpBuiltin = pendingBuiltin(currentOpSolutions);
 
 function* currentOpSolutions({ solver, goal, env }, state) {
   const priority = deref(goal.args[0], env);
@@ -1124,10 +1107,7 @@ function* charConversionBuiltin({ solver, goal, env }) {
   else solver.charConversions.set(input.name, output.name);
   yield env;
 }
-function currentCharConversionBuiltin(context) {
-  const state = { pending: false };
-  return withPendingState(currentCharConversionSolutions(context, state), state);
-}
+const currentCharConversionBuiltin = pendingBuiltin(currentCharConversionSolutions);
 
 function* currentCharConversionSolutions({ solver, goal, env }, state) {
   const input = conversionCharacter(goal.args[0], env, true, solver);
@@ -1355,28 +1335,23 @@ function* closeBuiltin({ solver, goal, env }) {
   yield env;
 }
 
-function* currentInputBuiltin({ solver, goal, env }) {
-  const value = deref(goal.args[0], env);
-  if (value.type !== VAR) {
-    const id = streamTermReference(goal.args[0], env);
-    // A closed handle is still a stream-term, but cannot be current (#107).
-    // Validate its shape, then test identity rather than requiring an open stream.
-    if (id === solver.io.currentInput) yield env;
-    return;
-  }
-  const next = env.clone();
-  if (unify(goal.args[0], streamHandle(solver.io.currentInput), next)) yield next;
+function currentStreamBuiltin(which) {
+  // A closed handle is still a stream-term, but cannot be current (#107).
+  // Validate its shape, then test identity rather than requiring an open stream.
+  return function* ({ solver, goal, env }) {
+    const value = deref(goal.args[0], env);
+    const current = solver.io[which];
+    if (value.type !== VAR) {
+      const id = streamTermReference(goal.args[0], env);
+      if (id === current) yield env;
+      return;
+    }
+    const next = env.clone();
+    if (unify(goal.args[0], streamHandle(current), next)) yield next;
+  };
 }
-function* currentOutputBuiltin({ solver, goal, env }) {
-  const value = deref(goal.args[0], env);
-  if (value.type !== VAR) {
-    const id = streamTermReference(goal.args[0], env);
-    if (id === solver.io.currentOutput) yield env;
-    return;
-  }
-  const next = env.clone();
-  if (unify(goal.args[0], streamHandle(solver.io.currentOutput), next)) yield next;
-}
+const currentInputBuiltin = currentStreamBuiltin('currentInput');
+const currentOutputBuiltin = currentStreamBuiltin('currentOutput');
 
 function setCurrentStreamBuiltin(mode) {
   return function* ({ solver, goal, env }) {
@@ -1456,10 +1431,7 @@ function isStreamPropertyPattern(value) {
   ].includes(value.name);
 }
 
-function streamPropertyBuiltin(context) {
-  const state = { pending: false };
-  return withPendingState(streamPropertySolutions(context, state), state);
-}
+const streamPropertyBuiltin = pendingBuiltin(streamPropertySolutions);
 
 function* streamPropertySolutions({ solver, goal, env }, state) {
   const reference = deref(goal.args[0], env);
@@ -2068,14 +2040,6 @@ function* writeTermBuiltin({ solver, goal, env }) {
   yield env;
 }
 
-function resolvedOrVariable(term, env, expected) {
-  const value = deref(term, env);
-  if (value.type !== VAR && value.type !== expected) {
-    throw new PrologError(`type_error(${expected === ATOM ? 'atom' : 'number'})`, value);
-  }
-  return value;
-}
-
 function characters(text) {
   return Array.from(text);
 }
@@ -2095,10 +2059,7 @@ function* atomLengthBuiltin({ goal, env }) {
   if (unify(goal.args[1], numberTerm(characters(value.name).length), next)) yield next;
 }
 
-function atomConcatBuiltin(context) {
-  const state = { pending: false };
-  return withPendingState(atomConcatSolutions(context, state), state);
-}
+const atomConcatBuiltin = pendingBuiltin(atomConcatSolutions);
 
 function* atomConcatSolutions({ goal, env }, state) {
   const first = deref(goal.args[0], env);
@@ -2142,10 +2103,7 @@ function optionalInteger(term, env) {
   return BigInt(value.name);
 }
 
-function subAtomBuiltin(context) {
-  const state = { pending: false };
-  return withPendingState(subAtomSolutions(context, state), state);
-}
+const subAtomBuiltin = pendingBuiltin(subAtomSolutions);
 
 function* subAtomSolutions({ goal, env }, state) {
   const source = deref(goal.args[0], env);
@@ -2625,10 +2583,7 @@ function sortedUnique(items) {
 }
 
 function allSolutionsBuiltin(asSet) {
-  return function allSolutions(context) {
-    const state = { pending: false };
-    return withPendingState(allSolutionsGroups(context, asSet, state), state);
-  };
+  return pendingBuiltin((context, state) => allSolutionsGroups(context, asSet, state));
 }
 
 function* allSolutionsGroups({ solver, goal, env }, asSet, state) {
@@ -2696,6 +2651,15 @@ function callable(term, env) {
 function withPendingState(iterator, state) {
   iterator.hasPendingAlternatives = () => state.pending;
   return iterator;
+}
+
+// Most builtins share this shape: create a { pending } cell, run a solutions
+// generator against it, and expose that cell through hasPendingAlternatives.
+function pendingBuiltin(solutionsFn, initialPending = false) {
+  return (context) => {
+    const state = { pending: initialPending };
+    return withPendingState(solutionsFn(context, state), state);
+  };
 }
 function validateControlCallable(term, culprit, env) {
   // Only control constructs need their nested goals validated at meta-call
@@ -2770,15 +2734,18 @@ function expandCallGoal({ goal, env }) {
   if (converted.module == null) converted.module = module;
   return converted;
 }
-function* callBuiltin(context) {
+function* invokeExpandedGoal(context, expand) {
   const { solver, env } = context;
-  const invoked = expandCallGoal(context);
+  const invoked = expand(context);
   const child = solver.cloneForInnerGoal();
   try {
     yield* child.solve([invoked], env, 0);
   } finally {
     solver.absorbStatsFrom(child);
   }
+}
+function* callBuiltin(context) {
+  yield* invokeExpandedGoal(context, expandCallGoal);
 }
 function expandCallClosureGoal({ goal, env }) {
   const closure = callable(goal.args[0], env);
@@ -2792,14 +2759,7 @@ function expandCallClosureGoal({ goal, env }) {
   return invoked;
 }
 function* callClosureBuiltin(context) {
-  const { solver, env } = context;
-  const invoked = expandCallClosureGoal(context);
-  const child = solver.cloneForInnerGoal();
-  try {
-    yield* child.solve([invoked], env, 0);
-  } finally {
-    solver.absorbStatsFrom(child);
-  }
+  yield* invokeExpandedGoal(context, expandCallClosureGoal);
 }
 
 export function* countAllBuiltin({ solver, goal, env }) {
@@ -2846,10 +2806,7 @@ function writeElapsedTime(solver, startedAt, inferences) {
   );
 }
 
-export function timeBuiltin(context) {
-  const state = { pending: true };
-  return withPendingState(timeSolutions(context, state), state);
-}
+export const timeBuiltin = pendingBuiltin(timeSolutions, true);
 
 function* timeSolutions({ solver, goal, env }, state) {
   const invoked = callable(goal.args[0], env);
@@ -2877,10 +2834,7 @@ function* timeSolutions({ solver, goal, env }, state) {
   }
 }
 
-export function callNthBuiltin(context) {
-  const state = { pending: true };
-  return withPendingState(callNthSolutions(context, state), state);
-}
+export const callNthBuiltin = pendingBuiltin(callNthSolutions, true);
 
 function* callNthSolutions({ solver, goal, env }, state) {
   const requestedTerm = deref(goal.args[1], env);
@@ -3005,37 +2959,7 @@ export function callResidueVarsBuiltin({ solver, goal, env }) {
   return iterator;
 }
 
-function freezeBuiltin(context) {
-  const state = { pending: true };
-  return withPendingState(freezeSolutions(context, state), state);
-}
-
-function* freezeSolutions({ solver, goal, env }, state) {
-  const watched = deref(goal.args[0], env);
-  if (watched.type !== VAR) {
-    const child = solver.cloneForInnerGoal();
-    try {
-      for (const answerEnv of child.solve([callable(goal.args[1], env)], env, 0)) {
-        state.pending = child.hasPendingAlternatives();
-        yield answerEnv;
-        if (!state.pending) return;
-      }
-      state.pending = false;
-    } finally {
-      solver.absorbStatsFrom(child);
-    }
-    return;
-  }
-  const next = env.clone();
-  next.delay(watched.name, goal.args[1], goal.module ?? 'user');
-  state.pending = false;
-  yield next;
-}
-
-function phraseBuiltin(context) {
-  const state = { pending: true };
-  return withPendingState(phraseSolutions(context, state), state);
-}
+const phraseBuiltin = pendingBuiltin(phraseSolutions, true);
 
 function* phraseSolutions({ solver, goal, env }, state) {
   const grammarBody0 = deref(goal.args[0], env);
@@ -3161,10 +3085,7 @@ function prologErrorBall(error) {
   if (hasDefaultGroundErrorShape(error) || termIsGround(term)) return term;
   return freshCopy(term, new Env());
 }
-function catchBuiltin(context) {
-  const state = { pending: true };
-  return withPendingState(catchSolutions(context, state), state);
-}
+const catchBuiltin = pendingBuiltin(catchSolutions, true);
 
 function* catchSolutions({ solver, goal, env }, state) {
   let child = null;
@@ -3293,12 +3214,7 @@ function* solveControlBranch(solver, goal, env, observePending = null) {
     yield answer;
   }
 }
-function disjunctionBuiltin(context) {
-  const state = { pending: true };
-  const iterator = disjunctionSolutions(context, state);
-  iterator.hasPendingAlternatives = () => state.pending;
-  return iterator;
-}
+const disjunctionBuiltin = pendingBuiltin(disjunctionSolutions, true);
 function* disjunctionSolutions({ solver, goal, env }, state) {
   const left = deref(goal.args[0], env);
   if (left.type === COMPOUND && left.name === '->' && left.arity === 2) {
@@ -3333,10 +3249,7 @@ function* disjunctionSolutions({ solver, goal, env }, state) {
     (pending) => { state.pending = pending; });
   state.pending = false;
 }
-function ifThenBuiltin(context) {
-  const state = { pending: true };
-  return withPendingState(ifThenSolutions(context, state), state);
-}
+const ifThenBuiltin = pendingBuiltin(ifThenSolutions, true);
 
 function* ifThenSolutions({ solver, goal, env }, state) {
   for (const conditionEnv of solver.cloneForInnerGoal(1).solve([callable(goal.args[0], env)], env.clone(), 0)) {

@@ -139,17 +139,15 @@ function checkAlternative(program, quad, alternative, options, context, unordere
     return { ok: leaves.length === 1 && actual.inputWaitObserved };
   }
 
-  if (requiresSto) {
-    // Trealla currently treats the answer part of an `sto`-annotated leaf as
-    // implementation-dependent and skips it. EyeProlog can strengthen that
-    // conservatively: an observed occurs-check event proves the STO claim, and
-    // a naturally completed finite execution without one disproves it. When
-    // execution was cut short by a search/resource boundary, leave the claim
-    // unchecked rather than pretending to have proved NSTO.
-    if (actual.stoObserved) return { ok: true };
-    if (actual.nstoObserved) return { ok: false };
-    return { ok: true };
-  }
+  // `sto` still describes a specific outcome (a success, a failure, a bound
+  // answer, ...); only the occurs-check claim itself gets Trealla's
+  // implementation-dependent leniency. A naturally completed finite execution
+  // that never touched occurs-check territory disproves that claim outright,
+  // regardless of what the leaves otherwise describe, so reject the whole
+  // sequence here rather than let a mismatched leaf slip through below. A bare
+  // `sto` leaf with no further expectation is the one claim-free exception;
+  // matchLeaf accepts it once this disproof gate has been cleared.
+  if (requiresSto && actual.nstoObserved) return { ok: false };
 
   if (hasInputSpec) {
     const leaf = leaves[0];
@@ -172,6 +170,10 @@ function checkAlternative(program, quad, alternative, options, context, unordere
     // portably outlaw the implementation's chosen STO outcome. This is the
     // case behind issue #60's `false, unexpected` example.
     const stoPermitsUnexpected = context.declaresSto && actual.stoObserved && leaf.unexpected && !leaf.sto;
+    // Both branches below fall back to the same "still-searching" check when
+    // the leaf doesn't already settle the question at this position.
+    const undecidedHere = () =>
+      (actual.undecided && leafNeedsMoreSearch(leaf, actual, position)) ? undecidedResult(actual, alternative) : null;
     if (leaf.unexpected) {
       // `unexpected` is a negative assertion about the leaf at this answer
       // position.  Once the observed answer differs, the assertion is proved;
@@ -180,15 +182,13 @@ function checkAlternative(program, quad, alternative, options, context, unordere
       // answer at this point without imposing any later answer-sequence check.
       if (stoPermitsUnexpected) return { ok: true };
       if (matches) return { ok: false };
-      if (actual.undecided && leafNeedsMoreSearch(leaf, actual, position)) {
-        return undecidedResult(actual, alternative);
-      }
+      const undecided = undecidedHere();
+      if (undecided) return undecided;
       return { ok: true };
     }
     if (!matches) {
-      if (actual.undecided && leafNeedsMoreSearch(leaf, actual, position)) {
-        return undecidedResult(actual, alternative);
-      }
+      const undecided = undecidedHere();
+      if (undecided) return undecided;
       return { ok: false };
     }
     if (leaf.more) return { ok: true };
@@ -248,10 +248,22 @@ function malformedAlternative(query, alternative) {
       if (!queryNames.has(name) || names.has(name)) return binding;
       names.add(name);
     }
-    if (!leaf.sto) {
-      for (const binding of substitutions) {
-        if (namedVariables(binding.args[1]).some((variable) => names.has(variable.name))) return binding;
-      }
+    for (const binding of substitutions) {
+      const name = binding.args[0].name;
+      const referenced = namedVariables(binding.args[1]);
+      // A binding whose right-hand side mentions its own left-hand variable
+      // (for example `X = -X`) is not malformed, merely unsatisfiable:
+      // EyeProlog's unification always occurs-checks, so no execution can
+      // ever produce that substitution. Let it fall through to ordinary
+      // matching, where it will simply fail to match, rather than rejecting
+      // the whole answer description (and any sibling `|` alternative) as
+      // malformed.
+      if (referenced.some((variable) => variable.name === name)) continue;
+      // Referencing a *different* already-bound variable remains malformed
+      // outside `sto`: an answer description should give each variable's
+      // value in fully resolved form rather than in terms of a sibling
+      // binding.
+      if (!leaf.sto && referenced.some((variable) => names.has(variable.name))) return binding;
     }
   }
   return null;
@@ -447,6 +459,10 @@ function executeQuery(program, query, input, maxSolutions, options) {
 }
 
 function matchLeaf(program, query, leaf, actual, position) {
+  // A bare `sto` leaf claims nothing beyond "this outcome is occurs-check
+  // dependent"; the caller has already rejected the sequence if that claim
+  // was disproven, so any observed outcome is accepted here.
+  if (leaf.sto && !leaf.hasExpectation) return true;
   if (leaf.loops) return actual.loops;
   if (leaf.false) {
     return position >= actual.solutions.length && actual.error == null && !actual.undecided && !actual.loopObserved &&
@@ -924,19 +940,26 @@ function splitOperator(term, name) {
   return [term];
 }
 
+const FAILURE_LABELS = {
+  malformed: 'MALFORMED',
+  bad_identifier: 'BAD_ID',
+  unsupported: 'UNSUPPORTED',
+  undecided: 'UNDECIDED',
+};
+
 function formatFailure(program, quad, result, description = quad.answers[0]) {
   const source = quad.source ?? { filename: '<input>', line: 1 };
+  // Point at the failing answer description's own line rather than always the
+  // query's: with many answer descriptions per query, that line can be far
+  // from the one that actually failed (issue #110).
+  const line = description?.answerLine ?? source.line;
   const label = quad.id == null ? '' : `${formatQuadTerm(program, quad.id)}, `;
-  const reason = result.kind === 'malformed' ? 'MALFORMED'
-    : result.kind === 'bad_identifier' ? 'BAD_ID'
-      : result.kind === 'unsupported' ? 'UNSUPPORTED'
-        : result.kind === 'undecided' ? 'UNDECIDED'
-          : 'FAILED';
+  const reason = FAILURE_LABELS[result.kind] ?? 'FAILED';
   const expected = result.expected ?? description;
   const detail = result.kind === 'undecided'
     ? `   undecided: ${result.reason}.\n`
     : `   expected: ${formatQuadTerm(program, expected)}.\n`;
-  return `quads: ${reason} ${label}${source.filename}:${source.line}\n` +
+  return `quads: ${reason} ${label}${source.filename}:${line}\n` +
     `   ?- ${formatQuadTerm(program, quad.query)}.\n` + detail;
 }
 

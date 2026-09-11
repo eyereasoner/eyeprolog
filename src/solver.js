@@ -370,16 +370,24 @@ export class Solver {
     }
   }
 
+  // Solve a single goal to at most one answer, on a cloned child solver, and
+  // fold its stats back into this solver. Used by attribute-variable hooks,
+  // which only ever need one solution and must not leak choice points.
+  runOneAnswer(goalTerm, env) {
+    const child = this.cloneForInnerGoal(1);
+    const iterator = child.solve([goalTerm], env.clone(), 0);
+    const result = iterator.next();
+    try { iterator.return?.(); } catch (_) { /* best-effort iterator cleanup */ }
+    this.absorbStatsFrom(child);
+    return result;
+  }
+
   runAttributeHook(module, attributed, other, env) {
     if (this.program.findGroup('verify_attributes', 3, module) == null) return true;
     const goalsVariable = variable(`\u0000attributeGoals${nextFreshId()}`);
     const hook = compound('verify_attributes', [attributed, other, goalsVariable]);
     qualifyTerm(hook, module);
-    const child = this.cloneForInnerGoal(1);
-    const iterator = child.solve([hook], env.clone(), 0);
-    const result = iterator.next();
-    try { iterator.return?.(); } catch (_) { /* best-effort iterator cleanup */ }
-    this.absorbStatsFrom(child);
+    const result = this.runOneAnswer(hook, env);
     if (result.done) return false;
     env.adopt(result.value);
     env.setOccursCheckHandler(this.occursCheckHandler);
@@ -400,11 +408,7 @@ export class Solver {
       const goalsVariable = variable(`\u0000attributeResidual${nextFreshId()}`);
       const projection = compound('attribute_goals', [root, goalsVariable, emptyList()]);
       qualifyTerm(projection, module);
-      const child = this.cloneForInnerGoal(1);
-      const iterator = child.solve([projection], env.clone(), 0);
-      const result = iterator.next();
-      try { iterator.return?.(); } catch (_) { /* best-effort iterator cleanup */ }
-      this.absorbStatsFrom(child);
+      const result = this.runOneAnswer(projection, env);
       if (result.done) continue;
       const goals = properListItems(goalsVariable, result.value);
       if (goals == null) throw new PrologError('type_error(list)', deref(goalsVariable, result.value));
@@ -1027,28 +1031,6 @@ export class Solver {
     return model;
   }
 
-  *solveWfsGoal(group, goal, rest, env, depth) {
-    const model = this.wfsModelFor(group);
-    const relation = relationForGroup(model, group, 'upper');
-    const lower = relationForGroup(model, group, 'lower');
-    if (!relation) return;
-    for (const row of relation.rows) {
-      const next = env.clone();
-      let ok = true;
-      for (let i = 0; i < goal.arity; i++) {
-        this.stats.unify_calls++;
-        if (!unify(goal.args[i], row[i], next)) { ok = false; break; }
-      }
-      if (!ok) continue;
-      if (!lower?.has(row)) {
-        this.stats.wfs_undefined_answers++;
-        continue;
-      }
-      yield* this.solve(rest, next, depth + 1);
-      if (this.solutionsSeen >= this.solutionLimit) return;
-    }
-  }
-
   *solveTabledNegation(argument, env) {
     const truth = this.groundGoalTruth(argument, env);
     if (truth === 'true') return;
@@ -1091,10 +1073,6 @@ export class Solver {
     }
     this.absorbStatsFrom(child);
     return 'false';
-  }
-
-  activeVariant(goal, env) {
-    return activeVariantIn(goal, env, this.active);
   }
 
   checkMemoryLimit(force = false) {
@@ -1140,97 +1118,6 @@ export class Solver {
     this.memoryRecovery.active = false;
     this.memoryRecovery.reservationBytes = 0;
     this.memoryRecovery.checks = 0;
-  }
-
-  *solveUserGoal(goal, rest, env, depth) {
-    this.stats.solve_one_goal_calls++;
-    if (depth > this.maxDepth) {
-      this.depthLimitExceeded = true;
-      throw new PrologError('resource_error(depth_limit)');
-    }
-    if (this.solutionsSeen >= this.solutionLimit) return;
-    if (goal.type !== COMPOUND && goal.type !== 'atom') return;
-    const group = this.program.findGroup(goal.name, goal.arity, goal.module ?? 'user');
-    if (!group) return;
-    qualifyMetaArguments(goal, group);
-    if (group.datalogLeastModel === true && !termIsGround(goal, env)) {
-      yield* this.solveDatalogGoal(group, goal, rest, env, depth);
-      return;
-    }
-    if (group.wfsDatalog === true) {
-      yield* this.solveWfsGoal(group, goal, rest, env, depth);
-      return;
-    }
-    if (group.tabled) {
-      yield* this.solveMemoizedGoal(group, goal, rest, env, depth);
-      return;
-    }
-    yield* this.solveUserGoalUncached(group, goal, rest, env, depth);
-  }
-
-  *solveDatalogGoal(group, goal, rest, env, depth) {
-    const model = this.datalogModelFor(group);
-    const relation = relationForDatalogGroup(model, group);
-    for (const next of datalogAnswerSolutions(this, relation, goal, env)) {
-      yield* this.solve(rest, next, depth + 1);
-      if (this.solutionsSeen >= this.solutionLimit) return;
-    }
-  }
-
-  *solveMemoizedGoal(group, goal, rest, env, depth) {
-    yield* this.solve([goal, ...rest], env, depth);
-  }
-
-  *solveUserGoalUncached(group, goal, rest, env, depth) {
-    // Program indexes provide candidate clauses, but every candidate is still
-    // freshened and unified below. The index is a performance hint, not a
-    // semantic shortcut.
-    const candidates = selectClauseCandidates(group, goal, env);
-    for (const pass of [candidates.primary, candidates.fallback]) {
-      for (let candidateIndex = 0; candidateIndex < clauseCandidateLength(pass); candidateIndex++) {
-        const clause = clauseCandidateAt(pass, candidateIndex);
-        if (clause.body.length === 0 && clause.scalarHead) {
-          const next = matchScalarFact(goal, clause.head, env);
-          if (!next) continue;
-          this.stats.unify_calls++;
-          yield* this.solve(rest, next, depth + 1);
-          if (this.solutionsSeen >= this.solutionLimit) return;
-          continue;
-        }
-        if (headCannotMatch(goal, clause.head, env)) continue;
-        const { freshHead, freshBody, headLocalFresh } = instantiateClause(clause, nextFreshId());
-        const next = env.clone();
-        this.stats.unify_calls++;
-        if (!unify(goal, freshHead, next, { knownNonoccurringVariables: headLocalFresh })) continue;
-        if (freshBody.length === 0) {
-          yield* this.solve(rest, next, depth + 1);
-        } else if (!groupNeedsActiveFrame(group)) {
-          for (const bodyEnv of this.solve(freshBody, next, depth + 1)) {
-            if (this.solutionsSeen > 0) this.solutionsSeen--;
-            yield* this.solve(rest, bodyEnv, depth + 1);
-            if (this.solutionsSeen >= this.solutionLimit) break;
-          }
-        } else {
-          yield* this.solveRuleBodyThenRest(goal, env, freshBody, rest, next, depth);
-        }
-        if (this.solutionsSeen >= this.solutionLimit) return;
-      }
-    }
-  }
-  *solveRuleBodyThenRest(goal, goalEnv, body, rest, env, depth) {
-    // Match the C engine's active-call lifetime: the active guard protects
-    // expansion of the current rule body, but it must be released before
-    // the caller's remaining goals are solved. Keeping the goal active
-    // through rest goals over-prunes valid transitive/recursive derivations.
-    this.active.push({ goal, env: goalEnv._snapshotForSolverRead() });
-    for (const bodyEnv of this.solve(body, env, depth + 1)) {
-      if (this.solutionsSeen > 0) this.solutionsSeen--;
-      this.active.pop();
-      yield* this.solve(rest, bodyEnv, depth + 1);
-      this.active.push({ goal, env: goalEnv._snapshotForSolverRead() });
-      if (this.solutionsSeen >= this.solutionLimit) break;
-    }
-    this.active.pop();
   }
 
 }
@@ -1576,20 +1463,6 @@ function clauseLocalFreshPlan(clause) {
   return clause._localFreshPlan = { head, body };
 }
 
-function freshVariableSet(names, freshVariables) {
-  if (names.length === 0) return null;
-  const fresh = [];
-  for (const name of names) {
-    const term = freshVariables.get(name);
-    if (term != null) fresh.push(term.name);
-  }
-  if (fresh.length === 0) return null;
-  // Most clauses introduce only one or two first-use variables. A tiny linear
-  // membership object avoids allocating and populating an OrderedHashSet on
-  // every invocation; use the native Set once linear lookup would lose.
-  return fresh.length <= 4 ? new SmallFreshVariableSet(fresh) : new Set(fresh);
-}
-
 class SmallFreshVariableSet {
   constructor(values) {
     this.values = values;
@@ -1616,43 +1489,6 @@ function goalUsesFirstUseProof(term) {
   if (term.name === '\\+' && term.arity === 1) return goalUsesFirstUseProof(term.args[0]);
   if (term.name === ':' && term.arity === 2) return goalUsesFirstUseProof(term.args[1]);
   return false;
-}
-
-function attachBodyLocalFreshVariables(freshBody, plan, freshVariables) {
-  const attach = (term, knownNonoccurringVariables) => {
-    if (term?.type !== COMPOUND) return;
-    if (term.name === '=' && term.arity === 2) {
-      term._knownNonoccurringVariables = knownNonoccurringVariables;
-    } else if ((term.name === 'get_atts' && term.arity === 2)
-      || (term.name === 'get_attr' && term.arity === 3)
-      || (term.name === '$get_attr_list' && term.arity === 2)
-      || (term.name === '$get_from_attr_list' && term.arity === 3)) {
-      term._firstUseVariables = knownNonoccurringVariables;
-    }
-    // Goal expansion commonly wraps a primitive in a conjunction or
-    // if-then-else. Preserve the proof on the executable child; attaching it
-    // only to the outer control term leaves get_atts/2 unable to use it.
-    if ((term.name === ',' || term.name === ';' || term.name === '->') && term.arity === 2) {
-      attach(term.args[0], knownNonoccurringVariables);
-      attach(term.args[1], knownNonoccurringVariables);
-    } else if (term.name === '\\+' && term.arity === 1) {
-      attach(term.args[0], knownNonoccurringVariables);
-    } else if (term.name === ':' && term.arity === 2) {
-      attach(term.args[1], knownNonoccurringVariables);
-    }
-  };
-  for (let index = 0; index < freshBody.length; index++) {
-    const goal = freshBody[index];
-    if (!goalUsesFirstUseProof(goal)) continue;
-    const knownNonoccurringVariables = freshVariableSet(plan[index] ?? [], freshVariables);
-    if (knownNonoccurringVariables == null || goal?.type !== COMPOUND) continue;
-    // Host builtins that only unify an output with already-existing logical
-    // data can use the same first-use proof without treating the variable as a
-    // WAM-style local across the whole call. This is especially important for
-    // get_atts/2: CLP(Z) attributes are large trees that would otherwise be
-    // traversed once per freshly introduced pattern variable.
-    attach(goal, knownNonoccurringVariables);
-  }
 }
 
 
@@ -2744,26 +2580,6 @@ function* scalarFactRunGenerator(solver, goals, groups, env, depth, active, pend
 }
 
 
-function activeMightContain(goal, active) {
-  if (active.length === 0 || goal.type !== COMPOUND) return false;
-  for (const entry of active) {
-    const activeGoal = entry.goal;
-    if (activeGoal?.type === COMPOUND && activeGoal.name === goal.name && activeGoal.arity === goal.arity) return true;
-  }
-  return false;
-}
-
-function envWithLocal(env, names, values) {
-  if (names.length === 0) return env;
-  return {
-    has(name) { return names.includes(name) || env.has(name); },
-    get(name) {
-      const index = names.indexOf(name);
-      return index >= 0 ? values[index] : env.get(name);
-    },
-  };
-}
-
 function selectScalarFactCandidates(group, goal, env, names, values) {
   const positions = [];
   const boundValues = [];
@@ -3325,89 +3141,6 @@ function activeTableKeyIn(mapKey, active) {
   return false;
 }
 
-function activeVariantIn(goal, env, active) {
-  if (active.length === 0) return false;
-  let goalShape = null;
-  for (const entry of active) {
-    const candidate = entry.goal;
-    // Variant calls must have the same predicate indicator. Avoid walking
-    // large matrix/list arguments for every unrelated active predicate.
-    if (candidate?.type !== goal.type || candidate?.name !== goal.name ||
-        candidate?.arity !== goal.arity ||
-        (candidate?.module ?? 'user') !== (goal.module ?? 'user')) continue;
-    goalShape ??= variantShape(goal, env);
-    entry.variantShape ??= variantShape(candidate, entry.env);
-    if (goalShape !== entry.variantShape) continue;
-    if (variantTerms(goal, env, candidate, entry.env)) return true;
-  }
-  return false;
-}
-
-function variantShape(term, env) {
-  if (term?.type !== COMPOUND) return '0';
-  return term.args.map((arg) => variantArgumentSize(arg, env)).join(',');
-}
-
-const rawProperListLengths = new WeakMap();
-
-function rawProperListLength(term) {
-  const compactLength = compactListLength(term);
-  if (compactLength != null) return compactLength;
-  if (!isCons(term)) return null;
-  const cells = [];
-  const seen = new WeakSet();
-  let cursor = term;
-  let suffixLength = 0;
-  while (isCons(cursor)) {
-    const cached = rawProperListLengths.get(cursor);
-    if (cached != null) {
-      suffixLength = cached;
-      break;
-    }
-    if (seen.has(cursor)) return null;
-    seen.add(cursor);
-    cells.push(cursor);
-    // Only cache the raw spine. A variable tail may resolve differently in
-    // separate environments and therefore needs the general shape walk.
-    cursor = cursor.args[1];
-  }
-  if (!isEmptyList(cursor) && rawProperListLengths.get(cursor) == null) return null;
-  for (let index = cells.length - 1; index >= 0; index--) {
-    rawProperListLengths.set(cells[index], ++suffixLength);
-  }
-  return rawProperListLengths.get(term) ?? suffixLength;
-}
-
-function variantArgumentSize(term, env) {
-  const resolved = derefForLocal(term, env);
-  const listLength = rawProperListLength(resolved);
-  if (listLength != null) return `list:${listLength}`;
-  const pending = [{ term, exit: false }];
-  const ancestors = new WeakSet();
-  let size = 0;
-  while (pending.length > 0) {
-    const item = pending.pop();
-    if (item.exit) {
-      ancestors.delete(item.term);
-      continue;
-    }
-    const current = derefForLocal(item.term, env);
-    size++;
-    if (current?.type === COMPOUND) {
-      // Finite terms get an exact size, which cheaply distinguishes successive
-      // tails of a long list. Keep cyclic terms conservative so the exact
-      // variant check remains authoritative.
-      if (ancestors.has(current)) return '*';
-      ancestors.add(current);
-      pending.push({ term: current, exit: true });
-      for (let index = current.arity - 1; index >= 0; index--) {
-        pending.push({ term: current.args[index], exit: false });
-      }
-    }
-  }
-  return size;
-}
-
 
 function builtinIsReadyOrAuthoritative(def, solver, goal, env) {
   if (typeof def.shouldUse === 'function' && !def.shouldUse({ solver, goal, env })) return false;
@@ -3432,23 +3165,6 @@ function pushResumeBuiltinFrame(stack, iterator, goals, depth, active) {
     return;
   }
   stack.push({ kind: 'resumeBuiltin', iterator, goals, depth, active });
-}
-
-function selectReadyDeterministicBuiltin(goals, env, registry) {
-  for (let i = 0; i < goals.length; i++) {
-    const goal = goals[i];
-    if (goal?.kind === 'releaseActive' || goal?.kind === 'memoStore' || goal?.kind === 'continueGoals') return 0;
-    // A first-use proof is derived from source goal order. Do not move a later
-    // deterministic builtin across that equality: doing so could touch one of
-    // its proven-fresh variables before the checked binding executes.
-    if (goal?._knownNonoccurringVariables != null) return 0;
-    if (goal.type !== COMPOUND && goal.type !== 'atom') continue;
-    const def = registry.get(goal.name, goal.arity);
-    if (!def?.deterministic || typeof def.ready !== 'function') continue;
-    if (typeof def.shouldUse === 'function') continue;
-    if (def.ready(goal, env)) return i;
-  }
-  return 0;
 }
 
 function headCannotMatch(goal, head, env) {

@@ -1,6 +1,6 @@
 # EyeProlog — latest Neumerkel conformity
 
-Status: **PASS** — **686/686** discovered upstream cases passed.
+Status: **FAIL** — **685/686** discovered upstream cases passed.
 
 This tracked report records the latest upstream inventory successfully checked by EyeProlog.
 `npm test` fetches the seven TU Wien sources again and executes the discovered cases.
@@ -13,10 +13,10 @@ Counts are output from upstream, not hard-coded test constants.
 | number_chars/2 | 86 | 86 |
 | variable_names/1 | 75 | 75 |
 | dif/2 | 26 | 26 |
-| length/2 | 37 | 37 |
+| length/2 | 36 | 37 |
 | phrase/2,3 | 58 | 58 |
 | setup_call_cleanup/3 | 25 | 25 |
-| **Total** | **686** | **686** |
+| **Total** | **685** | **686** |
 
 ## Upstream sources
 

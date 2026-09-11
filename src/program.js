@@ -979,8 +979,7 @@ function hybridFastSource(source, options) {
 // importing its public predicates into user. This is useful for host bootstraps
 // that call a module-private Prolog entry point while keeping the user-facing
 // module export list unchanged.
-export function loadBundledProgramLibrary(program, name, options = {}) {
-  if (program.modules.has(name)) return program;
+function deriveOperatorAndFlagState(program, options) {
   const operatorState = createParserOperatorState(
     [...program.operators.values()],
     false,
@@ -991,6 +990,12 @@ export function loadBundledProgramLibrary(program, name, options = {}) {
     charConversion: 'on',
     charConversions: new Map(),
   };
+  return { operatorState, parserFlagState };
+}
+
+export function loadBundledProgramLibrary(program, name, options = {}) {
+  if (program.modules.has(name)) return program;
+  const { operatorState, parserFlagState } = deriveOperatorAndFlagState(program, options);
   const builder = new ProgramBuilder({ ...options, isoStrict: program.strictIso }, program);
   const loadedModules = new Set([...program.modules.keys()].filter((module) => module !== 'user'));
   const ensured = new Set();
@@ -1014,12 +1019,7 @@ export function loadBundledProgramLibrary(program, name, options = {}) {
 
 export function autoloadProgramGoals(program, inputs, options = {}) {
   if (inputs == null || (Array.isArray(inputs) && inputs.length === 0)) return program;
-  const operatorState = createParserOperatorState(
-    [...program.operators.values()],
-    false,
-    { isoStrict: program.strictIso },
-  );
-  const parserFlagState = { doubleQuotes: program.doubleQuotes ?? options.doubleQuotes ?? 'chars', charConversion: 'on', charConversions: new Map() };
+  const { operatorState, parserFlagState } = deriveOperatorAndFlagState(program, options);
   const goals = parseInteropGoalInputs(inputs, {
     ...options,
     isoStrict: program.strictIso,
@@ -1110,18 +1110,15 @@ function bundledLibraryModule(program, module) {
   return module !== 'user' && program.modules.get(module)?.filename?.startsWith('src/lib/');
 }
 
-function groupDependencies(group) {
+// Shared clause-dependency walk: forward-rule premises are stored inside
+// clause heads rather than ordinary bodies, so both static portability
+// analysis and autoload planning need to look there too, in addition to
+// walking each clause's ordinary body goals through the supplied collector.
+function groupClauseDependencies(group, collect) {
   const dependencies = [];
   for (const clause of group.clauses) {
-    // Forward rules store executable premises inside their heads instead of in
-    // ordinary clause bodies. Include those premises in static dependency
-    // analysis so portability checks see the same calls that runtime will see.
     if (group.name === ':+') {
-      collectForwardRulePremiseDependencies(
-        clause.head,
-        (goal, out) => out.push(...collectGoalDependencies(goal, false, true)),
-        dependencies,
-      );
+      collectForwardRulePremiseDependencies(clause.head, collect, dependencies);
     }
     if (isCompactBinaryClause(clause)) {
       if (clause.bodyName != null) {
@@ -1134,11 +1131,13 @@ function groupDependencies(group) {
       }
       continue;
     }
-    for (const goal of clause.body) {
-      dependencies.push(...collectGoalDependencies(goal, false, true));
-    }
+    for (const goal of clause.body) collect(goal, dependencies);
   }
   return dependencies;
+}
+
+function groupDependencies(group) {
+  return groupClauseDependencies(group, (goal, out) => out.push(...collectGoalDependencies(goal, false, true)));
 }
 
 function collectForwardRulePremiseDependencies(term, collect, out) {
@@ -1270,25 +1269,7 @@ function expandAutoloadMetaDependencies(program, dependencies, module = 'user') 
 }
 
 function groupAutoloadDependencies(group) {
-  const dependencies = [];
-  for (const clause of group.clauses) {
-    if (group.name === ':+') {
-      collectForwardRulePremiseDependencies(clause.head, collectAutoloadGoalDependencies, dependencies);
-    }
-    if (isCompactBinaryClause(clause)) {
-      if (clause.bodyName != null) {
-        dependencies.push({
-          key: `${clause.bodyName}/2`,
-          name: clause.bodyName,
-          arity: 2,
-          module: clause.module ?? group.module,
-        });
-      }
-      continue;
-    }
-    for (const goal of clause.body) collectAutoloadGoalDependencies(goal, dependencies);
-  }
-  return dependencies;
+  return groupClauseDependencies(group, collectAutoloadGoalDependencies);
 }
 
 function parseInteropGoalInputs(inputs, options, program) {
@@ -1328,54 +1309,36 @@ function autoloadLibraryFor(dependency) {
   return eyePrologLibraryAutoload[dependency.key] ?? null;
 }
 
+function recordAutoloadRequest(program, dependency, defaultModule, requests) {
+  const targetModule = dependency.module ?? defaultModule;
+  if (procedureResolvedBeforeAutoload(program, dependency, targetModule)) return;
+  const library = autoloadLibraryFor(dependency);
+  if (library == null) return;
+  const requestKey = `${targetModule}\u0000${dependency.key}`;
+  requests.set(requestKey, {
+    targetModule,
+    library,
+    name: dependency.name,
+    arity: dependency.arity,
+    key: dependency.key,
+  });
+}
+
 function libraryAutoloadRequests(program, extraGoals = []) {
   const requests = new Map();
   for (const group of program.groups.values()) {
     if (bundledLibraryModule(program, group.module)) continue;
     for (const dependency of expandAutoloadMetaDependencies(program, groupAutoloadDependencies(group), group.module)) {
-      const targetModule = dependency.module ?? group.module;
-      if (procedureResolvedBeforeAutoload(program, dependency, targetModule)) continue;
-      const library = autoloadLibraryFor(dependency);
-      if (library == null) continue;
-      const requestKey = `${targetModule}\u0000${dependency.key}`;
-      requests.set(requestKey, {
-        targetModule,
-        library,
-        name: dependency.name,
-        arity: dependency.arity,
-        key: dependency.key,
-      });
+      recordAutoloadRequest(program, dependency, group.module, requests);
     }
   }
   for (const goal of program.initializations) {
     for (const dependency of expandAutoloadMetaDependencies(program, collectAutoloadGoalDependencies(goal))) {
-      const targetModule = dependency.module ?? 'user';
-      if (procedureResolvedBeforeAutoload(program, dependency, targetModule)) continue;
-      const library = autoloadLibraryFor(dependency);
-      if (library == null) continue;
-      const requestKey = `${targetModule}\u0000${dependency.key}`;
-      requests.set(requestKey, {
-        targetModule,
-        library,
-        name: dependency.name,
-        arity: dependency.arity,
-        key: dependency.key,
-      });
+      recordAutoloadRequest(program, dependency, 'user', requests);
     }
   }
   for (const dependency of expandAutoloadMetaDependencies(program, extraGoalDependencies(extraGoals))) {
-    const targetModule = dependency.module ?? 'user';
-    if (procedureResolvedBeforeAutoload(program, dependency, targetModule)) continue;
-    const library = autoloadLibraryFor(dependency);
-    if (library == null) continue;
-    const requestKey = `${targetModule}\u0000${dependency.key}`;
-    requests.set(requestKey, {
-      targetModule,
-      library,
-      name: dependency.name,
-      arity: dependency.arity,
-      key: dependency.key,
-    });
+    recordAutoloadRequest(program, dependency, 'user', requests);
   }
   return [...requests.values()];
 }
@@ -1413,6 +1376,20 @@ function autoloadLibraryDependencies(builder, options, ensured, loadedModules, e
   }
 }
 
+function recordInteropDependencyWarning(program, dependency, defaultModule, nonInteropImports, warnings) {
+  const targetModule = dependency.module ?? defaultModule;
+  const resolved = program.findGroup(dependency.name, dependency.arity, targetModule);
+  if (!resolved || !bundledLibraryModule(program, resolved.module)) return;
+  if (interopIndicatorSet.has(dependency.key)) return;
+  if (nonInteropImports.get(targetModule)?.has(resolved.module)) return;
+  warnings.set(`predicate:${targetModule}:${resolved.module}:${dependency.key}`, {
+    kind: 'predicate',
+    library: resolved.module,
+    indicator: dependency.key,
+    targetModule,
+  });
+}
+
 function analyzeInteropPortability(program, extraGoals = []) {
   const warnings = new Map();
   const nonInteropImports = new Map();
@@ -1445,32 +1422,12 @@ function analyzeInteropPortability(program, extraGoals = []) {
   for (const group of program.groups.values()) {
     if (bundledLibraryModule(program, group.module)) continue;
     for (const dependency of groupDependencies(group)) {
-      const targetModule = dependency.module ?? group.module;
-      const resolved = program.findGroup(dependency.name, dependency.arity, targetModule);
-      if (!resolved || !bundledLibraryModule(program, resolved.module)) continue;
-      if (interopIndicatorSet.has(dependency.key)) continue;
-      if (nonInteropImports.get(targetModule)?.has(resolved.module)) continue;
-      warnings.set(`predicate:${targetModule}:${resolved.module}:${dependency.key}`, {
-        kind: 'predicate',
-        library: resolved.module,
-        indicator: dependency.key,
-        targetModule,
-      });
+      recordInteropDependencyWarning(program, dependency, group.module, nonInteropImports, warnings);
     }
   }
 
   for (const dependency of extraGoalDependencies(extraGoals)) {
-    const targetModule = dependency.module ?? 'user';
-    const resolved = program.findGroup(dependency.name, dependency.arity, targetModule);
-    if (!resolved || !bundledLibraryModule(program, resolved.module)) continue;
-    if (interopIndicatorSet.has(dependency.key)) continue;
-    if (nonInteropImports.get(targetModule)?.has(resolved.module)) continue;
-    warnings.set(`predicate:${targetModule}:${resolved.module}:${dependency.key}`, {
-      kind: 'predicate',
-      library: resolved.module,
-      indicator: dependency.key,
-      targetModule,
-    });
+    recordInteropDependencyWarning(program, dependency, 'user', nonInteropImports, warnings);
   }
   program.interopPortabilityWarnings = [...warnings.values()];
   analyzeLibraryShadowing(program);
@@ -1941,10 +1898,6 @@ function procedureDirectiveIndicators(clause, name, strictIso = false) {
     return [];
   }
   return indicators;
-}
-
-function dynamicDirectiveIndicators(clause) {
-  return procedureDirectiveIndicators(clause, 'dynamic', false) ?? [];
 }
 
 function nonterminalOrPredicateIndicator(term) {

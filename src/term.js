@@ -556,10 +556,6 @@ export class Env {
     this._pendingAttributeGoals = null;
     return goals;
   }
-  _ownerModules(name) {
-    const modules = this._attributeModulesForRoot(name);
-    return modules == null ? [] : [...modules.keys()];
-  }
   _targetHasOwnerModule(name, module) {
     return this._attributeModulesForRoot(name)?.has(module) === true;
   }
@@ -567,7 +563,7 @@ export class Env {
     if (this._prologAttributes == null || variableTerm?.type !== VAR) return true;
     const sourceRoot = deref(variableTerm, this);
     if (sourceRoot.type !== VAR) return true;
-    const modules = this._ownerModules(sourceRoot.name);
+    const modules = this.prologAttributeModules(sourceRoot.name);
     if (modules.length === 0) return true;
     const other = deref(otherTerm, this);
     if (other.type === VAR) {
@@ -849,10 +845,6 @@ class SolverEnv extends Env {
     }
     copyEnvBranchState(other, this);
     return this;
-  }
-
-  has(name) {
-    return this.get(name) !== undefined;
   }
 
   get(name) {
@@ -1317,16 +1309,25 @@ function atomNeedsQuotes(name) {
   return false;
 }
 
-function quoteAtom(name) {
-  let out = "'";
-  for (const ch of name) {
-    if (ch === "'") out += "''";
-    else if (ch === '\\') out += '\\\\';
-    else if (ch === '\n') out += '\\n';
-    else if (ch === '\t') out += '\\t';
+// Shared "wrap in a quote character, escaping a fixed table of characters"
+// idiom for quoted atoms and double-quoted strings. The two forms use
+// different escaping conventions for their own delimiter (atoms double it,
+// per ISO quoted-atom syntax; strings backslash-escape it), so that part
+// stays an explicit parameter rather than folded into one shared table.
+function escapeQuoted(text, quoteChar, quoteEscape, table) {
+  let out = quoteChar;
+  for (const ch of text) {
+    if (ch === quoteChar) out += quoteEscape;
+    else if (table[ch] !== undefined) out += table[ch];
     else out += ch;
   }
-  return out + "'";
+  return out + quoteChar;
+}
+
+const ATOM_ESCAPE_TABLE = { '\\': '\\\\', '\n': '\\n', '\t': '\\t' };
+
+function quoteAtom(name) {
+  return escapeQuoted(name, "'", "''", ATOM_ESCAPE_TABLE);
 }
 
 function writeAtom(name) {
@@ -1350,21 +1351,14 @@ function writeVariable(name) {
   return RE_UPPER_START.test(sanitized) ? sanitized : `_${sanitized}`;
 }
 
+const STRING_ESCAPE_TABLE = {
+  '\\': '\\\\', '\x07': '\\a', '\b': '\\b', '\r': '\\r',
+  '\f': '\\f', '\t': '\\t', '\n': '\\n', '\v': '\\v',
+};
+
 function writeString(value, quoteStrings) {
   if (!quoteStrings) return value;
-  let out = '"';
-  for (const ch of value) {
-    if (ch === '"' || ch === '\\') out += `\\${ch}`;
-    else if (ch === '\x07') out += '\\a';
-    else if (ch === '\b') out += '\\b';
-    else if (ch === '\r') out += '\\r';
-    else if (ch === '\f') out += '\\f';
-    else if (ch === '\t') out += '\\t';
-    else if (ch === '\n') out += '\\n';
-    else if (ch === '\v') out += '\\v';
-    else out += ch;
-  }
-  return out + '"';
+  return escapeQuoted(value, '"', '\\"', STRING_ESCAPE_TABLE);
 }
 
 function quotedListSplice(term, env, doubleQuotes) {

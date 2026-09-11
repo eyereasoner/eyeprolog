@@ -40,6 +40,17 @@ function isWhitespaceCode(code) {
   return (code >= 0 && code <= 32) || code === 127;
 }
 
+// Delimiters that end a bare scalar/variable token inside the fast-path range
+// parsers below: comma, parentheses, brackets, bar, and quote characters.
+function isFastRangeDelimiterCode(code) {
+  return code === 44 || code === 40 || code === 41 || code === 91 || code === 93 || code === 124 || code === 34 || code === 39;
+}
+
+function scanFastRangeToken(text, i, end) {
+  while (i < end && !isFastRangeDelimiterCode(text.charCodeAt(i))) i++;
+  return i;
+}
+
 function isWhitespaceCharacter(character) {
   if (!character) return false;
   const code = character.charCodeAt(0);
@@ -217,18 +228,23 @@ function isGraphicAtomCharacter(character) {
   return true;
 }
 
+const PREFIX_SPECIFIERS = ['fx', 'fy'];
+const POSTFIX_SPECIFIERS = ['xf', 'yf'];
+const INFIX_SPECIFIERS = ['xfx', 'xfy', 'yfx'];
+const OPERATOR_SPECIFIERS = [...PREFIX_SPECIFIERS, ...POSTFIX_SPECIFIERS, ...INFIX_SPECIFIERS];
+
 function defineParserOperator(state, priority, specifier, name) {
   const strength = operatorStrength(priority);
-  if (['xfx', 'xfy', 'yfx'].includes(specifier)) {
+  if (INFIX_SPECIFIERS.includes(specifier)) {
     if (priority === 0) state.infixOperators.delete(name);
     else state.infixOperators.set(name, {
       precedence: strength,
       associativity: specifier === 'xfy' ? 'right' : specifier === 'yfx' ? 'left' : 'none',
     });
-  } else if (specifier === 'fx' || specifier === 'fy') {
+  } else if (PREFIX_SPECIFIERS.includes(specifier)) {
     if (priority === 0) state.prefixOperators.delete(name);
     else state.prefixOperators.set(name, { precedence: strength, strict: specifier === 'fx' });
-  } else if (specifier === 'xf' || specifier === 'yf') {
+  } else if (POSTFIX_SPECIFIERS.includes(specifier)) {
     if (priority === 0) state.postfixOperators.delete(name);
     else state.postfixOperators.set(name, { precedence: strength, strict: specifier === 'xf' });
   }
@@ -259,6 +275,13 @@ const RE_HEX_DIGIT = /^[0-9A-Fa-f]$/;
 const RE_DECIMAL_DIGIT = /^[0-9]$/;
 const RE_BINARY_DIGIT = /^[01]$/;
 
+function digitPatternForRadix(radix) {
+  return radix === 2 ? RE_BINARY_DIGIT : radix === 8 ? RE_OCTAL_DIGIT : RE_HEX_DIGIT;
+}
+
+// Symbolic control-character escapes shared by quoted-token reading and
+// number-literal escape parsing (ISO 6.4.2.1 / normal-mode numeric escapes).
+const ESCAPE_CONTROL_CHARACTERS = { a: '\x07', b: '\b', r: '\r', f: '\f', t: '\t', n: '\n', v: '\v' };
 
 class Parser {
   constructor(source, options = {}) {
@@ -343,7 +366,7 @@ class Parser {
     }
     const priority = Number(priorityTerm.name);
     if (priority < 0 || priority > 1200) throw new Error(`parse line ${line}: op priority out of range`);
-    if (specifierTerm.type !== 'atom' || !['fx', 'fy', 'xf', 'yf', 'xfx', 'xfy', 'yfx'].includes(specifierTerm.name)) {
+    if (specifierTerm.type !== 'atom' || !OPERATOR_SPECIFIERS.includes(specifierTerm.name)) {
       throw new Error(`parse line ${line}: invalid operator specifier`);
     }
     const names = nameTerm.type === 'atom'
@@ -355,11 +378,11 @@ class Parser {
         throw new Error(`parse line ${line}: operator ${name} cannot be modified`);
       }
       if (name === '|' && priority !== 0 &&
-          (!(specifierTerm.name === 'xfx' || specifierTerm.name === 'xfy' || specifierTerm.name === 'yfx') || priority < 1001)) {
+          (!INFIX_SPECIFIERS.includes(specifierTerm.name) || priority < 1001)) {
         throw new Error(`parse line ${line}: invalid bar operator`);
       }
-      const infix = ['xfx', 'xfy', 'yfx'].includes(specifierTerm.name);
-      const postfix = ['xf', 'yf'].includes(specifierTerm.name);
+      const infix = INFIX_SPECIFIERS.includes(specifierTerm.name);
+      const postfix = POSTFIX_SPECIFIERS.includes(specifierTerm.name);
       if (priority !== 0 && ((infix && this.postfixOperators.has(name)) || (postfix && this.infixOperators.has(name)))) {
         throw new Error(`parse line ${line}: invalid operator class combination for ${name}`);
       }
@@ -496,7 +519,7 @@ class Parser {
       throw new Error(`parse line ${line}: bad escape sequence`);
     }
 
-    const controls = { a: '\x07', b: '\b', r: '\r', f: '\f', t: '\t', n: '\n', v: '\v' };
+    const controls = ESCAPE_CONTROL_CHARACTERS;
     if (controls[escaped] != null) return controls[escaped];
 
     if (escaped === 'x') {
@@ -681,7 +704,7 @@ class Parser {
         this.take();
         const kind = this.take();
         const radix = kind === 'b' ? 2 : kind === 'o' ? 8 : 16;
-        const digitPattern = radix === 2 ? /^[01]$/ : radix === 8 ? /^[0-7]$/ : /^[0-9A-Fa-f]$/;
+        const digitPattern = digitPatternForRadix(radix);
         const { digits } = this.integerDigits(digitPattern, line);
         if (!digits) throw new Error(`parse line ${line}: bad radix integer`);
         let integer = 0n;
@@ -746,21 +769,22 @@ class Parser {
   expect(type, desc = type) {
     if (this.token.type !== type) throw new Error(`parse line ${this.token.line}: expected ${desc}, got ${this.token.text}`);
   }
-  parseParenthesizedTerm() {
-    this.expect(TOK.LPAREN, '(');
+  expectAndAdvance(type, desc = type) {
+    this.expect(type, desc);
     this.advance();
+  }
+  parseParenthesizedTerm() {
+    this.expectAndAdvance(TOK.LPAREN, '(');
     // A current operator atom may be the complete parenthesized term, e.g.
     // (+), but it cannot silently become an operand in a larger expression.
     const term = this.parseTerm(0, true, true, true);
-    this.expect(TOK.RPAREN, ')');
-    this.advance();
+    this.expectAndAdvance(TOK.RPAREN, ')');
     return term;
   }
   parseList() {
     // Lists are lowered to './2' cons cells and [] so list predicates can work
     // on a single canonical representation.
-    this.expect(TOK.LBRACKET, '[');
-    this.advance();
+    this.expectAndAdvance(TOK.LBRACKET, '[');
     if (this.token.type === TOK.RBRACKET) {
       this.advance();
       return emptyList();
@@ -776,12 +800,10 @@ class Parser {
       if (this.token.type === TOK.BAR) {
         this.advance();
         tail = this.parseTerm(ARG_MIN_PRECEDENCE, false, false, true);
-        this.expect(TOK.RBRACKET, ']');
-        this.advance();
+        this.expectAndAdvance(TOK.RBRACKET, ']');
         break;
       }
-      this.expect(TOK.RBRACKET, ']');
-      this.advance();
+      this.expectAndAdvance(TOK.RBRACKET, ']');
       tail = emptyList();
       break;
     }
@@ -789,8 +811,7 @@ class Parser {
     return tail;
   }
   parseCurly() {
-    this.expect(TOK.LBRACE, '{');
-    this.advance();
+    this.expectAndAdvance(TOK.LBRACE, '{');
     if (this.token.type === TOK.RBRACE) {
       this.advance();
       return atom('{}');
@@ -798,13 +819,11 @@ class Parser {
     // As with a parenthesized term, a current operator atom may be the entire
     // curly-bracket content: `{*}` denotes {}(*), not an incomplete infix use.
     const term = this.parseTerm(0, true, true, true);
-    this.expect(TOK.RBRACE, '}');
-    this.advance();
+    this.expectAndAdvance(TOK.RBRACE, '}');
     return compound('{}', [term]);
   }
   parseFunctionalNotation(name) {
-    this.expect(TOK.LPAREN, '(');
-    this.advance();
+    this.expectAndAdvance(TOK.LPAREN, '(');
     const args = [];
     if (this.token.type === TOK.RPAREN) {
       throw new Error(`parse line ${this.token.line}: zero-arity compound syntax is not supported; use atom ${JSON.stringify(name)} for arity zero data`);
@@ -817,8 +836,7 @@ class Parser {
       if (this.token.type !== TOK.COMMA) break;
       this.advance();
     }
-    this.expect(TOK.RPAREN, ')');
-    this.advance();
+    this.expectAndAdvance(TOK.RPAREN, ')');
     return compound(name, args);
   }
   parseTerm(minPrecedence = 0, allowComma = false, allowBar = true, allowOperatorAtom = false) {
@@ -1040,8 +1058,7 @@ class Parser {
     // clause. In particular, commas and operators such as :- and ?- belong to
     // the term itself and must not be reinterpreted by parseProgram().
     const term = this.parseTerm(0, true, true, true);
-    this.expect(TOK.DOT, '.');
-    this.advance();
+    this.expectAndAdvance(TOK.DOT, '.');
     this.expect(TOK.EOF, 'end of input');
     return term;
   }
@@ -1055,14 +1072,17 @@ class Parser {
     return this.source[start] === ' ' || this.source[start] === '\t';
   }
   parseQuadAnswers(id, query, line, accept) {
-    this.expect(TOK.DOT, '.');
-    this.advance();
+    this.expectAndAdvance(TOK.DOT, '.');
 
     const answers = [];
     while (this.token.type !== TOK.EOF && this.sourceLineIsIndented(this.token.line)) {
-      answers.push(this.parseTerm(0, true));
-      this.expect(TOK.DOT, '.');
-      this.advance();
+      const answerLine = this.token.line;
+      const answer = this.parseTerm(0, true);
+      // Remember where this answer description starts so a failing quad can
+      // report its own line instead of always pointing back at the query.
+      answer.answerLine = answerLine;
+      answers.push(answer);
+      this.expectAndAdvance(TOK.DOT, '.');
     }
     if (answers.length === 0) throw new Error(`parse line ${line}: quad requires an indented answer description`);
 
@@ -1252,8 +1272,7 @@ class Parser {
           this.advance();
           const right = this.parseTerm(info.associativity === 'right' ? info.precedence : info.precedence + 1, true);
           const clause = { head: compound('?-', [head, right]), body: [] };
-          this.expect(TOK.DOT, '.');
-          this.advance();
+          this.expectAndAdvance(TOK.DOT, '.');
           clauseNumber++;
           if (this.sourceMetadata) clause.source = { filename: this.filename, line, clause: clauseNumber };
           accept(clause);
@@ -1266,8 +1285,7 @@ class Parser {
       if (this.operatorTokenName() === '-->') {
         this.advance();
         const grammarBody = this.parseTerm(0, true);
-        this.expect(TOK.DOT, '.');
-        this.advance();
+        this.expectAndAdvance(TOK.DOT, '.');
         const clause = { head: compound('-->', [head, grammarBody]), body: [] };
         clauseNumber++;
         if (this.sourceMetadata) clause.source = { filename: this.filename, line, clause: clauseNumber };
@@ -1286,8 +1304,7 @@ class Parser {
           break;
         }
       }
-      this.expect(TOK.DOT, '.');
-      this.advance();
+      this.expectAndAdvance(TOK.DOT, '.');
       const clause = { head, body };
       clauseNumber++;
       if (this.sourceMetadata) clause.source = { filename: this.filename, line, clause: clauseNumber };
@@ -1515,11 +1532,11 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
     if (text.charCodeAt(i) !== 40) return false;
     i++;
     const arg0Start = i;
-    while (i < end && text.charCodeAt(i) !== 44 && text.charCodeAt(i) !== 40 && text.charCodeAt(i) !== 41 && text.charCodeAt(i) !== 91 && text.charCodeAt(i) !== 93 && text.charCodeAt(i) !== 124 && text.charCodeAt(i) !== 34 && text.charCodeAt(i) !== 39) i++;
+    i = scanFastRangeToken(text, i, end);
     if (i >= end || text.charCodeAt(i) !== 44) return false;
     const arg0End = i++;
     const arg1Start = i;
-    while (i < end && text.charCodeAt(i) !== 41 && text.charCodeAt(i) !== 40 && text.charCodeAt(i) !== 44 && text.charCodeAt(i) !== 91 && text.charCodeAt(i) !== 93 && text.charCodeAt(i) !== 124 && text.charCodeAt(i) !== 34 && text.charCodeAt(i) !== 39) i++;
+    i = scanFastRangeToken(text, i, end);
     if (i >= end || text.charCodeAt(i) !== 41) return false;
     const arg1End = i++;
     while (i < end && isWhitespaceCode(text.charCodeAt(i))) i++;
@@ -1543,12 +1560,12 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
     if (text.charCodeAt(i) !== 40) return null;
     i++;
     const arg1Start = i;
-    while (i < end && text.charCodeAt(i) !== 44 && text.charCodeAt(i) !== 40 && text.charCodeAt(i) !== 41 && text.charCodeAt(i) !== 91 && text.charCodeAt(i) !== 93 && text.charCodeAt(i) !== 124 && text.charCodeAt(i) !== 34 && text.charCodeAt(i) !== 39) i++;
+    i = scanFastRangeToken(text, i, end);
     if (i >= end || text.charCodeAt(i) !== 44) return null;
     const arg1End = i;
     i++;
     const arg2Start = i;
-    while (i < end && text.charCodeAt(i) !== 41 && text.charCodeAt(i) !== 40 && text.charCodeAt(i) !== 44 && text.charCodeAt(i) !== 91 && text.charCodeAt(i) !== 93 && text.charCodeAt(i) !== 124 && text.charCodeAt(i) !== 34 && text.charCodeAt(i) !== 39) i++;
+    i = scanFastRangeToken(text, i, end);
     if (i >= end || text.charCodeAt(i) !== 41) return null;
     const arg2End = i;
     i++;
@@ -1832,7 +1849,7 @@ export function parseNumberTokenText(text, options = {}) {
       position++;
     } else if (value === '\\') {
       const escaped = source[position++] ?? '';
-      const controls = { a: '\x07', b: '\b', r: '\r', f: '\f', t: '\t', n: '\n', v: '\v' };
+      const controls = ESCAPE_CONTROL_CHARACTERS;
       if (controls[escaped] != null) {
         value = controls[escaped];
       } else if (escaped === 'x') {
@@ -1864,7 +1881,7 @@ export function parseNumberTokenText(text, options = {}) {
   if (source[position] === '0' && ['b', 'o', 'x'].includes(source[position + 1])) {
     const kind = source[position + 1];
     const radix = kind === 'b' ? 2 : kind === 'o' ? 8 : 16;
-    const digitPattern = radix === 2 ? /^[01]$/ : radix === 8 ? /^[0-7]$/ : /^[0-9A-Fa-f]$/;
+    const digitPattern = digitPatternForRadix(radix);
     position += 2;
     const scanned = separatedIntegerDigits(source, position, digitPattern, digitSeparators);
     const { digits } = scanned;

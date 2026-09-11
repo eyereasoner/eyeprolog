@@ -305,6 +305,16 @@ function expectedMatches(expected, actual) {
   return expected === actual.type;
 }
 
+// Issue #111: making quads.js's `sto` handling precise exposed one genuine,
+// permanent divergence from this upstream quad. EyeProlog's frozen goal
+// unifies L with a term containing itself and fails via occurs-check well
+// within budget, a real (if approximate) implementation choice; the quad only
+// anticipates looping or resource exhaustion for this STO example. The
+// mirroring regression test lives in test/regression/cases-regression.mjs.
+const KNOWN_QUAD_DIVERGENCES = {
+  length: { failed: 1, mustInclude: 'quads: FAILED 30,' },
+};
+
 function ensureQuadSuccess(label, item) {
   const cli = path.join(packageRoot, 'bin', 'eyeprolog.js');
   const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'eyeprolog-neumerkel-'));
@@ -312,7 +322,9 @@ function ensureQuadSuccess(label, item) {
     // Some upstream option tests deliberately open a relative file named `f`.
     // Run every live quad in an isolated cwd so conformance cannot dirty the checkout.
     const child = spawnSync(process.execPath, [cli, '-q', item.localPath], { encoding: 'utf8', cwd: scratch });
-    if (child.status !== 0) {
+    const divergence = KNOWN_QUAD_DIVERGENCES[label] ?? null;
+    const expectedStatus = divergence == null ? 0 : 1;
+    if (child.status !== expectedStatus) {
       throw new Error(`${label}: EyeProlog quad runner exited ${child.status}\n${child.stdout}${child.stderr}`);
     }
     const match = String(child.stdout).match(/quads:\s+(\d+) run,\s+(\d+) passed,\s+(\d+) failed(?:,\s+(\d+) undecided)?\./);
@@ -321,8 +333,12 @@ function ensureQuadSuccess(label, item) {
     const passed = Number(match[2]);
     const failed = Number(match[3]);
     const undecided = Number(match[4] ?? 0);
-    if (failed !== 0 || undecided !== 0 || passed !== total) {
+    const expectedFailed = divergence?.failed ?? 0;
+    if (failed !== expectedFailed || undecided !== 0 || passed !== total - expectedFailed) {
       throw new Error(`${label}: ${passed}/${total} passed, ${failed} failed, ${undecided} undecided\n${child.stdout}${child.stderr}`);
+    }
+    if (divergence != null && !String(child.stdout).includes(divergence.mustInclude)) {
+      throw new Error(`${label}: expected documented divergence (${divergence.mustInclude}) not found\n${child.stdout}${child.stderr}`);
     }
     return { total, passed, failed, undecided, stdout: child.stdout };
   } finally {
