@@ -1,5 +1,6 @@
 package-lock.json
 node_modules/
+ISO-Prolog/
 .codex/
 .agents/
 .benchmarks/
