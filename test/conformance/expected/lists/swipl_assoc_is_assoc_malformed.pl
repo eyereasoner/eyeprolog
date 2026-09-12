@@ -1,0 +1,3 @@
+assoc_is_assoc_rejects_unbalanced(ok).
+assoc_is_assoc_rejects_unordered(ok).
+assoc_is_assoc_rejects_bad_structure(ok).

@@ -102,14 +102,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-## SWI-Prolog core tests
+## SWI-Prolog core and library tests
 
-Selected standard-core operator and finite-tree unification cases under `iso/`
-are adapted from `tests/core/test_op.pl` and
-`tests/core/test_occurs_check.pl` in
-[SWI-Prolog](https://github.com/SWI-Prolog/swipl-devel). Each adapted file
-identifies its upstream source. The cases were rewritten for EyeProlog's query and
-exact-output harness.
+Selected standard-core operator, finite-tree unification, arithmetic, sort,
+list, exception, and syntax cases under `iso/` are adapted from files under
+`tests/core_lang/` and `tests/core_text/` in
+[SWI-Prolog](https://github.com/SWI-Prolog/swipl-devel) -- named
+`tests/core/test_op.pl` and `tests/core/test_occurs_check.pl` in older
+checkouts, before that directory was split. Each adapted file identifies its
+upstream source file.
+
+Selected standard-library cases under the topic directories (not `iso/`,
+since these exercise EyeProlog's own bundled `src/lib/` modules rather than
+ISO core semantics) are adapted from files under `tests/library/` in the same
+project -- `test_lists.pl`, `test_ordsets.pl`, `test_assoc.pl`,
+`test_aggregate.pl`, and `test_ugraphs.pl`. Each adapted file identifies its
+upstream source file and the `library(...)` module it needs.
+
+The cases were rewritten for EyeProlog's query and exact-output harness.
 
 BSD 2-Clause License
 
