@@ -162,6 +162,21 @@ function checkAlternative(program, quad, alternative, options, context, unordere
   // matchLeaf accepts it once this disproof gate has been cleared.
   if (requiresSto && actual.nstoObserved) return { ok: false };
 
+  // The reverse of the check above: execution that actually triggered
+  // occurs-check produced an implementation-dependent outcome (ISO 7.3.3
+  // Note 2 -- succeed, loop, or fail are all conforming), even when none of
+  // this alternative's own leaves say so. A leaf making a positive claim
+  // about that outcome without an `sto` tag would silently misrepresent an
+  // implementation choice as a portably decided one (see issue #111's
+  // `\+ \+ -X=X` follow-up: a bare `false.` happens to match here, but only
+  // because this engine always occurs-checks -- a non-occurs-checking engine
+  // would see `true` instead). An `unexpected` leaf is a negative claim
+  // instead, and already has its own STO carve-out below
+  // (`stoPermitsUnexpected`, issue #60), so leave those alone here.
+  if (!requiresSto && actual.stoObserved && !leaves.some((leaf) => leaf.unexpected)) {
+    return { ok: false, alternative };
+  }
+
   if (hasInputSpec) {
     const leaf = leaves[0];
     const exactConsumption = actual.inputPosition === input.length;
@@ -1010,15 +1025,22 @@ const FAILURE_LABELS = {
 function formatAlternativeContext(program, description, alternative) {
   const parts = splitOperator(description, '|');
   if (parts.length <= 1 || !parts.includes(alternative)) return null;
+  // Every detail line under a `quads: ...` header shares one 3-space report
+  // margin (the same margin the plain `?- ...` and `expected: ...` lines
+  // already use) -- reproduce the answer-description syntax's own layout
+  // (a bare 3-space indent for the first alternative, a leading `|  `/`;  `
+  // marker for a later alternative/leaf) *inside* that margin, so a marker
+  // character lines up under the `?` above it rather than at column 0.
+  const margin = '   ';
   const lines = [];
   parts.forEach((part, index) => {
-    const prefix = index === 0 ? '   ' : '|  ';
+    const marker = index === 0 ? '   ' : '|  ';
     if (part !== alternative) {
-      lines.push(`${prefix}...`);
+      lines.push(`${margin}${marker}...`);
       return;
     }
     splitOperator(part, ';').forEach((leaf, leafIndex) => {
-      lines.push(`${leafIndex === 0 ? prefix : ';  '}${formatQuadTerm(program, leaf)}`);
+      lines.push(`${margin}${leafIndex === 0 ? marker : ';  '}${formatQuadTerm(program, leaf)}`);
     });
   });
   // A trailing `...` glued straight to a full stop reads as four dots; the

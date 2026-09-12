@@ -2586,13 +2586,16 @@ c4 ?- call((!;1)).
         assertEqual(result.failed, 1, 'quad failed');
         // Laid out the same way the answer-description syntax itself lays
         // out alternatives (a leading `|`) and leaves (a leading `;`), per
-        // Ulrich's own proposed shape in that follow-up comment.
+        // Ulrich's own proposed shape in that follow-up comment, inside the
+        // same 3-space report margin every other detail line under a
+        // `quads: ...` header uses -- so each `|`/`;` marker lines up under
+        // the `?` of the `?- ...` line above it, not at column 0.
         assertIncludes(result.stdout,
-          '   ...\n' +
-          '|  sto, Xs = [E | Xs]\n' +
-          ';  Xs = [_A | _B], Ys = [E | Ys]\n' +
-          ';  ..., ad_infinitum\n' +
-          '|  ... .\n',
+          '      ...\n' +
+          '   |  sto, Xs = [E | Xs]\n' +
+          '   ;  Xs = [_A | _B], Ys = [E | Ys]\n' +
+          '   ;  ..., ad_infinitum\n' +
+          '   |  ... .\n',
           'sibling-elided alternative context');
         assertIncludes(result.stdout, '   expected: Ys = [E | Ys].\n', 'still-precise offending sub-term');
       },
@@ -2686,6 +2689,33 @@ c4 ?- call((!;1)).
         assertEqual(nsto.failed, 1, 'NSTO description failed');
         assertEqual(nsto.undecided, 0, 'NSTO description undecided');
         assertIncludes(nsto.stdout, 'quads: FAILED 34, <input>:3', 'NSTO diagnostic');
+      },
+    },
+    {
+      name: 'quad sto is required, not merely tolerated, once execution observes occurs-check (issue #111 follow-up)',
+      run: () => {
+        // https://github.com/eyereasoner/eyeprolog/issues/111#issuecomment-5645863132:
+        // `\+ \+ -X=X` fails only because this engine always occurs-checks
+        // plain `=`/2 (ISO 7.3.3 Note 2 leaves succeed/loop/fail all
+        // conforming); a non-occurs-checking engine sees `-X=X` succeed
+        // (creating a cyclic X), so `\+ \+` sees `true` instead. A bare
+        // `false.` -- with no `sto` tag -- misrepresents that as a portably
+        // decided outcome, so it must be rejected even though it happens to
+        // match this engine's own behavior; only the honestly `sto`-tagged
+        // claim may pass.
+        const bare = publicApi.runQuads('?- \\+ \\+ -X=X.\n   false.\n');
+        assertEqual(bare.passed, 0, 'undeclared sto claim rejected');
+        assertEqual(bare.failed, 1, 'undeclared sto claim rejected');
+
+        const declared = publicApi.runQuads('?- \\+ \\+ -X=X.\n   sto, false.\n');
+        assertEqual(declared.passed, 1, 'declared sto claim accepted');
+        assertEqual(declared.failed, 0, 'declared sto claim accepted');
+
+        // An `unexpected` leaf is a negative claim with its own, separate STO
+        // carve-out (issue #60, tested above); this new rule must not touch it.
+        const unexpected = publicApi.runQuads('?- \\+ \\+ -X=X.\n   false, unexpected.\n');
+        assertEqual(unexpected.passed, 0, 'wrong negative claim still rejected on its own terms');
+        assertEqual(unexpected.failed, 1, 'wrong negative claim still rejected on its own terms');
       },
     },
     {
