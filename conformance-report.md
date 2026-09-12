@@ -24,7 +24,7 @@ bytes, avoiding a second live fetch and its race window.
 | context | 11 | 0 | 0 | 0 | 11 |
 | control | 15 | 0 | 0 | 0 | 15 |
 | explicit-tabling | 6 | 0 | 0 | 0 | 6 |
-| iso | 211 | 219 | 0 | 0 | 430 |
+| iso | 238 | 219 | 0 | 0 | 457 |
 | lists | 52 | 3 | 0 | 0 | 55 |
 | modules | 2 | 0 | 0 | 0 | 2 |
 | negation | 8 | 0 | 19 | 0 | 27 |
@@ -37,7 +37,7 @@ bytes, avoiding a second live fetch and its race window.
 | terms | 26 | 3 | 0 | 0 | 29 |
 | unification | 18 | 0 | 0 | 0 | 18 |
 | variables | 16 | 7 | 0 | 0 | 23 |
-| **Total** | **533** | **274** | **19** | **21** | **847** |
+| **Total** | **560** | **274** | **19** | **21** | **874** |
 
 ## DCG conformance clarification
 

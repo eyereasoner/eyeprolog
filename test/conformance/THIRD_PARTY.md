@@ -36,6 +36,11 @@ adapted from `tests-pl/iso-conformity-tests.pl` in
 identifies the corresponding upstream test numbers. The cases were rewritten
 for EyeProlog's file-based query and exact-output harness.
 
+Additional operator-directive and control-construct error-condition cases
+under `iso/` are adapted from Scryer's `tests-pl/invalid_decl*.pl` and
+`tests-pl/issue831-call0.pl` regression fixtures. Each adapted file identifies
+its upstream source file.
+
 BSD 3-Clause License
 
 Copyright (c) 2016, Mark Thom
