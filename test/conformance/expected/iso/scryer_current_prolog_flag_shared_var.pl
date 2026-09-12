@@ -1,0 +1,1 @@
+current_prolog_flag_shared_var(false).
