@@ -17,6 +17,7 @@ node test/run-neumerkel-tests.mjs   # upstream-fetch harness
 node test/run-examples.mjs
 node test/run-playground.mjs
 node test/run-architecture.mjs
+node test/run-properties.mjs        # seeded random-term invariant checks (see below)
 node test/run-openrulebench.mjs
 node test/run-http-json.mjs
 node test/run-interop.mjs           # requires the comparison engines
@@ -25,6 +26,24 @@ node test/run-benchmark-tests.mjs   # benchmark harness
 
 These runners retain their existing options; there is no separate npm alias for
 each one. Focused checks do not replace the full release gate.
+
+`run-properties.mjs` is different in kind from the rest of the suite: instead
+of hand-picked inputs, it generates many random ground terms from a seeded
+PRNG and checks invariants that must hold for any input -- write/read
+round-tripping, `sort/2` ordering and idempotence, `append/3`/`length/2`
+agreement, `compare/3` symmetry, `keysort/2` stability, `=..` round-tripping,
+`copy_term/2` sharing, `reverse/2` involution, `atom_codes/2`/`atom_chars/2`/
+`char_code/2`/`number_codes/2` round-tripping, `succ/2` and `abs/1`/`sign/1`
+arithmetic identities, `nth0/3`/`nth1/3` agreement, `last/2`, `min_list/2`/
+`max_list/2` bounds, `sum_list/2` additivity, `atom_concat/3`/`string_concat/3`
+regrouping, `atom_string/2`/`number_string/2` round-tripping, `list_to_set/2`
+idempotence, `permutation/2`, and `between/3` range generation -- roughly 25
+properties, each reported as its own trial (currently ~390 individual test
+lines) so a failure names exactly which trial of which property broke rather
+than leaving a reader to dig through one aggregate error. The whole file
+still runs in under two seconds. The seed (`SEED` in that file) is fixed so a
+failure is exactly reproducible by rerunning it -- change it only
+deliberately, and say why, never to make a transient failure disappear.
 
 For performance measurements, use `npm run benchmark`. Save a local baseline with
 `npm run benchmark -- --save .benchmarks/baseline.json`.
