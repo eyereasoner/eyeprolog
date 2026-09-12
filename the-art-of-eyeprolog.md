@@ -2083,7 +2083,7 @@ while compact-clause representation and conservative candidate indexes live in
 `src/program-indexing.js`. The solver consumes those same indexes directly;
 large execution fast paths deliberately remain in `src/solver.js` rather than
 being split through extra strategy objects or callbacks. Architectural cleanup
-is required to preserve benchmark performance as well as semantics.
+is required to preserve performance as well as semantics.
 
 Focused files under `src/lib/` contain the portable extensions, with
 `src/lib/lists.pl` supplying common list relations. They are ordinary Prolog modules using EyeProlog's documented module compatibility
@@ -3221,9 +3221,8 @@ performance evidence comes after semantic evidence. A faster program that
 silently drops a mode is a different program. Predicate and inference counts are
 also not reliable substitutes for elapsed time: one expensive host call can cost
 more than thousands of cheap Prolog calls. Repository-level performance work
-therefore uses `npm run benchmark`, which measures median wall-clock parse+execute
-time over representative workloads and rejects any run whose answer checksum no
-longer matches the committed result.
+watches `npm test`'s own elapsed time across the whole corpus rather than a
+dedicated wall-clock benchmark harness.
 
 **Exercises.**
 
@@ -10360,29 +10359,9 @@ with:
 npm test
 ```
 
-Performance is checked separately so ordinary correctness tests stay deterministic
-and fast:
-
-```sh
-npm run benchmark
-npm run benchmark -- --save .benchmarks/baseline.json
-```
-
-The benchmark suite contains 21 representative workloads and stores their
-semantic output digests in the repository, while wall-clock baselines remain
-machine-local under `.benchmarks/` because absolute timings are machine-specific.
-Each benchmark runs in its own fresh Node worker. Inside that worker, one untimed
-execution primes parser, module, and JIT state; short workloads are then repeated
-with independent `run()` calls until a batch is roughly 400 ms long. After one
-warm-up batch, five measured batches are reported as milliseconds per workload
-execution. Naturally long workloads keep a batch size of one.
-
-The report shows the median, per-operation range, chosen batch size, saved
-baseline median, and the percentage change between the current median and baseline
-median. The range remains visible as context, but it does not suppress or reinterpret
-the median-to-median comparison. Older unbatched baseline files are ignored with a
-request to regenerate them. This keeps the rule simple: unchanged answers first,
-sufficiently long wall-clock samples second, and direct median-versus-median change.
+There is no separate wall-clock benchmark harness. `npm test`'s own elapsed
+time, run across thousands of conformance, regression, and example programs,
+is the project's performance indicator: a real slowdown shows up there.
 
 When adding an example:
 

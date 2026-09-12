@@ -21,7 +21,6 @@ node test/run-properties.mjs        # seeded random-term invariant checks (see b
 node test/run-openrulebench.mjs
 node test/run-http-json.mjs
 node test/run-interop.mjs           # requires the comparison engines
-node test/run-benchmark-tests.mjs   # benchmark harness
 ```
 
 These runners retain their existing options; there is no separate npm alias for
@@ -52,7 +51,7 @@ still runs in about two seconds. The seed (`SEED` in that file) is fixed so a
 failure is exactly reproducible by rerunning it -- change it only
 deliberately, and say why, never to make a transient failure disappear.
 
-For performance measurements, use `npm run benchmark`. Save a local baseline with
-`npm run benchmark -- --save .benchmarks/baseline.json`.
+There is no separate wall-clock benchmark harness: `npm test`'s own elapsed
+time is the project's performance indicator.
 
 See the [conformance guide](conformance/README.md) for report maintenance.

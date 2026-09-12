@@ -83,8 +83,8 @@ The checked [Symbiotic Knowledge Graphs example](examples/symbiotic-knowledge-gr
 
 The same RDF → Prolog → RDF boundary is exercised by five additional checked scenarios: [cross-organization data sharing](https://eyereasoner.github.io/eyeprolog/examples/deck/cross-organization-data-sharing), [explainable EV-depot configuration](https://eyereasoner.github.io/eyeprolog/examples/deck/explainable-ev-depot-configuration), [operational incident response](https://eyereasoner.github.io/eyeprolog/examples/deck/operational-incident-response), [software supply-chain vulnerability response](https://eyereasoner.github.io/eyeprolog/examples/deck/sbom-vulnerability-response), and a [scientific evidence graph](https://eyereasoner.github.io/eyeprolog/examples/deck/scientific-evidence-graph). Together they cover policy decisions, reversible configuration reasoning, dependency-graph diagnosis, transitive SBOM exposure, and evidence aggregation with explicit disagreement.
 
-## Benchmarks
-EyeProlog has 21 checksum-protected wall-clock benchmarks spanning recursion/indexing, constraints, tabling/WFS, DCGs, Eyelet, search, term I/O, attributes, rewriting, the dynamic database, and bignum arithmetic. Short workloads are adaptively batched before timing so millisecond-scale noise is not mistaken for a regression. Run `npm run benchmark`; create a machine-local comparison point with `npm run benchmark -- --save .benchmarks/baseline.json`; use `node test/run-benchmark-tests.mjs` for harness checks. Details are in [*The Art of EyeProlog*](the-art-of-eyeprolog.md).
+## Performance
+EyeProlog does not carry a separate wall-clock benchmark harness. `npm test`'s own elapsed time, run across thousands of conformance, regression, and example programs, is the coarse performance indicator instead — a real slowdown shows up there. [OpenRuleBench](openrulebench/README.md) remains a dedicated, checked correctness-and-scale benchmark for the Datalog rule-engine profile specifically.
 For the project policy on post-ISO-standard and WG17 compatibility features such as digit separators, see [ISO/WG17 compatibility extensions](test/conformance/ISO-WG17-EXTENSIONS.md).
 ## Development
 ```sh
@@ -97,7 +97,6 @@ The npm command list is deliberately small:
 
 - `npm test` (or `npm run test`): run the release gate, including live upstream conformity checks (WG17 syntax among them).
 - `npm run generate`: rebuild generated library and book files.
-- `npm run benchmark`: run the wall-clock benchmarks.
 
 Use `npm test -- --offline` for a network-free local pass (this also skips the live-discovered WG17 syntax check, since it has no offline snapshot). Focused checks remain available directly, for example `node test/run-regression.mjs docs`; see [test runners](test/README.md). The automatic version hooks still run the release gate, refresh and stage conformance reports, and push the release. Detailed upstream report maintenance is documented in the [conformance guide](test/conformance/README.md).
 
