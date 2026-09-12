@@ -1,0 +1,10 @@
+fact_unifies_leaving_variable_unbound(ok).
+distinct_arguments_reject(ok).
+repeated_argument_accepts(ok).
+distinct_fact_arguments_reject(ok).
+fact_second_argument([nice]).
+nested_pattern_rejects_conflict(ok).
+nested_pattern_accepts(ok).
+nested_shared_variable_binds_consistently("w").
+nested_shared_variable_all_positions("w").
+retract_reassert_roundtrip(ok).

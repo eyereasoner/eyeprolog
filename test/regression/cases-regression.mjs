@@ -2397,7 +2397,7 @@ c4 ?- call((!;1)).
       },
     },
     {
-      name: 'runQuads passes the complete vendored Prolog Prologue corpus, with one documented max_integer divergence',
+      name: 'runQuads passes the complete vendored Prolog Prologue corpus',
       run: () => {
         const filename = path.join(testRoot, 'fixtures', 'prologue_quad_runner.pl');
         const source = fs.readFileSync(filename, 'utf8');
@@ -2406,46 +2406,29 @@ c4 ?- call((!;1)).
           filename,
           baseDir: path.dirname(filename),
         }]);
-        assertEqual(program.quads.length, 33, 'vendored quad total');
+        assertEqual(program.quads.length, 72, 'vendored quad total');
         const maxIntegerQuads = program.quads.filter(({ query }) =>
-          termToString(query).includes('current_prolog_flag(max_integer, Max)'));
-        assertEqual(maxIntegerQuads.length, 1, 'max_integer quad count');
+          termToString(query).includes('current_prolog_flag(max_integer, MI)'));
+        assertEqual(maxIntegerQuads.length, 4, 'max_integer quad count');
 
-        // The full 33-quad corpus, including its two STO examples
-        // (member(X,X) and select(E,Xs,Xs), both open-ended native-generator
-        // searches -- see the maxInferences accounting added to
-        // generatedLengthAllocationCheckpoint in src/solver.js) is bounded and
-        // takes on the order of several seconds, not the indefinite hang it
-        // used to depend on ambient heap pressure to avoid (see
+        // The full 72-quad corpus, including its rational-tree/occurs-check
+        // STO examples (member(X,X) and select(E,Xs,Xs), both open-ended
+        // native-generator searches -- see the maxInferences accounting added
+        // to generatedLengthAllocationCheckpoint in src/solver.js) is bounded
+        // and takes on the order of several seconds, not the indefinite hang
+        // it used to depend on ambient heap pressure to avoid (see
         // Solver#reclaimMemory in src/solver.js).
         const result = publicApi.runQuads(program);
-        // The upstream working-draft max_integer quad accepts either integer
-        // overflow or Max=unbounded. EyeProlog reports no value for
-        // max_integer when bounded=false, so
-        // current_prolog_flag(max_integer, N) fails. Part 1 does not mandate
-        // that outcome, so this is an implementation choice rather than a
-        // standards requirement. Preserve the upstream fixture unchanged and
-        // record the one deliberate divergence explicitly.
-        assertEqual(result.total, 33, 'quad total');
-        assertEqual(result.passed, 32, 'quad passed');
-        assertEqual(result.failed, 1, 'quad failed');
-        assertIncludes(result.stdout, 'current_prolog_flag(max_integer, Max)', 'max_integer divergence');
-        assertIncludes(result.stdout, 'quads: 33 run, 32 passed, 1 failed.', 'quad report');
-      },
-    },
-    {
-      name: 'runQuads passes the authoritative Prologue call_nth quad corpus',
-      run: () => {
-        const filename = path.join(testRoot, 'fixtures', 'prologue_call_nth_quad_runner.pl');
-        const source = fs.readFileSync(filename, 'utf8');
-        const result = publicApi.runQuads(Program.parseSources([{
-          text: source,
-          filename,
-          baseDir: path.dirname(filename),
-        }]));
-        assertEqual(result.total, 13, 'quad total');
-        assertEqual(result.passed, 13, 'quad passed');
-        assertEqual(result.stdout, 'quads: 13 run, 13 passed, 0 failed.\n', 'quad report');
+        // The current upstream max_integer quads already accept EyeProlog's
+        // own bounded=false behavior (no max_integer value, so
+        // current_prolog_flag(max_integer, MI) simply fails); a stale, since
+        // superseded vendored snapshot once needed a documented divergence
+        // for this (see git history), but the current upstream corpus needs
+        // none: the whole vendored corpus passes outright.
+        assertEqual(result.total, 72, 'quad total');
+        assertEqual(result.passed, 72, 'quad passed');
+        assertEqual(result.failed, 0, 'quad failed');
+        assertEqual(result.stdout, 'quads: 72 run, 72 passed, 0 failed.\n', 'quad report');
       },
     },
     {

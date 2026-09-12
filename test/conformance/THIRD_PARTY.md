@@ -70,6 +70,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Selected standard-core cases under `iso/` are adapted from the numbered tests
 in [`tests/tests`](https://github.com/trealla-prolog/trealla/tree/main/tests/tests)
+and [`tests/issues`](https://github.com/trealla-prolog/trealla/tree/main/tests/issues)
 in Trealla Prolog. Each adapted file identifies its upstream test file. The
 cases were rewritten for EyeProlog's query and exact-output harness.
 

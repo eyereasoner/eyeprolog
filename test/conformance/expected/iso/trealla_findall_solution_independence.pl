@@ -1,0 +1,1 @@
+findall_solutions_are_independent_copies(ok).

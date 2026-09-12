@@ -252,14 +252,29 @@ function checkAnswerPermutation(program, query, leaves, actual, alternative) {
 
 function malformedAlternative(query, alternative) {
   const queryNames = new Set(namedVariables(query).map((variable) => variable.name));
-  for (const leaf of splitOperator(alternative, ';').map(describeLeaf)) {
+  const altLeaves = splitOperator(alternative, ';').map(describeLeaf);
+  // `sto` is written once, on the branch's first outcome, to declare the
+  // whole `;`-separated branch occurs-check/rational-tree dependent (see the
+  // matching `leaves.some((leaf) => leaf.sto)` in checkAlternative); a later
+  // leaf in the same branch carries that declaration too even though only
+  // the first leaf's text says so.
+  const branchSto = altLeaves.some((leaf) => leaf.sto);
+  for (const leaf of altLeaves) {
     if (leaf.malformed != null) return leaf.malformed;
     const names = new Set();
     const substitutions = [...leaf.bindings, ...leaf.approximations];
+    // A binding's left-hand variable may be a query variable, or an auxiliary
+    // variable this same answer description already introduced on an earlier
+    // binding's right-hand side. `Xs = [_A|_B], _B = [E|_B]` names the "rest
+    // of the same infinite structure" as _B before binding it -- the usual
+    // idiom for describing a rational-tree or repeating-pattern answer
+    // (see also substitutionMatches, which resolves these the same way).
+    const introduced = new Set(queryNames);
     for (const binding of substitutions) {
       const name = binding.args[0].name;
-      if (!queryNames.has(name) || names.has(name)) return binding;
+      if (!introduced.has(name) || names.has(name)) return binding;
       names.add(name);
+      for (const variable of namedVariables(binding.args[1])) introduced.add(variable.name);
     }
     for (const binding of substitutions) {
       const name = binding.args[0].name;
@@ -276,7 +291,7 @@ function malformedAlternative(query, alternative) {
       // outside `sto`: an answer description should give each variable's
       // value in fully resolved form rather than in terms of a sibling
       // binding.
-      if (!leaf.sto && referenced.some((variable) => names.has(variable.name))) return binding;
+      if (!branchSto && referenced.some((variable) => names.has(variable.name))) return binding;
     }
   }
   return null;
@@ -522,22 +537,33 @@ function substitutionMatches(query, bindings, approximations, actualEnv) {
   const queryVariablesByName = new Map(queryVariables.map((variable) => [variable.name, variable]));
   const expectedEnv = new Env();
   const rebound = new Set();
+  // A binding's left-hand variable may be a query variable, or an auxiliary
+  // variable this same answer description already introduced on an earlier
+  // binding's right-hand side (see malformedAlternative's matching
+  // `introduced` set): `Xs = [_A|_B], _B = [E|_B]` names the "rest of the
+  // same infinite structure" as _B before binding it, the usual idiom for
+  // describing a rational-tree or repeating-pattern answer.
+  const introduced = new Set(queryNames);
   for (const binding of [...bindings, ...approximations]) {
     const variable = binding.args[0];
-    if (!queryNames.has(variable.name) || rebound.has(variable.name)) return false;
+    if (!introduced.has(variable.name) || rebound.has(variable.name)) return false;
     rebound.add(variable.name);
     if (binding.name === '=') {
       if (!unify(variable, binding.args[1], expectedEnv)) return false;
-      continue;
+    } else {
+      // Approximate (~~) bindings compare against an actually observed value,
+      // which only exists for the query's own variables.
+      const actualVariable = queryVariablesByName.get(variable.name);
+      if (actualVariable == null) return false;
+      const actualValue = deref(actualVariable, actualEnv);
+      if (!approximatelyMatches(actualValue, binding.args[1])) return false;
+      // Once the approximate predicate has accepted the actual float, bind the
+      // expected-side variable to that exact observed term. This lets the
+      // ordinary variant matcher continue to check the rest of the answer,
+      // including variable sharing, without turning `~~` into a fuzzy unifier.
+      if (!unify(variable, copyResolved(actualValue, actualEnv), expectedEnv)) return false;
     }
-    const actualVariable = queryVariablesByName.get(variable.name);
-    const actualValue = deref(actualVariable, actualEnv);
-    if (!approximatelyMatches(actualValue, binding.args[1])) return false;
-    // Once the approximate predicate has accepted the actual float, bind the
-    // expected-side variable to that exact observed term. This lets the
-    // ordinary variant matcher continue to check the rest of the answer,
-    // including variable sharing, without turning `~~` into a fuzzy unifier.
-    if (!unify(variable, copyResolved(actualValue, actualEnv), expectedEnv)) return false;
+    for (const referenced of namedVariables(binding.args[1])) introduced.add(referenced.name);
   }
   const expected = compound('$quad_answer', queryVariables.map((variable) => copyResolved(variable, expectedEnv)));
   const actual = compound('$quad_answer', queryVariables.map((variable) => copyResolved(variable, actualEnv)));

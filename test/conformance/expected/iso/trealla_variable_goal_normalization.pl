@@ -1,0 +1,1 @@
+variable_goal_normalized_in_clause_body(ok).

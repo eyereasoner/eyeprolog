@@ -314,12 +314,13 @@ function expectedMatches(expected, actual) {
 // moment it stops reproducing, exactly as happened with the length corpus's
 // occurs-check quad); it just does not abort the run the way an unexplained
 // failure would.
-const KNOWN_QUAD_DIVERGENCES = {
-  prologue: new Map([
-    [118, 'bounded=false: EyeProlog reports no max_integer value at all (ISO 7.11.1.1), ' +
-      'so this quad\'s evaluation_error(int_overflow) | Max = unbounded pair never applies'],
-  ]),
-};
+// No currently known, permanent divergences: every live corpus below is
+// expected to pass in full. Add an entry here (keyed by corpus key, mapping
+// answer-description line to a reason) only for a genuine, reviewed, and
+// still-open implementation choice -- see the git history for the shape of
+// such an entry and NEUMERKEL-LATEST.md's "Known divergences" section for how
+// it is then explained to a reader.
+const KNOWN_QUAD_DIVERGENCES = {};
 
 // Report each answer description as its own test, the same way the syntax and
 // dif cases below do, instead of one aggregate pass/fail line for the whole
