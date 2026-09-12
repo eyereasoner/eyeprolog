@@ -994,24 +994,39 @@ const FAILURE_LABELS = {
 
 // With several `|`-separated alternatives -- the norm for `sto`-annotated
 // queries -- a bare offending sub-term like `_B = [E|_B]` gives no sense of
-// which alternative it came from (issue #112's follow-up). Show that whole
-// alternative in place, and stand in for its siblings with `...` rather than
-// reproducing them (they were not the problem) or dropping them silently
-// (a reader can no longer tell how many alternatives, or which one, this was).
-// Returns null when the description has only one alternative to begin with:
-// there is then nothing to elide, and the existing plain rendering already
-// shows the whole thing.
+// which alternative it came from. Show that whole alternative in place, laid
+// out the same way the answer-description syntax itself lays out alternatives
+// and leaves (a leading `|` per alternative after the first, a leading `;`
+// per leaf after an alternative's first), and stand in for sibling
+// alternatives with a bare `...` rather than reproducing them (they were not
+// the problem) or dropping them silently (a reader can no longer tell how
+// many alternatives, or which one, this was) -- see issue #112's follow-up
+// (https://github.com/eyereasoner/eyeprolog/issues/112#issuecomment-5645403025).
+// Comments are not retained past parsing, so unlike a hand-written answer
+// description this reconstruction never has any to show. Returns null when
+// the description has only one alternative to begin with: there is then
+// nothing to elide, and the existing plain rendering already shows the whole
+// thing.
 function formatAlternativeContext(program, description, alternative) {
   const parts = splitOperator(description, '|');
   if (parts.length <= 1 || !parts.includes(alternative)) return null;
-  return parts.map((part) => (part === alternative ? formatQuadTerm(program, part) : '...')).join(' | ');
-}
-
-// A trailing `...` glued straight to a full stop reads as four dots; the
-// quad answer-description syntax itself always writes a space before the
-// period in that position (see `..., ad_infinitum` vs `... .`), so match it.
-function terminate(text) {
-  return text.endsWith('...') ? `${text} .` : `${text}.`;
+  const lines = [];
+  parts.forEach((part, index) => {
+    const prefix = index === 0 ? '   ' : '|  ';
+    if (part !== alternative) {
+      lines.push(`${prefix}...`);
+      return;
+    }
+    splitOperator(part, ';').forEach((leaf, leafIndex) => {
+      lines.push(`${leafIndex === 0 ? prefix : ';  '}${formatQuadTerm(program, leaf)}`);
+    });
+  });
+  // A trailing `...` glued straight to a full stop reads as four dots; the
+  // answer-description syntax itself always writes a space before the period
+  // in that position (compare `..., ad_infinitum` with `... .`), so match it.
+  const last = lines.length - 1;
+  lines[last] = lines[last].endsWith('...') ? `${lines[last]} .` : `${lines[last]}.`;
+  return lines.join('\n');
 }
 
 function formatFailure(program, quad, result, description = quad.answers[0]) {
@@ -1029,12 +1044,14 @@ function formatFailure(program, quad, result, description = quad.answers[0]) {
   const detail = result.kind === 'undecided'
     ? `   undecided: ${result.reason}.\n`
     // When the offending sub-term already *is* the whole alternative (an
-    // `expected:` line would just repeat the context line), the context line
-    // alone is the full, non-redundant report.
+    // `expected:` line would just repeat the context lines), the context
+    // alone is the full, non-redundant report. formatAlternativeContext
+    // already lays out and terminates its own lines, so it needs no further
+    // wrapping here (unlike the plain single-line `expected:` case below).
     : context != null && expected === result.alternative
-      ? `   ${terminate(context)}\n`
+      ? `${context}\n`
       : context != null
-        ? `   ${terminate(context)}\n   expected: ${formatQuadTerm(program, expected)}.\n`
+        ? `${context}\n   expected: ${formatQuadTerm(program, expected)}.\n`
         : `   expected: ${formatQuadTerm(program, expected)}.\n`;
   return `quads: ${reason} ${label}${source.filename}:${line}\n` +
     `   ?- ${formatQuadTerm(program, quad.query)}.\n` + detail;

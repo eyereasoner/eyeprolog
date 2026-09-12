@@ -2584,8 +2584,15 @@ c4 ?- call((!;1)).
         const result = publicApi.runQuads(Program.parseSources([{ text: source, filename: 'select-quad.pl' }]));
         assertEqual(result.total, 1, 'quad total');
         assertEqual(result.failed, 1, 'quad failed');
+        // Laid out the same way the answer-description syntax itself lays
+        // out alternatives (a leading `|`) and leaves (a leading `;`), per
+        // Ulrich's own proposed shape in that follow-up comment.
         assertIncludes(result.stdout,
-          '   ... | sto, Xs = [E | Xs] ; Xs = [_A | _B], Ys = [E | Ys] ; ..., ad_infinitum | ... .\n',
+          '   ...\n' +
+          '|  sto, Xs = [E | Xs]\n' +
+          ';  Xs = [_A | _B], Ys = [E | Ys]\n' +
+          ';  ..., ad_infinitum\n' +
+          '|  ... .\n',
           'sibling-elided alternative context');
         assertIncludes(result.stdout, '   expected: Ys = [E | Ys].\n', 'still-precise offending sub-term');
       },
