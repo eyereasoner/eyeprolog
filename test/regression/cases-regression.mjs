@@ -2552,6 +2552,42 @@ c4 ?- call((!;1)).
         assertEqual(result.total, 1, 'quad total');
         assertEqual(result.failed, 1, 'quad failed');
         assertIncludes(result.stdout, 'quads: MALFORMED malformed-quad.pl:2', 'malformed report');
+        // A single `|`-alternative already is the whole answer description --
+        // there is nothing to elide, so the plain, unelided report is
+        // unchanged (contrast the multi-alternative case just below).
+        assertNotIncludes(result.stdout, ' | ', 'single-alternative report stays unelided');
+      },
+    },
+    {
+      name: 'runQuads shows a malformed sub-term in the context of its full sibling-elided alternative (issue #112)',
+      run: () => {
+        // Adapted from the upstream Prologue `select(E, Xs, Xs)` quad
+        // (https://github.com/eyereasoner/eyeprolog/issues/112#issuecomment-5645403025):
+        // a query-unrelated `Ys` stands in for the legitimate forward-reference
+        // idiom so this stays malformed regardless of that fix. With three
+        // `|`-alternatives, a bare `expected: Ys = [E|Ys].` gives no sense of
+        // which one it came from; the report should instead show that whole
+        // alternative in place and stand in for its siblings with `...`.
+        const source = `:- use_module(library(prologue)).
+?- select(E, Xs, Xs).
+   sto,
+   loops
+|  sto,
+   Xs = [E|Xs]
+;  Xs = [_A|_B], Ys = [E|Ys]
+;  ..., ad_infinitum
+|  sto,
+   Xs = [E,E|_A]
+;  Xs = [_A,E,E|_B]
+;  ..., ad_infinitum.
+`;
+        const result = publicApi.runQuads(Program.parseSources([{ text: source, filename: 'select-quad.pl' }]));
+        assertEqual(result.total, 1, 'quad total');
+        assertEqual(result.failed, 1, 'quad failed');
+        assertIncludes(result.stdout,
+          '   ... | sto, Xs = [E | Xs] ; Xs = [_A | _B], Ys = [E | Ys] ; ..., ad_infinitum | ... .\n',
+          'sibling-elided alternative context');
+        assertIncludes(result.stdout, '   expected: Ys = [E | Ys].\n', 'still-precise offending sub-term');
       },
     },
     {

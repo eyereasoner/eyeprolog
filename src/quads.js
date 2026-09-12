@@ -82,7 +82,7 @@ function checkDescription(program, quad, description, options, context) {
     if (part.type === ATOM && part.name === 'other_answer_sequence') {
       const previous = alternatives.at(-1);
       if (previous == null || unordered.has(previous)) {
-        return { ok: false, kind: 'malformed', expected: part };
+        return { ok: false, kind: 'malformed', expected: part, alternative: previous ?? undefined };
       }
       unordered.add(previous);
     } else alternatives.push(part);
@@ -93,7 +93,13 @@ function checkDescription(program, quad, description, options, context) {
     Number(alternativeDescribesLoop(right)) - Number(alternativeDescribesLoop(left)));
   for (const alternative of ordered) {
     const malformed = malformedAlternative(quad.query, alternative);
-    if (malformed != null) return { ok: false, kind: 'malformed', expected: malformed };
+    // Carry the whole offending `|`-alternative alongside the narrow
+    // sub-term the check actually tripped on: with several alternatives (the
+    // norm for `sto`-annotated queries -- see issue #112's follow-up),
+    // formatFailure shows this alternative in full and elides its siblings
+    // instead of leaving a reader to guess which branch a bare sub-term like
+    // `_B = [E|_B]` came from.
+    if (malformed != null) return { ok: false, kind: 'malformed', expected: malformed, alternative };
   }
   let unsupported = null;
   let undecided = null;
@@ -111,19 +117,19 @@ function checkAlternative(program, quad, alternative, options, context, unordere
   const requiresSto = leaves.some((leaf) => leaf.sto);
   const unsupported = leaves.find((leaf) => leaf.unsupported != null)?.unsupported;
   if (unsupported != null) {
-    return { ok: false, kind: 'unsupported', expected: unsupported };
+    return { ok: false, kind: 'unsupported', expected: unsupported, alternative };
   }
 
   // A permutation describes a complete sequence, not an arbitrary prefix or
   // a negative assertion. Do not silently weaken those annotations.
   if (unordered && leaves.some((leaf) => leaf.more || leaf.unexpected || leaf.sto ||
       leaf.waits || leaf.input != null || leaf.peek != null)) {
-    return { ok: false, kind: 'unsupported', expected: alternative };
+    return { ok: false, kind: 'unsupported', expected: alternative, alternative };
   }
 
   const ioLeaves = leaves.filter((leaf) => leaf.input != null || leaf.peek != null);
   if (ioLeaves.length > 1 || (ioLeaves.length > 0 && leaves.length !== 1)) {
-    return { ok: false, kind: 'malformed', expected: alternative };
+    return { ok: false, kind: 'malformed', expected: alternative, alternative };
   }
   const hasInputSpec = ioLeaves.length === 1;
   const inputLeaf = ioLeaves[0] ?? null;
@@ -986,6 +992,28 @@ const FAILURE_LABELS = {
   undecided: 'UNDECIDED',
 };
 
+// With several `|`-separated alternatives -- the norm for `sto`-annotated
+// queries -- a bare offending sub-term like `_B = [E|_B]` gives no sense of
+// which alternative it came from (issue #112's follow-up). Show that whole
+// alternative in place, and stand in for its siblings with `...` rather than
+// reproducing them (they were not the problem) or dropping them silently
+// (a reader can no longer tell how many alternatives, or which one, this was).
+// Returns null when the description has only one alternative to begin with:
+// there is then nothing to elide, and the existing plain rendering already
+// shows the whole thing.
+function formatAlternativeContext(program, description, alternative) {
+  const parts = splitOperator(description, '|');
+  if (parts.length <= 1 || !parts.includes(alternative)) return null;
+  return parts.map((part) => (part === alternative ? formatQuadTerm(program, part) : '...')).join(' | ');
+}
+
+// A trailing `...` glued straight to a full stop reads as four dots; the
+// quad answer-description syntax itself always writes a space before the
+// period in that position (see `..., ad_infinitum` vs `... .`), so match it.
+function terminate(text) {
+  return text.endsWith('...') ? `${text} .` : `${text}.`;
+}
+
 function formatFailure(program, quad, result, description = quad.answers[0]) {
   const source = quad.source ?? { filename: '<input>', line: 1 };
   // Point at the failing answer description's own line rather than always the
@@ -995,9 +1023,19 @@ function formatFailure(program, quad, result, description = quad.answers[0]) {
   const label = quad.id == null ? '' : `${formatQuadTerm(program, quad.id)}, `;
   const reason = FAILURE_LABELS[result.kind] ?? 'FAILED';
   const expected = result.expected ?? description;
+  const context = result.alternative != null
+    ? formatAlternativeContext(program, description, result.alternative)
+    : null;
   const detail = result.kind === 'undecided'
     ? `   undecided: ${result.reason}.\n`
-    : `   expected: ${formatQuadTerm(program, expected)}.\n`;
+    // When the offending sub-term already *is* the whole alternative (an
+    // `expected:` line would just repeat the context line), the context line
+    // alone is the full, non-redundant report.
+    : context != null && expected === result.alternative
+      ? `   ${terminate(context)}\n`
+      : context != null
+        ? `   ${terminate(context)}\n   expected: ${formatQuadTerm(program, expected)}.\n`
+        : `   expected: ${formatQuadTerm(program, expected)}.\n`;
   return `quads: ${reason} ${label}${source.filename}:${line}\n` +
     `   ?- ${formatQuadTerm(program, quad.query)}.\n` + detail;
 }
