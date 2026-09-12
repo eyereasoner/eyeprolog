@@ -27,7 +27,6 @@ These runners retain their existing options; there is no separate npm alias for
 each one. Focused checks do not replace the full release gate.
 
 For performance measurements, use `npm run benchmark`. Save a local baseline with
-`npm run benchmark -- --save .benchmarks/baseline.json`, or run
-`node test/lips-benchmark.mjs` for the classic LIPS measurement.
+`npm run benchmark -- --save .benchmarks/baseline.json`.
 
 See the [conformance guide](conformance/README.md) for report maintenance.

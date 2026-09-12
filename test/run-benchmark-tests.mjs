@@ -70,16 +70,4 @@ ok(adaptive.results[0].batchSize > 1, 'adaptive benchmark smoke test should batc
 ok(adaptive.results[0].sha256 === manifest.find((item) => item.name === 'dcg-expression').expectedSha256,
   'adaptive batching should preserve the semantic checksum');
 
-const classicLips = await spawnJson([
-  path.join(root, 'test', 'lips-benchmark.mjs'),
-  '--count', '20',
-  '--runs', '1',
-  '--warmup', '1',
-  '--json',
-]);
-ok(classicLips.count === 20, 'classic LIPS harness should honor the requested reversal count');
-ok(classicLips.methodology.includes('496 calls/reversal'), 'classic LIPS harness should identify the historical accounting');
-ok(Number.isFinite(classicLips.lips) && classicLips.lips > 0, 'classic LIPS harness should report positive CPU LIPS');
-ok(Number.isFinite(classicLips.netCpuMs) && classicLips.netCpuMs > 0, 'classic LIPS harness should subtract positive CPU time');
-
 process.stdout.write(`Benchmark harness tests: ${passed}/${passed} passed.\n`);

@@ -17,21 +17,18 @@ quads for the ISO read and write option `variable_names/1`:
 Retrieved on 2026-08-25. It is vendored so all input, output, waiting, and
 error cases remain release-gated.
 
-`prologue_quad.pl` is an unmodified snapshot of the 72 machine-readable quads
-for the predicates proposed by the Prolog Prologue working draft:
-
-<https://www.complang.tuwien.ac.at/ulrich/iso-prolog/prologue_quad.pl>
-
-The corresponding working draft is at
-<https://www.complang.tuwien.ac.at/ulrich/iso-prolog/prologue>.
-The corpus snapshot was retrieved on 2026-09-12; it merges what used to be
-tracked as a separate, narrower `call_nth` corpus (retired -- see git
-history) and updates the `member/2`, `select/3`, `nth0/3`, and `max_integer`
-quads to the working draft's current wording. The regression gate requires
-the entire vendored corpus to pass outright, the same as the live Neumerkel
-gate checks the current upstream bytes on every `npm test` run (see
-[NEUMERKEL-LIVE.md](../conformance/NEUMERKEL-LIVE.md)).
-
-`prologue_quad_runner.pl` loads EyeProlog's `library(prologue)` and includes
-the unmodified corpus, mirroring the draft's requirement that a Prologue be
-included before its examples are run.
+There used to be a `prologue_quad.pl`/`prologue_quad_runner.pl` pair here: an
+unmodified snapshot of the Prolog Prologue working draft's machine-readable
+quads (<https://www.complang.tuwien.ac.at/ulrich/iso-prolog/prologue_quad.pl>),
+plus a runner that loaded `library(prologue)` before including it. It was
+retired (see git history) once its coverage became strictly redundant with
+the *live* Prologue source the Neumerkel gate already fetches and checks on
+every `npm test` run -- the same reason the WG17 syntax matrix has no
+vendored snapshot of its own either (see
+[NEUMERKEL-LIVE.md](../conformance/NEUMERKEL-LIVE.md) and
+[conformance/README.md](../conformance/README.md)). Unlike `phrase_quad.pl`
+and `variable_names_quad.pl` below, the vendored Prologue corpus also
+included two open-ended STO/rational-tree generator quads
+(`member(X,X)`, `select(E,Xs,Xs)`) that made checking it offline
+disproportionately slow, with no coverage benefit over the live gate to
+justify the cost.

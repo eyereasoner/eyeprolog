@@ -10366,7 +10366,6 @@ and fast:
 ```sh
 npm run benchmark
 npm run benchmark -- --save .benchmarks/baseline.json
-node test/lips-benchmark.mjs
 ```
 
 The benchmark suite contains 21 representative workloads and stores their
@@ -10377,15 +10376,6 @@ execution primes parser, module, and JIT state; short workloads are then repeate
 with independent `run()` calls until a batch is roughly 400 ms long. After one
 warm-up batch, five measured batches are reported as milliseconds per workload
 execution. Naturally long workloads keep a batch size of one.
-
-The classic `examples/bench.pl` workload also has a dedicated LIPS harness.
-`node test/lips-benchmark.mjs` follows the 1984 Quintus method more closely than the
-generic runner: `dobench/1` and `dodummy/1` execute failure-driven loops inside
-Prolog, the dummy CPU time is subtracted, and the remaining time is converted
-using 496 procedure calls for one reversal of the 30-element list. Node's
-process CPU clock is used for the primary figure, with wall-clock LIPS printed
-as a cross-check. Because LIPS measures a deliberately small recursive kernel,
-it is useful for engine tuning but is not a complete application benchmark.
 
 The report shows the median, per-operation range, chosen batch size, saved
 baseline median, and the percentage change between the current median and baseline

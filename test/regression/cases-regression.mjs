@@ -2397,41 +2397,6 @@ c4 ?- call((!;1)).
       },
     },
     {
-      name: 'runQuads passes the complete vendored Prolog Prologue corpus',
-      run: () => {
-        const filename = path.join(testRoot, 'fixtures', 'prologue_quad_runner.pl');
-        const source = fs.readFileSync(filename, 'utf8');
-        const program = Program.parseSources([{
-          text: source,
-          filename,
-          baseDir: path.dirname(filename),
-        }]);
-        assertEqual(program.quads.length, 72, 'vendored quad total');
-        const maxIntegerQuads = program.quads.filter(({ query }) =>
-          termToString(query).includes('current_prolog_flag(max_integer, MI)'));
-        assertEqual(maxIntegerQuads.length, 4, 'max_integer quad count');
-
-        // The full 72-quad corpus, including its rational-tree/occurs-check
-        // STO examples (member(X,X) and select(E,Xs,Xs), both open-ended
-        // native-generator searches -- see the maxInferences accounting added
-        // to generatedLengthAllocationCheckpoint in src/solver.js) is bounded
-        // and takes on the order of several seconds, not the indefinite hang
-        // it used to depend on ambient heap pressure to avoid (see
-        // Solver#reclaimMemory in src/solver.js).
-        const result = publicApi.runQuads(program);
-        // The current upstream max_integer quads already accept EyeProlog's
-        // own bounded=false behavior (no max_integer value, so
-        // current_prolog_flag(max_integer, MI) simply fails); a stale, since
-        // superseded vendored snapshot once needed a documented divergence
-        // for this (see git history), but the current upstream corpus needs
-        // none: the whole vendored corpus passes outright.
-        assertEqual(result.total, 72, 'quad total');
-        assertEqual(result.passed, 72, 'quad passed');
-        assertEqual(result.failed, 0, 'quad failed');
-        assertEqual(result.stdout, 'quads: 72 run, 72 passed, 0 failed.\n', 'quad report');
-      },
-    },
-    {
       name: 'CLI passes the complete authoritative length quad corpus',
       run: () => {
         const filename = path.join(testRoot, 'fixtures', 'length_quad.pl');
