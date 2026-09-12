@@ -100,7 +100,9 @@ function genCompound() {
   return `${pick(FUNCTOR_POOL)}(${args.join(', ')})`;
 }
 
-function genList(depth = 1) { return `[${Array.from({ length: int(0, 6) }, () => genTerm(depth)).join(', ')}]`; }
+function genList(depth = 1, minLen = 0, maxLen = 6) {
+  return `[${Array.from({ length: int(minLen, maxLen) }, () => genTerm(depth)).join(', ')}]`;
+}
 function genWord() { return pick(WORD_POOL); }
 function genSmallInt() { return int(0, 1000); }
 function genNonZeroInt() { const n = int(1, 1000); return rng() < 0.5 ? -n : n; }
@@ -114,8 +116,8 @@ function genNonZeroInt() { const n = int(1, 1000); return rng() < 0.5 ? -n : n; 
 // succeeding, and a ground goal that succeeds is echoed back in full,
 // untaken branches included -- so a literal marker atom anywhere in the
 // goal text can appear in that echo without ever having been reached.
-function solve(goal, { use = [] } = {}) {
-  const prelude = use.map((lib) => `:- use_module(library(${lib})).\n`).join('');
+function solve(goal, { use = [], preamble = '' } = {}) {
+  const prelude = use.map((lib) => `:- use_module(library(${lib})).\n`).join('') + preamble;
   const result = run(prelude, { goal });
   if (result.stats.completed_goal_lists < 1) {
     throw new Error(`property goal did not hold (failed or errored): ${goal}`);
@@ -288,6 +290,66 @@ export function runProperties(reporter = new TestReporter()) {
     return `findall(X, between(${lo}, ${hi}, X), L), length(L, N), N =:= ${hi} - ${lo} + 1, ` +
       `nth0(0, L, F), F =:= ${lo}, last(L, La), La =:= ${hi}`;
   });
+
+  // --- Broader coverage: control constructs, exceptions, the database, and
+  // grammar rules, not just term/list/arithmetic/string library predicates.
+
+  property(reporter, 'catch/3 delivers the thrown ball unchanged', 15, () =>
+    `B = (${genTerm()}), catch(throw(B), Ball, true), Ball == B`);
+
+  property(reporter, 'findall/3 over member/2 reproduces the list exactly, in order, duplicates included', 15, () => {
+    const list = genList();
+    return `L = ${list}, findall(X, member(X, L), L2), L2 == L`;
+  });
+
+  property(reporter, 'findall/3 leaves its template variable unbound when nothing matches', 6, () =>
+    `findall(X, (member(_, ${genList()}), fail), Bag), Bag == [], var(X)`);
+
+  property(reporter, 'double negation reports success without ever binding anything', 20, () => {
+    const list = genList(1);
+    // Half the time probe an element genuinely in the list; half the time
+    // probe one that (almost certainly) is not, so both the success and
+    // the failure side of \+ \+ get exercised across the run.
+    const probe = rng() < 0.5 ? pick(FUNCTOR_POOL) : genTerm(1);
+    return `L = ${list}, X = (${probe}), ` +
+      `( member(X, L) -> \\+ \\+ member(X, L) ; \\+ member(X, L) )`;
+  });
+
+  property(reporter, 'calling an undefined predicate names its own exact indicator', 15, () => {
+    const name = `zz_property_undefined_${int(0, 1000000)}`;
+    const arity = int(0, 4);
+    const args = Array.from({ length: arity }, () => '_').join(', ');
+    const call = arity === 0 ? name : `${name}(${args})`;
+    return `catch(${call}, error(existence_error(procedure, PI), _), true), PI == ${name}/${arity}`;
+  });
+
+  property(reporter, 'assertz/1 then retract/1 leaves no trace behind', 15, () => {
+    const term = genTerm();
+    return `assertz(zz_property_fact(${term})), zz_property_fact(X), X == (${term}), ` +
+      `retract(zz_property_fact(${term})), \\+ zz_property_fact(_)`;
+  });
+
+  property(reporter, 'a DCG list rule accepts exactly the list it was built from', 15, () => {
+    const list = genList(1);
+    return `L = ${list}, phrase(zz_property_seq(L), L)`;
+  }, { preamble: 'zz_property_seq([]) --> [].\nzz_property_seq([H|T]) --> [H], zz_property_seq(T).\n' });
+
+  property(reporter, 'bagof/3 over member/2 agrees with findall/3 on a non-empty list', 15, () => {
+    const list = genList(1, 1, 6); // at least one element: bagof/3 has no "no solutions" answer
+    return `L = ${list}, bagof(X, member(X, L), Bag), Bag == L`;
+  });
+
+  property(reporter, 'numbervars/3 assigns exactly as many numbers as distinct variables', 15, () => {
+    const arity = int(2, 5);
+    const slots = int(1, arity);
+    const args = Array.from({ length: arity }, () => `V${int(1, slots)}`);
+    return `T = f(${args.join(', ')}), numbervars(T, 0, End), End =:= ${slots}`;
+  });
+
+  property(reporter, 'split/3 and join/3 (library(strings)) invert each other', 12, () => {
+    const words = Array.from({ length: int(2, 5) }, () => genWord());
+    return `split('${words.join(',')}', ',', Parts), join(Parts, ',', S), S == '${words.join(',')}'`;
+  }, { use: ['strings'] });
 
   reporter.sectionTotal('property-based round-trip checks');
 }
