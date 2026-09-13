@@ -1195,6 +1195,26 @@ why(
         assertEqual(malformedAtom.failed, 1, 'non-decimal atom is rejected');
         assertIncludes(malformedAtom.stdout, 'MALFORMED', 'non-decimal atom diagnostic');
 
+        // Issue #113: a literal number on the left of `~~` names no query
+        // variable at all -- it is a free-standing "this value approximately
+        // denotes this decimal interval" claim, and there is no deeper reason
+        // to require a variable there. It must be accepted (and actually
+        // checked against the interval, not accepted unconditionally), the
+        // same as the query-variable form already was.
+        const literalOk = publicApi.runQuads('?- true.\n   0.04 ~~ \'0.0\'.\n');
+        assertEqual(literalOk.total, 1, 'literal approximation total');
+        assertEqual(literalOk.passed, 1, 'literal approximation passed');
+        assertEqual(literalOk.stdout, 'quads: 1 run, 1 passed, 0 failed.\n', 'literal approximation report');
+
+        const literalOutOfRange = publicApi.runQuads('?- true.\n   0.04 ~~ \'5.0\'.\n');
+        assertEqual(literalOutOfRange.failed, 1, 'literal outside the claimed interval fails, not malformed');
+        assertIncludes(literalOutOfRange.stdout, 'quads: FAILED', 'literal out-of-range diagnostic');
+        assertNotIncludes(literalOutOfRange.stdout, 'MALFORMED', 'literal out-of-range is not malformed');
+
+        const literalNonNumberLhs = publicApi.runQuads('?- true.\n   foo ~~ \'0.0\'.\n');
+        assertEqual(literalNonNumberLhs.failed, 1, 'a non-variable, non-number left side remains malformed');
+        assertIncludes(literalNonNumberLhs.stdout, 'MALFORMED', 'non-number left side diagnostic');
+
         const duplicate = publicApi.runQuads(`?- V is 14.2.
    V = 14.2, V ~~ '14.2000'.
 `);

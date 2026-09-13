@@ -322,6 +322,7 @@ function describeLeaf(term) {
   const leaf = {
     bindings: [],
     approximations: [],
+    literalApproximations: [],
     unexpected: false,
     more: false,
     sto: false,
@@ -360,8 +361,21 @@ function describeLeaf(term) {
       continue;
     }
     if (item.type === COMPOUND && item.name === '~~' && item.arity === 2) {
-      if (item.args[0].type !== VAR || approximateDecimalInterval(item.args[1]) == null) leaf.malformed ??= item;
-      else leaf.approximations.push(item);
+      // The left-hand side names either one of the query's own variables
+      // (the usual case: compare what the query actually bound it to) or,
+      // just as legitimately, a literal number written directly in the
+      // answer description -- a free-standing "this value approximately
+      // denotes this decimal interval" claim with no query variable
+      // involved at all (issue #113: `0.04 ~~ '0.0'` was rejected as
+      // malformed purely for lacking a variable on the left, with no
+      // deeper reason for that restriction). Both are validated the same
+      // way one level up, in matchLeaf/substitutionMatches: syntactic
+      // acceptance here does not yet mean the value actually falls in the
+      // stated interval.
+      const lhsIsVarOrNumber = item.args[0].type === VAR || item.args[0].type === NUMBER;
+      if (!lhsIsVarOrNumber || approximateDecimalInterval(item.args[1]) == null) leaf.malformed ??= item;
+      else if (item.args[0].type === VAR) leaf.approximations.push(item);
+      else leaf.literalApproximations.push(item);
       continue;
     }
     if (item.type === COMPOUND && item.name === 'inputs' && item.arity === 1) {
@@ -385,6 +399,7 @@ function describeLeaf(term) {
     else leaf.malformed ??= item;
   }
   leaf.hasExpectation = leaf.bindings.length > 0 || leaf.approximations.length > 0 ||
+    leaf.literalApproximations.length > 0 ||
     leaf.truth || leaf.false || leaf.maybe || leaf.loops || leaf.waits ||
     leaf.error != null || leaf.output != null;
   if (!leaf.hasExpectation && !leaf.more && !leaf.sto && leaf.unsupported == null) leaf.malformed ??= term;
@@ -528,6 +543,10 @@ function matchLeaf(program, query, leaf, actual, position) {
   // its absence requires an unconstrained answer. In either case the stated
   // substitutions remain exact and are checked below.
   if (leaf.maybe !== hasPendingConstraints(solution.env)) return false;
+  // Literal `~~` claims (issue #113) name no query variable at all, so
+  // they carry no per-position runtime state to look up; they either hold
+  // or they don't, the same at every position.
+  if (leaf.literalApproximations.some((item) => !approximatelyMatches(item.args[0], item.args[1]))) return false;
   return substitutionMatches(query, leaf.bindings, leaf.approximations, solution.env);
 }
 
