@@ -8,8 +8,10 @@ not extracted.
 Regenerate them from the repository root with:
 
 ```sh
-npm run generate
+node tools/extract-book-examples.mjs
 ```
+
+`npm version` regenerates this directory automatically as part of its release checks.
 
 ## Chapter 1: A program is a little theory
 

@@ -126,12 +126,18 @@ export function runNeumerkelHarnessTests(reporter = new TestReporter()) {
     const pkg = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
     const scripts = pkg.scripts ?? {};
     const releaseSteps = String(scripts.preversion ?? '').split(' && ');
-    if (releaseSteps[0] !== 'npm test' || releaseSteps[1] !== 'node test/run-neumerkel.mjs --cached --update-report') {
+    if (releaseSteps[0] !== 'node tools/generate-library-autoload-index.mjs' ||
+        releaseSteps[1] !== 'node tools/generate-predicate-reference.mjs' ||
+        releaseSteps[2] !== 'node tools/extract-book-examples.mjs') {
+      throw new Error('preversion must regenerate the library index, predicate reference, and book examples first');
+    }
+    if (releaseSteps[3] !== 'npm test' || releaseSteps[4] !== 'node test/run-neumerkel.mjs --cached --update-report') {
       throw new Error('preversion must synchronize the tracked report from the successful npm test snapshot');
     }
-    if (releaseSteps[2] !== 'node test/run-conformance-report.mjs conformance-report.md' ||
-        releaseSteps[3] !== 'git add test/conformance/NEUMERKEL-LATEST.md conformance-report.md' || releaseSteps.length !== 4) {
-      throw new Error('preversion must generate and stage both reports without another fetch');
+    if (releaseSteps[5] !== 'node test/run-conformance-report.mjs conformance-report.md' ||
+        releaseSteps[6] !== 'git add src/library-autoload-index.js the-art-of-eyeprolog.md examples/book ' +
+          'test/conformance/NEUMERKEL-LATEST.md conformance-report.md' || releaseSteps.length !== 7) {
+      throw new Error('preversion must generate and stage the library index, book files, and both reports without another fetch');
     }
   });
 

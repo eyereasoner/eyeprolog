@@ -3,7 +3,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "version": "1.5.95",
+  "version": "1.5.96",
   "description": "EyeProlog turns facts and rules into answers and proofs.",
   "type": "module",
   "main": "./index.js",
@@ -46,8 +46,7 @@
   },
   "scripts": {
     "test": "node test/run-all.mjs",
-    "generate": "node tools/generate-library-autoload-index.mjs && node tools/generate-predicate-reference.mjs && node tools/extract-book-examples.mjs",
-    "preversion": "npm test && node test/run-neumerkel.mjs --cached --update-report && node test/run-conformance-report.mjs conformance-report.md && git add test/conformance/NEUMERKEL-LATEST.md conformance-report.md",
+    "preversion": "node tools/generate-library-autoload-index.mjs && node tools/generate-predicate-reference.mjs && node tools/extract-book-examples.mjs && npm test && node test/run-neumerkel.mjs --cached --update-report && node test/run-conformance-report.mjs conformance-report.md && git add src/library-autoload-index.js the-art-of-eyeprolog.md examples/book test/conformance/NEUMERKEL-LATEST.md conformance-report.md",
     "postversion": "git push origin HEAD --follow-tags"
   }
 }
