@@ -1,0 +1,1 @@
+answer([ann, pat], [jim]).

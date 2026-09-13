@@ -9934,7 +9934,7 @@ Review questions:
 </figure>
 
 The [examples directory](https://github.com/eyereasoner/eyeprolog/tree/main/examples/) is the book's executable companion. The
-top-level directory contains **229 self-contained runnable programs**. Every
+top-level directory contains **234 self-contained runnable programs**. Every
 source program has an exact answer file under
 [examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **61 selected programs** have a checked
 explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/). The thematic lists link every top-level program and open the program
@@ -10346,7 +10346,7 @@ hand.
 
 #### Running and extending the corpus
 
-Run all 229 normal answer goldens and the 61 selected proof goldens with:
+Run all 234 normal answer goldens and the 61 selected proof goldens with:
 
 ```sh
 node test/run-examples.mjs
@@ -10418,7 +10418,7 @@ accept texts outside the strict grammar, but it may not reinterpret an accepted
 standard case.
 
 The file-based conformance corpus contains 905 cases, including 479 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
-Separate exact-output suites check 229 normal examples and 61 proof examples; all executable chapter programs are parsed and their declared goals are executed. The nine-case
+Separate exact-output suites check 234 normal examples and 61 proof examples; all executable chapter programs are parsed and their declared goals are executed. The nine-case
 playground contract suite imports the production worker, sends real reasoning
 requests through its message protocol, and crawls the served module graph for
 missing assets, bad MIME types, and static Node-only imports. `conformance-report.md` inventories the file-based conformance corpus and links to the live Neumerkel evidence, which includes the current WG17 syntax result.
