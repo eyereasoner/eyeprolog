@@ -674,10 +674,21 @@ function* termVariablesBuiltin({ goal, env }) {
 }
 
 function validPredicateIndicator(term) {
-  return term.type === COMPOUND && term.name === '/' && term.arity === 2 &&
-    (term.args[0].type === VAR || term.args[0].type === ATOM) &&
-    (term.args[1].type === VAR ||
-      (term.args[1].type === NUMBER && isDecimalInteger(term.args[1].name) && BigInt(term.args[1].name) >= 0n));
+  if (term.type !== COMPOUND || term.name !== '/' || term.arity !== 2) return false;
+  const [name, arity] = term.args;
+  // Name/Arity denotes a predicate indicator only when some instance of it
+  // could be one: Name an atom, Arity a non-negative integer. The same
+  // shared variable in both positions (current_predicate(X/X), issue #115)
+  // looks valid argument-by-argument -- each position individually accepts
+  // an unbound variable -- but no instantiation can satisfy both at once,
+  // since binding that one variable to an atom makes Arity an atom too, not
+  // an integer. stc#79 treats this as no valid instance existing at all,
+  // the same as a bare atom argument, so it must raise
+  // type_error(predicate_indicator, _) rather than just finding no matches.
+  if (name.type === VAR && arity.type === VAR && name.name === arity.name) return false;
+  return (name.type === VAR || name.type === ATOM) &&
+    (arity.type === VAR ||
+      (arity.type === NUMBER && isDecimalInteger(arity.name) && BigInt(arity.name) >= 0n));
 }
 
 const currentPredicateBuiltin = pendingBuiltin(currentPredicateSolutions);

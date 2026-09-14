@@ -1541,6 +1541,11 @@ export function runIsoStrict(reporter = new TestReporter()) {
       ['clause(X,_)', 'instantiation_error', 'clause/2 variable head'],
       ['clause(4,_)', 'type_error(callable)', 'clause/2 head type'],
       ['current_predicate(4)', 'type_error(predicate_indicator)', 'current_predicate/1 indicator type'],
+      // The same variable filling both Name and Arity (issue #115, stc#79)
+      // looks valid position-by-position -- each alone accepts an unbound
+      // variable -- but no instantiation can satisfy both at once, since
+      // binding it to an atom makes Arity an atom too, not an integer.
+      ['current_predicate(X/X)', 'type_error(predicate_indicator)', 'current_predicate/1 aliased name/arity variable'],
       ['asserta(_)', 'instantiation_error', 'asserta/1 variable head'],
       ['asserta(4)', 'type_error(callable)', 'asserta/1 head type'],
       ['asserta((p:-4))', 'type_error(callable)', 'asserta/1 body conversion'],
