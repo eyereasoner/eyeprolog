@@ -5853,5 +5853,44 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
         assertIncludes(result.stderr, 'error(permission_error(modify, static_procedure), /(false, 0))', 'stderr');
       },
     },
+    {
+      name: 'a minus name token merged with a numeric token canonicalizes the same way everywhere, not just when adjacent and unquoted (issue #114)',
+      run: () => {
+        // An unquoted `-` immediately touching a digit is merged into a single
+        // NUMBER token by the scanner itself (6.3.1.2), which already builds
+        // its text through the same integer/float construction as every other
+        // numeric literal -- so -0 there was always plain 0. Every other way
+        // of writing the same negative-number production (layout between the
+        // tokens, or a quoted '-') used to reach a second, separate code path
+        // that pasted the texts together instead ("-" + "0"), keeping a
+        // literal "-0"/"-0.0" spelling that compared and typed as zero but
+        // did not print as one. Both forms must canonicalize identically.
+        for (const spelling of ["'-'0", "'-' 0", '- 0']) {
+          const result = run('', { goal: `N = ${spelling}, write_canonical(N), nl` });
+          assertEqual(result.stats.completed_goal_lists, 1, `${spelling}: goal succeeds`);
+          assertEqual(result.stdout, '0\n0 = 0, write_canonical(0), nl.\n', `${spelling}: N prints as plain 0, not -0`);
+        }
+        // The same merge applies to floats, where EyeProlog normalizes -0.0
+        // to 0.0 everywhere (term.js numberTextFromDouble) -- so the quoted
+        // and layout-separated spellings must collapse the sign exactly like
+        // the plain adjacent `-0.0` already does, not retain it.
+        for (const spelling of ["'-'0.0", "'-' 0.0", '- 0.0']) {
+          assertEqual(
+            run('', { goal: `N = ${spelling}, write_canonical(N), nl` }).stdout,
+            '0.0\n0.0 = 0.0, write_canonical(0.0), nl.\n',
+            `${spelling}: float negative zero collapses to 0.0`,
+          );
+        }
+        // A genuine negative number must still merge and negate correctly
+        // through every one of these spellings, quoted or not.
+        for (const spelling of ["'-'1", "'-' 1", '- 1']) {
+          assertEqual(
+            run('', { goal: `N = ${spelling}, integer(N), N == -1` }).stats.completed_goal_lists,
+            1,
+            `${spelling}: still denotes the integer -1`,
+          );
+        }
+      },
+    },
   ];
 }

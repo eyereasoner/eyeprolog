@@ -927,7 +927,20 @@ class Parser {
     // A negative number consists of a minus name token followed by a numeric
     // token, with layout permitted between them. It is lexical number syntax,
     // not an application of the current prefix `-` operator, and therefore
-    // remains valid even after op(0, fy, -).
+    // remains valid even after op(0, fy, -); this also applies when the minus
+    // is a quoted '-' rather than the bare graphic char, since quoting still
+    // denotes the same name token (WG17 #57/#58 require integer('-'1) and
+    // integer('-' 1) to succeed exactly like integer(-1)). An unquoted minus
+    // immediately touching a digit is instead merged into one NUMBER token by
+    // the scanner itself, before parsing ever reaches here, through the same
+    // integer/float construction every other numeric literal goes through --
+    // so -0 there already canonicalizes to plain 0. This branch used to paste
+    // the raw texts together instead ("-" + value), which kept a literal
+    // "-0"/"-0.0" spelling that compared and typed as zero but did not print
+    // as one: exactly the kind of divergent, duplicated number-building logic
+    // issue #114 flagged. Reusing parseNumberTokenText -- the single shared
+    // number-literal constructor -- keeps this merge canonicalizing the same
+    // way as every other numeric literal instead of re-deriving it here.
     if (operatorName === '-' && this.token.type === TOK.ATOM) {
       const state = {
         pos: this.pos,
@@ -939,7 +952,7 @@ class Parser {
       if (this.token.type === TOK.NUMBER && !this.token.text.startsWith('-')) {
         const value = this.token.text;
         this.advance();
-        return numberTerm(`-${value}`);
+        return parseNumberTokenText(`-${value}`);
       }
       this.pos = state.pos;
       this.line = state.line;

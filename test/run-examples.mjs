@@ -100,6 +100,7 @@ export const proofExamples = [
   'job-shop-scheduling.pl',
   'dcg-command-parser.pl',
   'knapsack-optimization.pl',
+  'knights-tour-warnsdorff.pl',
   'declarative-fault-localization.pl',
   'iso-integer-arithmetic.pl',
   'workplace-compliance.pl',
