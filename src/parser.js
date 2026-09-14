@@ -203,6 +203,21 @@ const CLPZ_OPERATOR_DEFINITIONS = [
   [450, 'xfx', '..'],
 ];
 
+// Names of bundled library(Name) modules whose own operators are pre-seeded
+// into the live parser's operator table the moment `:- use_module(library(
+// Name))` is parsed (applyImportedLibraryOperators below), rather than only
+// once that module's own `:- op(...)` directives are themselves parsed. A
+// library's clauses are parsed and processed in one pass (see
+// loadSourceIntoBuilder in program.js), so without this a file that both
+// imports one of these libraries and uses its custom operator syntax later
+// in the very same source text would fail to parse. Any bundled library
+// whose own source declares `:- op(...)` must be listed here, or it cannot
+// safely be served from the prepared-clause cache in program.js: a cache
+// hit replays already-parsed clause objects directly and never re-runs a
+// live Parser over that library's text, so a cached op/3 directive from an
+// unlisted library would never reach a live parser's operator table.
+export const PRESEEDED_LIBRARY_OPERATOR_NAMES = new Set(['clpz', 'atts', 'tabling', 'debug']);
+
 function operatorStrength(priority) {
   return 1201 - priority;
 }
@@ -421,6 +436,7 @@ class Parser {
     const designation = directive.args[0];
     if (designation?.type !== COMPOUND || designation.name !== 'library' || designation.arity !== 1 ||
         designation.args[0]?.type !== ATOM) return;
+    if (!PRESEEDED_LIBRARY_OPERATOR_NAMES.has(designation.args[0].name)) return;
     if (designation.args[0].name === 'clpz') {
       for (const [priority, specifier, name] of CLPZ_OPERATOR_DEFINITIONS) {
         this.defineOperator(priority, specifier, name);

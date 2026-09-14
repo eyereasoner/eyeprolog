@@ -6,6 +6,7 @@ import {
   ISO_OPERATOR_DEFINITIONS,
   PART2_OPERATOR_DEFINITIONS,
   PART3_OPERATOR_DEFINITIONS,
+  PRESEEDED_LIBRARY_OPERATOR_NAMES,
   QUAD_OPERATOR_DEFINITIONS,
   createParserOperatorState,
   parseClauses,
@@ -108,9 +109,43 @@ function hasDirectCutTailRecursion(group) {
   return sawRecursive;
 }
 
+// library(clpz) alone pulls in about a dozen further bundled libraries
+// (assoc, pairs, between, lists, atts, iso_ext, dcgs, terms, error, si,
+// freeze, arithmetic, debug, format) via its own use_module/1-2 directives,
+// each recursively loaded and prepared (parsed, DCG- and goal-expanded,
+// dependency-analyzed) from scratch on every single program that needs
+// clpz. Matching against every bundled filename, not just clpz.pl's own,
+// lets each of those dependencies -- and every other bundled library used
+// this way -- be prepared once per process and reused, the same as clpz.pl
+// itself already was.
+//
+// A cache hit replays already-prepared clause objects directly (see below)
+// and never re-runs a live Parser over that library's own source text. A
+// library whose own source declares `:- op(...)` relies on exactly that
+// live parse to install its operators into the importing file's operator
+// table before the rest of that file is parsed (loadSourceIntoBuilder
+// processes one whole source's clauses only after fully parsing it), so
+// serving such a library from this cache would silently stop a sibling
+// source term, later in the very same file as its use_module/1 directive,
+// from parsing with that library's operator syntax. Only a library the
+// parser separately pre-seeds regardless of caching
+// (PRESEEDED_LIBRARY_OPERATOR_NAMES) is safe to include despite declaring
+// its own operators.
+const OWN_OPERATOR_DIRECTIVE = /:-(?:\s|\/\*[\s\S]*?\*\/)*op\s*\(/;
+const bundledLibraryFilenames = new Set(
+  Array.from(standardLibrarySources.entries())
+    .filter(([name, entry]) => PRESEEDED_LIBRARY_OPERATOR_NAMES.has(name) || !OWN_OPERATOR_DIRECTIVE.test(entry.source))
+    .map(([, entry]) => entry.filename),
+);
+
 function preparedBundledLibraryCacheKey(program, options) {
   const filename = String(options.filename ?? '');
-  if (filename !== standardLibrarySources.get('clpz')?.filename) return null;
+  if (!bundledLibraryFilenames.has(filename)) return null;
+  // Strict ISO Part 1 skips the normal-profile clause preparation
+  // (expandClauseGoals, normalizeQualifiedClauseHead, DCG expansion) that
+  // this cache stores the result of, so a strict-mode load must never be
+  // served from -- or poison -- a normal-mode cache entry for the same file.
+  if (program.strictIso) return null;
   // A user hook deliberately defined before use_module/1 is allowed to
   // transform bundled source. Such a program needs its own ordinary expansion.
   if (program.groups.has(modulePredicateKey('user', 'term_expansion', 2)) ||
