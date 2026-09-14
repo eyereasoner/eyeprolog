@@ -5892,5 +5892,60 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
         }
       },
     },
+    {
+      // https://github.com/eyereasoner/eyeprolog/issues/114#issuecomment-5663598188
+      name: 'the fast compact-clause loader canonicalizes numeric literals the same way the general parser does (issue #114 follow-up)',
+      run: () => {
+        // parseClausesFastNoSource (src/parser.js) has its own, separate
+        // number-token handling for facts and rules that match its compact
+        // two-argument shape -- exactly the kind of second code path that
+        // reintroduces the #114 bug class. It used to build every numeric
+        // argument straight from the raw regex-matched text, so a fact like
+        // bar(-0, 1) or bar(007, 1) kept that raw spelling forever instead of
+        // canonicalizing like every other numeric literal in the language.
+        for (const [program, goal, expected] of [
+          ["bar(-0, 1).\n", 'bar(A, B), write_canonical(A), nl', '0'],
+          ["bar(-0.0, 1).\n", 'bar(A, B), write_canonical(A), nl', '0.0'],
+          ["bar(007, 1).\n", 'bar(A, B), write_canonical(A), nl', '7'],
+          ['point(1, -0).\n', 'point(A, B), write_canonical(B), nl', '0'],
+        ]) {
+          const stdout = run(program, { goal }).stdout;
+          assertEqual(stdout.split('\n')[0], expected, `${program.trim()}: ${goal}`);
+        }
+        // The fast loader also deliberately retains a numeric literal's exact
+        // lexical spelling otherwise (test/conformance/cases/arithmetic/
+        // 024_numeric_literal_readback.pl): the zero-canonicalization above
+        // must not turn into a general reformatting pass that rewrites a
+        // non-zero float's notation.
+        assertEqual(
+          run('raw(a, 6.02e23).\n', { goal: 'raw(_, B), write_canonical(B), nl' }).stdout.split('\n')[0],
+          '6.02e23',
+          'non-zero exponent notation is preserved, not reformatted to 6.02e+23',
+        );
+        assertEqual(
+          run('raw(a, -1.0e-3).\n', { goal: 'raw(_, B), write_canonical(B), nl' }).stdout.split('\n')[0],
+          '-1.0e-3',
+          'non-zero negative exponent notation is preserved, not reformatted to -0.001',
+        );
+      },
+    },
+    {
+      // https://github.com/eyereasoner/eyeprolog/issues/114#issuecomment-5663598188
+      name: 'a genuine IEEE-754 negative zero produced by arithmetic (not just parsed from text) still prints as 0.0',
+      run: () => {
+        // Every fix above canonicalizes -0.0 where it is spelled out in
+        // source text. EyeProlog's floats are ordinary JS doubles, though,
+        // and JS arithmetic itself produces a real, distinct -0.0 bit
+        // pattern for operations such as a negative number times zero --
+        // this is genuine IEEE-754 negative zero, not a text-parsing
+        // artifact, and 13211-1 has nothing to say about it either way. It
+        // must still come out normalized to plain 0.0 on the way to a term,
+        // the same as every syntactic spelling of negative zero does.
+        for (const goal of ['X is -1.0 * 0.0', 'X is 0.0 * -1.0', 'X is -(1.0 - 1.0)']) {
+          const stdout = run('', { goal: `${goal}, write_canonical(X), nl` }).stdout;
+          assertEqual(stdout.split('\n')[0], '0.0', `${goal}: internal -0.0 normalizes to 0.0`);
+        }
+      },
+    },
   ];
 }

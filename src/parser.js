@@ -1428,6 +1428,28 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
     return value;
   };
 
+  // SIMPLE_NUMBER-matched text is already lexically valid Prolog number
+  // syntax, and this fast path deliberately leaves a numeric literal's
+  // spelling otherwise untouched (test/conformance/cases/arithmetic/
+  // 024_numeric_literal_readback.pl: decimal and exponent literals retain
+  // their lexical form here, so e.g. 6.02e23 must not become 6.02e+23).
+  // Two things still cannot be left as raw matched text, though: an integer
+  // is never left non-canonical anywhere else in the language (a leading
+  // zero, or the "-0" from issue #114, must collapse the same way the
+  // scanner's own adjacent-minus BigInt construction already does), and a
+  // float whose value is exactly zero must never print with a stray minus --
+  // this implementation deliberately never produces -0.0 (term.js
+  // numberTextFromDouble) -- without reformatting any non-zero float.
+  const canonicalFastNumberText = (text) => {
+    if (text.includes('.') || text.includes('e') || text.includes('E')) {
+      return (text.charCodeAt(0) === 45 && Number(text) === 0) ? text.slice(1) : text;
+    }
+    const first = text.charCodeAt(0);
+    if (first !== 45 && (text.length === 1 || first !== 48)) return text;
+    return BigInt(text).toString();
+  };
+  const fastNumberTerm = (text) => numberTerm(canonicalFastNumberText(text));
+
   const isFastScalarToken = (text) => SIMPLE_VARIABLE.test(text) || SIMPLE_ATOM.test(text) || GRAPHIC_ATOM.test(text) || SIMPLE_NUMBER.test(text);
   const scalarOrVariableFast = (text) => {
     if (!text || !isFastScalarToken(text)) throw new Error('bad simple term');
@@ -1440,7 +1462,7 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
       variableCache.set(text, value);
       return value;
     }
-    if ((first === 45 || isDigitCode(first)) && SIMPLE_NUMBER.test(text)) return cached(numberCache, text, numberTerm);
+    if ((first === 45 || isDigitCode(first)) && SIMPLE_NUMBER.test(text)) return cached(numberCache, text, fastNumberTerm);
     return atom(text);
   };
 
@@ -1506,7 +1528,10 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
       return term;
     }
     if (kind === 'atom') return atom(value);
-    if (simpleNumberInRange(text, start, end)) return cached(numberCache, value, numberTerm);
+    // See canonicalFastNumberText above: "-0" and "007" must still come out
+    // the same as everywhere else in the language (issue #114), without
+    // reformatting a non-zero float's retained lexical spelling.
+    if (simpleNumberInRange(text, start, end)) return cached(numberCache, value, fastNumberTerm);
     return null;
   };
 
@@ -1522,6 +1547,12 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
     if (type == null) return false;
     let name = text.slice(start, end);
     if (type === 'var' && name === '_') name = `__anon${anonymous++}`;
+    // This range becomes a CompactBinaryClause argument, materialized lazily
+    // as numberTerm(name) (program-indexing.js) and used as-is for indexing.
+    // Canonicalize the stored text up front for the same reason as the two
+    // callers above -- otherwise a fact such as bar(-0, 1) or bar(007, 1)
+    // keeps its raw, non-canonical spelling forever (issue #114).
+    if (type === 'number') name = canonicalFastNumberText(name);
     if (slot === 0) {
       out.arg0Type = type;
       out.arg0Name = name;
