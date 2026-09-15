@@ -5,14 +5,19 @@
 % distinctness, and delayed diagonal constraints describe the puzzle before
 % labeling searches the remaining finite alternatives.
 %
-% The checked eight-queens goal verifies a known witness with the same relational
-% model. A smaller four-queens query exercises actual search and multiple-solution
-% enumeration without making the default example suite a CLP(Z) benchmark.
+% queens8_witness/1 does NOT search: it unifies Rows with a known witness
+% FIRST and only then calls queens/2, so every position is already ground
+% before labeling/2 ever runs. It is a fast constraint check against a
+% known-good answer, not a demonstration of solving the puzzle -- the name
+% says so, so it cannot be mistaken for one. A smaller four-queens query
+% below is the routine, honestly-searched default: it exercises actual
+% search and multiple-solution enumeration, small enough to stay fast
+% without making the default example suite a CLP(Z) benchmark.
 
-%% goal: queens8_solution(X0)
+%% goal: queens8_witness(X0)
 %% goal: queens(4, X0)
 
-queens8_solution(Rows) :-
+queens8_witness(Rows) :-
   Rows = [1, 5, 8, 6, 3, 7, 2, 4],
   queens(8, Rows).
 

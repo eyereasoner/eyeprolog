@@ -2,13 +2,43 @@
 
 % AI Escargot is a well-known difficult 9-by-9 Sudoku. sudoku9/1 is the
 % declarative search relation: every row, column, and 3-by-3 block is
-% all-distinct and first-fail labeling searches the remaining cells. The default
-% golden goal verifies the known full-size solution so routine tests exercise
-% the complete model without turning the example suite into a search benchmark.
+% all-distinct and first-fail labeling searches the remaining cells.
+%
+% sudoku9_witness/1 below does NOT search. It unifies Rows with the
+% well-known published AI Escargot answer FIRST and only then calls
+% sudoku9/1, so every cell is already ground before labeling/2 ever runs --
+% it is a fast constraint check on a known-good grid, not a demonstration of
+% solving the puzzle, and it must never be read as one. Actually searching
+% sudoku9/1 from the blanks with the labeling strategy below does not finish
+% within minutes, because library(clpz)'s all_distinct/1 propagation is not
+% yet strong enough for a puzzle this constrained at 9-by-9 (tracked
+% separately as a propagation-strength issue). Until that is improved,
+% sudoku4_solution/1 is the routine,
+% honestly-searched default: a 4-by-4 "Shidoku" (2-by-2 blocks, digits 1-4)
+% built from the identical relational model, actually solved from its
+% blanks by the same labeling call, so the example suite still exercises
+% real search on every run. Readers who want to watch the real, currently
+% very slow 9-by-9 search can still call sudoku9(Rows) directly with an
+% unbound Rows.
 
-%% goal: sudoku9_solution(X0)
+%% goal: sudoku4_solution(X0)
+%% goal: sudoku9_witness(X0)
 
-sudoku9_solution(Rows) :-
+sudoku4_solution(Rows) :-
+  Rows = [
+    [_, _, 3, _],
+    [_, 4, _, 2],
+    [2, 1, _, _],
+    [_, _, 2, _]
+  ],
+  sudoku4_rows(Rows),
+  sudoku4_transpose(Rows, Columns),
+  sudoku4_rows_distinct(Columns),
+  sudoku4_blocks(Rows),
+  sudoku4_flatten(Rows, Cells),
+  labeling([ff], Cells).
+
+sudoku9_witness(Rows) :-
   sudoku9_known_solution(Rows),
   sudoku9(Rows).
 
@@ -80,3 +110,45 @@ sudoku9_flatten([Row|Rows], Cells) :-
 
 sudoku9_append([], Ys, Ys).
 sudoku9_append([X|Xs], Ys, [X|Zs]) :- sudoku9_append(Xs, Ys, Zs).
+
+% sudoku4_*/N below mirror the sudoku9_*/N relations at 4-by-4 scale (2-by-2
+% blocks instead of 3-by-3), so sudoku4_solution/1 exercises the identical
+% relational model as sudoku9/1, just small enough to search instantly.
+
+sudoku4_rows([]).
+sudoku4_rows([Row|Rows]) :-
+  Row ins 1..4,
+  all_distinct(Row),
+  sudoku4_rows(Rows).
+
+sudoku4_rows_distinct([]).
+sudoku4_rows_distinct([Row|Rows]) :-
+  all_distinct(Row),
+  sudoku4_rows_distinct(Rows).
+
+sudoku4_transpose([[]|_], []).
+sudoku4_transpose(Rows, [Column|Columns]) :-
+  sudoku4_heads_tails(Rows, Column, Tails),
+  sudoku4_transpose(Tails, Columns).
+
+sudoku4_heads_tails([], [], []).
+sudoku4_heads_tails([[Head|Tail]|Rows], [Head|Heads], [Tail|Tails]) :-
+  sudoku4_heads_tails(Rows, Heads, Tails).
+
+sudoku4_blocks([]).
+sudoku4_blocks([A, B|Rows]) :-
+  sudoku4_block_row(A, B),
+  sudoku4_blocks(Rows).
+
+sudoku4_block_row([], []).
+sudoku4_block_row([A, B|As], [C, D|Bs]) :-
+  all_distinct([A, B, C, D]),
+  sudoku4_block_row(As, Bs).
+
+sudoku4_flatten([], []).
+sudoku4_flatten([Row|Rows], Cells) :-
+  sudoku4_append(Row, Rest, Cells),
+  sudoku4_flatten(Rows, Rest).
+
+sudoku4_append([], Ys, Ys).
+sudoku4_append([X|Xs], Ys, [X|Zs]) :- sudoku4_append(Xs, Ys, Zs).
