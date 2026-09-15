@@ -1541,12 +1541,6 @@ export function runIsoStrict(reporter = new TestReporter()) {
       ['clause(X,_)', 'instantiation_error', 'clause/2 variable head'],
       ['clause(4,_)', 'type_error(callable)', 'clause/2 head type'],
       ['current_predicate(4)', 'type_error(predicate_indicator)', 'current_predicate/1 indicator type'],
-      // The same variable filling both Name and Arity (issue #115, stc#79)
-      // looks valid position-by-position -- each alone accepts an unbound
-      // variable -- but no instantiation can satisfy both at once, since
-      // binding it to an atom makes Arity an atom too, not an integer.
-      ['current_predicate(X/X)', 'type_error(predicate_indicator)', 'current_predicate/1 aliased name/arity variable'],
-      ['X = Y, current_predicate(X/Y)', 'type_error(predicate_indicator)', 'current_predicate/1 previously unified name/arity variables'],
       ['asserta(_)', 'instantiation_error', 'asserta/1 variable head'],
       ['asserta(4)', 'type_error(callable)', 'asserta/1 head type'],
       ['asserta((p:-4))', 'type_error(callable)', 'asserta/1 body conversion'],
@@ -1597,6 +1591,26 @@ export function runIsoStrict(reporter = new TestReporter()) {
 
     const current = run('p(a).\nq.\n', { isoStrict: true, goal: 'current_predicate(p/1)' });
     equal(current.stats.completed_goal_lists, 1, 'current_predicate/1 finds a user procedure');
+
+    // The same variable filling both Name and Arity (issue #115, stc#79)
+    // looks valid position-by-position -- each alone accepts an unbound
+    // variable, and current_predicate/1 must support both fully unbound
+    // (current_predicate(X/Y), a generator) -- but no instantiation can
+    // satisfy both positions of one shared variable at once, since binding
+    // it to an atom makes Arity an atom too, not an integer. ISO does not
+    // special-case this for the structurally identical current_op/3
+    // (8.14.4.1): its candidate set is built by unifying a triple's integer
+    // priority and atom specifier against Priority and Op-specifier, so
+    // aliasing those two arguments the same way simply makes every
+    // candidate fail to unify and the set come up empty, and current_op/3's
+    // own Errors subclause (8.14.4.3) has no case for it. current_predicate
+    // /1 follows that precedent: it fails rather than raising an error.
+    for (const [goal, label] of [
+      ['current_predicate(X/X)', 'current_predicate/1 aliased name/arity variable fails'],
+      ['X = Y, current_predicate(X/Y)', 'current_predicate/1 previously unified name/arity variables fails'],
+    ]) {
+      equal(run('', { isoStrict: true, goal }).stats.completed_goal_lists, 0, label);
+    }
   });
 
   reporter.test('preserves 7.6.2 source-body conversion identity for clause/2 and retract/1', () => {

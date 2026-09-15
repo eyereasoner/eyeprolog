@@ -674,21 +674,26 @@ function* termVariablesBuiltin({ goal, env }) {
 }
 
 function validPredicateIndicator(term) {
-  if (term.type !== COMPOUND || term.name !== '/' || term.arity !== 2) return false;
-  const [name, arity] = term.args;
-  // Name/Arity denotes a predicate indicator only when some instance of it
-  // could be one: Name an atom, Arity a non-negative integer. The same
-  // shared variable in both positions (current_predicate(X/X), issue #115)
-  // looks valid argument-by-argument -- each position individually accepts
-  // an unbound variable -- but no instantiation can satisfy both at once,
-  // since binding that one variable to an atom makes Arity an atom too, not
-  // an integer. stc#79 treats this as no valid instance existing at all,
-  // the same as a bare atom argument, so it must raise
-  // type_error(predicate_indicator, _) rather than just finding no matches.
-  if (name.type === VAR && arity.type === VAR && name.name === arity.name) return false;
-  return (name.type === VAR || name.type === ATOM) &&
-    (arity.type === VAR ||
-      (arity.type === NUMBER && isDecimalInteger(arity.name) && BigInt(arity.name) >= 0n));
+  // Each position is checked independently, not "could some single
+  // instantiation satisfy both at once" -- so current_predicate(X/X)
+  // (issue #115) passes this check exactly like current_predicate(X/Y)
+  // does, and is then left to the ordinary group search below, which
+  // unifies goal.args[0] (still X/X, the two positions aliased) against
+  // each candidate Name/Arity in turn. Name and Arity are never the same
+  // type, so that unification always fails and the goal simply finds no
+  // solutions, the same way ISO's own current_op/3 (8.14.4.1) is specified:
+  // its candidate set is built by unifying a triple's priority (an integer)
+  // and specifier (an atom) against Priority and Op-specifier, so aliasing
+  // those two arguments the same way makes every candidate fail to unify
+  // and the set come up empty -- current_op/3's own Errors subclause
+  // (8.14.4.3) has no special case for it, only domain errors for an
+  // argument that is instantiated and outright wrong on its own. A
+  // predicate_indicator type error remains for a term that cannot look
+  // like a Name/Arity pair at all (a bare atom, a negative arity, ...).
+  return term.type === COMPOUND && term.name === '/' && term.arity === 2 &&
+    (term.args[0].type === VAR || term.args[0].type === ATOM) &&
+    (term.args[1].type === VAR ||
+      (term.args[1].type === NUMBER && isDecimalInteger(term.args[1].name) && BigInt(term.args[1].name) >= 0n));
 }
 
 const currentPredicateBuiltin = pendingBuiltin(currentPredicateSolutions);
