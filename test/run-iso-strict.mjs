@@ -1546,6 +1546,7 @@ export function runIsoStrict(reporter = new TestReporter()) {
       // variable -- but no instantiation can satisfy both at once, since
       // binding it to an atom makes Arity an atom too, not an integer.
       ['current_predicate(X/X)', 'type_error(predicate_indicator)', 'current_predicate/1 aliased name/arity variable'],
+      ['X = Y, current_predicate(X/Y)', 'type_error(predicate_indicator)', 'current_predicate/1 previously unified name/arity variables'],
       ['asserta(_)', 'instantiation_error', 'asserta/1 variable head'],
       ['asserta(4)', 'type_error(callable)', 'asserta/1 head type'],
       ['asserta((p:-4))', 'type_error(callable)', 'asserta/1 body conversion'],
