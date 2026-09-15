@@ -1592,19 +1592,30 @@ export function runIsoStrict(reporter = new TestReporter()) {
     const current = run('p(a).\nq.\n', { isoStrict: true, goal: 'current_predicate(p/1)' });
     equal(current.stats.completed_goal_lists, 1, 'current_predicate/1 finds a user procedure');
 
-    // The same variable filling both Name and Arity (issue #115, stc#79)
-    // looks valid position-by-position -- each alone accepts an unbound
-    // variable, and current_predicate/1 must support both fully unbound
-    // (current_predicate(X/Y), a generator) -- but no instantiation can
-    // satisfy both positions of one shared variable at once, since binding
-    // it to an atom makes Arity an atom too, not an integer. ISO does not
-    // special-case this for the structurally identical current_op/3
-    // (8.14.4.1): its candidate set is built by unifying a triple's integer
-    // priority and atom specifier against Priority and Op-specifier, so
-    // aliasing those two arguments the same way simply makes every
-    // candidate fail to unify and the set come up empty, and current_op/3's
-    // own Errors subclause (8.14.4.3) has no case for it. current_predicate
-    // /1 follows that precedent: it fails rather than raising an error.
+    // ISO 13211-1 8.8.2.4's own worked example: current_predicate(Name/1)
+    // succeeds with an unbound Name, backtracking through every arity-1
+    // predicate. A compound with an unbound component already counts as "a
+    // predicate indicator" for 8.8.2.3's error check, not only one whose
+    // Name and Arity are already bound to an atom and a non-negative
+    // integer as 7.1.6.6 defines the type.
+    equal(
+      run('elk(a).\ninsect(b).\n', { isoStrict: true, goal: 'current_predicate(Name/1)' }).stats.completed_goal_lists,
+      2,
+      'current_predicate/1 enumerates every matching Name with Arity fixed and Name unbound',
+    );
+
+    // The same variable filling both Name and Arity (issue #115) looks
+    // valid position-by-position by that same per-component check -- each
+    // position alone accepts an unbound variable, and current_predicate/1
+    // must support both fully unbound (current_predicate(X/Y), a generator,
+    // just demonstrated above) -- but no instantiation can satisfy both
+    // positions of one shared variable at once, since binding it to an atom
+    // makes Arity an atom too, not an integer. 8.8.2.3 has only the one
+    // error condition above, and 8.8.2.1's procedure gives no outcome for an
+    // empty candidate set (step a-c) besides "the goal fails" (step c) --
+    // there is no separate provision for an argument that turned out unable
+    // to ever unify with anything. current_predicate/1 follows that: it
+    // fails rather than raising an error.
     for (const [goal, label] of [
       ['current_predicate(X/X)', 'current_predicate/1 aliased name/arity variable fails'],
       ['X = Y, current_predicate(X/Y)', 'current_predicate/1 previously unified name/arity variables fails'],

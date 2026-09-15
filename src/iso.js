@@ -674,22 +674,25 @@ function* termVariablesBuiltin({ goal, env }) {
 }
 
 function validPredicateIndicator(term) {
-  // Each position is checked independently, not "could some single
-  // instantiation satisfy both at once" -- so current_predicate(X/X)
-  // (issue #115) passes this check exactly like current_predicate(X/Y)
-  // does, and is then left to the ordinary group search below, which
-  // unifies goal.args[0] (still X/X, the two positions aliased) against
-  // each candidate Name/Arity in turn. Name and Arity are never the same
-  // type, so that unification always fails and the goal simply finds no
-  // solutions, the same way ISO's own current_op/3 (8.14.4.1) is specified:
-  // its candidate set is built by unifying a triple's priority (an integer)
-  // and specifier (an atom) against Priority and Op-specifier, so aliasing
-  // those two arguments the same way makes every candidate fail to unify
-  // and the set come up empty -- current_op/3's own Errors subclause
-  // (8.14.4.3) has no special case for it, only domain errors for an
-  // argument that is instantiated and outright wrong on its own. A
-  // predicate_indicator type error remains for a term that cannot look
-  // like a Name/Arity pair at all (a bare atom, a negative arity, ...).
+  // ISO 13211-1 8.8.2.3's sole error condition is "PI is neither a variable
+  // nor a predicate indicator -> type_error(predicate_indicator, PI)", and
+  // 8.8.2.4's own worked example -- current_predicate(Name/1) succeeds,
+  // backtracking through every matching Name -- shows that a compound whose
+  // Name is merely a variable already counts as "a predicate indicator" for
+  // this check, not just one whose Name and Arity are already bound to an
+  // atom and a non-negative integer as 7.1.6.6 defines the type. So each
+  // position is checked independently here, not "could some single
+  // instantiation satisfy both at once": current_predicate(X/X) (issue #115)
+  // passes this check exactly like current_predicate(X/Y) does, and is left
+  // to the ordinary group search below (8.8.2.1 a-c), which unifies
+  // goal.args[0] (still X/X, the two positions aliased) against each
+  // candidate Name/Arity in turn. Name and Arity are never the same type, so
+  // that unification always fails for every candidate and the goal simply
+  // finds no solutions -- 8.8.2.1's own procedure gives no other outcome for
+  // an empty candidate set than "the goal fails" (step c), with no separate
+  // provision for an argument that turned out unable to ever unify. A
+  // predicate_indicator type error remains for a term that cannot look like
+  // a Name/Arity pair at all (a bare atom, a negative arity, ...).
   return term.type === COMPOUND && term.name === '/' && term.arity === 2 &&
     (term.args[0].type === VAR || term.args[0].type === ATOM) &&
     (term.args[1].type === VAR ||
