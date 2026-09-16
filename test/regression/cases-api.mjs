@@ -465,6 +465,7 @@ answer(X,Y,U,R,F,W,G,C,T) :-
         assertEqual(result.stdout,
           'answer(1, 0, "abc", "abc", "aa", yes, shared1, "A", [[1, 3], [2, 4]]).\n',
           'composed common-library answer');
+        assertEqual(result.stats.clpb_native_labelings, 1, 'CLP(B) labeling takes its host search-plan path');
       },
     },
     {
@@ -1303,7 +1304,7 @@ answer(ok) :-
         assertEqual(Boolean(registry.get('is', 2)), true, 'ISO is/2 exists');
         assertEqual(Boolean(registry.get('append', 3)), false, 'append/3 is not ISO core');
         assertEqual(library.eyePrologLibrary, true, 'complete registry marker');
-        assertEqual(library.defs.size, 223, 'EyeProlog registry contains ISO definitions, cleanup controls, observability extensions, WFS predicates, and generic library adapters');
+        assertEqual(library.defs.size, 227, 'EyeProlog registry contains ISO definitions, cleanup controls, observability extensions, WFS predicates, and generic library adapters');
         assertEqual(registry.get('eyeprolog__dynify', 1), null, 'Eyelet dynify adapter is absent from the ISO registry');
         assertEqual(Boolean(library.get('eyeprolog__dynify', 1)), true, 'Eyelet dynify adapter is an internal EyeProlog library primitive');
         assertEqual(registry.get('eyeprolog__eyelet_emit', 2), null, 'Eyelet event adapter is absent from the ISO registry');
@@ -1359,7 +1360,9 @@ answer(ok) :-
         assertEqual(registry.get('eyeprolog__countall', 2), null, 'private countall adapter is absent from ISO registry');
         assertEqual(Boolean(library.get('eyeprolog__countall', 2)), true, 'private countall adapter is registered for EyeProlog');
         assertEqual(Boolean(library.get('eyeprolog__time', 1)), true, 'private time adapter is registered for EyeProlog');
-        assertEqual(library.get('eyeprolog__clpz_labeling', 2), null, 'CLP(Z) labeling is implemented in Prolog');
+        assertEqual(Boolean(library.get('eyeprolog__clpz_labeling', 2)), true, 'CLP(Z) labeling dispatch has a private host adapter');
+        assertEqual(Boolean(library.get('eyeprolog__clpz_distinct', 3)), true, 'CLP(Z) all-distinct propagation has a private host adapter');
+        assertEqual(Boolean(library.get('eyeprolog__clpb_labeling', 1)), true, 'CLP(B) labeling has a private host adapter');
         assertEqual(library.get('eyeprolog__clpz_global_cardinality', 3), null, 'CLP(Z) cardinality is implemented in Prolog');
         assertEqual(registry.get('put_atts', 2), null, 'put_atts/2 is absent from the ISO registry');
         assertEqual(Boolean(library.get('put_atts', 2)), true, 'put_atts/2 is registered for attributed-variable libraries');
@@ -1584,6 +1587,24 @@ repeated(X) :- X in 1..3, all_distinct([X, X]).
         assertEqual(program.findGroup('labeling', 2)?.module, 'clpz', 'labeling/2 module');
         assertEqual(run(program, { goals: ['answer(X, Y, B)', 'contradiction', 'pruned(Domain)', 'hall(Domain)', 'repeated(X)'] }).stdout,
           'answer(1, 4, 1).\nanswer(2, 3, 0).\npruned(1 \\/ 3).\nhall(3..3).\n', 'CLP(Z) constrained answers');
+      },
+    },
+    {
+      name: 'CLP(Z) specializes finite all_distinct first-fail labeling without changing answer order',
+      run: () => {
+        const result = run(`:- use_module(library(clpz)).
+answer(A, B, C) :-
+  [A, B, C] ins 1..3,
+  all_distinct([A, B, C]),
+  labeling([ff], [A, B, C]).
+`, { goal: 'answer(A, B, C)' });
+        assertEqual(result.stdout,
+          'answer(1, 2, 3).\nanswer(1, 3, 2).\nanswer(2, 1, 3).\n' +
+          'answer(2, 3, 1).\nanswer(3, 1, 2).\nanswer(3, 2, 1).\n',
+          'native finite-domain search preserves step/up answer order');
+        assertEqual(result.stats.clpz_native_labelings, 1, 'finite all_distinct labeling takes native path');
+        assertEqual(result.stats.clpz_native_distinct_propagations > 0, true,
+          'finite all_distinct propagation takes native matching path');
       },
     },
     {

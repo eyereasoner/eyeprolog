@@ -91,9 +91,12 @@ extra dispatch in solver hot paths.  Existing scalar/indexed solver paths stay
 as direct function calls.  Candidate indexing is separated physically but
 retains the same data structures and selection functions.
 
-Large solver fast paths deliberately remain co-located in `solver.js` until a
-split can demonstrate performance parity.  A cleaner file layout is not worth a
-runtime regression.
+Generic solver fast paths remain co-located in `solver.js` until a split can
+demonstrate performance parity. Module-specific acceleration belongs to the
+matching `*-host.js` adapter: `clpz-host.js` and `clpb-host.js`, for example,
+construct native propagation/search plans while their Prolog modules retain
+validation, residual constraints, and portable fallbacks. A cleaner file layout
+is not worth a runtime regression, so such splits must retain benchmark parity.
 
 Performance claims use `npm test`'s own elapsed time across the full corpus,
 not predicate, inference, or host-call counts as a substitute for elapsed

@@ -9,6 +9,8 @@ import { cryptoHostBuiltins } from './crypto-host.js';
 import { dcgsHostBuiltins } from './dcgs-host.js';
 import { arithmeticHostBuiltins } from './arithmetic-host.js';
 import { charsioHostBuiltins } from './charsio-host.js';
+import { clpbHostBuiltins } from './clpb-host.js';
+import { clpzHostBuiltins } from './clpz-host.js';
 import { filesHostBuiltins } from './files-host.js';
 import { difHostBuiltins } from './dif-host.js';
 import { formatHostBuiltins } from './format-host.js';
@@ -378,6 +380,8 @@ export function createEyePrologRegistry() {
   expansionBuiltins.register(registry);
   arithmeticHostBuiltins.register(registry);
   charsioHostBuiltins.register(registry);
+  clpbHostBuiltins.register(registry);
+  clpzHostBuiltins.register(registry);
   filesHostBuiltins.register(registry);
   difHostBuiltins.register(registry);
   formatHostBuiltins.register(registry);

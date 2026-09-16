@@ -1877,6 +1877,9 @@ labeling(Options, Vars) :-
         must_be(list, labeling(Options, Vars)-1, Options),
         fd_must_be_list(Vars, labeling(Options, Vars)-2),
         maplist(finite_domain(labeling(Options, Vars), 2), Vars),
+        eyeprolog__clpz_labeling(Options, Vars).
+
+labeling_portable(Options, Vars) :-
         label(Options, Options, default(leftmost), default(up), default(step), [], upto_ground, Vars).
 
 
@@ -6319,7 +6322,9 @@ with_local_attributes(Vars, Goal, Result) :-
               local_attributes(Vars-Result),
               true).
 
-distinct(Vars) -->
+distinct(Vars) --> eyeprolog__clpz_distinct(Vars).
+
+distinct_portable(Vars) -->
         { with_local_attributes(Vars,
            (   difference_arcs(Vars, FreeLeft, FreeRight0),
                length(FreeLeft, LFL),

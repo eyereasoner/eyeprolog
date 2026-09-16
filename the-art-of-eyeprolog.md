@@ -9619,7 +9619,7 @@ eyeprolog --proof --goal 'type(X, Y)' examples/socrates.pl
 eyeprolog --proof examples/socrates.pl > socrates.why.pl
 eyeprolog --verify-proof socrates.why.pl examples/socrates.pl
 eyeprolog --warnings --goal 'answer(X)' test/conformance/warnings/negation/unstratified_mutual.pl
-eyeprolog --portable --goal 'sudoku4_solution(S)' examples/clpz-sudoku-9x9.pl
+eyeprolog --portable --goal 'sudoku9(S)' examples/clpz-sudoku-9x9.pl
 eyeprolog --stats --goal 'path(a, X)' examples/path-discovery.pl > answers.pl 2> run.stats
 ```
 
@@ -9986,7 +9986,7 @@ mode at a time.
 | [CLP(Z) global constraints](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-global-constraints.pl) | Compatibility tables, lexicographic and serialized schedules, global cardinality with costs, circuits, value counting, and integer comparison. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpz-global-constraints.pl) |
 | [CLP(Z) N-queens](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-n-queens.pl) | A checked eight-queens witness using finite domains, delayed diagonal constraints, `all_distinct/1`, and first-fail labeling, plus a four-queens multi-solution search. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpz-n-queens.pl) |
 | [CLP(Z) resource allocation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-resource-allocation.pl) | Resource assignment using `element/3`, `sum/3`, `scalar_product/4`, reification, labeling options, and domain reflection. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpz-resource-allocation.pl) |
-| [CLP(Z) Sudoku 9×9](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-sudoku-9x9.pl) | The AI Escargot 9×9 model with finite domains, 27 all-distinct constraints, and first-fail labeling; a same-shaped 4×4 Shidoku is genuinely searched from its blanks as the routine default, while `sudoku9_witness/1` only checks the known 9×9 answer against the model (`sudoku9/1` itself remains the real, currently very slow 9×9 search relation). | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpz-sudoku-9x9.pl) |
+| [CLP(Z) Sudoku 9×9](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-sudoku-9x9.pl) | The AI Escargot 9×9 model with finite domains, 27 all-distinct constraints, and first-fail labeling, genuinely searched from its clues as the default example goal. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpz-sudoku-9x9.pl) |
 | [Combinatorics Findall Sort](https://github.com/eyereasoner/eyeprolog/blob/main/examples/combinatorics-findall-sort.pl) | Eyelet-inspired combinations example using `findall/3` and ISO `sort/2`. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/combinatorics-findall-sort.pl) |
 | [Floating Point](https://github.com/eyereasoner/eyeprolog/blob/main/examples/floating-point.pl) | Floating-point arithmetic and comparisons. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/floating-point.pl) · [proof](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/floating-point.pl) |
 | [Atomic conversion](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-atomic-conversion.pl) | Atom splitting, character atoms, Unicode codes, and numeric parsing. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/iso-atomic-conversion.pl) |

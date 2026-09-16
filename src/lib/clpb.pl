@@ -1399,8 +1399,7 @@ node_ite(Node, Node-ite(Var,High,Low)) :-
 labeling(Vs0) :-
         must_be(list, Vs0),
         maplist(labeling_var, Vs0),
-        variables_in_index_order(Vs0, Vs),
-        maplist(indomain, Vs).
+        eyeprolog__clpb_labeling(Vs0).
 
 labeling_var(V) :- var(V), !.
 labeling_var(V) :- V == 0, !.
@@ -1416,10 +1415,6 @@ var_with_index(V, I-V) :-
         (   var_index_root(V, I, _) -> true
         ;   I = 0
         ).
-
-indomain(0).
-indomain(1).
-
 
 %% sat_count(+Expr, -Count) is det.
 %

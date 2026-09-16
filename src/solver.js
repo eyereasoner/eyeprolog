@@ -214,6 +214,9 @@ export class Solver {
       datalog_facts_derived: 0,
       wfs_fixpoint_rounds: 0,
       wfs_undefined_answers: 0,
+      clpz_native_labelings: 0,
+      clpz_native_distinct_propagations: 0,
+      clpb_native_labelings: 0,
     };
   }
 
