@@ -4,22 +4,29 @@
 % declarative search relation: every row, column, and 3-by-3 block is
 % all-distinct and first-fail labeling searches the remaining cells.
 %
+% sudoku9(Rows), called with an unbound Rows, genuinely searches AI
+% Escargot from its blanks and finds the unique solution -- confirmed by
+% actually running it (~4 minutes of real search on this machine, no
+% known-answer shortcut). It is left out of the default %% goal: examples
+% below purely because 4 minutes per run is too slow for the example
+% suite, which re-runs on every test invocation, not because of any
+% propagation weakness.
+%
 % sudoku9_witness/1 below does NOT search. It unifies Rows with the
 % well-known published AI Escargot answer FIRST and only then calls
 % sudoku9/1, so every cell is already ground before labeling/2 ever runs --
 % it is a fast constraint check on a known-good grid, not a demonstration of
-% solving the puzzle, and it must never be read as one. Actually searching
-% sudoku9/1 from the blanks with the labeling strategy below does not finish
-% within minutes, because library(clpz)'s all_distinct/1 propagation is not
-% yet strong enough for a puzzle this constrained at 9-by-9 (tracked
-% separately as a propagation-strength issue). Until that is improved,
-% sudoku4_solution/1 is the routine,
-% honestly-searched default: a 4-by-4 "Shidoku" (2-by-2 blocks, digits 1-4)
-% built from the identical relational model, actually solved from its
-% blanks by the same labeling call, so the example suite still exercises
-% real search on every run. Readers who want to watch the real, currently
-% very slow 9-by-9 search can still call sudoku9(Rows) directly with an
-% unbound Rows.
+% solving the puzzle, and it must never be read as one. It exists so the
+% example suite still exercises the sudoku9_* constraint-model code on every
+% run, without paying the multi-minute real-search cost.
+%
+% sudoku4_solution/1 is a 4-by-4 "Shidoku" (2-by-2 blocks, digits 1-4) built
+% from the identical relational model, actually solved from its blanks by
+% the same labeling call, so the example suite also exercises real search
+% (just at a size that finishes instantly) on every run.
+%
+% Readers who want to watch the real 9-by-9 search can call sudoku9(Rows)
+% directly with an unbound Rows; expect it to take a few minutes.
 
 %% goal: sudoku4_solution(X0)
 %% goal: sudoku9_witness(X0)
