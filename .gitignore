@@ -2,6 +2,7 @@ package-lock.json
 node_modules/
 ISO-Prolog/
 .codex/
+.claude/
 .agents/
 .benchmarks/
 .cache/
