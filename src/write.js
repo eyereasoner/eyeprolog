@@ -356,10 +356,14 @@ function format(term, env, options, table, maxPriority = 1200, context = 'term')
     if (quotedSplice != null && (quotedSplice.tail == null || options.doubleBar)) {
       const prefix = writeString(quotedSplice.text);
       if (quotedSplice.tail == null) return prefix;
-      // `||` is a normal-profile syntax extension with priority 1, so a
-      // looser operator in the right operand must be parenthesized to keep the
-      // emitted text readable as the same term.
-      return `${prefix}||${format(quotedSplice.tail, env, options, table, 1, 'term')}`;
+      // `||` is a normal-profile syntax extension whose tail has priority 0
+      // (issue #116; see
+      // https://www.complang.tuwien.ac.at/ulrich/iso-prolog/double_bar), so
+      // any operator term in the right operand must be parenthesized to
+      // keep the emitted text readable back as the same term — including
+      // one whose own declared priority is as low as 1, since the parser
+      // accepts nothing but a bare primary term after `||` unparenthesized.
+      return `${prefix}||${format(quotedSplice.tail, env, options, table, 0, 'term')}`;
     }
 
     if (!options.ignoreOps) {

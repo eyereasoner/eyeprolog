@@ -202,6 +202,60 @@ export function whiteBoxCases() {
       },
     },
     {
+      // https://www.complang.tuwien.ac.at/ulrich/iso-prolog/double_bar: the
+      // whole `dql||term` production, and the tail `term` itself, both have
+      // priority 0 (the tail is a primary term, not a priority-1 term as an
+      // earlier revision of this extension had it). With a custom operator
+      // declared as low as priority 1, an unparenthesized tail must stop
+      // before that operator rather than absorb it, and a parenthesized tail
+      // must print with parentheses to remain distinguishable on readback.
+      name: 'double-bar tail has priority 0, so it is not absorbed into a following low-priority operator (issue #116)',
+      run: () => {
+        const operatorDefinitions = [...ISO_OPERATOR_DEFINITIONS, [1, 'xfy', 'op']];
+
+        // "abc"||1 op 2 must parse as ("abc"||1) op 2, not "abc"||(1 op 2):
+        // op's priority (1) is not <= the tail's max priority (0), so an
+        // unparenthesized tail parse must stop at `1` and let `op 2` apply
+        // to the whole splice term instead.
+        const unparenthesized = parseGoalText('p("abc"||1 op 2)', { operatorDefinitions }).args[0];
+        assertEqual(unparenthesized.name, 'op', 'unabsorbed tail: outer functor');
+        assertEqual(unparenthesized.args[1].name, '2', 'unabsorbed tail: outer right operand');
+        const splice = unparenthesized.args[0];
+        assertEqual(splice.args[1].args[1].args[1].name, '1', 'unabsorbed tail: splice tail value');
+
+        // "abc"||(1 op 2) is a different term: op(1, 2) spliced in as the
+        // tail.
+        const parenthesizedTail = parseGoalText('p("abc"||(1 op 2))', { operatorDefinitions }).args[0];
+        assertEqual(parenthesizedTail.name, '.', 'parenthesized tail: still a cons cell');
+        assertEqual(parenthesizedTail.args[1].args[1].args[1].name, 'op', 'parenthesized tail: splice tail is op(1, 2)');
+
+        // Printing must disambiguate the two terms above, and must agree
+        // that ("abc"||1) op 2 (explicit outer parentheses) is the same
+        // term as the unparenthesized case, exercising the real top-level
+        // answer-printing path (not just the parser).
+        const source = ':- op(1, xfy, op).\n';
+        const stdout = run(source, {
+          goals: [
+            '("abc"||1 op 2) == (("abc"||1) op 2)',
+            '("abc"||1 op 2) \\== ("abc"||(1 op 2))',
+            'L1 = "abc"||1 op 2',
+            'L3 = "abc"||(1 op 2)',
+          ],
+        }).stdout;
+        assertEqual(
+          stdout,
+          [
+            '"abc"||1 op 2 == "abc"||1 op 2.',
+            '"abc"||1 op 2 \\== "abc"||(1 op 2).',
+            '"abc"||1 op 2 = "abc"||1 op 2.',
+            '"abc"||(1 op 2) = "abc"||(1 op 2).',
+            '',
+          ].join('\n'),
+          'unabsorbed and parenthesized-tail terms are distinct and print disambiguated from each other',
+        );
+      },
+    },
+    {
       name: 'normal integer syntax accepts WG17 digit separators (issue #89)',
       run: () => {
         const values = parseGoalText(`values(

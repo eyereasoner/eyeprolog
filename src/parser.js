@@ -1036,8 +1036,17 @@ class Parser {
       // mode, a double-quoted chars/codes prefix may be followed by `||Tail`.
       // It is equivalent to the corresponding list prefix with Tail as its
       // final list tail, e.g. "ab"||T is [a,b|T] with double_quotes(chars).
-      // The extension binds at priority 1 (tighter than ordinary operators)
-      // and is deliberately absent from the strict ISO profile.
+      // Per the WG17-accepted design (issue #116; see
+      // https://www.complang.tuwien.ac.at/ulrich/iso-prolog/double_bar),
+      // the whole `dql||term` production, and the tail `term` itself, both
+      // have priority 0: the tail is a *primary* term, not an
+      // operator-priority-1 term. An operator argument therefore requires
+      // explicit parentheses, e.g. "abc"||(1 op 2) with `op` any infix
+      // operator, however low its own declared priority. This also stops
+      // an infix operator immediately following the tail from being
+      // absorbed into it: with `op(1, xfy, op)` declared, "abc"||1 op 2
+      // must parse as ("abc"||1) op 2, not "abc"||(1 op 2). The extension
+      // is deliberately absent from the strict ISO profile.
       if (!this.strictIso && this.token.type === TOK.BAR) {
         const state = {
           pos: this.pos,
@@ -1048,7 +1057,7 @@ class Parser {
         this.advance();
         if (this.token.type === TOK.BAR) {
           this.advance();
-          tail = this.parseTerm(operatorStrength(1), false, allowBar, false);
+          tail = this.parseTerm(operatorStrength(0), false, allowBar, false);
         } else {
           // A single bar remains ordinary bar syntax. We had to advance once
           // to distinguish it from `||`, so restore the tokenizer state.
