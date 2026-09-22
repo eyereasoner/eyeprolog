@@ -1,16 +1,13 @@
 answer(5).
 why(
   answer(5),
-  proof(
-    goal(answer(5)),
-    by(rule("<stdin>", clause(1))),
-    bindings([binding("X", 5)]),
-    uses([
-      proof(
-        goal(is(5, '+'(2, 3))),
-        by(builtin(is, 2))
-      )
-    ])
+  step(
+    answer(5),
+    rule("<stdin>", clause(1)),
+    ['X' = 5],
+    [
+      step(is(5, '+'(2, 3)), builtin(is, 2), [], [])
+    ]
   )
 ).
 

@@ -1,108 +1,84 @@
 xor_row(row(0, 0, 0)).
 why(
   xor_row(row(0, 0, 0)),
-  proof(
-    goal(xor_row(row(0, 0, 0))),
-    by(rule("clpb-boolean-circuit.pl", clause(2))),
-    bindings([binding("X", 0), binding("Y", 0), binding("Z", 0)]),
-    uses([
-      proof(
-        goal(xor_circuit(0, 0, 0)),
-        by(rule("clpb-boolean-circuit.pl", clause(1))),
-        bindings([binding("X", 0), binding("Y", 0), binding("Z", 0)]),
-        uses([
-          proof(
-            goal(sat('=:='(0, '+'(*(0, ~(0)), *(~(0), 0))))),
-            by(library(sat, 1))
-          )
-        ])
+  step(
+    xor_row(row(0, 0, 0)),
+    rule("clpb-boolean-circuit.pl", clause(2)),
+    ['X' = 0, 'Y' = 0, 'Z' = 0],
+    [
+      step(
+        xor_circuit(0, 0, 0),
+        rule("clpb-boolean-circuit.pl", clause(1)),
+        ['X' = 0, 'Y' = 0, 'Z' = 0],
+        [
+          step(sat('=:='(0, '+'(*(0, ~(0)), *(~(0), 0)))), library(sat, 1), [], [])
+        ]
       ),
-      proof(
-        goal(labeling([0, 0, 0])),
-        by(library(labeling, 1))
-      )
-    ])
+      step(labeling([0, 0, 0]), library(labeling, 1), [], [])
+    ]
   )
 ).
 
 xor_row(row(1, 1, 0)).
 why(
   xor_row(row(1, 1, 0)),
-  proof(
-    goal(xor_row(row(1, 1, 0))),
-    by(rule("clpb-boolean-circuit.pl", clause(2))),
-    bindings([binding("X", 1), binding("Y", 1), binding("Z", 0)]),
-    uses([
-      proof(
-        goal(xor_circuit(1, 1, 0)),
-        by(rule("clpb-boolean-circuit.pl", clause(1))),
-        bindings([binding("X", 1), binding("Y", 1), binding("Z", 0)]),
-        uses([
-          proof(
-            goal(sat('=:='(0, '+'(*(1, ~(1)), *(~(1), 1))))),
-            by(library(sat, 1))
-          )
-        ])
+  step(
+    xor_row(row(1, 1, 0)),
+    rule("clpb-boolean-circuit.pl", clause(2)),
+    ['X' = 1, 'Y' = 1, 'Z' = 0],
+    [
+      step(
+        xor_circuit(1, 1, 0),
+        rule("clpb-boolean-circuit.pl", clause(1)),
+        ['X' = 1, 'Y' = 1, 'Z' = 0],
+        [
+          step(sat('=:='(0, '+'(*(1, ~(1)), *(~(1), 1)))), library(sat, 1), [], [])
+        ]
       ),
-      proof(
-        goal(labeling([1, 1, 0])),
-        by(library(labeling, 1))
-      )
-    ])
+      step(labeling([1, 1, 0]), library(labeling, 1), [], [])
+    ]
   )
 ).
 
 xor_row(row(0, 1, 1)).
 why(
   xor_row(row(0, 1, 1)),
-  proof(
-    goal(xor_row(row(0, 1, 1))),
-    by(rule("clpb-boolean-circuit.pl", clause(2))),
-    bindings([binding("X", 0), binding("Y", 1), binding("Z", 1)]),
-    uses([
-      proof(
-        goal(xor_circuit(0, 1, 1)),
-        by(rule("clpb-boolean-circuit.pl", clause(1))),
-        bindings([binding("X", 0), binding("Y", 1), binding("Z", 1)]),
-        uses([
-          proof(
-            goal(sat('=:='(1, '+'(*(0, ~(1)), *(~(0), 1))))),
-            by(library(sat, 1))
-          )
-        ])
+  step(
+    xor_row(row(0, 1, 1)),
+    rule("clpb-boolean-circuit.pl", clause(2)),
+    ['X' = 0, 'Y' = 1, 'Z' = 1],
+    [
+      step(
+        xor_circuit(0, 1, 1),
+        rule("clpb-boolean-circuit.pl", clause(1)),
+        ['X' = 0, 'Y' = 1, 'Z' = 1],
+        [
+          step(sat('=:='(1, '+'(*(0, ~(1)), *(~(0), 1)))), library(sat, 1), [], [])
+        ]
       ),
-      proof(
-        goal(labeling([0, 1, 1])),
-        by(library(labeling, 1))
-      )
-    ])
+      step(labeling([0, 1, 1]), library(labeling, 1), [], [])
+    ]
   )
 ).
 
 xor_row(row(1, 0, 1)).
 why(
   xor_row(row(1, 0, 1)),
-  proof(
-    goal(xor_row(row(1, 0, 1))),
-    by(rule("clpb-boolean-circuit.pl", clause(2))),
-    bindings([binding("X", 1), binding("Y", 0), binding("Z", 1)]),
-    uses([
-      proof(
-        goal(xor_circuit(1, 0, 1)),
-        by(rule("clpb-boolean-circuit.pl", clause(1))),
-        bindings([binding("X", 1), binding("Y", 0), binding("Z", 1)]),
-        uses([
-          proof(
-            goal(sat('=:='(1, '+'(*(1, ~(0)), *(~(1), 0))))),
-            by(library(sat, 1))
-          )
-        ])
+  step(
+    xor_row(row(1, 0, 1)),
+    rule("clpb-boolean-circuit.pl", clause(2)),
+    ['X' = 1, 'Y' = 0, 'Z' = 1],
+    [
+      step(
+        xor_circuit(1, 0, 1),
+        rule("clpb-boolean-circuit.pl", clause(1)),
+        ['X' = 1, 'Y' = 0, 'Z' = 1],
+        [
+          step(sat('=:='(1, '+'(*(1, ~(0)), *(~(1), 0)))), library(sat, 1), [], [])
+        ]
       ),
-      proof(
-        goal(labeling([1, 0, 1])),
-        by(library(labeling, 1))
-      )
-    ])
+      step(labeling([1, 0, 1]), library(labeling, 1), [], [])
+    ]
   )
 ).
 

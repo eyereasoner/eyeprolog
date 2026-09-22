@@ -813,16 +813,13 @@ probe :- empty_assoc(A), copy_term_nat(A, _), bb_b_put(current, ok), bb_get(curr
         expected: `type(socrates, mortal).
 why(
   type(socrates, mortal),
-  proof(
-    goal(type(socrates, mortal)),
-    by(rule("__FILE__", clause(2))),
-    bindings([binding("X", socrates)]),
-    uses([
-      proof(
-        goal(type(socrates, man)),
-        by(fact("__FILE__", clause(1)))
-      )
-    ])
+  step(
+    type(socrates, mortal),
+    rule("__FILE__", clause(2)),
+    ['X' = socrates],
+    [
+      step(type(socrates, man), fact("__FILE__", clause(1)), [], [])
+    ]
   )
 ).
 
@@ -837,16 +834,13 @@ why(
         expected: `p(536).
 why(
   p(536),
-  proof(
-    goal(p(536)),
-    by(rule("__FILE__", clause(1))),
-    bindings([binding("X", 536)]),
-    uses([
-      proof(
-        goal(between(536, 536, 536)),
-        by(library(between, 3))
-      )
-    ])
+  step(
+    p(536),
+    rule("__FILE__", clause(1)),
+    ['X' = 536],
+    [
+      step(between(536, 536, 536), library(between, 3), [], [])
+    ]
   )
 ).
 
@@ -861,16 +855,13 @@ why(
         expected: `p(a).
 why(
   p(a),
-  proof(
-    goal(p(a)),
-    by(rule("__FILE__", clause(1))),
-    bindings([binding("X", a)]),
-    uses([
-      proof(
-        goal(member(a, "a")),
-        by(library(member, 2))
-      )
-    ])
+  step(
+    p(a),
+    rule("__FILE__", clause(1)),
+    ['X' = a],
+    [
+      step(member(a, "a"), library(member, 2), [], [])
+    ]
   )
 ).
 
@@ -884,8 +875,8 @@ why(
           program: 'p(ok) :- q(X), r(X).\nq(a).\nq(b).\nr(b).\n',
           goalText: 'p(ok)',
         });
-        assertIncludes(result.stdout, 'goal(q(b)),\n        by(fact("', 'stdout');
-        assertIncludes(result.stdout, 'goal(r(b)),\n        by(fact("', 'stdout');
+        assertIncludes(result.stdout, 'step(q(b), fact("', 'stdout');
+        assertIncludes(result.stdout, 'step(r(b), fact("', 'stdout');
         assertNotIncludes(result.stdout, 'no_proof', 'stdout');
       },
     },
@@ -896,8 +887,8 @@ why(
           program: 'p(ok) :- q(1), q(1).\nq(0).\nq(1) :- q(0).\n',
           goalText: 'p(ok)',
         });
-        assertIncludes(result.stdout, 'goal(p(ok)),\n    by(rule("', 'stdout');
-        assertIncludes(result.stdout, 'goal(q(1)),\n        by(rule("', 'stdout');
+        assertIncludes(result.stdout, '    p(ok),\n    rule("', 'stdout');
+        assertIncludes(result.stdout, '        q(1),\n        rule("', 'stdout');
         assertNotIncludes(result.stdout, 'no_proof', 'stdout');
       },
     },
@@ -4311,8 +4302,8 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         const input = '%% goal: q(a)\n:- use_module(library(lists)).\nq(X) :- member(X, [a,b]).\n';
         const result = runCli(['--proof-detail', 'expanded', '-'], { input });
         assertEqual(result.status, 0, 'exit status');
-        assertIncludes(result.stdout, 'by(fact("src/lib/lists.pl"', 'expanded library source');
-        assertNotIncludes(result.stdout, 'by(library(member, 2))', 'abstract library boundary');
+        assertIncludes(result.stdout, 'fact("src/lib/lists.pl"', 'expanded library source');
+        assertNotIncludes(result.stdout, 'library(member, 2)', 'abstract library boundary');
       },
     },
     {
@@ -4331,7 +4322,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         assertEqual(strictVerified.status, 0, 'strict verification status');
         assertEqual(strictVerified.stdout, 'verified 1 proof certificate.\n', 'strict verification stdout');
         const tamperedFile = path.join(temp.dir, `proof-certificate-bad-${++temp.counter}.pl`);
-        fs.writeFileSync(tamperedFile, generated.stdout.replace('goal(p(a))', 'goal(p(b))'));
+        fs.writeFileSync(tamperedFile, generated.stdout.replace('step(p(a),', 'step(p(b),'));
         const rejected = runCli(['--verify-proof', tamperedFile, programFile]);
         assertEqual(rejected.status, 1, 'tampered verification status');
         assertIncludes(rejected.stderr, 'proof certificate 1 failed verification', 'tampered verification stderr');

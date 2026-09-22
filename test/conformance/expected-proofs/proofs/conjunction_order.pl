@@ -1,19 +1,14 @@
 answer(ok).
 why(
   answer(ok),
-  proof(
-    goal(answer(ok)),
-    by(rule("<stdin>", clause(3))),
-    uses([
-      proof(
-        goal(left(ok)),
-        by(fact("<stdin>", clause(1)))
-      ),
-      proof(
-        goal(right(ok)),
-        by(fact("<stdin>", clause(2)))
-      )
-    ])
+  step(
+    answer(ok),
+    rule("<stdin>", clause(3)),
+    [],
+    [
+      step(left(ok), fact("<stdin>", clause(1)), [], []),
+      step(right(ok), fact("<stdin>", clause(2)), [], [])
+    ]
   )
 ).
 

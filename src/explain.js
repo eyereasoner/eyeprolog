@@ -307,40 +307,28 @@ export function proofCertificatesFromText(text, program) {
 }
 
 function certificateNodeFromTerm(term) {
-  if (term.type !== COMPOUND || term.name !== 'proof') return null;
-  const fields = term.args;
-  if (fields.length < 2) return null;
-  const goalField = fields[0];
-  const byField = fields[1];
-  if (goalField.type !== COMPOUND || goalField.name !== 'goal' || goalField.arity !== 1) return null;
-  if (byField.type !== COMPOUND || byField.name !== 'by' || byField.arity !== 1) return null;
-  const node = {
-    goal: termToString(goalField.args[0], new Env(), true),
-    method: certificateMethodFromTerm(byField.args[0]),
-    bindings: [],
-    children: [],
+  if (term.type !== COMPOUND || term.name !== 'step' || term.arity !== 4) return null;
+  const [goal, by, bindings, uses] = term.args;
+  const method = certificateMethodFromTerm(by);
+  if (!method) return null;
+
+  const bindingItems = properListItems(bindings, new Env());
+  if (bindingItems == null) return null;
+
+  const useItems = properListItems(uses, new Env());
+  if (useItems == null) return null;
+  const children = useItems.map(certificateNodeFromTerm);
+  if (children.some((child) => child == null)) return null;
+
+  return {
+    goal: termToString(goal, new Env(), true),
+    method,
+    bindings: bindingItems.map((item) => {
+      if (item.type !== COMPOUND || item.name !== '=' || item.arity !== 2) throw new Error('malformed certificate binding');
+      return { name: certificateText(item.args[0]), value: termToString(item.args[1], new Env(), true) };
+    }),
+    children,
   };
-  if (!node.method) return null;
-  for (let i = 2; i < fields.length; i++) {
-    const field = fields[i];
-    if (field.type !== COMPOUND) return null;
-    if (field.name === 'bindings' && field.arity === 1) {
-      const items = properListItems(field.args[0], new Env());
-      if (items == null) return null;
-      node.bindings = items.map((item) => {
-        if (item.type !== COMPOUND || item.name !== 'binding' || item.arity !== 2) throw new Error('malformed certificate binding');
-        return { name: certificateText(item.args[0]), value: termToString(item.args[1], new Env(), true) };
-      });
-    } else if (field.name === 'uses' && field.arity === 1) {
-      const items = properListItems(field.args[0], new Env());
-      if (items == null) return null;
-      node.children = items.map(certificateNodeFromTerm);
-      if (node.children.some((child) => child == null)) return null;
-    } else {
-      return null;
-    }
-  }
-  return node;
 }
 
 function certificateMethodFromTerm(term) {
@@ -569,34 +557,52 @@ function renderWhyTerm(answer, proofTerm) {
   return ['why(', `${indent(1)}${answer},`, proofTerm, ').', '', ''].join('\n');
 }
 
+// The justification, as one term. `rule`/`fact` name the clause they used;
+// unlike eyeron's bare `rule(N)` they also name the file it came from,
+// because a program here is assembled from several sources and the
+// abstract/expanded distinction turns on whether a clause is library
+// source.
+
+// One step: the conclusion, the single term saying why it holds, the
+// bindings that justification used, and what it used. Those four parts, in
+// that order, are what eyeron, eyeling and eyeleng also write -- `pe:rule`,
+// `pe:binding` and `pe:uses` in the two RDF syntaxes. The one difference is
+// what `uses` holds: there a premise is named by its own conclusion and
+// looked up among sibling steps, while here it is the nested step itself,
+// because a resolution proof is a tree and the same goal may be proved more
+// than once within it.
 function renderAbstractProofTerm(node, level) {
   const goal = termToString(node.goal, new Env(), true);
-  const hasTail = node.bindings.length || node.children.length;
+  // A step that used nothing is one line, the way eyeron writes a leaf.
+  if (!node.children.length) {
+    return `${indent(level)}step(${goal}, ${renderMethodTerm(node.method)}, ${renderBindingsTerm(node.bindings)}, [])`;
+  }
   const lines = [
-    `${indent(level)}proof(`,
-    `${indent(level + 1)}goal(${goal}),`,
-    `${indent(level + 1)}by(${renderMethodTerm(node.method)})${hasTail ? ',' : ''}`,
+    `${indent(level)}step(`,
+    `${indent(level + 1)}${goal},`,
+    `${indent(level + 1)}${renderMethodTerm(node.method)},`,
+    `${indent(level + 1)}${renderBindingsTerm(node.bindings)},`,
   ];
 
-  if (node.bindings.length) lines.push(`${indent(level + 1)}${renderBindingsTerm(node.bindings)}${node.children.length ? ',' : ''}`);
-  if (node.children.length) lines.push(renderUsesTerm(node.children, level + 1));
-
+  lines.push(renderUsesTerm(node.children, level + 1));
   lines.push(`${indent(level)})`);
   return lines.join('\n');
 }
 
 function renderUsesTerm(children, level) {
-  const lines = [`${indent(level)}uses([`];
+  const lines = [`${indent(level)}[`];
   for (let i = 0; i < children.length; i++) {
     const item = renderAbstractProofTerm(children[i], level + 1);
     lines.push(i === children.length - 1 ? item : withTrailingComma(item));
   }
-  lines.push(`${indent(level)}])`);
+  lines.push(`${indent(level)}]`);
   return lines.join('\n');
 }
 
+// `'Name' = Value` pairs, the form the standard's `variable_names` read
+// option uses and the one eyeron writes in its own result documents.
 function renderBindingsTerm(bindings) {
-  return `bindings(${renderProofListInline(bindings, binding => `binding(${quoteString(binding.name)}, ${termToString(binding.value, new Env(), true)})`)})`;
+  return renderProofListInline(bindings, binding => `${quoteAtomText(binding.name)} = ${termToString(binding.value, new Env(), true)}`);
 }
 
 function renderProofListInline(items, renderItem) {

@@ -1,241 +1,136 @@
 sameInputByCompositeInjectivity(h, a, b).
 why(
   sameInputByCompositeInjectivity(h, a, b),
-  proof(
-    goal(sameInputByCompositeInjectivity(h, a, b)),
-    by(rule("composition-of-injective-functions-is-injective.pl", clause(21))),
-    bindings([binding("H", h), binding("X", a), binding("Y", b), binding("G", g), binding("F", f), binding("Z", e)]),
-    uses([
-      proof(
-        goal(compositeOf(h, g, f)),
-        by(fact("composition-of-injective-functions-is-injective.pl", clause(18)))
+  step(
+    sameInputByCompositeInjectivity(h, a, b),
+    rule("composition-of-injective-functions-is-injective.pl", clause(21)),
+    ['H' = h, 'X' = a, 'Y' = b, 'G' = g, 'F' = f, 'Z' = e],
+    [
+      step(compositeOf(h, g, f), fact("composition-of-injective-functions-is-injective.pl", clause(18)), [], []),
+      step(injective(g), fact("composition-of-injective-functions-is-injective.pl", clause(17)), [], []),
+      step(injective(f), fact("composition-of-injective-functions-is-injective.pl", clause(16)), [], []),
+      step(
+        app(h, a, e),
+        rule("composition-of-injective-functions-is-injective.pl", clause(19)),
+        ['H' = h, 'X' = a, 'Z' = e, 'G' = g, 'F' = f, 'Y' = c],
+        [
+          step(compositeOf(h, g, f), fact("composition-of-injective-functions-is-injective.pl", clause(18)), [], []),
+          step(app(f, a, c), fact("composition-of-injective-functions-is-injective.pl", clause(12)), [], []),
+          step(app(g, c, e), fact("composition-of-injective-functions-is-injective.pl", clause(14)), [], [])
+        ]
       ),
-      proof(
-        goal(injective(g)),
-        by(fact("composition-of-injective-functions-is-injective.pl", clause(17)))
+      step(
+        app(h, b, e),
+        rule("composition-of-injective-functions-is-injective.pl", clause(19)),
+        ['H' = h, 'X' = b, 'Z' = e, 'G' = g, 'F' = f, 'Y' = d],
+        [
+          step(compositeOf(h, g, f), fact("composition-of-injective-functions-is-injective.pl", clause(18)), [], []),
+          step(app(f, b, d), fact("composition-of-injective-functions-is-injective.pl", clause(13)), [], []),
+          step(app(g, d, e), fact("composition-of-injective-functions-is-injective.pl", clause(15)), [], [])
+        ]
       ),
-      proof(
-        goal(injective(f)),
-        by(fact("composition-of-injective-functions-is-injective.pl", clause(16)))
-      ),
-      proof(
-        goal(app(h, a, e)),
-        by(rule("composition-of-injective-functions-is-injective.pl", clause(19))),
-        bindings([binding("H", h), binding("X", a), binding("Z", e), binding("G", g), binding("F", f), binding("Y", c)]),
-        uses([
-          proof(
-            goal(compositeOf(h, g, f)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(18)))
-          ),
-          proof(
-            goal(app(f, a, c)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(12)))
-          ),
-          proof(
-            goal(app(g, c, e)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(14)))
-          )
-        ])
-      ),
-      proof(
-        goal(app(h, b, e)),
-        by(rule("composition-of-injective-functions-is-injective.pl", clause(19))),
-        bindings([binding("H", h), binding("X", b), binding("Z", e), binding("G", g), binding("F", f), binding("Y", d)]),
-        uses([
-          proof(
-            goal(compositeOf(h, g, f)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(18)))
-          ),
-          proof(
-            goal(app(f, b, d)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(13)))
-          ),
-          proof(
-            goal(app(g, d, e)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(15)))
-          )
-        ])
-      ),
-      proof(
-        goal(sameTerm(a, b)),
-        by(rule("composition-of-injective-functions-is-injective.pl", clause(11))),
-        bindings([binding("Y", a), binding("X", b)]),
-        uses([
-          proof(
-            goal(@<(a, b)),
-            by(builtin(@<, 2))
-          ),
-          proof(
-            goal(sameTerm(b, a)),
-            by(rule("composition-of-injective-functions-is-injective.pl", clause(20))),
-            bindings([binding("X", b), binding("Y", a), binding("F", f), binding("U", d), binding("V", c)]),
-            uses([
-              proof(
-                goal(injective(f)),
-                by(fact("composition-of-injective-functions-is-injective.pl", clause(16)))
-              ),
-              proof(
-                goal(app(f, b, d)),
-                by(fact("composition-of-injective-functions-is-injective.pl", clause(13)))
-              ),
-              proof(
-                goal(app(f, a, c)),
-                by(fact("composition-of-injective-functions-is-injective.pl", clause(12)))
-              ),
-              proof(
-                goal(sameTerm(d, c)),
-                by(rule("composition-of-injective-functions-is-injective.pl", clause(20))),
-                bindings([binding("X", d), binding("Y", c), binding("F", g), binding("U", e), binding("V", e)]),
-                uses([
-                  proof(
-                    goal(injective(g)),
-                    by(fact("composition-of-injective-functions-is-injective.pl", clause(17)))
-                  ),
-                  proof(
-                    goal(app(g, d, e)),
-                    by(fact("composition-of-injective-functions-is-injective.pl", clause(15)))
-                  ),
-                  proof(
-                    goal(app(g, c, e)),
-                    by(fact("composition-of-injective-functions-is-injective.pl", clause(14)))
-                  ),
-                  proof(
-                    goal(sameTerm(e, e)),
-                    by(rule("composition-of-injective-functions-is-injective.pl", clause(10))),
-                    bindings([binding("X", e)]),
-                    uses([
-                      proof(
-                        goal(inZ(e)),
-                        by(fact("composition-of-injective-functions-is-injective.pl", clause(7)))
-                      )
-                    ])
+      step(
+        sameTerm(a, b),
+        rule("composition-of-injective-functions-is-injective.pl", clause(11)),
+        ['Y' = a, 'X' = b],
+        [
+          step(@<(a, b), builtin(@<, 2), [], []),
+          step(
+            sameTerm(b, a),
+            rule("composition-of-injective-functions-is-injective.pl", clause(20)),
+            ['X' = b, 'Y' = a, 'F' = f, 'U' = d, 'V' = c],
+            [
+              step(injective(f), fact("composition-of-injective-functions-is-injective.pl", clause(16)), [], []),
+              step(app(f, b, d), fact("composition-of-injective-functions-is-injective.pl", clause(13)), [], []),
+              step(app(f, a, c), fact("composition-of-injective-functions-is-injective.pl", clause(12)), [], []),
+              step(
+                sameTerm(d, c),
+                rule("composition-of-injective-functions-is-injective.pl", clause(20)),
+                ['X' = d, 'Y' = c, 'F' = g, 'U' = e, 'V' = e],
+                [
+                  step(injective(g), fact("composition-of-injective-functions-is-injective.pl", clause(17)), [], []),
+                  step(app(g, d, e), fact("composition-of-injective-functions-is-injective.pl", clause(15)), [], []),
+                  step(app(g, c, e), fact("composition-of-injective-functions-is-injective.pl", clause(14)), [], []),
+                  step(
+                    sameTerm(e, e),
+                    rule("composition-of-injective-functions-is-injective.pl", clause(10)),
+                    ['X' = e],
+                    [
+                      step(inZ(e), fact("composition-of-injective-functions-is-injective.pl", clause(7)), [], [])
+                    ]
                   )
-                ])
+                ]
               )
-            ])
+            ]
           )
-        ])
+        ]
       ),
-      proof(
-        goal(\=(a, b)),
-        by(builtin(\=, 2))
-      )
-    ])
+      step(\=(a, b), builtin(\=, 2), [], [])
+    ]
   )
 ).
 
 sameInputByCompositeInjectivity(h, b, a).
 why(
   sameInputByCompositeInjectivity(h, b, a),
-  proof(
-    goal(sameInputByCompositeInjectivity(h, b, a)),
-    by(rule("composition-of-injective-functions-is-injective.pl", clause(21))),
-    bindings([binding("H", h), binding("X", b), binding("Y", a), binding("G", g), binding("F", f), binding("Z", e)]),
-    uses([
-      proof(
-        goal(compositeOf(h, g, f)),
-        by(fact("composition-of-injective-functions-is-injective.pl", clause(18)))
+  step(
+    sameInputByCompositeInjectivity(h, b, a),
+    rule("composition-of-injective-functions-is-injective.pl", clause(21)),
+    ['H' = h, 'X' = b, 'Y' = a, 'G' = g, 'F' = f, 'Z' = e],
+    [
+      step(compositeOf(h, g, f), fact("composition-of-injective-functions-is-injective.pl", clause(18)), [], []),
+      step(injective(g), fact("composition-of-injective-functions-is-injective.pl", clause(17)), [], []),
+      step(injective(f), fact("composition-of-injective-functions-is-injective.pl", clause(16)), [], []),
+      step(
+        app(h, b, e),
+        rule("composition-of-injective-functions-is-injective.pl", clause(19)),
+        ['H' = h, 'X' = b, 'Z' = e, 'G' = g, 'F' = f, 'Y' = d],
+        [
+          step(compositeOf(h, g, f), fact("composition-of-injective-functions-is-injective.pl", clause(18)), [], []),
+          step(app(f, b, d), fact("composition-of-injective-functions-is-injective.pl", clause(13)), [], []),
+          step(app(g, d, e), fact("composition-of-injective-functions-is-injective.pl", clause(15)), [], [])
+        ]
       ),
-      proof(
-        goal(injective(g)),
-        by(fact("composition-of-injective-functions-is-injective.pl", clause(17)))
+      step(
+        app(h, a, e),
+        rule("composition-of-injective-functions-is-injective.pl", clause(19)),
+        ['H' = h, 'X' = a, 'Z' = e, 'G' = g, 'F' = f, 'Y' = c],
+        [
+          step(compositeOf(h, g, f), fact("composition-of-injective-functions-is-injective.pl", clause(18)), [], []),
+          step(app(f, a, c), fact("composition-of-injective-functions-is-injective.pl", clause(12)), [], []),
+          step(app(g, c, e), fact("composition-of-injective-functions-is-injective.pl", clause(14)), [], [])
+        ]
       ),
-      proof(
-        goal(injective(f)),
-        by(fact("composition-of-injective-functions-is-injective.pl", clause(16)))
-      ),
-      proof(
-        goal(app(h, b, e)),
-        by(rule("composition-of-injective-functions-is-injective.pl", clause(19))),
-        bindings([binding("H", h), binding("X", b), binding("Z", e), binding("G", g), binding("F", f), binding("Y", d)]),
-        uses([
-          proof(
-            goal(compositeOf(h, g, f)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(18)))
-          ),
-          proof(
-            goal(app(f, b, d)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(13)))
-          ),
-          proof(
-            goal(app(g, d, e)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(15)))
-          )
-        ])
-      ),
-      proof(
-        goal(app(h, a, e)),
-        by(rule("composition-of-injective-functions-is-injective.pl", clause(19))),
-        bindings([binding("H", h), binding("X", a), binding("Z", e), binding("G", g), binding("F", f), binding("Y", c)]),
-        uses([
-          proof(
-            goal(compositeOf(h, g, f)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(18)))
-          ),
-          proof(
-            goal(app(f, a, c)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(12)))
-          ),
-          proof(
-            goal(app(g, c, e)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(14)))
-          )
-        ])
-      ),
-      proof(
-        goal(sameTerm(b, a)),
-        by(rule("composition-of-injective-functions-is-injective.pl", clause(20))),
-        bindings([binding("X", b), binding("Y", a), binding("F", f), binding("U", d), binding("V", c)]),
-        uses([
-          proof(
-            goal(injective(f)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(16)))
-          ),
-          proof(
-            goal(app(f, b, d)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(13)))
-          ),
-          proof(
-            goal(app(f, a, c)),
-            by(fact("composition-of-injective-functions-is-injective.pl", clause(12)))
-          ),
-          proof(
-            goal(sameTerm(d, c)),
-            by(rule("composition-of-injective-functions-is-injective.pl", clause(20))),
-            bindings([binding("X", d), binding("Y", c), binding("F", g), binding("U", e), binding("V", e)]),
-            uses([
-              proof(
-                goal(injective(g)),
-                by(fact("composition-of-injective-functions-is-injective.pl", clause(17)))
-              ),
-              proof(
-                goal(app(g, d, e)),
-                by(fact("composition-of-injective-functions-is-injective.pl", clause(15)))
-              ),
-              proof(
-                goal(app(g, c, e)),
-                by(fact("composition-of-injective-functions-is-injective.pl", clause(14)))
-              ),
-              proof(
-                goal(sameTerm(e, e)),
-                by(rule("composition-of-injective-functions-is-injective.pl", clause(10))),
-                bindings([binding("X", e)]),
-                uses([
-                  proof(
-                    goal(inZ(e)),
-                    by(fact("composition-of-injective-functions-is-injective.pl", clause(7)))
-                  )
-                ])
+      step(
+        sameTerm(b, a),
+        rule("composition-of-injective-functions-is-injective.pl", clause(20)),
+        ['X' = b, 'Y' = a, 'F' = f, 'U' = d, 'V' = c],
+        [
+          step(injective(f), fact("composition-of-injective-functions-is-injective.pl", clause(16)), [], []),
+          step(app(f, b, d), fact("composition-of-injective-functions-is-injective.pl", clause(13)), [], []),
+          step(app(f, a, c), fact("composition-of-injective-functions-is-injective.pl", clause(12)), [], []),
+          step(
+            sameTerm(d, c),
+            rule("composition-of-injective-functions-is-injective.pl", clause(20)),
+            ['X' = d, 'Y' = c, 'F' = g, 'U' = e, 'V' = e],
+            [
+              step(injective(g), fact("composition-of-injective-functions-is-injective.pl", clause(17)), [], []),
+              step(app(g, d, e), fact("composition-of-injective-functions-is-injective.pl", clause(15)), [], []),
+              step(app(g, c, e), fact("composition-of-injective-functions-is-injective.pl", clause(14)), [], []),
+              step(
+                sameTerm(e, e),
+                rule("composition-of-injective-functions-is-injective.pl", clause(10)),
+                ['X' = e],
+                [
+                  step(inZ(e), fact("composition-of-injective-functions-is-injective.pl", clause(7)), [], [])
+                ]
               )
-            ])
+            ]
           )
-        ])
+        ]
       ),
-      proof(
-        goal(\=(b, a)),
-        by(builtin(\=, 2))
-      )
-    ])
+      step(\=(b, a), builtin(\=, 2), [], [])
+    ]
   )
 ).
 

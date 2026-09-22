@@ -1478,16 +1478,13 @@ eyeprolog --proof examples/socrates.pl
 
 why(
   type(socrates, mortal),
-  proof(
-    goal(type(socrates, mortal)),
-    by(rule("socrates.pl", clause(4))),
-    bindings([binding("X", socrates)]),
-    uses([
-      proof(
-        goal(type(socrates, man)),
-        by(fact("socrates.pl", clause(3)))
-      )
-    ])
+  step(
+    type(socrates, mortal),
+    rule("socrates.pl", clause(4)),
+    ['X' = socrates],
+    [
+      step(type(socrates, man), fact("socrates.pl", clause(3)), [], [])
+    ]
   )
 ).
 ```
@@ -1510,10 +1507,25 @@ quoted atoms, lists, and compounds are rendered in supported source syntax so
 the output can be read back. Enabling `--proof`, `--warnings`, or `--stats`
 must not change which answers are found.
 
-The second argument of `why/2` is a proof term of the general shape
-`proof(goal(G), by(Method), bindings(Bindings), uses(Proofs))`. User clauses
-are identified as `fact(Filename, clause(N))` or
-`rule(Filename, clause(N))`, with one-based source clause numbers. Built-ins
+The second argument of `why/2` is a proof step of the general shape
+`step(Conclusion, By, Bindings, Uses)`: what was concluded, the single term
+saying why it holds, the bindings that justification used as `'Name' = Value`
+pairs, and what it used. Those four parts in that order are what eyeron,
+eyeling and eyeleng write too — `pe:rule`, `pe:binding` and `pe:uses` in the
+two RDF syntaxes — so one reading serves the whole family.
+
+`Uses` differs from theirs in one way. There a premise is named by its own
+conclusion and looked up among sibling steps, because those engines reach a
+conclusion once. A resolution proof is a tree in which the same goal may be
+proved more than once, with different clauses, in different places — the two
+`q(1)` subproofs of `p(ok) :- q(1), q(1).` are the plain case — so `Uses`
+holds the nested steps themselves rather than references to them.
+
+User clauses are identified as `fact(Filename, clause(N))` or
+`rule(Filename, clause(N))`, with one-based source clause numbers. The
+filename is carried here and not in eyeron's own `rule(N)` because a program
+is assembled from several sources and the abstract/expanded distinction turns
+on whether a clause is library source. Built-ins
 are identified as `builtin(Name, Arity)`. By default, bundled Prolog-library
 predicates appear as `library(Name, Arity)` trusted boundaries. Use
 `--proof-detail expanded` to replace those boundaries with the library source

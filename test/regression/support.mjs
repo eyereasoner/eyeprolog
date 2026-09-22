@@ -100,8 +100,8 @@ export function runWhy({ program, goalText, expected }) {
   assertEqual(result.stdout, expectedText, 'stdout');
 
   Program.parse(result.stdout);
-  assertIncludes(result.stdout, '  proof(\n', 'stdout');
-  assertIncludes(result.stdout, ' by(rule("', 'stdout');
+  assertIncludes(result.stdout, '  step(\n', 'stdout');
+  assertIncludes(result.stdout, '    rule("', 'stdout');
   assertIncludes(result.stdout, ', clause(', 'stdout');
   assertNotIncludes(result.stdout, 'source(head(', 'stdout');
   assertIncludes(result.stdout, '\n).\n\n', 'stdout');

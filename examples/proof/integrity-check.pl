@@ -1,47 +1,35 @@
 invalid_state(stone, conflicting_colors).
 why(
   invalid_state(stone, conflicting_colors),
-  proof(
-    goal(invalid_state(stone, conflicting_colors)),
-    by(rule("integrity-check.pl", clause(3))),
-    bindings([binding("X", stone)]),
-    uses([
-      proof(
-        goal(color(stone, black)),
-        by(fact("integrity-check.pl", clause(1)))
-      ),
-      proof(
-        goal(color(stone, white)),
-        by(fact("integrity-check.pl", clause(2)))
-      )
-    ])
+  step(
+    invalid_state(stone, conflicting_colors),
+    rule("integrity-check.pl", clause(3)),
+    ['X' = stone],
+    [
+      step(color(stone, black), fact("integrity-check.pl", clause(1)), [], []),
+      step(color(stone, white), fact("integrity-check.pl", clause(2)), [], [])
+    ]
   )
 ).
 
 status(stone, invalid(conflicting_colors)).
 why(
   status(stone, invalid(conflicting_colors)),
-  proof(
-    goal(status(stone, invalid(conflicting_colors))),
-    by(rule("integrity-check.pl", clause(4))),
-    bindings([binding("X", stone), binding("Reason", conflicting_colors)]),
-    uses([
-      proof(
-        goal(invalid_state(stone, conflicting_colors)),
-        by(rule("integrity-check.pl", clause(3))),
-        bindings([binding("X", stone)]),
-        uses([
-          proof(
-            goal(color(stone, black)),
-            by(fact("integrity-check.pl", clause(1)))
-          ),
-          proof(
-            goal(color(stone, white)),
-            by(fact("integrity-check.pl", clause(2)))
-          )
-        ])
+  step(
+    status(stone, invalid(conflicting_colors)),
+    rule("integrity-check.pl", clause(4)),
+    ['X' = stone, 'Reason' = conflicting_colors],
+    [
+      step(
+        invalid_state(stone, conflicting_colors),
+        rule("integrity-check.pl", clause(3)),
+        ['X' = stone],
+        [
+          step(color(stone, black), fact("integrity-check.pl", clause(1)), [], []),
+          step(color(stone, white), fact("integrity-check.pl", clause(2)), [], [])
+        ]
       )
-    ])
+    ]
   )
 ).
 

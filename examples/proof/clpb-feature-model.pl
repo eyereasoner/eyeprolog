@@ -1,108 +1,84 @@
 feature_plan(features(cloud(0), edge(1), audit(1), encryption(1))).
 why(
   feature_plan(features(cloud(0), edge(1), audit(1), encryption(1))),
-  proof(
-    goal(feature_plan(features(cloud(0), edge(1), audit(1), encryption(1)))),
-    by(rule("clpb-feature-model.pl", clause(2))),
-    bindings([binding("Cloud", 0), binding("Edge", 1), binding("Audit", 1), binding("Encryption", 1)]),
-    uses([
-      proof(
-        goal(feature_constraints(0, 1, 1, 1)),
-        by(rule("clpb-feature-model.pl", clause(1))),
-        bindings([binding("Cloud", 0), binding("Edge", 1), binding("Audit", 1), binding("Encryption", 1)]),
-        uses([
-          proof(
-            goal(sat(*(*(#(0, 1), =<(1, 1)), =<(1, 1)))),
-            by(library(sat, 1))
-          )
-        ])
+  step(
+    feature_plan(features(cloud(0), edge(1), audit(1), encryption(1))),
+    rule("clpb-feature-model.pl", clause(2)),
+    ['Cloud' = 0, 'Edge' = 1, 'Audit' = 1, 'Encryption' = 1],
+    [
+      step(
+        feature_constraints(0, 1, 1, 1),
+        rule("clpb-feature-model.pl", clause(1)),
+        ['Cloud' = 0, 'Edge' = 1, 'Audit' = 1, 'Encryption' = 1],
+        [
+          step(sat(*(*(#(0, 1), =<(1, 1)), =<(1, 1))), library(sat, 1), [], [])
+        ]
       ),
-      proof(
-        goal(labeling([0, 1, 1, 1])),
-        by(library(labeling, 1))
-      )
-    ])
+      step(labeling([0, 1, 1, 1]), library(labeling, 1), [], [])
+    ]
   )
 ).
 
 feature_plan(features(cloud(1), edge(0), audit(0), encryption(0))).
 why(
   feature_plan(features(cloud(1), edge(0), audit(0), encryption(0))),
-  proof(
-    goal(feature_plan(features(cloud(1), edge(0), audit(0), encryption(0)))),
-    by(rule("clpb-feature-model.pl", clause(2))),
-    bindings([binding("Cloud", 1), binding("Edge", 0), binding("Audit", 0), binding("Encryption", 0)]),
-    uses([
-      proof(
-        goal(feature_constraints(1, 0, 0, 0)),
-        by(rule("clpb-feature-model.pl", clause(1))),
-        bindings([binding("Cloud", 1), binding("Edge", 0), binding("Audit", 0), binding("Encryption", 0)]),
-        uses([
-          proof(
-            goal(sat(*(*(#(1, 0), =<(0, 0)), =<(0, 0)))),
-            by(library(sat, 1))
-          )
-        ])
+  step(
+    feature_plan(features(cloud(1), edge(0), audit(0), encryption(0))),
+    rule("clpb-feature-model.pl", clause(2)),
+    ['Cloud' = 1, 'Edge' = 0, 'Audit' = 0, 'Encryption' = 0],
+    [
+      step(
+        feature_constraints(1, 0, 0, 0),
+        rule("clpb-feature-model.pl", clause(1)),
+        ['Cloud' = 1, 'Edge' = 0, 'Audit' = 0, 'Encryption' = 0],
+        [
+          step(sat(*(*(#(1, 0), =<(0, 0)), =<(0, 0))), library(sat, 1), [], [])
+        ]
       ),
-      proof(
-        goal(labeling([1, 0, 0, 0])),
-        by(library(labeling, 1))
-      )
-    ])
+      step(labeling([1, 0, 0, 0]), library(labeling, 1), [], [])
+    ]
   )
 ).
 
 feature_plan(features(cloud(1), edge(0), audit(0), encryption(1))).
 why(
   feature_plan(features(cloud(1), edge(0), audit(0), encryption(1))),
-  proof(
-    goal(feature_plan(features(cloud(1), edge(0), audit(0), encryption(1)))),
-    by(rule("clpb-feature-model.pl", clause(2))),
-    bindings([binding("Cloud", 1), binding("Edge", 0), binding("Audit", 0), binding("Encryption", 1)]),
-    uses([
-      proof(
-        goal(feature_constraints(1, 0, 0, 1)),
-        by(rule("clpb-feature-model.pl", clause(1))),
-        bindings([binding("Cloud", 1), binding("Edge", 0), binding("Audit", 0), binding("Encryption", 1)]),
-        uses([
-          proof(
-            goal(sat(*(*(#(1, 0), =<(0, 1)), =<(0, 0)))),
-            by(library(sat, 1))
-          )
-        ])
+  step(
+    feature_plan(features(cloud(1), edge(0), audit(0), encryption(1))),
+    rule("clpb-feature-model.pl", clause(2)),
+    ['Cloud' = 1, 'Edge' = 0, 'Audit' = 0, 'Encryption' = 1],
+    [
+      step(
+        feature_constraints(1, 0, 0, 1),
+        rule("clpb-feature-model.pl", clause(1)),
+        ['Cloud' = 1, 'Edge' = 0, 'Audit' = 0, 'Encryption' = 1],
+        [
+          step(sat(*(*(#(1, 0), =<(0, 1)), =<(0, 0))), library(sat, 1), [], [])
+        ]
       ),
-      proof(
-        goal(labeling([1, 0, 0, 1])),
-        by(library(labeling, 1))
-      )
-    ])
+      step(labeling([1, 0, 0, 1]), library(labeling, 1), [], [])
+    ]
   )
 ).
 
 feature_plan(features(cloud(1), edge(0), audit(1), encryption(1))).
 why(
   feature_plan(features(cloud(1), edge(0), audit(1), encryption(1))),
-  proof(
-    goal(feature_plan(features(cloud(1), edge(0), audit(1), encryption(1)))),
-    by(rule("clpb-feature-model.pl", clause(2))),
-    bindings([binding("Cloud", 1), binding("Edge", 0), binding("Audit", 1), binding("Encryption", 1)]),
-    uses([
-      proof(
-        goal(feature_constraints(1, 0, 1, 1)),
-        by(rule("clpb-feature-model.pl", clause(1))),
-        bindings([binding("Cloud", 1), binding("Edge", 0), binding("Audit", 1), binding("Encryption", 1)]),
-        uses([
-          proof(
-            goal(sat(*(*(#(1, 0), =<(1, 1)), =<(0, 1)))),
-            by(library(sat, 1))
-          )
-        ])
+  step(
+    feature_plan(features(cloud(1), edge(0), audit(1), encryption(1))),
+    rule("clpb-feature-model.pl", clause(2)),
+    ['Cloud' = 1, 'Edge' = 0, 'Audit' = 1, 'Encryption' = 1],
+    [
+      step(
+        feature_constraints(1, 0, 1, 1),
+        rule("clpb-feature-model.pl", clause(1)),
+        ['Cloud' = 1, 'Edge' = 0, 'Audit' = 1, 'Encryption' = 1],
+        [
+          step(sat(*(*(#(1, 0), =<(1, 1)), =<(0, 1))), library(sat, 1), [], [])
+        ]
       ),
-      proof(
-        goal(labeling([1, 0, 1, 1])),
-        by(library(labeling, 1))
-      )
-    ])
+      step(labeling([1, 0, 1, 1]), library(labeling, 1), [], [])
+    ]
   )
 ).
 

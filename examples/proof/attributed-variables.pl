@@ -1,62 +1,44 @@
 accepts_required_value(ok).
 why(
   accepts_required_value(ok),
-  proof(
-    goal(accepts_required_value(ok)),
-    by(rule("attributed-variables.pl", clause(4))),
-    bindings([binding("X", 7)]),
-    uses([
-      proof(
-        goal(attach_required(Variable, 7)),
-        by(rule("attributed-variables.pl", clause(1))),
-        bindings([binding("Value", 7)]),
-        uses([
-          proof(
-            goal(put_atts(Variable, required(7))),
-            by(builtin(put_atts, 2))
-          )
-        ])
+  step(
+    accepts_required_value(ok),
+    rule("attributed-variables.pl", clause(4)),
+    ['X' = 7],
+    [
+      step(
+        attach_required(Variable, 7),
+        rule("attributed-variables.pl", clause(1)),
+        ['Value' = 7],
+        [
+          step(put_atts(Variable, required(7)), builtin(put_atts, 2), [], [])
+        ]
       ),
-      proof(
-        goal(=(7, 7)),
-        by(builtin(=, 2))
-      )
-    ])
+      step(=(7, 7), builtin(=, 2), [], [])
+    ]
   )
 ).
 
 alias_preserves_attribute(ok).
 why(
   alias_preserves_attribute(ok),
-  proof(
-    goal(alias_preserves_attribute(ok)),
-    by(rule("attributed-variables.pl", clause(5))),
-    bindings([binding("X", ready), binding("Y", ready)]),
-    uses([
-      proof(
-        goal(attach_required(Variable, ready)),
-        by(rule("attributed-variables.pl", clause(1))),
-        bindings([binding("Value", ready)]),
-        uses([
-          proof(
-            goal(put_atts(Variable, required(ready))),
-            by(builtin(put_atts, 2))
-          )
-        ])
+  step(
+    alias_preserves_attribute(ok),
+    rule("attributed-variables.pl", clause(5)),
+    ['X' = ready, 'Y' = ready],
+    [
+      step(
+        attach_required(Variable, ready),
+        rule("attributed-variables.pl", clause(1)),
+        ['Value' = ready],
+        [
+          step(put_atts(Variable, required(ready)), builtin(put_atts, 2), [], [])
+        ]
       ),
-      proof(
-        goal(=(Y, Y)),
-        by(builtin(=, 2))
-      ),
-      proof(
-        goal(get_atts(Y, required(ready))),
-        by(builtin(get_atts, 2))
-      ),
-      proof(
-        goal(=(ready, ready)),
-        by(builtin(=, 2))
-      )
-    ])
+      step(=(Y, Y), builtin(=, 2), [], []),
+      step(get_atts(Y, required(ready)), builtin(get_atts, 2), [], []),
+      step(=(ready, ready), builtin(=, 2), [], [])
+    ]
   )
 ).
 

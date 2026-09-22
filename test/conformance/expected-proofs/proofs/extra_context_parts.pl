@@ -1,62 +1,44 @@
 answer(context_parts, alpha, []).
 why(
   answer(context_parts, alpha, []),
-  proof(
-    goal(answer(context_parts, alpha, [])),
-    by(rule("<stdin>", clause(4))),
-    bindings([binding("Name", alpha), binding("Args", [])]),
-    uses([
-      proof(
-        goal(context_parts(alpha, [])),
-        by(rule("<stdin>", clause(3))),
-        bindings([binding("Name", alpha), binding("Args", []), binding("Statement", alpha)]),
-        uses([
-          proof(
-            goal(context_statement(alpha)),
-            by(fact("<stdin>", clause(1)))
-          ),
-          proof(
-            goal('=..'(alpha, [alpha])),
-            by(builtin('=..', 2))
-          ),
-          proof(
-            goal(atom(alpha)),
-            by(builtin(atom, 1))
-          )
-        ])
+  step(
+    answer(context_parts, alpha, []),
+    rule("<stdin>", clause(4)),
+    ['Name' = alpha, 'Args' = []],
+    [
+      step(
+        context_parts(alpha, []),
+        rule("<stdin>", clause(3)),
+        ['Name' = alpha, 'Args' = [], 'Statement' = alpha],
+        [
+          step(context_statement(alpha), fact("<stdin>", clause(1)), [], []),
+          step('=..'(alpha, [alpha]), builtin('=..', 2), [], []),
+          step(atom(alpha), builtin(atom, 1), [], [])
+        ]
       )
-    ])
+    ]
   )
 ).
 
 answer(context_parts, beta, [2]).
 why(
   answer(context_parts, beta, [2]),
-  proof(
-    goal(answer(context_parts, beta, [2])),
-    by(rule("<stdin>", clause(4))),
-    bindings([binding("Name", beta), binding("Args", [2])]),
-    uses([
-      proof(
-        goal(context_parts(beta, [2])),
-        by(rule("<stdin>", clause(3))),
-        bindings([binding("Name", beta), binding("Args", [2]), binding("Statement", beta(2))]),
-        uses([
-          proof(
-            goal(context_statement(beta(2))),
-            by(fact("<stdin>", clause(2)))
-          ),
-          proof(
-            goal('=..'(beta(2), [beta, 2])),
-            by(builtin('=..', 2))
-          ),
-          proof(
-            goal(atom(beta)),
-            by(builtin(atom, 1))
-          )
-        ])
+  step(
+    answer(context_parts, beta, [2]),
+    rule("<stdin>", clause(4)),
+    ['Name' = beta, 'Args' = [2]],
+    [
+      step(
+        context_parts(beta, [2]),
+        rule("<stdin>", clause(3)),
+        ['Name' = beta, 'Args' = [2], 'Statement' = beta(2)],
+        [
+          step(context_statement(beta(2)), fact("<stdin>", clause(2)), [], []),
+          step('=..'(beta(2), [beta, 2]), builtin('=..', 2), [], []),
+          step(atom(beta), builtin(atom, 1), [], [])
+        ]
       )
-    ])
+    ]
   )
 ).
 

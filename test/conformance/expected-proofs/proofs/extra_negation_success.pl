@@ -1,15 +1,13 @@
 answer(ok).
 why(
   answer(ok),
-  proof(
-    goal(answer(ok)),
-    by(rule("<stdin>", clause(2))),
-    uses([
-      proof(
-        goal('\\+'(known(b))),
-        by(builtin('\\+', 1))
-      )
-    ])
+  step(
+    answer(ok),
+    rule("<stdin>", clause(2)),
+    [],
+    [
+      step('\\+'(known(b)), builtin('\\+', 1), [], [])
+    ]
   )
 ).
 

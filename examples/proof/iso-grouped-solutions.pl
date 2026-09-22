@@ -1,145 +1,113 @@
 report(all_amounts, [7, 7, 5, 9]).
 why(
   report(all_amounts, [7, 7, 5, 9]),
-  proof(
-    goal(report(all_amounts, [7, 7, 5, 9])),
-    by(rule("iso-grouped-solutions.pl", clause(9))),
-    bindings([binding("Amounts", [7, 7, 5, 9])]),
-    uses([
-      proof(
-        goal(findall(Amount, sale(__anon0, __anon1, Amount), [7, 7, 5, 9])),
-        by(builtin(findall, 3))
-      )
-    ])
+  step(
+    report(all_amounts, [7, 7, 5, 9]),
+    rule("iso-grouped-solutions.pl", clause(9)),
+    ['Amounts' = [7, 7, 5, 9]],
+    [
+      step(findall(Amount, sale(__anon0, __anon1, Amount), [7, 7, 5, 9]), builtin(findall, 3), [], [])
+    ]
   )
 ).
 
 report(regional_total(north), 19).
 why(
   report(regional_total(north), 19),
-  proof(
-    goal(report(regional_total(north), 19)),
-    by(rule("iso-grouped-solutions.pl", clause(10))),
-    bindings([binding("Region", north), binding("Total", 19)]),
-    uses([
-      proof(
-        goal(regional_total(north, 19)),
-        by(rule("iso-grouped-solutions.pl", clause(6))),
-        bindings([binding("Region", north), binding("Total", 19), binding("Amounts", [7, 7, 5])]),
-        uses([
-          proof(
-            goal(bagof(Amount, ^(Seller, sale(north, Seller, Amount)), [7, 7, 5])),
-            by(builtin(bagof, 3))
-          ),
-          proof(
-            goal(sum_amounts([7, 7, 5], 19)),
-            by(rule("iso-grouped-solutions.pl", clause(8))),
-            bindings([binding("Amount", 7), binding("Rest", [7, 5]), binding("Total", 19), binding("Partial", 12)]),
-            uses([
-              proof(
-                goal(sum_amounts([7, 5], 12)),
-                by(rule("iso-grouped-solutions.pl", clause(8))),
-                bindings([binding("Amount", 7), binding("Rest", [5]), binding("Total", 12), binding("Partial", 5)]),
-                uses([
-                  proof(
-                    goal(sum_amounts([5], 5)),
-                    by(rule("iso-grouped-solutions.pl", clause(8))),
-                    bindings([binding("Amount", 5), binding("Rest", []), binding("Total", 5), binding("Partial", 0)]),
-                    uses([
-                      proof(
-                        goal(sum_amounts([], 0)),
-                        by(fact("iso-grouped-solutions.pl", clause(7)))
-                      ),
-                      proof(
-                        goal(is(5, '+'(5, 0))),
-                        by(builtin(is, 2))
-                      )
-                    ])
+  step(
+    report(regional_total(north), 19),
+    rule("iso-grouped-solutions.pl", clause(10)),
+    ['Region' = north, 'Total' = 19],
+    [
+      step(
+        regional_total(north, 19),
+        rule("iso-grouped-solutions.pl", clause(6)),
+        ['Region' = north, 'Total' = 19, 'Amounts' = [7, 7, 5]],
+        [
+          step(bagof(Amount, ^(Seller, sale(north, Seller, Amount)), [7, 7, 5]), builtin(bagof, 3), [], []),
+          step(
+            sum_amounts([7, 7, 5], 19),
+            rule("iso-grouped-solutions.pl", clause(8)),
+            ['Amount' = 7, 'Rest' = [7, 5], 'Total' = 19, 'Partial' = 12],
+            [
+              step(
+                sum_amounts([7, 5], 12),
+                rule("iso-grouped-solutions.pl", clause(8)),
+                ['Amount' = 7, 'Rest' = [5], 'Total' = 12, 'Partial' = 5],
+                [
+                  step(
+                    sum_amounts([5], 5),
+                    rule("iso-grouped-solutions.pl", clause(8)),
+                    ['Amount' = 5, 'Rest' = [], 'Total' = 5, 'Partial' = 0],
+                    [
+                      step(sum_amounts([], 0), fact("iso-grouped-solutions.pl", clause(7)), [], []),
+                      step(is(5, '+'(5, 0)), builtin(is, 2), [], [])
+                    ]
                   ),
-                  proof(
-                    goal(is(12, '+'(7, 5))),
-                    by(builtin(is, 2))
-                  )
-                ])
+                  step(is(12, '+'(7, 5)), builtin(is, 2), [], [])
+                ]
               ),
-              proof(
-                goal(is(19, '+'(7, 12))),
-                by(builtin(is, 2))
-              )
-            ])
+              step(is(19, '+'(7, 12)), builtin(is, 2), [], [])
+            ]
           )
-        ])
+        ]
       )
-    ])
+    ]
   )
 ).
 
 report(regional_total(south), 9).
 why(
   report(regional_total(south), 9),
-  proof(
-    goal(report(regional_total(south), 9)),
-    by(rule("iso-grouped-solutions.pl", clause(10))),
-    bindings([binding("Region", south), binding("Total", 9)]),
-    uses([
-      proof(
-        goal(regional_total(south, 9)),
-        by(rule("iso-grouped-solutions.pl", clause(6))),
-        bindings([binding("Region", south), binding("Total", 9), binding("Amounts", [9])]),
-        uses([
-          proof(
-            goal(bagof(Amount, ^(Seller, sale(south, Seller, Amount)), [9])),
-            by(builtin(bagof, 3))
-          ),
-          proof(
-            goal(sum_amounts([9], 9)),
-            by(rule("iso-grouped-solutions.pl", clause(8))),
-            bindings([binding("Amount", 9), binding("Rest", []), binding("Total", 9), binding("Partial", 0)]),
-            uses([
-              proof(
-                goal(sum_amounts([], 0)),
-                by(fact("iso-grouped-solutions.pl", clause(7)))
-              ),
-              proof(
-                goal(is(9, '+'(9, 0))),
-                by(builtin(is, 2))
-              )
-            ])
+  step(
+    report(regional_total(south), 9),
+    rule("iso-grouped-solutions.pl", clause(10)),
+    ['Region' = south, 'Total' = 9],
+    [
+      step(
+        regional_total(south, 9),
+        rule("iso-grouped-solutions.pl", clause(6)),
+        ['Region' = south, 'Total' = 9, 'Amounts' = [9]],
+        [
+          step(bagof(Amount, ^(Seller, sale(south, Seller, Amount)), [9]), builtin(bagof, 3), [], []),
+          step(
+            sum_amounts([9], 9),
+            rule("iso-grouped-solutions.pl", clause(8)),
+            ['Amount' = 9, 'Rest' = [], 'Total' = 9, 'Partial' = 0],
+            [
+              step(sum_amounts([], 0), fact("iso-grouped-solutions.pl", clause(7)), [], []),
+              step(is(9, '+'(9, 0)), builtin(is, 2), [], [])
+            ]
           )
-        ])
+        ]
       )
-    ])
+    ]
   )
 ).
 
 report(regions, [north, south]).
 why(
   report(regions, [north, south]),
-  proof(
-    goal(report(regions, [north, south])),
-    by(rule("iso-grouped-solutions.pl", clause(11))),
-    bindings([binding("Regions", [north, south])]),
-    uses([
-      proof(
-        goal(setof(Region, ^(Seller, ^(Amount, sale(Region, Seller, Amount))), [north, south])),
-        by(builtin(setof, 3))
-      )
-    ])
+  step(
+    report(regions, [north, south]),
+    rule("iso-grouped-solutions.pl", clause(11)),
+    ['Regions' = [north, south]],
+    [
+      step(setof(Region, ^(Seller, ^(Amount, sale(Region, Seller, Amount))), [north, south]), builtin(setof, 3), [], [])
+    ]
   )
 ).
 
 report(source_clause, visible).
 why(
   report(source_clause, visible),
-  proof(
-    goal(report(source_clause, visible)),
-    by(rule("iso-grouped-solutions.pl", clause(12))),
-    uses([
-      proof(
-        goal(clause(sale(north, ada, 7), true)),
-        by(builtin(clause, 2))
-      )
-    ])
+  step(
+    report(source_clause, visible),
+    rule("iso-grouped-solutions.pl", clause(12)),
+    [],
+    [
+      step(clause(sale(north, ada, 7), true), builtin(clause, 2), [], [])
+    ]
   )
 ).
 

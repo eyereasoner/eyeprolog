@@ -1,48 +1,30 @@
 allowed_pair(left, right).
 why(
   allowed_pair(left, right),
-  proof(
-    goal(allowed_pair(left, right)),
-    by(rule("dif-constraints.pl", clause(1))),
-    bindings([binding("X", left), binding("Y", right)]),
-    uses([
-      proof(
-        goal(dif(left, right)),
-        by(builtin(dif, 2))
-      ),
-      proof(
-        goal(=(left, left)),
-        by(builtin(=, 2))
-      ),
-      proof(
-        goal(=(right, right)),
-        by(builtin(=, 2))
-      )
-    ])
+  step(
+    allowed_pair(left, right),
+    rule("dif-constraints.pl", clause(1)),
+    ['X' = left, 'Y' = right],
+    [
+      step(dif(left, right), builtin(dif, 2), [], []),
+      step(=(left, left), builtin(=, 2), [], []),
+      step(=(right, right), builtin(=, 2), [], [])
+    ]
   )
 ).
 
 specialization(1, 1).
 why(
   specialization(1, 1),
-  proof(
-    goal(specialization(1, 1)),
-    by(rule("dif-constraints.pl", clause(2))),
-    bindings([binding("X", 1), binding("Y", 1)]),
-    uses([
-      proof(
-        goal(dif('-'(1, 1), '-'(1, 2))),
-        by(builtin(dif, 2))
-      ),
-      proof(
-        goal(=(1, 1)),
-        by(builtin(=, 2))
-      ),
-      proof(
-        goal(=(1, 1)),
-        by(builtin(=, 2))
-      )
-    ])
+  step(
+    specialization(1, 1),
+    rule("dif-constraints.pl", clause(2)),
+    ['X' = 1, 'Y' = 1],
+    [
+      step(dif('-'(1, 1), '-'(1, 2)), builtin(dif, 2), [], []),
+      step(=(1, 1), builtin(=, 2), [], []),
+      step(=(1, 1), builtin(=, 2), [], [])
+    ]
   )
 ).
 

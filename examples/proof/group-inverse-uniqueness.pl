@@ -1,84 +1,60 @@
 sameInverse(x, i, j).
 why(
   sameInverse(x, i, j),
-  proof(
-    goal(sameInverse(x, i, j)),
-    by(rule("group-inverse-uniqueness.pl", clause(16))),
-    bindings([binding("A", x), binding("B", i), binding("C", j)]),
-    uses([
-      proof(
-        goal(leftInverse(x, i)),
-        by(rule("group-inverse-uniqueness.pl", clause(14))),
-        bindings([binding("A", x), binding("B", i)]),
-        uses([
-          proof(
-            goal(group_op(i, x, e)),
-            by(fact("group-inverse-uniqueness.pl", clause(7)))
-          )
-        ])
+  step(
+    sameInverse(x, i, j),
+    rule("group-inverse-uniqueness.pl", clause(16)),
+    ['A' = x, 'B' = i, 'C' = j],
+    [
+      step(
+        leftInverse(x, i),
+        rule("group-inverse-uniqueness.pl", clause(14)),
+        ['A' = x, 'B' = i],
+        [
+          step(group_op(i, x, e), fact("group-inverse-uniqueness.pl", clause(7)), [], [])
+        ]
       ),
-      proof(
-        goal(rightInverse(x, j)),
-        by(rule("group-inverse-uniqueness.pl", clause(15))),
-        bindings([binding("A", x), binding("B", j)]),
-        uses([
-          proof(
-            goal(group_op(x, j, e)),
-            by(fact("group-inverse-uniqueness.pl", clause(8)))
-          )
-        ])
+      step(
+        rightInverse(x, j),
+        rule("group-inverse-uniqueness.pl", clause(15)),
+        ['A' = x, 'B' = j],
+        [
+          step(group_op(x, j, e), fact("group-inverse-uniqueness.pl", clause(8)), [], [])
+        ]
       ),
-      proof(
-        goal(sameTerm(i, j)),
-        by(fact("group-inverse-uniqueness.pl", clause(12)))
-      ),
-      proof(
-        goal(\=(i, j)),
-        by(builtin(\=, 2))
-      )
-    ])
+      step(sameTerm(i, j), fact("group-inverse-uniqueness.pl", clause(12)), [], []),
+      step(\=(i, j), builtin(\=, 2), [], [])
+    ]
   )
 ).
 
 sameInverse(x, j, i).
 why(
   sameInverse(x, j, i),
-  proof(
-    goal(sameInverse(x, j, i)),
-    by(rule("group-inverse-uniqueness.pl", clause(16))),
-    bindings([binding("A", x), binding("B", j), binding("C", i)]),
-    uses([
-      proof(
-        goal(leftInverse(x, j)),
-        by(rule("group-inverse-uniqueness.pl", clause(14))),
-        bindings([binding("A", x), binding("B", j)]),
-        uses([
-          proof(
-            goal(group_op(j, x, e)),
-            by(fact("group-inverse-uniqueness.pl", clause(9)))
-          )
-        ])
+  step(
+    sameInverse(x, j, i),
+    rule("group-inverse-uniqueness.pl", clause(16)),
+    ['A' = x, 'B' = j, 'C' = i],
+    [
+      step(
+        leftInverse(x, j),
+        rule("group-inverse-uniqueness.pl", clause(14)),
+        ['A' = x, 'B' = j],
+        [
+          step(group_op(j, x, e), fact("group-inverse-uniqueness.pl", clause(9)), [], [])
+        ]
       ),
-      proof(
-        goal(rightInverse(x, i)),
-        by(rule("group-inverse-uniqueness.pl", clause(15))),
-        bindings([binding("A", x), binding("B", i)]),
-        uses([
-          proof(
-            goal(group_op(x, i, e)),
-            by(fact("group-inverse-uniqueness.pl", clause(10)))
-          )
-        ])
+      step(
+        rightInverse(x, i),
+        rule("group-inverse-uniqueness.pl", clause(15)),
+        ['A' = x, 'B' = i],
+        [
+          step(group_op(x, i, e), fact("group-inverse-uniqueness.pl", clause(10)), [], [])
+        ]
       ),
-      proof(
-        goal(sameTerm(j, i)),
-        by(fact("group-inverse-uniqueness.pl", clause(13)))
-      ),
-      proof(
-        goal(\=(j, i)),
-        by(builtin(\=, 2))
-      )
-    ])
+      step(sameTerm(j, i), fact("group-inverse-uniqueness.pl", clause(13)), [], []),
+      step(\=(j, i), builtin(\=, 2), [], [])
+    ]
   )
 ).
 
