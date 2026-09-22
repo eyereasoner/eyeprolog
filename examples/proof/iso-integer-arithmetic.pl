@@ -1,67 +1,46 @@
-report(div_mod, quotient_remainder(-3, 2)).
-why(
-  report(div_mod, quotient_remainder(-3, 2)),
-  step(
-    report(div_mod, quotient_remainder(-3, 2)),
-    rule("iso-integer-arithmetic.pl", clause(1)),
-    ['Q' = -3, 'R' = 2],
-    [
-      step(is(-3, div(-7, 3)), builtin(is, 2), [], []),
-      step(is(2, mod(-7, 3)), builtin(is, 2), [], [])
-    ]
-  )
-).
+% Prolog result format 4
+query(1, report(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 5).
+answer(1, ['X0' = div_mod, 'X1' = quotient_remainder(-3, 2)]).
+why(1,
+    ['X0' = div_mod, 'X1' = quotient_remainder(-3, 2)],
+    [report(div_mod, quotient_remainder(-3, 2))]).
+answer(1, ['X0' = quotient_rem, 'X1' = quotient_remainder(-2, -1)]).
+why(1,
+    ['X0' = quotient_rem, 'X1' = quotient_remainder(-2, -1)],
+    [report(quotient_rem, quotient_remainder(-2, -1))]).
+answer(1, ['X0' = bit_mask, 'X1' = 4]).
+why(1, ['X0' = bit_mask, 'X1' = 4], [report(bit_mask, 4)]).
+answer(1, ['X0' = bit_union, 'X1' = 11]).
+why(1, ['X0' = bit_union, 'X1' = 11], [report(bit_union, 11)]).
+answer(1, ['X0' = left_shift, 'X1' = 12]).
+why(1, ['X0' = left_shift, 'X1' = 12], [report(left_shift, 12)]).
 
-report(quotient_rem, quotient_remainder(-2, -1)).
-why(
-  report(quotient_rem, quotient_remainder(-2, -1)),
-  step(
-    report(quotient_rem, quotient_remainder(-2, -1)),
-    rule("iso-integer-arithmetic.pl", clause(2)),
-    ['Q' = -2, 'R' = -1],
-    [
-      step(is(-2, //(-7, 3)), builtin(is, 2), [], []),
-      step(is(-1, rem(-7, 3)), builtin(is, 2), [], [])
-    ]
-  )
-).
+clause(1,
+       report(div_mod, quotient_remainder(var('Q'), var('R'))),
+       (var('Q') is -7 div 3, var('R') is -7 mod 3)).
+clause(2,
+       report(quotient_rem, quotient_remainder(var('Q'), var('R'))),
+       (var('Q') is -7 // 3, var('R') is -7 rem 3)).
+clause(3, report(bit_mask, var('Masked')), var('Masked') is 13 /\ 6).
+clause(4, report(bit_union, var('Union')), var('Union') is 8 \/ 3).
+clause(5, report(left_shift, var('Shifted')), var('Shifted') is 3 << 2).
 
-report(bit_mask, 4).
-why(
-  report(bit_mask, 4),
-  step(
-    report(bit_mask, 4),
-    rule("iso-integer-arithmetic.pl", clause(3)),
-    ['Masked' = 4],
-    [
-      step(is(4, /\(13, 6)), builtin(is, 2), [], [])
-    ]
-  )
-).
-
-report(bit_union, 11).
-why(
-  report(bit_union, 11),
-  step(
-    report(bit_union, 11),
-    rule("iso-integer-arithmetic.pl", clause(4)),
-    ['Union' = 11],
-    [
-      step(is(11, \/(8, 3)), builtin(is, 2), [], [])
-    ]
-  )
-).
-
-report(left_shift, 12).
-why(
-  report(left_shift, 12),
-  step(
-    report(left_shift, 12),
-    rule("iso-integer-arithmetic.pl", clause(5)),
-    ['Shifted' = 12],
-    [
-      step(is(12, <<(3, 2)), builtin(is, 2), [], [])
-    ]
-  )
-).
-
+step(report(div_mod, quotient_remainder(-3, 2)),
+     rule(1),
+     ['Q' = -3, 'R' = 2],
+     [-3 is -7 div 3, 2 is -7 mod 3]).
+step(-3 is -7 div 3, builtin, [], []).
+step(2 is -7 mod 3, builtin, [], []).
+step(report(quotient_rem, quotient_remainder(-2, -1)),
+     rule(2),
+     ['Q' = -2, 'R' = -1],
+     [-2 is -7 // 3, -1 is -7 rem 3]).
+step(-2 is -7 // 3, builtin, [], []).
+step(-1 is -7 rem 3, builtin, [], []).
+step(report(bit_mask, 4), rule(3), ['Masked' = 4], [4 is 13 /\ 6]).
+step(4 is 13 /\ 6, builtin, [], []).
+step(report(bit_union, 11), rule(4), ['Union' = 11], [11 is 8 \/ 3]).
+step(11 is 8 \/ 3, builtin, [], []).
+step(report(left_shift, 12), rule(5), ['Shifted' = 12], [12 is 3 << 2]).
+step(12 is 3 << 2, builtin, [], []).

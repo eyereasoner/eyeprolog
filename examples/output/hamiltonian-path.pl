@@ -1,121 +1,126 @@
-hasHamiltonianPath(graph, true).
-hamiltonianPath(graph, [v1, v2, v3, v6, v4, v5]).
-hamiltonianPath(graph, [v1, v2, v6, v3, v4, v5]).
-hamiltonianPath(graph, [v1, v3, v2, v6, v4, v5]).
-hamiltonianPath(graph, [v1, v3, v6, v2, v4, v5]).
-hamiltonianPath(graph, [v1, v5, v4, v2, v3, v6]).
-hamiltonianPath(graph, [v1, v5, v4, v2, v6, v3]).
-hamiltonianPath(graph, [v1, v5, v4, v3, v2, v6]).
-hamiltonianPath(graph, [v1, v5, v4, v3, v6, v2]).
-hamiltonianPath(graph, [v1, v5, v4, v6, v2, v3]).
-hamiltonianPath(graph, [v1, v5, v4, v6, v3, v2]).
-hamiltonianPath(graph, [v1, v6, v2, v3, v4, v5]).
-hamiltonianPath(graph, [v1, v6, v3, v2, v4, v5]).
-hamiltonianPath(graph, [v2, v1, v3, v6, v4, v5]).
-hamiltonianPath(graph, [v2, v1, v5, v4, v3, v6]).
-hamiltonianPath(graph, [v2, v1, v5, v4, v6, v3]).
-hamiltonianPath(graph, [v2, v1, v6, v3, v4, v5]).
-hamiltonianPath(graph, [v2, v3, v1, v5, v4, v6]).
-hamiltonianPath(graph, [v2, v3, v1, v6, v4, v5]).
-hamiltonianPath(graph, [v2, v3, v4, v5, v1, v6]).
-hamiltonianPath(graph, [v2, v3, v4, v6, v1, v5]).
-hamiltonianPath(graph, [v2, v3, v6, v1, v5, v4]).
-hamiltonianPath(graph, [v2, v3, v6, v4, v5, v1]).
-hamiltonianPath(graph, [v2, v4, v3, v6, v1, v5]).
-hamiltonianPath(graph, [v2, v4, v5, v1, v3, v6]).
-hamiltonianPath(graph, [v2, v4, v5, v1, v6, v3]).
-hamiltonianPath(graph, [v2, v4, v6, v3, v1, v5]).
-hamiltonianPath(graph, [v2, v6, v1, v3, v4, v5]).
-hamiltonianPath(graph, [v2, v6, v1, v5, v4, v3]).
-hamiltonianPath(graph, [v2, v6, v3, v1, v5, v4]).
-hamiltonianPath(graph, [v2, v6, v3, v4, v5, v1]).
-hamiltonianPath(graph, [v2, v6, v4, v3, v1, v5]).
-hamiltonianPath(graph, [v2, v6, v4, v5, v1, v3]).
-hamiltonianPath(graph, [v3, v1, v2, v6, v4, v5]).
-hamiltonianPath(graph, [v3, v1, v5, v4, v2, v6]).
-hamiltonianPath(graph, [v3, v1, v5, v4, v6, v2]).
-hamiltonianPath(graph, [v3, v1, v6, v2, v4, v5]).
-hamiltonianPath(graph, [v3, v2, v1, v5, v4, v6]).
-hamiltonianPath(graph, [v3, v2, v1, v6, v4, v5]).
-hamiltonianPath(graph, [v3, v2, v4, v5, v1, v6]).
-hamiltonianPath(graph, [v3, v2, v4, v6, v1, v5]).
-hamiltonianPath(graph, [v3, v2, v6, v1, v5, v4]).
-hamiltonianPath(graph, [v3, v2, v6, v4, v5, v1]).
-hamiltonianPath(graph, [v3, v4, v2, v6, v1, v5]).
-hamiltonianPath(graph, [v3, v4, v5, v1, v2, v6]).
-hamiltonianPath(graph, [v3, v4, v5, v1, v6, v2]).
-hamiltonianPath(graph, [v3, v4, v6, v2, v1, v5]).
-hamiltonianPath(graph, [v3, v6, v1, v2, v4, v5]).
-hamiltonianPath(graph, [v3, v6, v1, v5, v4, v2]).
-hamiltonianPath(graph, [v3, v6, v2, v1, v5, v4]).
-hamiltonianPath(graph, [v3, v6, v2, v4, v5, v1]).
-hamiltonianPath(graph, [v3, v6, v4, v2, v1, v5]).
-hamiltonianPath(graph, [v3, v6, v4, v5, v1, v2]).
-hamiltonianPath(graph, [v4, v2, v3, v6, v1, v5]).
-hamiltonianPath(graph, [v4, v2, v6, v3, v1, v5]).
-hamiltonianPath(graph, [v4, v3, v2, v6, v1, v5]).
-hamiltonianPath(graph, [v4, v3, v6, v2, v1, v5]).
-hamiltonianPath(graph, [v4, v5, v1, v2, v3, v6]).
-hamiltonianPath(graph, [v4, v5, v1, v2, v6, v3]).
-hamiltonianPath(graph, [v4, v5, v1, v3, v2, v6]).
-hamiltonianPath(graph, [v4, v5, v1, v3, v6, v2]).
-hamiltonianPath(graph, [v4, v5, v1, v6, v2, v3]).
-hamiltonianPath(graph, [v4, v5, v1, v6, v3, v2]).
-hamiltonianPath(graph, [v4, v6, v2, v3, v1, v5]).
-hamiltonianPath(graph, [v4, v6, v3, v2, v1, v5]).
-hamiltonianPath(graph, [v5, v1, v2, v3, v4, v6]).
-hamiltonianPath(graph, [v5, v1, v2, v3, v6, v4]).
-hamiltonianPath(graph, [v5, v1, v2, v4, v3, v6]).
-hamiltonianPath(graph, [v5, v1, v2, v4, v6, v3]).
-hamiltonianPath(graph, [v5, v1, v2, v6, v3, v4]).
-hamiltonianPath(graph, [v5, v1, v2, v6, v4, v3]).
-hamiltonianPath(graph, [v5, v1, v3, v2, v4, v6]).
-hamiltonianPath(graph, [v5, v1, v3, v2, v6, v4]).
-hamiltonianPath(graph, [v5, v1, v3, v4, v2, v6]).
-hamiltonianPath(graph, [v5, v1, v3, v4, v6, v2]).
-hamiltonianPath(graph, [v5, v1, v3, v6, v2, v4]).
-hamiltonianPath(graph, [v5, v1, v3, v6, v4, v2]).
-hamiltonianPath(graph, [v5, v1, v6, v2, v3, v4]).
-hamiltonianPath(graph, [v5, v1, v6, v2, v4, v3]).
-hamiltonianPath(graph, [v5, v1, v6, v3, v2, v4]).
-hamiltonianPath(graph, [v5, v1, v6, v3, v4, v2]).
-hamiltonianPath(graph, [v5, v1, v6, v4, v2, v3]).
-hamiltonianPath(graph, [v5, v1, v6, v4, v3, v2]).
-hamiltonianPath(graph, [v5, v4, v2, v1, v3, v6]).
-hamiltonianPath(graph, [v5, v4, v2, v1, v6, v3]).
-hamiltonianPath(graph, [v5, v4, v2, v3, v1, v6]).
-hamiltonianPath(graph, [v5, v4, v2, v3, v6, v1]).
-hamiltonianPath(graph, [v5, v4, v2, v6, v1, v3]).
-hamiltonianPath(graph, [v5, v4, v2, v6, v3, v1]).
-hamiltonianPath(graph, [v5, v4, v3, v1, v2, v6]).
-hamiltonianPath(graph, [v5, v4, v3, v1, v6, v2]).
-hamiltonianPath(graph, [v5, v4, v3, v2, v1, v6]).
-hamiltonianPath(graph, [v5, v4, v3, v2, v6, v1]).
-hamiltonianPath(graph, [v5, v4, v3, v6, v1, v2]).
-hamiltonianPath(graph, [v5, v4, v3, v6, v2, v1]).
-hamiltonianPath(graph, [v5, v4, v6, v1, v2, v3]).
-hamiltonianPath(graph, [v5, v4, v6, v1, v3, v2]).
-hamiltonianPath(graph, [v5, v4, v6, v2, v1, v3]).
-hamiltonianPath(graph, [v5, v4, v6, v2, v3, v1]).
-hamiltonianPath(graph, [v5, v4, v6, v3, v1, v2]).
-hamiltonianPath(graph, [v5, v4, v6, v3, v2, v1]).
-hamiltonianPath(graph, [v6, v1, v2, v3, v4, v5]).
-hamiltonianPath(graph, [v6, v1, v3, v2, v4, v5]).
-hamiltonianPath(graph, [v6, v1, v5, v4, v2, v3]).
-hamiltonianPath(graph, [v6, v1, v5, v4, v3, v2]).
-hamiltonianPath(graph, [v6, v2, v1, v3, v4, v5]).
-hamiltonianPath(graph, [v6, v2, v1, v5, v4, v3]).
-hamiltonianPath(graph, [v6, v2, v3, v1, v5, v4]).
-hamiltonianPath(graph, [v6, v2, v3, v4, v5, v1]).
-hamiltonianPath(graph, [v6, v2, v4, v3, v1, v5]).
-hamiltonianPath(graph, [v6, v2, v4, v5, v1, v3]).
-hamiltonianPath(graph, [v6, v3, v1, v2, v4, v5]).
-hamiltonianPath(graph, [v6, v3, v1, v5, v4, v2]).
-hamiltonianPath(graph, [v6, v3, v2, v1, v5, v4]).
-hamiltonianPath(graph, [v6, v3, v2, v4, v5, v1]).
-hamiltonianPath(graph, [v6, v3, v4, v2, v1, v5]).
-hamiltonianPath(graph, [v6, v3, v4, v5, v1, v2]).
-hamiltonianPath(graph, [v6, v4, v2, v3, v1, v5]).
-hamiltonianPath(graph, [v6, v4, v3, v2, v1, v5]).
-hamiltonianPath(graph, [v6, v4, v5, v1, v2, v3]).
-hamiltonianPath(graph, [v6, v4, v5, v1, v3, v2]).
+% Prolog result format 4
+query(1, hasHamiltonianPath(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 1).
+answer(1, ['X0' = graph, 'X1' = true]).
+query(2, hamiltonianPath(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(2, complete, 120).
+answer(2, ['X0' = graph, 'X1' = [v1, v2, v3, v6, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v1, v2, v6, v3, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v1, v3, v2, v6, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v1, v3, v6, v2, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v1, v5, v4, v2, v3, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v1, v5, v4, v2, v6, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v1, v5, v4, v3, v2, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v1, v5, v4, v3, v6, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v1, v5, v4, v6, v2, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v1, v5, v4, v6, v3, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v1, v6, v2, v3, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v1, v6, v3, v2, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v1, v3, v6, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v1, v5, v4, v3, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v1, v5, v4, v6, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v1, v6, v3, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v3, v1, v5, v4, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v3, v1, v6, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v3, v4, v5, v1, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v3, v4, v6, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v3, v6, v1, v5, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v3, v6, v4, v5, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v4, v3, v6, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v4, v5, v1, v3, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v4, v5, v1, v6, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v4, v6, v3, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v6, v1, v3, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v6, v1, v5, v4, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v6, v3, v1, v5, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v6, v3, v4, v5, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v6, v4, v3, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v2, v6, v4, v5, v1, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v1, v2, v6, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v1, v5, v4, v2, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v1, v5, v4, v6, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v1, v6, v2, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v2, v1, v5, v4, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v2, v1, v6, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v2, v4, v5, v1, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v2, v4, v6, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v2, v6, v1, v5, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v2, v6, v4, v5, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v4, v2, v6, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v4, v5, v1, v2, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v4, v5, v1, v6, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v4, v6, v2, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v6, v1, v2, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v6, v1, v5, v4, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v6, v2, v1, v5, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v6, v2, v4, v5, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v6, v4, v2, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v3, v6, v4, v5, v1, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v2, v3, v6, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v2, v6, v3, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v3, v2, v6, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v3, v6, v2, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v5, v1, v2, v3, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v5, v1, v2, v6, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v5, v1, v3, v2, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v5, v1, v3, v6, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v5, v1, v6, v2, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v5, v1, v6, v3, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v6, v2, v3, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v4, v6, v3, v2, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v2, v3, v4, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v2, v3, v6, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v2, v4, v3, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v2, v4, v6, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v2, v6, v3, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v2, v6, v4, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v3, v2, v4, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v3, v2, v6, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v3, v4, v2, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v3, v4, v6, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v3, v6, v2, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v3, v6, v4, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v6, v2, v3, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v6, v2, v4, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v6, v3, v2, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v6, v3, v4, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v6, v4, v2, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v1, v6, v4, v3, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v2, v1, v3, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v2, v1, v6, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v2, v3, v1, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v2, v3, v6, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v2, v6, v1, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v2, v6, v3, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v3, v1, v2, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v3, v1, v6, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v3, v2, v1, v6]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v3, v2, v6, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v3, v6, v1, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v3, v6, v2, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v6, v1, v2, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v6, v1, v3, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v6, v2, v1, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v6, v2, v3, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v6, v3, v1, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v5, v4, v6, v3, v2, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v1, v2, v3, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v1, v3, v2, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v1, v5, v4, v2, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v1, v5, v4, v3, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v2, v1, v3, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v2, v1, v5, v4, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v2, v3, v1, v5, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v2, v3, v4, v5, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v2, v4, v3, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v2, v4, v5, v1, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v3, v1, v2, v4, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v3, v1, v5, v4, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v3, v2, v1, v5, v4]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v3, v2, v4, v5, v1]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v3, v4, v2, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v3, v4, v5, v1, v2]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v4, v2, v3, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v4, v3, v2, v1, v5]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v4, v5, v1, v2, v3]]).
+answer(2, ['X0' = graph, 'X1' = [v6, v4, v5, v1, v3, v2]]).

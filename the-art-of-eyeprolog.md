@@ -66,9 +66,19 @@ node bin/eyeprolog.js examples/socrates.pl
 The EyeProlog command should print:
 
 ```text
-type(socrates, mortal).
-holds_result(test, true).
+% Prolog result format 4
+query(1, type(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 1).
+answer(1, ['X0' = socrates, 'X1' = mortal]).
+query(2, holds_result(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(2, complete, 1).
+answer(2, ['X0' = test, 'X1' = true]).
 ```
+
+A run answers in Prolog: `query/3` records the question that was asked,
+`result/3` how it finished and how many answers it had, and `answer/2` what
+each answer bound the question's variables to. The document is an ordinary
+program, so it can be saved, loaded and queried like any other.
 
 Then ask for the derivations:
 
@@ -1466,84 +1476,89 @@ valid source data or sound domain rules, but it makes both reviewable: a user
 can trace a decision to clauses, facts, bindings, and built-in operations
 instead of trusting an opaque status code.
 
-Use `--proof` or `-p` to add a machine-readable `why/2` fact after every answer:
+Use `--proof` or `-p` to add the derivations to the result document:
 
 ```sh
 eyeprolog --proof examples/socrates.pl
 ```
 
 ```eyeprolog
+% Prolog result format 4
+query(1, type(socrates, mortal), []).
+result(1, complete, 1).
+answer(1, []).
+why(1, [], [type(socrates, mortal)]).
 
-:- use_module(library(lists)).
+clause(1, type(socrates, man), true).
+clause(2, type(var('X'), mortal), type(var('X'), man)).
 
-why(
-  type(socrates, mortal),
-  step(
-    type(socrates, mortal),
-    rule("socrates.pl", clause(4)),
-    ['X' = socrates],
-    [
-      step(type(socrates, man), fact("socrates.pl", clause(3)), [], [])
-    ]
-  )
-).
+step(type(socrates, mortal), rule(2), ['X' = socrates], [type(socrates, man)]).
+step(type(socrates, man), fact(1), [], []).
 ```
 
-Proof output is valid EyeProlog input and can be kept as a proof certificate:
+`why/3` links an answer to the goals it proved, `clause/3` reproduces each
+clause the proof cites, and one `step/4` fact explains each justified
+conclusion. Proof output is valid EyeProlog input and can be kept and checked
+later:
 
 ```sh
 eyeprolog --proof examples/socrates.pl > socrates.why.pl
 eyeprolog --verify-proof socrates.why.pl examples/socrates.pl
 ```
 
-The second command checks the supplied `why/2` derivation against the program;
-it does not search again for a proof. A changed source clause, child goal, source
-location, or recorded substitution makes the certificate fail verification.
-Certificate input is parsed as Prolog data rather than loaded as a program, so
-its terms cannot trigger directives while being checked.
+The second command re-performs every inference the document records against
+the program; it does not search again for a proof. A changed source clause, a
+changed use, or a changed recorded binding makes the check fail. Proof input is
+parsed as Prolog data rather than loaded as a program, so its terms cannot
+trigger directives while being checked.
 
-A normal answer is one resolved ground term followed by a period. Strings,
-quoted atoms, lists, and compounds are rendered in supported source syntax so
-the output can be read back. Enabling `--proof`, `--warnings`, or `--stats`
-must not change which answers are found.
+Enabling `--proof`, `--warnings`, or `--stats` must not change which answers
+are found.
 
-The second argument of `why/2` is a proof step of the general shape
-`step(Conclusion, By, Bindings, Uses)`: what was concluded, the single term
-saying why it holds, the bindings that justification used as `'Name' = Value`
-pairs, and what it used. Those four parts in that order are what eyeron,
-eyeling and eyeleng write too — `pe:rule`, `pe:binding` and `pe:uses` in the
-two RDF syntaxes — so one reading serves the whole family.
+A step has the shape `step(Conclusion, By, Bindings, Uses)`: what was
+concluded, the single term saying why it holds, the bindings that
+justification used as `'Name' = Value` pairs, and the conclusions it used.
+Those four parts in that order are what eyeron, eyeling and eyeleng write too
+— `pe:rule`, `pe:binding` and `pe:uses` in the two RDF syntaxes — so one
+reading serves the whole family, and a use is named by its own conclusion
+rather than by an id to be joined back, which lets a proof be read downward
+from the claim.
 
-`Uses` differs from theirs in one way. There a premise is named by its own
-conclusion and looked up among sibling steps, because those engines reach a
-conclusion once. A resolution proof is a tree in which the same goal may be
-proved more than once, with different clauses, in different places — the two
-`q(1)` subproofs of `p(ok) :- q(1), q(1).` are the plain case — so `Uses`
-holds the nested steps themselves rather than references to them.
+A resolution proof is a tree in which the same goal may be proved more than
+once — the two `q(1)` subproofs of `p(ok) :- q(1), q(1).` are the plain case —
+but the *document* is flat: each conclusion gets one step, however many
+derivations reach it, and that step is the first one found. A proof therefore
+grows with the number of distinct conclusions, not with the shape of the
+search.
 
-User clauses are identified as `fact(Filename, clause(N))` or
-`rule(Filename, clause(N))`, with one-based source clause numbers. The
-filename is carried here and not in eyeron's own `rule(N)` because a program
-is assembled from several sources and the abstract/expanded distinction turns
-on whether a clause is library source. Built-ins
-are identified as `builtin(Name, Arity)`. By default, bundled Prolog-library
-predicates appear as `library(Name, Arity)` trusted boundaries. Use
-`--proof-detail expanded` to replace those boundaries with the library source
-clauses and any trusted built-ins they call. Explanation data is outside the
-logical semantics of the input program: it describes the derivation but does
-not participate in finding it.
+`By` is `rule(N)` or `fact(N)` citing a `clause/3` record, or `builtin`,
+`absent` or `collected` for a built-in goal, a completed `\+` or a completed
+`findall/3`. A clause is numbered by its position in its own source file, not
+by its position in the running database, so `assert/1` and `retract/1` cannot
+move what a citation means; a clause asserted at run time is in no source file
+at all and is recorded as `asserted`. A bundled library's clauses are not the
+program's own, so a step through one is recorded as `builtin`;
+`--proof-detail expanded` still explains *through* a library predicate rather
+than stopping at it. Explanation data is outside the logical semantics of the
+input program: it describes the derivation but does not participate in finding
+it.
 
-Verification checks source steps structurally: the named clause must exist, its
-head must unify with the certified goal, its body must correspond to the child
-proofs, and recorded clause-variable bindings must agree with that derivation.
-Built-ins and abstract library nodes are deliberately trusted boundaries. This
-separates proof discovery from proof checking without pretending that host
-operations can be justified by Prolog source that does not exist.
+Checking re-performs each step against the clause it cites: the clause must
+exist, its variables bound as the step recorded them must yield exactly this
+conclusion from exactly these uses, every claim must have a step, every use
+must resolve to a step or to a statement the program gives, and no conclusion
+may rest on itself. `builtin`, `absent`, `collected` and `asserted` steps are
+trusted rather than checked — deciding them again would mean running the
+program, which is what a checker must not do — and the report says how many
+there were rather than folding them into an undifferentiated success. An
+answer the solver found but the explanation cannot reproduce is recorded as
+`unproven`, which makes the document fail its check, because that is the
+truth about it.
 
-A second program can query `why/2`. Read a proof as an argument. If it contains
-irrelevant detours, improve the helpers. If a key premise is hidden inside an
-opaque value, model it as a fact. Designing for a good explanation often
-produces a better theory.
+A second program can query these facts. Read a proof as an argument. If it
+contains irrelevant detours, improve the helpers. If a key premise is hidden
+inside an opaque value, model it as a fact. Designing for a good explanation
+often produces a better theory.
 
 **Checkpoint.** Run `examples/socrates.pl` once normally and once with
 `--proof`. Confirm that the ground answers are unchanged. In one proof,

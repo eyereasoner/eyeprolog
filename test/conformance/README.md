@@ -69,7 +69,7 @@ Expected-warning cases consist of:
 Expected-proof cases consist of:
 
 - `conformance/proofs/<name>.pl` — input program run through the CLI with `--proof`;
-- `conformance/expected-proofs/<name>.pl` — exact expected standard output, including both answer facts and `why/2` proof facts.
+- `conformance/expected-proofs/<name>.pl` — exact expected standard output, including the `why/3`, `clause/3` and `step/4` facts a proof adds.
 
 Case names may be nested in category directories such as `arithmetic/`, `strings/`, `lists/`, `terms/`, `atoms/`, `variables/`, `negation/`, or `syntax/`. Expected files mirror the same relative path.
 

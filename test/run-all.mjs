@@ -9,6 +9,7 @@ import { runIsoStrict } from './run-iso-strict.mjs';
 import { runIsoPart2Amendment } from './run-iso-part2-amendment.mjs';
 import { runPlayground } from './run-playground.mjs';
 import { runExamples } from './run-examples.mjs';
+import { runProofChecking } from './run-proof-checking.mjs';
 import { runBookExamples } from './run-book-examples.mjs';
 import { runOpenRuleBenchChecks } from './run-openrulebench.mjs';
 import { runArchitecture } from './run-architecture.mjs';
@@ -34,5 +35,6 @@ await runStandalone(async (reporter) => {
   await runRegression(reporter);
   await runPlayground(reporter);
   await runExamples(reporter);
+  runProofChecking(reporter);
   runBookExamples(reporter);
 });

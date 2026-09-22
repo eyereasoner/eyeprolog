@@ -2,7 +2,15 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { run } from '../src/index.js';
+import { run as runProgram } from '../src/index.js';
+import { answerFacts } from './test-support.mjs';
+
+// These assertions are about what a goal answers, not about how a result
+// document is laid out, so they read a run's answers back as bare facts.
+function run(...args) {
+  const result = runProgram(...args);
+  return { ...result, stdout: answerFacts(result.stdout) };
+}
 import { Program } from '../src/program.js';
 import { TestReporter, assertEqual, isMainModule, runStandalone } from './test-style.mjs';
 

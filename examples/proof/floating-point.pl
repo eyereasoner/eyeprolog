@@ -1,121 +1,67 @@
-value(sum, 3.75).
-why(
-  value(sum, 3.75),
-  step(
-    value(sum, 3.75),
-    rule("floating-point.pl", clause(3)),
-    ['X' = 3.75],
-    [
-      step(is(3.75, '+'(1.5, 2.25)), builtin(is, 2), [], [])
-    ]
-  )
-).
+% Prolog result format 4
+query(1, value(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 8).
+answer(1, ['X0' = sum, 'X1' = 3.75]).
+why(1, ['X0' = sum, 'X1' = 3.75], [value(sum, 3.75)]).
+answer(1, ['X0' = difference, 'X1' = 6.875]).
+why(1, ['X0' = difference, 'X1' = 6.875], [value(difference, 6.875)]).
+answer(1, ['X0' = product, 'X1' = 10.0]).
+why(1, ['X0' = product, 'X1' = 10.0], [value(product, 10.0)]).
+answer(1, ['X0' = quotient, 'X1' = 3.75]).
+why(1, ['X0' = quotient, 'X1' = 3.75], [value(quotient, 3.75)]).
+answer(1, ['X0' = sqrtByPower, 'X1' = 3.0]).
+why(1, ['X0' = sqrtByPower, 'X1' = 3.0], [value(sqrtByPower, 3.0)]).
+answer(1, ['X0' = mathSum, 'X1' = 1.0]).
+why(1, ['X0' = mathSum, 'X1' = 1.0], [value(mathSum, 1.0)]).
+answer(1, ['X0' = mathProduct, 'X1' = 3.0]).
+why(1, ['X0' = mathProduct, 'X1' = 3.0], [value(mathProduct, 3.0)]).
+answer(1, ['X0' = comfortable, 'X1' = true]).
+why(1, ['X0' = comfortable, 'X1' = true], [value(comfortable, true)]).
+query(2, than(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(2, complete, 1).
+answer(2, ['X0' = warmer, 'X1' = targetC]).
+why(2, ['X0' = warmer, 'X1' = targetC], [than(warmer, targetC)]).
 
-value(difference, 6.875).
-why(
-  value(difference, 6.875),
-  step(
-    value(difference, 6.875),
-    rule("floating-point.pl", clause(4)),
-    ['X' = 6.875],
-    [
-      step(is(6.875, '-'(10.0, 3.125)), builtin(is, 2), [], [])
-    ]
-  )
-).
+clause(1, sample(roomC, 21.5), true).
+clause(2, sample(targetC, 19.25), true).
+clause(3, value(sum, var('X')), var('X') is 1.5 + 2.25).
+clause(4, value(difference, var('X')), var('X') is 10.0 - 3.125).
+clause(5, value(product, var('X')), var('X') is 2.5 * 4.0).
+clause(6, value(quotient, var('X')), var('X') is 7.5 / 2).
+clause(7, value(sqrtByPower, var('X')), var('X') is 9.0 ** 0.5).
+clause(8, value(mathSum, var('X')), var('X') is 0.125 + 0.875).
+clause(9, value(mathProduct, var('X')), var('X') is 6.0 * 0.5).
+clause(10,
+       than(warmer, targetC),
+       (sample(roomC, var('R')), sample(targetC, var('T')), var('R') > var('T'))).
+clause(11,
+       value(comfortable, true),
+       (sample(roomC, var('R')), var('R') >= 21.0, var('R') =< 22.0)).
 
-value(product, 10.0).
-why(
-  value(product, 10.0),
-  step(
-    value(product, 10.0),
-    rule("floating-point.pl", clause(5)),
-    ['X' = 10.0],
-    [
-      step(is(10.0, *(2.5, 4.0)), builtin(is, 2), [], [])
-    ]
-  )
-).
-
-value(quotient, 3.75).
-why(
-  value(quotient, 3.75),
-  step(
-    value(quotient, 3.75),
-    rule("floating-point.pl", clause(6)),
-    ['X' = 3.75],
-    [
-      step(is(3.75, /(7.5, 2)), builtin(is, 2), [], [])
-    ]
-  )
-).
-
-value(sqrtByPower, 3.0).
-why(
-  value(sqrtByPower, 3.0),
-  step(
-    value(sqrtByPower, 3.0),
-    rule("floating-point.pl", clause(7)),
-    ['X' = 3.0],
-    [
-      step(is(3.0, **(9.0, 0.5)), builtin(is, 2), [], [])
-    ]
-  )
-).
-
-value(mathSum, 1.0).
-why(
-  value(mathSum, 1.0),
-  step(
-    value(mathSum, 1.0),
-    rule("floating-point.pl", clause(8)),
-    ['X' = 1.0],
-    [
-      step(is(1.0, '+'(0.125, 0.875)), builtin(is, 2), [], [])
-    ]
-  )
-).
-
-value(mathProduct, 3.0).
-why(
-  value(mathProduct, 3.0),
-  step(
-    value(mathProduct, 3.0),
-    rule("floating-point.pl", clause(9)),
-    ['X' = 3.0],
-    [
-      step(is(3.0, *(6.0, 0.5)), builtin(is, 2), [], [])
-    ]
-  )
-).
-
-value(comfortable, true).
-why(
-  value(comfortable, true),
-  step(
-    value(comfortable, true),
-    rule("floating-point.pl", clause(11)),
-    ['R' = 21.5],
-    [
-      step(sample(roomC, 21.5), fact("floating-point.pl", clause(1)), [], []),
-      step(>=(21.5, 21.0), builtin(>=, 2), [], []),
-      step(=<(21.5, 22.0), builtin(=<, 2), [], [])
-    ]
-  )
-).
-
-than(warmer, targetC).
-why(
-  than(warmer, targetC),
-  step(
-    than(warmer, targetC),
-    rule("floating-point.pl", clause(10)),
-    ['R' = 21.5, 'T' = 19.25],
-    [
-      step(sample(roomC, 21.5), fact("floating-point.pl", clause(1)), [], []),
-      step(sample(targetC, 19.25), fact("floating-point.pl", clause(2)), [], []),
-      step(>(21.5, 19.25), builtin(>, 2), [], [])
-    ]
-  )
-).
-
+step(value(sum, 3.75), rule(3), ['X' = 3.75], [3.75 is 1.5 + 2.25]).
+step(3.75 is 1.5 + 2.25, builtin, [], []).
+step(value(difference, 6.875), rule(4), ['X' = 6.875], [6.875 is 10.0 - 3.125]).
+step(6.875 is 10.0 - 3.125, builtin, [], []).
+step(value(product, 10.0), rule(5), ['X' = 10.0], [10.0 is 2.5 * 4.0]).
+step(10.0 is 2.5 * 4.0, builtin, [], []).
+step(value(quotient, 3.75), rule(6), ['X' = 3.75], [3.75 is 7.5 / 2]).
+step(3.75 is 7.5 / 2, builtin, [], []).
+step(value(sqrtByPower, 3.0), rule(7), ['X' = 3.0], [3.0 is 9.0 ** 0.5]).
+step(3.0 is 9.0 ** 0.5, builtin, [], []).
+step(value(mathSum, 1.0), rule(8), ['X' = 1.0], [1.0 is 0.125 + 0.875]).
+step(1.0 is 0.125 + 0.875, builtin, [], []).
+step(value(mathProduct, 3.0), rule(9), ['X' = 3.0], [3.0 is 6.0 * 0.5]).
+step(3.0 is 6.0 * 0.5, builtin, [], []).
+step(value(comfortable, true),
+     rule(11),
+     ['R' = 21.5],
+     [sample(roomC, 21.5), 21.5 >= 21.0, 21.5 =< 22.0]).
+step(sample(roomC, 21.5), fact(1), [], []).
+step(21.5 >= 21.0, builtin, [], []).
+step(21.5 =< 22.0, builtin, [], []).
+step(than(warmer, targetC),
+     rule(10),
+     ['R' = 21.5, 'T' = 19.25],
+     [sample(roomC, 21.5), sample(targetC, 19.25), 21.5 > 19.25]).
+step(sample(targetC, 19.25), fact(2), [], []).
+step(21.5 > 19.25, builtin, [], []).

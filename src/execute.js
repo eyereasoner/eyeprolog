@@ -25,11 +25,14 @@ export function executeGoals(program, solver, goals, { onAnswer = () => {} } = {
   const queriedKeys = new Set(goals.map((goal) => `${goal.name}/${goal.arity}`));
   const facts = program.sourceFactLines(queriedKeys, initialWriteOptions);
   const seen = new Set();
+  const queries = goals.map((goal) => ({ ...projectQuery(goal), answers: [] }));
   let haltCode = null;
 
   try {
     solver.runInitializations();
-    for (const goal of goals) {
+    for (let index = 0; index < goals.length; index++) {
+      const goal = goals[index];
+      const query = queries[index];
       solver.solutionsSeen = 0;
       for (const env of solver.solve([goal], new Env(), 0)) {
         if (!termIsGround(goal, env)) continue;
@@ -37,6 +40,7 @@ export function executeGoals(program, solver, goals, { onAnswer = () => {} } = {
         const line = `${formatTermForWrite(resolved, new Env(), currentWriteOptions(program, solver))}.\n`;
         if (facts.has(line) || seen.has(line)) continue;
         seen.add(line);
+        query.answers.push({ bindings: answerBindings(query.variables, env), resolved });
         onAnswer(line, resolved);
       }
     }
@@ -45,7 +49,35 @@ export function executeGoals(program, solver, goals, { onAnswer = () => {} } = {
     haltCode = error.code;
   }
 
-  return { haltCode };
+  return { haltCode, queries };
+}
+
+// A query, as `query/3` records it: the goal with each distinct variable
+// renamed `_0`, `_1`, ... in first-encountered order, and the projection
+// pairing each source name with the variable it stands for. Renaming is
+// what lets the goal and its projection share variables when the fact is
+// read back, where source names alone would not survive.
+function projectQuery(goal) {
+  const renamed = new Map();
+  const rename = (term) => {
+    if (term.type === VAR) {
+      if (!renamed.has(term.name)) renamed.set(term.name, variable(`_${renamed.size}`));
+      return renamed.get(term.name);
+    }
+    if (term.type === COMPOUND) return compound(term.name, term.args.map(rename));
+    return term;
+  };
+  const projected = rename(goal);
+  // Every variable of the goal is projected, anonymous ones included: a
+  // question written `p(_, _)` asks what those positions can be, and the
+  // bindings are the only place an answer can say so.
+  const variables = [...renamed.entries()].map(([name, placeholder]) => ({ name, rendered: placeholder.name, source: name }));
+  return { goal: projected, variables, original: goal };
+}
+
+// What a query's variables are bound to in one answer.
+function answerBindings(variables, env) {
+  return variables.map(({ name, source }) => ({ name, value: copyResolved(variable(source), env) }));
 }
 
 function currentWriteOptions(program, solver) {

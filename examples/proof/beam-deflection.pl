@@ -1,128 +1,112 @@
-type(beam1, cantilever_beam).
-why(
-  type(beam1, cantilever_beam),
-  step(
-    type(beam1, cantilever_beam),
-    rule("beam-deflection.pl", clause(8)),
-    ['Beam' = beam1, '_force' = 1200.0],
-    [
-      step(beam(beam1, force_N, 1200.0), fact("beam-deflection.pl", clause(1)), [], [])
-    ]
-  )
-).
+% Prolog result format 4
+query(1, type(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 1).
+answer(1, ['X0' = beam1, 'X1' = cantilever_beam]).
+why(1, ['X0' = beam1, 'X1' = cantilever_beam], [type(beam1, cantilever_beam)]).
+query(2, tipDeflection_m(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(2, complete, 1).
+answer(2, ['X0' = beam1, 'X1' = 0.00390625]).
+why(2, ['X0' = beam1, 'X1' = 0.00390625], [tipDeflection_m(beam1, 0.00390625)]).
+query(3, tipDeflection_mm(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(3, complete, 1).
+answer(3, ['X0' = beam1, 'X1' = 3.90625]).
+why(3, ['X0' = beam1, 'X1' = 3.90625], [tipDeflection_mm(beam1, 3.90625)]).
+query(4, limit_mm(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(4, complete, 1).
+answer(4, ['X0' = beam1, 'X1' = 5.0]).
+why(4, ['X0' = beam1, 'X1' = 5.0], [limit_mm(beam1, 5.0)]).
+query(5, status(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(5, complete, 1).
+answer(5, ['X0' = beam1, 'X1' = within_deflection_limit]).
+why(5, ['X0' = beam1, 'X1' = within_deflection_limit], [status(beam1, within_deflection_limit)]).
 
-tipDeflection_m(beam1, 0.00390625).
-why(
-  tipDeflection_m(beam1, 0.00390625),
-  step(
-    tipDeflection_m(beam1, 0.00390625),
-    rule("beam-deflection.pl", clause(9)),
-    ['Beam' = beam1, 'Deflectionm' = 0.00390625],
-    [
-      step(
-        tip_deflection_m(beam1, 0.00390625),
-        rule("beam-deflection.pl", clause(6)),
-        ['Beam' = beam1, 'Deflection' = 0.00390625, 'Force' = 1200.0, 'Length' = 2.5, 'Elasticmodulus' = 200000000000.0, 'Secondmoment' = 0.000008, 'Lengthcubed' = 15.625, 'Numerator' = 18750.0, 'Threee' = 600000000000.0, 'Denominator' = 4800000.0],
-        [
-          step(beam(beam1, force_N, 1200.0), fact("beam-deflection.pl", clause(1)), [], []),
-          step(beam(beam1, length_m, 2.5), fact("beam-deflection.pl", clause(2)), [], []),
-          step(beam(beam1, elasticModulus_Pa, 200000000000.0), fact("beam-deflection.pl", clause(3)), [], []),
-          step(beam(beam1, secondMoment_m4, 0.000008), fact("beam-deflection.pl", clause(4)), [], []),
-          step(is(15.625, **(2.5, 3.0)), builtin(is, 2), [], []),
-          step(is(18750.0, *(1200.0, 15.625)), builtin(is, 2), [], []),
-          step(is(600000000000.0, *(3.0, 200000000000.0)), builtin(is, 2), [], []),
-          step(is(4800000.0, *(600000000000.0, 0.000008)), builtin(is, 2), [], []),
-          step(is(0.00390625, /(18750.0, 4800000.0)), builtin(is, 2), [], [])
-        ]
-      )
-    ]
-  )
-).
+clause(1, beam(beam1, force_N, 1200.0), true).
+clause(2, beam(beam1, length_m, 2.5), true).
+clause(3, beam(beam1, elasticModulus_Pa, 200000000000.0), true).
+clause(4, beam(beam1, secondMoment_m4, 0.000008), true).
+clause(5, limit(beam1, maxDeflection_mm, 5.0), true).
+clause(6,
+       tip_deflection_m(var('Beam'), var('Deflection')),
+       (beam(var('Beam'), force_N, var('Force')),
+        beam(var('Beam'), length_m, var('Length')),
+        beam(var('Beam'), elasticModulus_Pa, var('Elasticmodulus')),
+        beam(var('Beam'), secondMoment_m4, var('Secondmoment')),
+        var('Lengthcubed') is var('Length') ** 3.0,
+        var('Numerator') is var('Force') * var('Lengthcubed'),
+        var('Threee') is 3.0 * var('Elasticmodulus'),
+        var('Denominator') is var('Threee') * var('Secondmoment'),
+        var('Deflection') is var('Numerator') / var('Denominator'))).
+clause(7,
+       tip_deflection_mm(var('Beam'), var('Deflectionmm')),
+       (tip_deflection_m(var('Beam'), var('Deflectionm')),
+        var('Deflectionmm') is var('Deflectionm') * 1000.0)).
+clause(8, type(var('Beam'), cantilever_beam), beam(var('Beam'), force_N, anonymous(1))).
+clause(9,
+       tipDeflection_m(var('Beam'), var('Deflectionm')),
+       tip_deflection_m(var('Beam'), var('Deflectionm'))).
+clause(10,
+       tipDeflection_mm(var('Beam'), var('Deflectionmm')),
+       tip_deflection_mm(var('Beam'), var('Deflectionmm'))).
+clause(11,
+       limit_mm(var('Beam'), var('Limit')),
+       limit(var('Beam'), maxDeflection_mm, var('Limit'))).
+clause(12,
+       status(var('Beam'), within_deflection_limit),
+       (tip_deflection_mm(var('Beam'), var('Deflectionmm')),
+        limit(var('Beam'), maxDeflection_mm, var('Limit')),
+        var('Deflectionmm') =< var('Limit'))).
 
-tipDeflection_mm(beam1, 3.90625).
-why(
-  tipDeflection_mm(beam1, 3.90625),
-  step(
-    tipDeflection_mm(beam1, 3.90625),
-    rule("beam-deflection.pl", clause(10)),
-    ['Beam' = beam1, 'Deflectionmm' = 3.90625],
-    [
-      step(
-        tip_deflection_mm(beam1, 3.90625),
-        rule("beam-deflection.pl", clause(7)),
-        ['Beam' = beam1, 'Deflectionmm' = 3.90625, 'Deflectionm' = 0.00390625],
-        [
-          step(
-            tip_deflection_m(beam1, 0.00390625),
-            rule("beam-deflection.pl", clause(6)),
-            ['Beam' = beam1, 'Deflection' = 0.00390625, 'Force' = 1200.0, 'Length' = 2.5, 'Elasticmodulus' = 200000000000.0, 'Secondmoment' = 0.000008, 'Lengthcubed' = 15.625, 'Numerator' = 18750.0, 'Threee' = 600000000000.0, 'Denominator' = 4800000.0],
-            [
-              step(beam(beam1, force_N, 1200.0), fact("beam-deflection.pl", clause(1)), [], []),
-              step(beam(beam1, length_m, 2.5), fact("beam-deflection.pl", clause(2)), [], []),
-              step(beam(beam1, elasticModulus_Pa, 200000000000.0), fact("beam-deflection.pl", clause(3)), [], []),
-              step(beam(beam1, secondMoment_m4, 0.000008), fact("beam-deflection.pl", clause(4)), [], []),
-              step(is(15.625, **(2.5, 3.0)), builtin(is, 2), [], []),
-              step(is(18750.0, *(1200.0, 15.625)), builtin(is, 2), [], []),
-              step(is(600000000000.0, *(3.0, 200000000000.0)), builtin(is, 2), [], []),
-              step(is(4800000.0, *(600000000000.0, 0.000008)), builtin(is, 2), [], []),
-              step(is(0.00390625, /(18750.0, 4800000.0)), builtin(is, 2), [], [])
-            ]
-          ),
-          step(is(3.90625, *(0.00390625, 1000.0)), builtin(is, 2), [], [])
-        ]
-      )
-    ]
-  )
-).
-
-limit_mm(beam1, 5.0).
-why(
-  limit_mm(beam1, 5.0),
-  step(
-    limit_mm(beam1, 5.0),
-    rule("beam-deflection.pl", clause(11)),
-    ['Beam' = beam1, 'Limit' = 5.0],
-    [
-      step(limit(beam1, maxDeflection_mm, 5.0), fact("beam-deflection.pl", clause(5)), [], [])
-    ]
-  )
-).
-
-status(beam1, within_deflection_limit).
-why(
-  status(beam1, within_deflection_limit),
-  step(
-    status(beam1, within_deflection_limit),
-    rule("beam-deflection.pl", clause(12)),
-    ['Beam' = beam1, 'Deflectionmm' = 3.90625, 'Limit' = 5.0],
-    [
-      step(
-        tip_deflection_mm(beam1, 3.90625),
-        rule("beam-deflection.pl", clause(7)),
-        ['Beam' = beam1, 'Deflectionmm' = 3.90625, 'Deflectionm' = 0.00390625],
-        [
-          step(
-            tip_deflection_m(beam1, 0.00390625),
-            rule("beam-deflection.pl", clause(6)),
-            ['Beam' = beam1, 'Deflection' = 0.00390625, 'Force' = 1200.0, 'Length' = 2.5, 'Elasticmodulus' = 200000000000.0, 'Secondmoment' = 0.000008, 'Lengthcubed' = 15.625, 'Numerator' = 18750.0, 'Threee' = 600000000000.0, 'Denominator' = 4800000.0],
-            [
-              step(beam(beam1, force_N, 1200.0), fact("beam-deflection.pl", clause(1)), [], []),
-              step(beam(beam1, length_m, 2.5), fact("beam-deflection.pl", clause(2)), [], []),
-              step(beam(beam1, elasticModulus_Pa, 200000000000.0), fact("beam-deflection.pl", clause(3)), [], []),
-              step(beam(beam1, secondMoment_m4, 0.000008), fact("beam-deflection.pl", clause(4)), [], []),
-              step(is(15.625, **(2.5, 3.0)), builtin(is, 2), [], []),
-              step(is(18750.0, *(1200.0, 15.625)), builtin(is, 2), [], []),
-              step(is(600000000000.0, *(3.0, 200000000000.0)), builtin(is, 2), [], []),
-              step(is(4800000.0, *(600000000000.0, 0.000008)), builtin(is, 2), [], []),
-              step(is(0.00390625, /(18750.0, 4800000.0)), builtin(is, 2), [], [])
-            ]
-          ),
-          step(is(3.90625, *(0.00390625, 1000.0)), builtin(is, 2), [], [])
-        ]
-      ),
-      step(limit(beam1, maxDeflection_mm, 5.0), fact("beam-deflection.pl", clause(5)), [], []),
-      step(=<(3.90625, 5.0), builtin(=<, 2), [], [])
-    ]
-  )
-).
-
+step(type(beam1, cantilever_beam), rule(8), ['Beam' = beam1], [beam(beam1, force_N, 1200.0)]).
+step(beam(beam1, force_N, 1200.0), fact(1), [], []).
+step(tipDeflection_m(beam1, 0.00390625),
+     rule(9),
+     ['Beam' = beam1, 'Deflectionm' = 0.00390625],
+     [tip_deflection_m(beam1, 0.00390625)]).
+step(tip_deflection_m(beam1, 0.00390625),
+     rule(6),
+     ['Beam' = beam1,
+      'Deflection' = 0.00390625,
+      'Force' = 1200.0,
+      'Length' = 2.5,
+      'Elasticmodulus' = 200000000000.0,
+      'Secondmoment' = 0.000008,
+      'Lengthcubed' = 15.625,
+      'Numerator' = 18750.0,
+      'Threee' = 600000000000.0,
+      'Denominator' = 4800000.0],
+     [beam(beam1, force_N, 1200.0),
+      beam(beam1, length_m, 2.5),
+      beam(beam1, elasticModulus_Pa, 200000000000.0),
+      beam(beam1, secondMoment_m4, 0.000008),
+      15.625 is 2.5 ** 3.0,
+      18750.0 is 1200.0 * 15.625,
+      600000000000.0 is 3.0 * 200000000000.0,
+      4800000.0 is 600000000000.0 * 0.000008,
+      0.00390625 is 18750.0 / 4800000.0]).
+step(beam(beam1, length_m, 2.5), fact(2), [], []).
+step(beam(beam1, elasticModulus_Pa, 200000000000.0), fact(3), [], []).
+step(beam(beam1, secondMoment_m4, 0.000008), fact(4), [], []).
+step(15.625 is 2.5 ** 3.0, builtin, [], []).
+step(18750.0 is 1200.0 * 15.625, builtin, [], []).
+step(600000000000.0 is 3.0 * 200000000000.0, builtin, [], []).
+step(4800000.0 is 600000000000.0 * 0.000008, builtin, [], []).
+step(0.00390625 is 18750.0 / 4800000.0, builtin, [], []).
+step(tipDeflection_mm(beam1, 3.90625),
+     rule(10),
+     ['Beam' = beam1, 'Deflectionmm' = 3.90625],
+     [tip_deflection_mm(beam1, 3.90625)]).
+step(tip_deflection_mm(beam1, 3.90625),
+     rule(7),
+     ['Beam' = beam1, 'Deflectionmm' = 3.90625, 'Deflectionm' = 0.00390625],
+     [tip_deflection_m(beam1, 0.00390625), 3.90625 is 0.00390625 * 1000.0]).
+step(3.90625 is 0.00390625 * 1000.0, builtin, [], []).
+step(limit_mm(beam1, 5.0),
+     rule(11),
+     ['Beam' = beam1, 'Limit' = 5.0],
+     [limit(beam1, maxDeflection_mm, 5.0)]).
+step(limit(beam1, maxDeflection_mm, 5.0), fact(5), [], []).
+step(status(beam1, within_deflection_limit),
+     rule(12),
+     ['Beam' = beam1, 'Deflectionmm' = 3.90625, 'Limit' = 5.0],
+     [tip_deflection_mm(beam1, 3.90625), limit(beam1, maxDeflection_mm, 5.0), 3.90625 =< 5.0]).
+step(3.90625 =< 5.0, builtin, [], []).

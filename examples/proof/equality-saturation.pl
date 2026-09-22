@@ -1,86 +1,62 @@
-egraphAnswer(start, add(mul(add(x, 0), 1), mul(2, add(1, 2)))).
-why(
-  egraphAnswer(start, add(mul(add(x, 0), 1), mul(2, add(1, 2)))),
-  step(
-    egraphAnswer(start, add(mul(add(x, 0), 1), mul(2, add(1, 2)))),
-    rule("equality-saturation.pl", clause(28)),
-    ['Expr' = add(mul(add(x, 0), 1), mul(2, add(1, 2)))],
-    [
-      step(expr(start, add(mul(add(x, 0), 1), mul(2, add(1, 2)))), fact("equality-saturation.pl", clause(4)), [], [])
-    ]
-  )
-).
+% Prolog result format 4
+query(1, egraphAnswer(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 5).
+answer(1, ['X0' = start, 'X1' = add(mul(add(x, 0), 1), mul(2, add(1, 2)))]).
+why(1,
+    ['X0' = start, 'X1' = add(mul(add(x, 0), 1), mul(2, add(1, 2)))],
+    [egraphAnswer(start, add(mul(add(x, 0), 1), mul(2, add(1, 2))))]).
+answer(1, ['X0' = best, 'X1' = add(x, 6)]).
+why(1, ['X0' = best, 'X1' = add(x, 6)], [egraphAnswer(best, add(x, 6))]).
+answer(1, ['X0' = cost, 'X1' = 3]).
+why(1, ['X0' = cost, 'X1' = 3], [egraphAnswer(cost, 3)]).
+answer(1, ['X0' = candidate_count, 'X1' = 32]).
+why(1, ['X0' = candidate_count, 'X1' = 32], [egraphAnswer(candidate_count, 32)]).
+answer(1,
+       ['X0' = note,
+        'X1' = "bounded equality saturation extracts the cheapest term without a real e-graph"]).
+why(1,
+    ['X0' = note,
+     'X1' = "bounded equality saturation extracts the cheapest term without a real e-graph"],
+    [egraphAnswer(note, "bounded equality saturation extracts the cheapest term without a real e-graph")]).
 
-egraphAnswer(best, add(x, 6)).
-why(
-  egraphAnswer(best, add(x, 6)),
-  step(
-    egraphAnswer(best, add(x, 6)),
-    rule("equality-saturation.pl", clause(29)),
-    ['Expr' = add(x, 6), '__anon0' = 3],
-    [
-      step(
-        best_expression(add(x, 6), 3),
-        rule("equality-saturation.pl", clause(27)),
-        ['Expr' = add(x, 6), 'Cost' = 3],
-        [
-          step(aggregate_min([Candidate_cost, Value], Value, (candidate_expression(Value), expr_cost(Value, Candidate_cost)), [3, add(x, 6)], add(x, 6)), library(aggregate_min, 5), [], [])
-        ]
-      )
-    ]
-  )
-).
+clause(4, expr(start, add(mul(add(x, 0), 1), mul(2, add(1, 2)))), true).
+clause(27,
+       best_expression(var('Expr'), var('Cost')),
+       aggregate_min([var('Candidate_cost'), var('Candidate')], var('Candidate'), (candidate_expression(var('Candidate')), expr_cost(var('Candidate'), var('Candidate_cost'))), [var('Cost'), var('Expr')], var('Expr'))).
+clause(28, egraphAnswer(start, var('Expr')), expr(start, var('Expr'))).
+clause(29, egraphAnswer(best, var('Expr')), best_expression(var('Expr'), anonymous(1))).
+clause(30, egraphAnswer(cost, var('Cost')), best_expression(anonymous(1), var('Cost'))).
+clause(31,
+       egraphAnswer(candidate_count, var('Count')),
+       countall(candidate_expression(anonymous(1)), var('Count'))).
+clause(32,
+       egraphAnswer(note, "bounded equality saturation extracts the cheapest term without a real e-graph"),
+       best_expression(anonymous(1), anonymous(2))).
 
-egraphAnswer(cost, 3).
-why(
-  egraphAnswer(cost, 3),
-  step(
-    egraphAnswer(cost, 3),
-    rule("equality-saturation.pl", clause(30)),
-    ['Cost' = 3, '__anon1' = add(x, 6)],
-    [
-      step(
-        best_expression(add(x, 6), 3),
-        rule("equality-saturation.pl", clause(27)),
-        ['Expr' = add(x, 6), 'Cost' = 3],
-        [
-          step(aggregate_min([Candidate_cost, Value], Value, (candidate_expression(Value), expr_cost(Value, Candidate_cost)), [3, add(x, 6)], add(x, 6)), library(aggregate_min, 5), [], [])
-        ]
-      )
-    ]
-  )
-).
-
-egraphAnswer(candidate_count, 32).
-why(
-  egraphAnswer(candidate_count, 32),
-  step(
-    egraphAnswer(candidate_count, 32),
-    rule("equality-saturation.pl", clause(31)),
-    ['Count' = 32],
-    [
-      step(countall(candidate_expression(__anon2), 32), library(countall, 2), [], [])
-    ]
-  )
-).
-
-egraphAnswer(note, "bounded equality saturation extracts the cheapest term without a real e-graph").
-why(
-  egraphAnswer(note, "bounded equality saturation extracts the cheapest term without a real e-graph"),
-  step(
-    egraphAnswer(note, "bounded equality saturation extracts the cheapest term without a real e-graph"),
-    rule("equality-saturation.pl", clause(32)),
-    ['__anon3' = add(x, 6), '__anon4' = 3],
-    [
-      step(
-        best_expression(add(x, 6), 3),
-        rule("equality-saturation.pl", clause(27)),
-        ['Expr' = add(x, 6), 'Cost' = 3],
-        [
-          step(aggregate_min([Candidate_cost, Value], Value, (candidate_expression(Value), expr_cost(Value, Candidate_cost)), [3, add(x, 6)], add(x, 6)), library(aggregate_min, 5), [], [])
-        ]
-      )
-    ]
-  )
-).
-
+step(egraphAnswer(start, add(mul(add(x, 0), 1), mul(2, add(1, 2)))),
+     rule(28),
+     ['Expr' = add(mul(add(x, 0), 1), mul(2, add(1, 2)))],
+     [expr(start, add(mul(add(x, 0), 1), mul(2, add(1, 2))))]).
+step(expr(start, add(mul(add(x, 0), 1), mul(2, add(1, 2)))), fact(4), [], []).
+step(egraphAnswer(best, add(x, 6)),
+     rule(29),
+     ['Expr' = add(x, 6)],
+     [best_expression(add(x, 6), 3)]).
+step(best_expression(add(x, 6), 3),
+     rule(27),
+     ['Expr' = add(x, 6), 'Cost' = 3],
+     [aggregate_min([Candidate_cost, Value], Value, (candidate_expression(Value), expr_cost(Value, Candidate_cost)), [3, add(x, 6)], add(x, 6))]).
+step(aggregate_min([Candidate_cost, Value], Value, (candidate_expression(Value), expr_cost(Value, Candidate_cost)), [3, add(x, 6)], add(x, 6)),
+     builtin,
+     [],
+     []).
+step(egraphAnswer(cost, 3), rule(30), ['Cost' = 3], [best_expression(add(x, 6), 3)]).
+step(egraphAnswer(candidate_count, 32),
+     rule(31),
+     ['Count' = 32],
+     [countall(candidate_expression(__anon2), 32)]).
+step(countall(candidate_expression(__anon2), 32), builtin, [], []).
+step(egraphAnswer(note, "bounded equality saturation extracts the cheapest term without a real e-graph"),
+     rule(32),
+     [],
+     [best_expression(add(x, 6), 3)]).

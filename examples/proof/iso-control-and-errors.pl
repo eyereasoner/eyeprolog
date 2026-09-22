@@ -1,108 +1,86 @@
-report(first_destination, ghent).
-why(
-  report(first_destination, ghent),
-  step(
-    report(first_destination, ghent),
-    rule("iso-control-and-errors.pl", clause(8)),
-    ['To' = ghent],
-    [
-      step(
-        first_destination(antwerp, ghent),
-        rule("iso-control-and-errors.pl", clause(3)),
-        ['From' = antwerp, 'To' = ghent],
-        [
-          step(
-            once(route(antwerp, ghent)),
-            builtin(once, 1),
-            [],
-            [
-              step(route(antwerp, ghent), fact("iso-control-and-errors.pl", clause(1)), [], [])
-            ]
-          )
-        ]
-      )
-    ]
-  )
-).
+% Prolog result format 4
+query(1, report(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 5).
+answer(1, ['X0' = first_destination, 'X1' = ghent]).
+why(1, ['X0' = first_destination, 'X1' = ghent], [report(first_destination, ghent)]).
+answer(1, ['X0' = cut_destination, 'X1' = ghent]).
+why(1, ['X0' = cut_destination, 'X1' = ghent], [report(cut_destination, ghent)]).
+answer(1, ['X0' = existing_route, 'X1' = connected]).
+why(1, ['X0' = existing_route, 'X1' = connected], [report(existing_route, connected)]).
+answer(1, ['X0' = missing_route, 'X1' = disconnected]).
+why(1, ['X0' = missing_route, 'X1' = disconnected], [report(missing_route, disconnected)]).
+answer(1, ['X0' = recovered_exception, 'X1' = rejected]).
+why(1, ['X0' = recovered_exception, 'X1' = rejected], [report(recovered_exception, rejected)]).
 
-report(cut_destination, ghent).
-why(
-  report(cut_destination, ghent),
-  step(
-    report(cut_destination, ghent),
-    rule("iso-control-and-errors.pl", clause(9)),
-    ['To' = ghent],
-    [
-      step(
-        preferred_destination(antwerp, ghent),
-        rule("iso-control-and-errors.pl", clause(4)),
-        ['From' = antwerp, 'To' = ghent],
-        [
-          step(route(antwerp, ghent), fact("iso-control-and-errors.pl", clause(1)), [], []),
-          step(!, builtin(goal, 0), [], [])
-        ]
-      )
-    ]
-  )
-).
+clause(1, route(antwerp, ghent), true).
+clause(3, first_destination(var('From'), var('To')), once(route(var('From'), var('To')))).
+clause(4, preferred_destination(var('From'), var('To')), (route(var('From'), var('To')), !)).
+clause(5,
+       travel_status(var('From'), var('To'), var('Status')),
+       (call(route(var('From'), var('To'))) -> var('Status') = connected ; var('Status') = disconnected)).
+clause(7,
+       checked_route(var('From'), var('To'), var('Result')),
+       catch((require_route(var('From'), var('To')), var('Result') = accepted), no_route(var('From'), var('To')), var('Result') = rejected)).
+clause(8, report(first_destination, var('To')), first_destination(antwerp, var('To'))).
+clause(9, report(cut_destination, var('To')), preferred_destination(antwerp, var('To'))).
+clause(10, report(existing_route, var('Status')), travel_status(antwerp, ghent, var('Status'))).
+clause(11, report(missing_route, var('Status')), travel_status(antwerp, paris, var('Status'))).
+clause(12,
+       report(recovered_exception, var('Result')),
+       checked_route(antwerp, paris, var('Result'))).
 
-report(existing_route, connected).
-why(
-  report(existing_route, connected),
-  step(
-    report(existing_route, connected),
-    rule("iso-control-and-errors.pl", clause(10)),
-    ['Status' = connected],
-    [
-      step(
-        travel_status(antwerp, ghent, connected),
-        rule("iso-control-and-errors.pl", clause(5)),
-        ['From' = antwerp, 'To' = ghent, 'Status' = connected],
-        [
-          step(';'(->(call(route(antwerp, ghent)), =(connected, connected)), =(connected, disconnected)), builtin(';', 2), [], [])
-        ]
-      )
-    ]
-  )
-).
-
-report(missing_route, disconnected).
-why(
-  report(missing_route, disconnected),
-  step(
-    report(missing_route, disconnected),
-    rule("iso-control-and-errors.pl", clause(11)),
-    ['Status' = disconnected],
-    [
-      step(
-        travel_status(antwerp, paris, disconnected),
-        rule("iso-control-and-errors.pl", clause(5)),
-        ['From' = antwerp, 'To' = paris, 'Status' = disconnected],
-        [
-          step(';'(->(call(route(antwerp, paris)), =(disconnected, connected)), =(disconnected, disconnected)), builtin(';', 2), [], [])
-        ]
-      )
-    ]
-  )
-).
-
-report(recovered_exception, rejected).
-why(
-  report(recovered_exception, rejected),
-  step(
-    report(recovered_exception, rejected),
-    rule("iso-control-and-errors.pl", clause(12)),
-    ['Result' = rejected],
-    [
-      step(
-        checked_route(antwerp, paris, rejected),
-        rule("iso-control-and-errors.pl", clause(7)),
-        ['From' = antwerp, 'To' = paris, 'Result' = rejected],
-        [
-          step(catch((require_route(antwerp, paris), =(rejected, accepted)), no_route(antwerp, paris), =(rejected, rejected)), builtin(catch, 3), [], [])
-        ]
-      )
-    ]
-  )
-).
-
+step(report(first_destination, ghent),
+     rule(8),
+     ['To' = ghent],
+     [first_destination(antwerp, ghent)]).
+step(first_destination(antwerp, ghent),
+     rule(3),
+     ['From' = antwerp, 'To' = ghent],
+     [once(route(antwerp, ghent))]).
+step(once(route(antwerp, ghent)), builtin, [], [route(antwerp, ghent)]).
+step(route(antwerp, ghent), fact(1), [], []).
+step(report(cut_destination, ghent),
+     rule(9),
+     ['To' = ghent],
+     [preferred_destination(antwerp, ghent)]).
+step(preferred_destination(antwerp, ghent),
+     rule(4),
+     ['From' = antwerp, 'To' = ghent],
+     [route(antwerp, ghent), !]).
+step(!, builtin, [], []).
+step(report(existing_route, connected),
+     rule(10),
+     ['Status' = connected],
+     [travel_status(antwerp, ghent, connected)]).
+step(travel_status(antwerp, ghent, connected),
+     rule(5),
+     ['From' = antwerp, 'To' = ghent, 'Status' = connected],
+     [(call(route(antwerp, ghent)) -> connected = connected ; connected = disconnected)]).
+step((call(route(antwerp, ghent)) -> connected = connected ; connected = disconnected),
+     builtin,
+     [],
+     []).
+step(report(missing_route, disconnected),
+     rule(11),
+     ['Status' = disconnected],
+     [travel_status(antwerp, paris, disconnected)]).
+step(travel_status(antwerp, paris, disconnected),
+     rule(5),
+     ['From' = antwerp, 'To' = paris, 'Status' = disconnected],
+     [(call(route(antwerp, paris)) -> disconnected = connected ; disconnected = disconnected)]).
+step((call(route(antwerp, paris)) -> disconnected = connected ; disconnected = disconnected),
+     builtin,
+     [],
+     []).
+step(report(recovered_exception, rejected),
+     rule(12),
+     ['Result' = rejected],
+     [checked_route(antwerp, paris, rejected)]).
+step(checked_route(antwerp, paris, rejected),
+     rule(7),
+     ['From' = antwerp, 'To' = paris, 'Result' = rejected],
+     [catch((require_route(antwerp, paris), rejected = accepted), no_route(antwerp, paris), rejected = rejected)]).
+step(catch((require_route(antwerp, paris), rejected = accepted), no_route(antwerp, paris), rejected = rejected),
+     builtin,
+     [],
+     []).

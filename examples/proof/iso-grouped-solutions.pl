@@ -1,113 +1,89 @@
-report(all_amounts, [7, 7, 5, 9]).
-why(
-  report(all_amounts, [7, 7, 5, 9]),
-  step(
-    report(all_amounts, [7, 7, 5, 9]),
-    rule("iso-grouped-solutions.pl", clause(9)),
-    ['Amounts' = [7, 7, 5, 9]],
-    [
-      step(findall(Amount, sale(__anon0, __anon1, Amount), [7, 7, 5, 9]), builtin(findall, 3), [], [])
-    ]
-  )
-).
+% Prolog result format 4
+query(1, report(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 5).
+answer(1, ['X0' = all_amounts, 'X1' = [7, 7, 5, 9]]).
+why(1, ['X0' = all_amounts, 'X1' = [7, 7, 5, 9]], [report(all_amounts, [7, 7, 5, 9])]).
+answer(1, ['X0' = regional_total(north), 'X1' = 19]).
+why(1, ['X0' = regional_total(north), 'X1' = 19], [report(regional_total(north), 19)]).
+answer(1, ['X0' = regional_total(south), 'X1' = 9]).
+why(1, ['X0' = regional_total(south), 'X1' = 9], [report(regional_total(south), 9)]).
+answer(1, ['X0' = regions, 'X1' = [north, south]]).
+why(1, ['X0' = regions, 'X1' = [north, south]], [report(regions, [north, south])]).
+answer(1, ['X0' = source_clause, 'X1' = visible]).
+why(1, ['X0' = source_clause, 'X1' = visible], [report(source_clause, visible)]).
 
-report(regional_total(north), 19).
-why(
-  report(regional_total(north), 19),
-  step(
-    report(regional_total(north), 19),
-    rule("iso-grouped-solutions.pl", clause(10)),
-    ['Region' = north, 'Total' = 19],
-    [
-      step(
-        regional_total(north, 19),
-        rule("iso-grouped-solutions.pl", clause(6)),
-        ['Region' = north, 'Total' = 19, 'Amounts' = [7, 7, 5]],
-        [
-          step(bagof(Amount, ^(Seller, sale(north, Seller, Amount)), [7, 7, 5]), builtin(bagof, 3), [], []),
-          step(
-            sum_amounts([7, 7, 5], 19),
-            rule("iso-grouped-solutions.pl", clause(8)),
-            ['Amount' = 7, 'Rest' = [7, 5], 'Total' = 19, 'Partial' = 12],
-            [
-              step(
-                sum_amounts([7, 5], 12),
-                rule("iso-grouped-solutions.pl", clause(8)),
-                ['Amount' = 7, 'Rest' = [5], 'Total' = 12, 'Partial' = 5],
-                [
-                  step(
-                    sum_amounts([5], 5),
-                    rule("iso-grouped-solutions.pl", clause(8)),
-                    ['Amount' = 5, 'Rest' = [], 'Total' = 5, 'Partial' = 0],
-                    [
-                      step(sum_amounts([], 0), fact("iso-grouped-solutions.pl", clause(7)), [], []),
-                      step(is(5, '+'(5, 0)), builtin(is, 2), [], [])
-                    ]
-                  ),
-                  step(is(12, '+'(7, 5)), builtin(is, 2), [], [])
-                ]
-              ),
-              step(is(19, '+'(7, 12)), builtin(is, 2), [], [])
-            ]
-          )
-        ]
-      )
-    ]
-  )
-).
+clause(6,
+       regional_total(var('Region'), var('Total')),
+       (bagof(var('Amount'), var('Seller') ^ sale(var('Region'), var('Seller'), var('Amount')), var('Amounts')),
+        sum_amounts(var('Amounts'), var('Total')))).
+clause(7, sum_amounts([], 0), true).
+clause(8,
+       sum_amounts([var('Amount') | var('Rest')], var('Total')),
+       (sum_amounts(var('Rest'), var('Partial')),
+        var('Total') is var('Amount') + var('Partial'))).
+clause(9,
+       report(all_amounts, var('Amounts')),
+       findall(var('Amount'), sale(anonymous(1), anonymous(2), var('Amount')), var('Amounts'))).
+clause(10,
+       report(regional_total(var('Region')), var('Total')),
+       regional_total(var('Region'), var('Total'))).
+clause(11,
+       report(regions, var('Regions')),
+       setof(var('Region'), var('Seller') ^ var('Amount') ^ sale(var('Region'), var('Seller'), var('Amount')), var('Regions'))).
+clause(12, report(source_clause, visible), clause(sale(north, ada, 7), true)).
 
-report(regional_total(south), 9).
-why(
-  report(regional_total(south), 9),
-  step(
-    report(regional_total(south), 9),
-    rule("iso-grouped-solutions.pl", clause(10)),
-    ['Region' = south, 'Total' = 9],
-    [
-      step(
-        regional_total(south, 9),
-        rule("iso-grouped-solutions.pl", clause(6)),
-        ['Region' = south, 'Total' = 9, 'Amounts' = [9]],
-        [
-          step(bagof(Amount, ^(Seller, sale(south, Seller, Amount)), [9]), builtin(bagof, 3), [], []),
-          step(
-            sum_amounts([9], 9),
-            rule("iso-grouped-solutions.pl", clause(8)),
-            ['Amount' = 9, 'Rest' = [], 'Total' = 9, 'Partial' = 0],
-            [
-              step(sum_amounts([], 0), fact("iso-grouped-solutions.pl", clause(7)), [], []),
-              step(is(9, '+'(9, 0)), builtin(is, 2), [], [])
-            ]
-          )
-        ]
-      )
-    ]
-  )
-).
-
-report(regions, [north, south]).
-why(
-  report(regions, [north, south]),
-  step(
-    report(regions, [north, south]),
-    rule("iso-grouped-solutions.pl", clause(11)),
-    ['Regions' = [north, south]],
-    [
-      step(setof(Region, ^(Seller, ^(Amount, sale(Region, Seller, Amount))), [north, south]), builtin(setof, 3), [], [])
-    ]
-  )
-).
-
-report(source_clause, visible).
-why(
-  report(source_clause, visible),
-  step(
-    report(source_clause, visible),
-    rule("iso-grouped-solutions.pl", clause(12)),
-    [],
-    [
-      step(clause(sale(north, ada, 7), true), builtin(clause, 2), [], [])
-    ]
-  )
-).
-
+step(report(all_amounts, [7, 7, 5, 9]),
+     rule(9),
+     ['Amounts' = [7, 7, 5, 9]],
+     [findall(Amount, sale(__anon0, __anon1, Amount), [7, 7, 5, 9])]).
+step(findall(Amount, sale(__anon0, __anon1, Amount), [7, 7, 5, 9]), collected, [], []).
+step(report(regional_total(north), 19),
+     rule(10),
+     ['Region' = north, 'Total' = 19],
+     [regional_total(north, 19)]).
+step(regional_total(north, 19),
+     rule(6),
+     ['Region' = north, 'Total' = 19, 'Amounts' = [7, 7, 5]],
+     [bagof(Amount, Seller ^ sale(north, Seller, Amount), [7, 7, 5]),
+      sum_amounts([7, 7, 5], 19)]).
+step(bagof(Amount, Seller ^ sale(north, Seller, Amount), [7, 7, 5]), builtin, [], []).
+step(sum_amounts([7, 7, 5], 19),
+     rule(8),
+     ['Amount' = 7, 'Rest' = [7, 5], 'Total' = 19, 'Partial' = 12],
+     [sum_amounts([7, 5], 12), 19 is 7 + 12]).
+step(sum_amounts([7, 5], 12),
+     rule(8),
+     ['Amount' = 7, 'Rest' = [5], 'Total' = 12, 'Partial' = 5],
+     [sum_amounts([5], 5), 12 is 7 + 5]).
+step(sum_amounts([5], 5),
+     rule(8),
+     ['Amount' = 5, 'Rest' = [], 'Total' = 5, 'Partial' = 0],
+     [sum_amounts([], 0), 5 is 5 + 0]).
+step(sum_amounts([], 0), fact(7), [], []).
+step(5 is 5 + 0, builtin, [], []).
+step(12 is 7 + 5, builtin, [], []).
+step(19 is 7 + 12, builtin, [], []).
+step(report(regional_total(south), 9),
+     rule(10),
+     ['Region' = south, 'Total' = 9],
+     [regional_total(south, 9)]).
+step(regional_total(south, 9),
+     rule(6),
+     ['Region' = south, 'Total' = 9, 'Amounts' = [9]],
+     [bagof(Amount, Seller ^ sale(south, Seller, Amount), [9]), sum_amounts([9], 9)]).
+step(bagof(Amount, Seller ^ sale(south, Seller, Amount), [9]), builtin, [], []).
+step(sum_amounts([9], 9),
+     rule(8),
+     ['Amount' = 9, 'Rest' = [], 'Total' = 9, 'Partial' = 0],
+     [sum_amounts([], 0), 9 is 9 + 0]).
+step(9 is 9 + 0, builtin, [], []).
+step(report(regions, [north, south]),
+     rule(11),
+     ['Regions' = [north, south]],
+     [setof(Region, Seller ^ Amount ^ sale(Region, Seller, Amount), [north, south])]).
+step(setof(Region, Seller ^ Amount ^ sale(Region, Seller, Amount), [north, south]),
+     builtin,
+     [],
+     []).
+step(report(source_clause, visible), rule(12), [], [clause(sale(north, ada, 7), true)]).
+step(clause(sale(north, ada, 7), true), builtin, [], []).

@@ -18,6 +18,7 @@ import {
   isMainModule,
   runStandalone,
 } from './test-style.mjs';
+import { answerFacts } from './test-support.mjs';
 
 const testRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const packageRoot = path.resolve(testRoot, '..');
@@ -52,7 +53,7 @@ export async function runPlayground(reporter = new TestReporter()) {
       options: { goal: 'answer(X)' },
     }, deterministicClock());
     assertEqual(result.ok, true, 'worker result status');
-    assertEqual(result.stdout, 'answer("ab").\n', 'append/3 output');
+    assertEqual(answerFacts(result.stdout), 'answer("ab").\n', 'append/3 output');
     assertEqual(result.elapsedMs, 1, 'elapsed time');
   });
 
@@ -65,8 +66,8 @@ export async function runPlayground(reporter = new TestReporter()) {
       source: ':- use_module(library(lists)).\nanswer(X) :- member(X, [red, green]).\n',
       options: { goal: 'answer(X)' },
     });
-    assertEqual(first.stdout, 'answer("cba").\n', 'first worker output');
-    assertEqual(second.stdout, 'answer(red).\nanswer(green).\n', 'second worker output');
+    assertEqual(answerFacts(first.stdout), 'answer("cba").\n', 'first worker output');
+    assertEqual(answerFacts(second.stdout), 'answer(red).\nanswer(green).\n', 'second worker output');
   });
 
   await reporter.testAsync('worker runs finite-domain CLP(Z) programs', async () => {
@@ -79,7 +80,7 @@ export async function runPlayground(reporter = new TestReporter()) {
       options: { goal: 'answer(X, Y)' },
     });
     assertEqual(result.ok, true, 'CLP(Z) worker result status');
-    assertEqual(result.stdout, 'answer(1, 3).\n', 'CLP(Z) worker output');
+    assertEqual(answerFacts(result.stdout), 'answer(1, 3).\n', 'CLP(Z) worker output');
   });
 
   await reporter.testAsync('worker message protocol returns serializable results', async () => {
@@ -94,7 +95,7 @@ export async function runPlayground(reporter = new TestReporter()) {
     });
     assertEqual(messages.length, 1, 'posted message count');
     assertEqual(messages[0].ok, true, 'posted result status');
-    assertEqual(messages[0].stdout, 'answer([ok]).\n', 'posted result output');
+    assertEqual(answerFacts(messages[0].stdout), 'answer([ok]).\n', 'posted result output');
     JSON.stringify(messages[0]);
   });
 

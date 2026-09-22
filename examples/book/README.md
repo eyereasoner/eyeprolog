@@ -78,7 +78,7 @@ node tools/extract-book-examples.mjs
 
 ## Chapter 11: Queries, answers, and proofs
 
-- [01-why.pl](chapter-11/01-why.pl)
+- [01-query.pl](chapter-11/01-query.pl)
 
 ## Chapter 12: Integrity checks as ordinary predicates
 

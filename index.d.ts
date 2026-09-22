@@ -366,6 +366,35 @@ export function proofCertificate(program: Program, goal: EyePrologTerm, options?
 export function proofCertificatesFromText(text: string, program: Program): EyePrologProofCertificate[];
 export function verifyProof(program: Program, certificate: EyePrologProofCertificate | EyePrologProofResult, options?: EyePrologRunOptions): EyePrologProofVerification;
 export function whyProof(program: Program, goal: EyePrologTerm, options?: EyePrologRunOptions): EyePrologProofResult;
+
+/** One proof step: a conclusion, the term saying why it holds, the bindings that justification used, and the conclusions it used. */
+export interface EyePrologProofStep {
+  conclusion: EyePrologTerm;
+  by: EyePrologTerm;
+  bindings: { name: string; value: EyePrologTerm }[];
+  uses: EyePrologTerm[];
+}
+
+/** A clause of the program, under the number `rule(N)` and `fact(N)` cite. */
+export type EyePrologNumberedClause = [number, { head: EyePrologTerm; body: EyePrologTerm[] }];
+
+/** One query of a result document: the goal as asked, its variables, and its answers. */
+export interface EyePrologQueryResult {
+  goal: EyePrologTerm;
+  variables: { name: string; rendered: string; source: string }[];
+  answers: { bindings: { name: string; value: EyePrologTerm }[]; resolved: EyePrologTerm; goals?: EyePrologTerm[] }[];
+}
+
+export const RESULT_FORMAT_HEADER: string;
+export function clauseNumbering(program: Program): { bySource: Map<string, number>; byNumber: Map<number, { head: EyePrologTerm; body: EyePrologTerm[] }> };
+export function flattenProof(roots: unknown[], program: Program): { clauses: EyePrologNumberedClause[]; steps: EyePrologProofStep[] };
+export function formatFact(term: EyePrologTerm, writeOptions?: Record<string, unknown>): string;
+export function formatResultDocument(queries: EyePrologQueryResult[], options?: Record<string, unknown>): string;
+export function isLibraryClause(clause: unknown): boolean;
+export function isProgramClause(clause: unknown): boolean;
+export function proofNodeFor(program: Program, goal: EyePrologTerm, options?: EyePrologRunOptions): unknown;
+export function resultDocument(program: Program, queries: EyePrologQueryResult[], options?: Record<string, unknown>): string;
+export function resultWriteOptions(program: Program, options?: Record<string, unknown>): Record<string, unknown>;
 export function whyNoProof(goal: EyePrologTerm): string;
 export function explainProof(program: Program, goal: EyePrologTerm, options?: EyePrologRunOptions): EyePrologProofResult;
 
@@ -446,6 +475,16 @@ declare const eyeprolog: {
   proofCertificatesFromText: typeof proofCertificatesFromText;
   verifyProof: typeof verifyProof;
   whyProof: typeof whyProof;
+  RESULT_FORMAT_HEADER: typeof RESULT_FORMAT_HEADER;
+  clauseNumbering: typeof clauseNumbering;
+  flattenProof: typeof flattenProof;
+  formatFact: typeof formatFact;
+  formatResultDocument: typeof formatResultDocument;
+  isLibraryClause: typeof isLibraryClause;
+  isProgramClause: typeof isProgramClause;
+  proofNodeFor: typeof proofNodeFor;
+  resultDocument: typeof resultDocument;
+  resultWriteOptions: typeof resultWriteOptions;
   whyNoProof: typeof whyNoProof;
   explainProof: typeof explainProof;
 };

@@ -2,7 +2,7 @@
 // The explanation printer replays a successful goal against the program and emits
 // ordinary EyeProlog facts with nested proof terms.  Explanations are therefore both
 // human-readable and machine-readable.
-import { ATOM, COMPOUND, Env, Term, VAR, deref, flattenConjunction, freshTerm, properListItems, termToString, unify, variantTerms } from './term.js';
+import { ATOM, COMPOUND, Env, Term, VAR, atom, compound, deref, flattenConjunction, freshTerm, numberTerm, properListItems, termToString, unify, variantTerms } from './term.js';
 import { selectClauseCandidates } from './program.js';
 import { parseGoalText, parseProgramText } from './parser.js';
 import { getEyePrologRegistry } from './standard-library.js';
@@ -669,4 +669,153 @@ function resolvedSubstitutions(substitutions, env) {
     out.push({ name: substitution.name, value: resolveForProof(substitution.fresh, env) });
   }
   return out;
+}
+
+// ===========================================================================
+// Prolog result format 4: the flat proof
+// ===========================================================================
+//
+// A resolution proof is a tree, but a proof *document* is a flat set of
+// steps, one per conclusion, each naming what it used by that use's own
+// conclusion rather than by nesting it. That is the shape eyeron, eyeling
+// and eyeleng all write, and it is what makes a proof checkable: a reader
+// resolves a use by looking for the step that concludes it, so a conclusion
+// reached twice is explained once instead of being copied out again under
+// every derivation that needs it.
+
+// The program's clauses, numbered from 1, which is what `rule(N)` and
+// `fact(N)` cite and what the `clause/3` records reproduce.
+//
+// The number comes from a clause's position in its own source file, not
+// from its position in the running database: `assert/1` and `retract/1`
+// move clauses around while a program runs, and a citation has to mean the
+// same thing to a reader holding only the source. A program assembled from
+// several files lays their spans end to end, in the order the files first
+// contribute a clause.
+export function clauseNumbering(program) {
+  const spans = new Map();
+  for (const clause of program.clauses ?? []) {
+    if (!isProgramClause(clause)) continue;
+    const previous = spans.get(clause.source.filename) ?? 0;
+    if (clause.source.clause > previous) spans.set(clause.source.filename, clause.source.clause);
+  }
+  const offsets = new Map();
+  let offset = 0;
+  for (const [filename, span] of spans) {
+    offsets.set(filename, offset);
+    offset += span;
+  }
+
+  const bySource = new Map();
+  const byNumber = new Map();
+  for (const clause of program.clauses ?? []) {
+    if (!isProgramClause(clause)) continue;
+    const number = (offsets.get(clause.source.filename) ?? 0) + clause.source.clause;
+    bySource.set(`${clause.source.filename}\u0000${clause.source.clause}`, number);
+    byNumber.set(number, { head: clause.head, body: clause.body ?? [] });
+  }
+  return { bySource, byNumber };
+}
+
+// The clauses the program itself is made of, and so the clauses a citation
+// can name. A bundled library's are not among them: an autoloaded module is
+// the implementation of a predicate the program only calls, and which
+// modules a run happens to reach must not move the numbers of the clauses
+// the program does contain.
+export function isProgramClause(clause) {
+  return Boolean(clause?.source) && !isLibraryClause(clause);
+}
+
+export function isLibraryClause(clause) {
+  return String(clause?.source?.filename ?? '').startsWith('src/lib/');
+}
+
+function clauseNumberFor(numbering, method) {
+  return numbering.bySource.get(`${method.filename}\u0000${method.clause}`) ?? null;
+}
+
+// The conclusion a node contributes, which is how a step names what it used.
+// A conjunction is not a conclusion of its own: it stands for its conjuncts,
+// so it contributes theirs.
+function nodeConclusions(node) {
+  if (node?.method === 'conjunction') return (node.children ?? []).flatMap(nodeConclusions);
+  return node ? [node.goal] : [];
+}
+
+// The single term saying why a step holds. `rule`/`fact` cite a `clause/3`
+// record; a built-in, a completed `\+` and a completed `findall/3` are
+// recorded rather than re-derived, the way the specification's `builtin`,
+// `absent` and `collected` are.
+function justificationTerm(node, numbering) {
+  const method = node.method;
+  if (method && method.type === 'source') {
+    const number = clauseNumberFor(numbering, method);
+    if (number != null) return compound(method.kind, [numberTerm(BigInt(number))]);
+    // Two clauses a citation cannot name, both recorded rather than checked.
+    // A clause inside a bundled library implements a predicate the program
+    // only calls, which is what `builtin` already says; a clause `assert/1`
+    // put into the database at run time is in no source file at all, so
+    // there is nothing a reader could look up or a checker re-derive.
+    if (String(method.filename ?? '').startsWith('src/lib/')) return atom('builtin');
+    return atom('asserted');
+  }
+  if (node.goal?.type === COMPOUND && node.goal.name === '\\+' && node.goal.arity === 1) return atom('absent');
+  if (node.goal?.type === COMPOUND && node.goal.name === 'findall' && node.goal.arity === 3) return atom('collected');
+  return atom('builtin');
+}
+
+export function flattenProof(roots, program) {
+  const numbering = clauseNumbering(program);
+  const steps = [];
+  const clauses = new Map();
+  const seen = new Set();
+
+  const stack = [];
+  for (let i = roots.length - 1; i >= 0; i--) stack.push(roots[i]);
+
+  while (stack.length) {
+    const node = stack.pop();
+    if (!node) continue;
+    if (node.method === 'conjunction') {
+      const children = node.children ?? [];
+      for (let i = children.length - 1; i >= 0; i--) stack.push(children[i]);
+      continue;
+    }
+
+    const key = termToString(node.goal, new Env(), true);
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    const uses = (node.children ?? []).flatMap(nodeConclusions);
+    steps.push({
+      conclusion: node.goal,
+      by: justificationTerm(node, numbering),
+      // An anonymous variable is not named by the clause a reader can look
+      // up, so recording what it was bound to explains nothing.
+      bindings: (node.bindings ?? []).filter((binding) => !String(binding.name).startsWith('_')),
+      uses,
+    });
+
+    if (node.method && node.method.type === 'source') {
+      const number = clauseNumberFor(numbering, node.method);
+      if (number != null && !clauses.has(number)) {
+        clauses.set(number, numbering.byNumber.get(number) ?? { head: node.sourceHead, body: node.sourceBody ?? [] });
+      }
+    }
+
+    const children = node.children ?? [];
+    for (let i = children.length - 1; i >= 0; i--) stack.push(children[i]);
+  }
+
+  return { clauses: [...clauses.entries()].sort((a, b) => a[0] - b[0]), steps };
+}
+
+// The root of an answer's proof tree, for `flattenProof`.
+export function proofNodeFor(program, goal, options = {}) {
+  const maxDepth = options.maxDepth ?? 256;
+  const registry = options.registry ?? getEyePrologRegistry();
+  const env = options.env ?? new Env();
+  const detail = normalizeProofDetail(options.proofDetail ?? 'abstract');
+  for (const proof of proveGoalAll(program, goal, env, 0, maxDepth, registry, [], detail)) return proof.node;
+  return null;
 }

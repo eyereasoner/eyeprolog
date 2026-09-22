@@ -1,1518 +1,1521 @@
-cycle(i35, [i45, i45, i45, i45, i45, i45, i45, i45, i45, i45, i45]).
-cycle(i37, [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]).
-cycle(i62, [i81, i24, i81, i24, i81, i24, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i24, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i24, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i24, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i24, i81, i81, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i81, i24, i81, i24, i81, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i81, i24, i81, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i81, i24, i81, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i81, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i81, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i81, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i81, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i24, i81, i81, i81, i81, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i24, i81, i24, i81, i24, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i24, i81, i24, i81, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i81, i24, i81, i24, i81, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i24, i81, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i81, i24, i81, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i24, i81, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i24, i81, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i81, i24, i81, i81, i81, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i24, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i24, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i24, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i24, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i24, i81, i81, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i81, i24, i81, i24, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i81, i24, i81, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i81, i24, i81, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i81, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i81, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i81, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i81, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i24, i81, i81, i81, i81, i81, i81, i81, i81, i81]).
-cycle(i0, [i84, i75, i84, i75, i84, i75, i84, i75, i84, i75, i84]).
-cycle(i13, [i87, i45, i48, i78, i81, i87, i45, i48, i78, i81, i87]).
-cycle(i55, [i33, i33, i33, i33, i33, i33, i33, i33, i33, i33, i33]).
-cycle(i64, [i9, i3, i9, i3, i9, i3, i9, i3, i9, i3, i9]).
-cycle(i95, [i51, i51, i51, i51, i51, i51, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i51, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i51, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i51, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i51, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i51, i48, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i51, i48, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i51, i48, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i48, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i48, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i48, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i48, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i51, i48, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i51, i48, i51, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i48, i51, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i51, i48, i51, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i48, i51, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i48, i51, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i51, i48, i51, i48, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i51, i48, i51, i48, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i51, i48, i51, i48, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i51, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i51, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i51, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i51, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i51, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i51, i48, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i51, i48, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i51, i48, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i48, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i48, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i48, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i48, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i51, i51, i48, i51, i48, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i51, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i51, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i51, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i51, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i51, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i51, i48, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i51, i48, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i51, i48, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i48, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i48, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i48, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i48, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i51, i48, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i51, i48, i51, i48, i51, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i48, i51, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i48, i51, i48, i51, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i48, i51, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i48, i51, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i51, i48, i51, i48, i51, i48, i51, i51, i51, i51]).
-cycle(i95, [i51, i51, i48, i51, i48, i51, i48, i51, i51, i48, i51]).
-cycle(i95, [i51, i51, i48, i51, i48, i51, i48, i51, i48, i51, i51]).
-cycle(i34, [i30, i0, i30, i0, i30, i0, i30, i0, i30, i0, i30]).
-cycle(i11, [i45, i51, i15, i30, i78, i45, i51, i15, i30, i78, i45]).
-cycle(i74, [i90, i90, i90, i90, i90, i90, i90, i90, i90, i90, i90]).
-cycle(i39, [i90, i90, i90, i90, i90, i90, i90, i90, i90, i90, i90]).
-cycle(i74, [i57, i27, i57, i27, i57, i27, i57, i27, i57, i27, i57]).
-cycle(i75, [i0, i0, i0, i0, i0, i0, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i0, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i0, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i0, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i0, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i0, i30, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i0, i30, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i0, i30, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i30, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i30, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i30, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i30, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i0, i30, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i0, i30, i0, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i30, i0, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i0, i30, i0, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i30, i0, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i30, i0, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i0, i30, i0, i30, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i0, i30, i0, i30, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i0, i30, i0, i30, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i0, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i0, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i0, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i0, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i0, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i0, i30, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i0, i30, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i0, i30, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i30, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i30, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i30, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i30, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i0, i0, i30, i0, i30, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i0, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i0, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i0, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i0, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i0, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i0, i30, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i0, i30, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i0, i30, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i30, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i30, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i30, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i30, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i0, i30, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i0, i30, i0, i30, i0, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i30, i0, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i30, i0, i30, i0, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i30, i0, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i30, i0, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i0, i30, i0, i30, i0, i30, i0, i0, i0, i0]).
-cycle(i75, [i0, i0, i30, i0, i30, i0, i30, i0, i0, i30, i0]).
-cycle(i75, [i0, i0, i30, i0, i30, i0, i30, i0, i30, i0, i0]).
-cycle(i65, [i9, i3, i84, i45, i9, i96, i18, i57, i78, i78, i9]).
-cycle(i42, [i9, i9, i9, i9, i9, i9, i9, i9, i9, i9, i9]).
-cycle(i97, [i84, i75, i84, i75, i84, i75, i84, i75, i84, i75, i84]).
-cycle(i80, [i81, i54, i81, i54, i81, i54, i81, i54, i81, i54, i81]).
-cycle(i95, [i51, i48, i51, i51, i51, i51, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i51, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i51, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i51, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i51, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i51, i48, i51, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i51, i48, i51, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i51, i48, i51, i48, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i48, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i48, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i48, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i48, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i51, i48, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i51, i48, i51, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i48, i51, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i51, i48, i51, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i48, i51, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i48, i51, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i51, i48, i51, i48, i51, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i51, i48, i51, i48, i51, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i51, i48, i51, i48, i51, i48, i51, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i51, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i51, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i51, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i51, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i51, i51, i48, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i51, i48, i51, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i51, i48, i51, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i51, i48, i51, i48, i51, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i48, i51, i51, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i48, i51, i51, i51, i48, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i48, i51, i51, i48, i51, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i48, i51, i48, i51, i51, i51]).
-cycle(i95, [i51, i48, i51, i48, i51, i48, i51, i48, i51, i48, i51]).
-cycle(i33, [i69, i69, i69, i69, i69, i69, i69, i69, i69, i69, i69]).
-cycle(i95, [i96, i96, i96, i96, i96, i96, i96, i96, i96, i96, i96]).
-cycle(i13, [i12, i60, i12, i60, i12, i60, i12, i60, i12, i60, i12]).
-cycle(i67, [i9, i15, i15, i15, i15, i15, i15, i15, i15, i54, i9]).
-cycle(i67, [i9, i15, i15, i15, i15, i15, i54, i9, i15, i54, i9]).
-cycle(i67, [i9, i15, i15, i15, i15, i54, i9, i15, i15, i54, i9]).
-cycle(i67, [i9, i15, i15, i15, i54, i9, i15, i15, i15, i54, i9]).
-cycle(i67, [i9, i15, i15, i54, i9, i15, i15, i15, i15, i54, i9]).
-cycle(i67, [i9, i15, i15, i54, i9, i15, i54, i9, i15, i54, i9]).
-cycle(i67, [i9, i15, i54, i9, i15, i15, i15, i15, i15, i54, i9]).
-cycle(i67, [i9, i15, i54, i9, i15, i15, i54, i9, i15, i54, i9]).
-cycle(i67, [i9, i15, i54, i9, i15, i54, i9, i15, i15, i54, i9]).
-cycle(i53, [i75, i78, i96, i6, i21, i75, i78, i96, i6, i21, i75]).
-cycle(i50, [i84, i72, i78, i87, i99, i66, i57, i69, i66, i51, i84]).
-cycle(i50, [i84, i72, i78, i87, i99, i54, i72, i69, i66, i51, i84]).
-cycle(i50, [i84, i72, i69, i66, i51, i84, i72, i69, i66, i51, i84]).
-cycle(i79, [i39, i3, i69, i9, i69, i9, i69, i9, i69, i9, i39]).
-cycle(i79, [i39, i3, i69, i9, i69, i9, i39, i3, i69, i9, i39]).
-cycle(i79, [i39, i3, i69, i9, i39, i3, i69, i9, i69, i9, i39]).
-cycle(i32, [i33, i15, i60, i63, i0, i33, i15, i60, i63, i0, i33]).
-cycle(i24, [i87, i60, i87, i60, i87, i60, i87, i60, i87, i60, i87]).
-cycle(i50, [i66, i51, i84, i72, i78, i87, i99, i66, i57, i69, i66]).
-cycle(i50, [i66, i51, i84, i72, i78, i87, i99, i54, i72, i69, i66]).
-cycle(i50, [i66, i51, i84, i72, i69, i66, i51, i84, i72, i69, i66]).
-cycle(i50, [i66, i51, i84, i12, i57, i69, i66, i51, i57, i69, i66]).
-cycle(i50, [i66, i51, i57, i69, i66, i51, i84, i12, i57, i69, i66]).
-cycle(i50, [i66, i51, i57, i69, i66, i57, i69, i66, i57, i69, i66]).
-cycle(i19, [i21, i87, i33, i12, i93, i66, i36, i21, i21, i21, i21]).
-cycle(i19, [i21, i87, i33, i12, i93, i66, i36, i72, i66, i36, i21]).
-cycle(i19, [i21, i87, i69, i36, i21, i87, i69, i36, i21, i21, i21]).
-cycle(i19, [i21, i87, i69, i36, i21, i21, i87, i69, i36, i21, i21]).
-cycle(i19, [i21, i87, i69, i36, i21, i21, i21, i87, i69, i36, i21]).
-cycle(i19, [i21, i87, i69, i36, i21, i21, i21, i21, i21, i21, i21]).
-cycle(i19, [i21, i87, i69, i36, i72, i33, i12, i93, i66, i36, i21]).
-cycle(i19, [i21, i87, i69, i36, i72, i66, i36, i21, i21, i21, i21]).
-cycle(i19, [i21, i87, i69, i36, i72, i66, i36, i72, i66, i36, i21]).
-cycle(i93, [i69, i54, i69, i54, i69, i54, i69, i54, i69, i54, i69]).
-cycle(i55, [i54, i54, i54, i54, i54, i54, i54, i54, i54, i54, i54]).
-cycle(i70, [i69, i90, i39, i48, i69, i84, i87, i69, i84, i87, i69]).
-cycle(i70, [i69, i90, i39, i48, i69, i84, i87, i69, i84, i75, i69]).
-cycle(i70, [i69, i90, i39, i48, i69, i84, i75, i69, i84, i87, i69]).
-cycle(i70, [i69, i90, i39, i48, i69, i84, i75, i69, i84, i75, i69]).
-cycle(i15, [i9, i9, i9, i9, i9, i9, i9, i9, i9, i9, i9]).
-cycle(i10, [i87, i15, i78, i60, i33, i87, i15, i78, i60, i33, i87]).
-cycle(i7, [i84, i72, i57, i18, i75, i84, i72, i57, i18, i75, i84]).
-cycle(i97, [i75, i84, i75, i84, i75, i84, i75, i84, i75, i84, i75]).
-cycle(i77, [i69, i96, i69, i96, i69, i96, i69, i96, i69, i96, i69]).
-cycle(i50, [i72, i78, i87, i99, i66, i57, i69, i66, i51, i84, i72]).
-cycle(i50, [i72, i78, i87, i99, i54, i72, i78, i87, i99, i54, i72]).
-cycle(i50, [i72, i78, i87, i99, i54, i72, i69, i66, i51, i84, i72]).
-cycle(i50, [i72, i78, i87, i48, i27, i15, i12, i27, i15, i21, i72]).
-cycle(i28, [i36, i6, i87, i81, i15, i36, i6, i87, i81, i15, i36]).
-cycle(i16, [i93, i39, i42, i45, i93, i39, i42, i45, i93, i45, i93]).
-cycle(i16, [i93, i39, i42, i45, i93, i39, i45, i93, i39, i45, i93]).
-cycle(i16, [i93, i39, i42, i45, i93, i39, i87, i27, i93, i45, i93]).
-cycle(i16, [i93, i39, i42, i45, i93, i45, i93, i39, i42, i45, i93]).
-cycle(i16, [i93, i39, i42, i45, i93, i45, i93, i39, i87, i27, i93]).
-cycle(i16, [i93, i39, i42, i45, i93, i45, i93, i45, i93, i45, i93]).
-cycle(i16, [i93, i39, i45, i93, i39, i42, i45, i93, i39, i45, i93]).
-cycle(i16, [i93, i39, i45, i93, i39, i45, i93, i39, i42, i45, i93]).
-cycle(i16, [i93, i39, i45, i93, i39, i45, i93, i39, i87, i27, i93]).
-cycle(i16, [i93, i39, i45, i93, i39, i45, i93, i45, i93, i45, i93]).
-cycle(i16, [i93, i39, i45, i93, i39, i87, i27, i93, i39, i45, i93]).
-cycle(i16, [i93, i39, i45, i93, i63, i21, i42, i45, i93, i45, i93]).
-cycle(i16, [i93, i39, i45, i93, i45, i93, i39, i45, i93, i45, i93]).
-cycle(i16, [i93, i39, i45, i93, i45, i93, i63, i21, i42, i45, i93]).
-cycle(i16, [i93, i39, i45, i93, i45, i93, i45, i93, i39, i45, i93]).
-cycle(i16, [i93, i39, i87, i27, i93, i39, i42, i45, i93, i45, i93]).
-cycle(i16, [i93, i39, i87, i27, i93, i39, i45, i93, i39, i45, i93]).
-cycle(i16, [i93, i39, i87, i27, i93, i39, i87, i27, i93, i45, i93]).
-cycle(i16, [i93, i39, i87, i27, i93, i45, i93, i39, i42, i45, i93]).
-cycle(i16, [i93, i39, i87, i27, i93, i45, i93, i39, i87, i27, i93]).
-cycle(i16, [i93, i39, i87, i27, i93, i45, i93, i45, i93, i45, i93]).
-cycle(i0, [i66, i9, i12, i66, i9, i12, i9, i12, i9, i12, i66]).
-cycle(i0, [i66, i9, i12, i9, i12, i66, i9, i12, i9, i12, i66]).
-cycle(i0, [i66, i9, i12, i9, i12, i9, i12, i66, i9, i12, i66]).
-cycle(i10, [i78, i60, i33, i87, i15, i78, i60, i33, i87, i15, i78]).
-cycle(i10, [i60, i33, i87, i15, i78, i60, i33, i87, i15, i78, i60]).
-cycle(i64, [i54, i54, i54, i54, i54, i54, i54, i54, i54, i54, i54]).
-cycle(i62, [i63, i63, i63, i63, i63, i63, i63, i63, i63, i63, i63]).
-cycle(i50, [i33, i9, i33, i9, i33, i9, i33, i9, i33, i9, i33]).
-cycle(i50, [i33, i9, i33, i9, i33, i9, i27, i15, i30, i39, i33]).
-cycle(i50, [i33, i9, i33, i9, i27, i15, i12, i27, i30, i39, i33]).
-cycle(i50, [i33, i9, i33, i9, i27, i15, i30, i39, i33, i9, i33]).
-cycle(i50, [i33, i9, i27, i15, i12, i27, i30, i39, i33, i9, i33]).
-cycle(i50, [i33, i9, i27, i15, i30, i39, i33, i9, i33, i9, i33]).
-cycle(i50, [i33, i9, i27, i15, i30, i39, i48, i27, i30, i39, i33]).
-cycle(i50, [i33, i9, i27, i30, i39, i33, i9, i27, i30, i39, i33]).
-cycle(i50, [i33, i9, i27, i30, i39, i48, i27, i15, i30, i39, i33]).
-cycle(i98, [i15, i15, i15, i15, i15, i15, i15, i15, i15, i15, i15]).
-cycle(i66, [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]).
-cycle(i36, [i84, i51, i36, i93, i36, i93, i36, i93, i36, i24, i84]).
-cycle(i36, [i84, i51, i36, i93, i36, i24, i84, i51, i36, i24, i84]).
-cycle(i36, [i84, i51, i36, i72, i24, i84, i51, i36, i72, i24, i84]).
-cycle(i36, [i84, i51, i36, i24, i84, i51, i36, i93, i36, i24, i84]).
-cycle(i16, [i63, i21, i42, i45, i93, i39, i45, i93, i45, i93, i63]).
-cycle(i16, [i63, i21, i42, i45, i93, i63, i21, i42, i45, i93, i63]).
-cycle(i16, [i63, i21, i42, i45, i93, i45, i93, i39, i45, i93, i63]).
-cycle(i45, [i0, i0, i0, i0, i0, i0, i0, i0, i0, i0, i0]).
-cycle(i50, [i51, i84, i72, i78, i87, i99, i66, i57, i69, i66, i51]).
-cycle(i50, [i51, i84, i72, i78, i87, i99, i54, i72, i69, i66, i51]).
-cycle(i50, [i51, i84, i72, i69, i66, i51, i84, i72, i69, i66, i51]).
-cycle(i50, [i51, i84, i12, i57, i69, i66, i51, i57, i69, i66, i51]).
-cycle(i50, [i48, i27, i15, i12, i27, i15, i12, i27, i30, i39, i48]).
-cycle(i50, [i48, i27, i15, i12, i27, i15, i21, i72, i78, i87, i48]).
-cycle(i50, [i48, i27, i15, i30, i39, i33, i9, i27, i30, i39, i48]).
-cycle(i50, [i48, i27, i15, i30, i39, i48, i27, i15, i30, i39, i48]).
-cycle(i50, [i48, i27, i30, i39, i33, i9, i27, i15, i30, i39, i48]).
-cycle(i81, [i27, i84, i27, i84, i27, i84, i27, i84, i27, i84, i27]).
-cycle(i92, [i45, i84, i45, i84, i45, i84, i45, i84, i45, i84, i45]).
-cycle(i17, [i75, i30, i33, i75, i30, i33, i75, i0, i30, i33, i75]).
-cycle(i17, [i75, i30, i33, i75, i0, i30, i33, i75, i30, i33, i75]).
-cycle(i7, [i72, i57, i18, i75, i84, i72, i57, i18, i75, i84, i72]).
-cycle(i0, [i75, i84, i75, i84, i75, i84, i75, i84, i75, i84, i75]).
-cycle(i50, [i72, i69, i66, i51, i84, i72, i78, i87, i99, i54, i72]).
-cycle(i50, [i72, i69, i66, i51, i84, i72, i69, i66, i51, i84, i72]).
-cycle(i79, [i39, i81, i3, i69, i9, i39, i81, i3, i69, i9, i39]).
-cycle(i97, [i60, i60, i60, i60, i60, i60, i60, i60, i60, i60, i60]).
-cycle(i3, [i96, i96, i96, i96, i96, i96, i96, i96, i96, i96, i96]).
-cycle(i50, [i36, i36, i36, i36, i36, i36, i36, i36, i36, i36, i36]).
-cycle(i76, [i78, i60, i78, i60, i78, i60, i78, i60, i78, i60, i78]).
-cycle(i57, [i51, i84, i51, i84, i51, i84, i51, i84, i51, i84, i51]).
-cycle(i17, [i33, i75, i30, i33, i75, i30, i33, i75, i0, i30, i33]).
-cycle(i17, [i33, i75, i30, i33, i75, i0, i30, i33, i75, i30, i33]).
-cycle(i17, [i33, i75, i0, i30, i33, i75, i30, i33, i75, i30, i33]).
-cycle(i17, [i33, i75, i0, i30, i33, i63, i42, i54, i0, i30, i33]).
-cycle(i9, [i30, i9, i54, i30, i9, i54, i30, i9, i84, i54, i30]).
-cycle(i9, [i30, i9, i54, i30, i9, i84, i54, i30, i9, i54, i30]).
-cycle(i9, [i30, i9, i84, i54, i30, i9, i54, i30, i9, i54, i30]).
-cycle(i96, [i75, i48, i33, i69, i75, i48, i33, i69, i75, i75, i75]).
-cycle(i96, [i75, i48, i33, i69, i75, i75, i48, i33, i69, i75, i75]).
-cycle(i96, [i75, i48, i33, i69, i75, i75, i75, i48, i33, i69, i75]).
-cycle(i96, [i75, i48, i33, i69, i75, i75, i75, i75, i75, i75, i75]).
-cycle(i27, [i21, i72, i21, i72, i21, i72, i21, i72, i21, i72, i21]).
-cycle(i11, [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]).
-cycle(i17, [i54, i0, i30, i33, i75, i0, i30, i33, i63, i42, i54]).
-cycle(i88, [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]).
-cycle(i28, [i87, i81, i15, i36, i6, i87, i81, i15, i36, i6, i87]).
-cycle(i42, [i72, i75, i72, i75, i72, i75, i72, i75, i72, i75, i72]).
-cycle(i84, [i0, i0, i0, i0, i0, i0, i0, i0, i0, i0, i0]).
-cycle(i72, [i60, i60, i60, i60, i60, i60, i60, i60, i60, i60, i60]).
-cycle(i60, [i93, i27, i39, i48, i42, i45, i99, i33, i12, i63, i93]).
-cycle(i11, [i30, i78, i45, i51, i15, i30, i78, i45, i51, i15, i30]).
-cycle(i10, [i33, i87, i15, i78, i60, i33, i87, i15, i78, i60, i33]).
-cycle(i19, [i33, i12, i93, i66, i36, i21, i87, i69, i36, i72, i33]).
-cycle(i19, [i33, i12, i93, i66, i36, i21, i21, i21, i21, i87, i33]).
-cycle(i19, [i33, i12, i93, i66, i36, i72, i66, i36, i21, i87, i33]).
-cycle(i13, [i45, i48, i78, i81, i87, i45, i48, i78, i81, i87, i45]).
-cycle(i34, [i60, i60, i60, i60, i60, i60, i60, i60, i60, i60, i60]).
-cycle(i62, [i24, i81, i24, i81, i24, i81, i24, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i24, i81, i24, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i24, i81, i81, i24, i81, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i24, i81, i81, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i24, i81, i81, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i81, i24, i81, i24, i81, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i81, i24, i81, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i81, i24, i81, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i81, i81, i24, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i81, i81, i24, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i81, i81, i81, i24, i81, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i81, i81, i81, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i24, i81, i81, i81, i81, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i24, i81, i24, i81, i24, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i24, i81, i24, i81, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i81, i24, i81, i24, i81, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i24, i81, i81, i24, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i81, i24, i81, i81, i24, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i24, i81, i81, i81, i24, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i24, i81, i81, i81, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i81, i24, i81, i81, i81, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i24, i81, i24, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i24, i81, i24, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i24, i81, i81, i24, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i24, i81, i81, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i24, i81, i81, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i81, i24, i81, i24, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i81, i24, i81, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i81, i24, i81, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i81, i81, i24, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i81, i81, i24, i81, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i81, i81, i81, i24, i81, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i81, i81, i81, i81, i24, i81, i24]).
-cycle(i62, [i24, i81, i81, i81, i81, i81, i81, i81, i81, i81, i24]).
-cycle(i4, [i69, i69, i69, i69, i69, i69, i69, i69, i69, i69, i69]).
-cycle(i19, [i72, i33, i12, i93, i66, i36, i21, i87, i69, i36, i72]).
-cycle(i34, [i24, i24, i24, i24, i24, i24, i24, i24, i24, i24, i24]).
-cycle(i93, [i33, i48, i33, i48, i33, i48, i33, i48, i33, i48, i33]).
-cycle(i27, [i84, i39, i84, i39, i84, i39, i84, i39, i84, i39, i84]).
-cycle(i19, [i21, i21, i87, i33, i12, i93, i66, i36, i21, i21, i21]).
-cycle(i19, [i21, i21, i87, i69, i36, i21, i87, i69, i36, i21, i21]).
-cycle(i19, [i21, i21, i87, i69, i36, i21, i21, i87, i69, i36, i21]).
-cycle(i19, [i21, i21, i87, i69, i36, i21, i21, i21, i21, i21, i21]).
-cycle(i19, [i21, i21, i87, i69, i36, i72, i66, i36, i21, i21, i21]).
-cycle(i19, [i21, i21, i21, i87, i33, i12, i93, i66, i36, i21, i21]).
-cycle(i19, [i21, i21, i21, i87, i69, i36, i21, i87, i69, i36, i21]).
-cycle(i19, [i21, i21, i21, i87, i69, i36, i21, i21, i21, i21, i21]).
-cycle(i19, [i21, i21, i21, i87, i69, i36, i72, i66, i36, i21, i21]).
-cycle(i19, [i21, i21, i21, i21, i87, i33, i12, i93, i66, i36, i21]).
-cycle(i19, [i21, i21, i21, i21, i87, i69, i36, i21, i21, i21, i21]).
-cycle(i19, [i21, i21, i21, i21, i87, i69, i36, i72, i66, i36, i21]).
-cycle(i19, [i21, i21, i21, i21, i21, i87, i69, i36, i21, i21, i21]).
-cycle(i19, [i21, i21, i21, i21, i21, i21, i87, i69, i36, i21, i21]).
-cycle(i19, [i21, i21, i21, i21, i21, i21, i21, i87, i69, i36, i21]).
-cycle(i19, [i21, i21, i21, i21, i21, i21, i21, i21, i21, i21, i21]).
-cycle(i31, [i15, i3, i15, i3, i15, i3, i15, i3, i15, i3, i15]).
-cycle(i28, [i81, i15, i36, i6, i87, i81, i15, i36, i6, i87, i81]).
-cycle(i96, [i48, i33, i69, i75, i48, i33, i69, i75, i75, i75, i48]).
-cycle(i96, [i48, i33, i69, i75, i75, i48, i33, i69, i75, i75, i48]).
-cycle(i96, [i48, i33, i69, i75, i75, i75, i48, i33, i69, i75, i48]).
-cycle(i96, [i48, i33, i69, i75, i75, i75, i75, i75, i75, i75, i48]).
-cycle(i28, [i6, i87, i81, i15, i36, i6, i87, i81, i15, i36, i6]).
-cycle(i94, [i15, i15, i15, i15, i15, i15, i15, i15, i15, i15, i15]).
-cycle(i28, [i78, i18, i78, i18, i78, i18, i78, i18, i78, i18, i78]).
-cycle(i48, [i90, i72, i90, i72, i90, i72, i90, i72, i90, i72, i90]).
-cycle(i50, [i66, i57, i69, i66, i51, i84, i72, i78, i87, i99, i66]).
-cycle(i50, [i66, i57, i69, i66, i51, i57, i69, i66, i57, i69, i66]).
-cycle(i50, [i66, i57, i69, i66, i57, i69, i66, i51, i57, i69, i66]).
-cycle(i74, [i60, i33, i60, i33, i60, i33, i60, i33, i60, i33, i60]).
-cycle(i80, [i42, i15, i60, i42, i15, i60, i42, i15, i42, i15, i42]).
-cycle(i80, [i42, i15, i60, i42, i15, i42, i15, i60, i42, i15, i42]).
-cycle(i80, [i42, i15, i60, i42, i15, i42, i15, i42, i15, i60, i42]).
-cycle(i80, [i42, i15, i42, i15, i60, i42, i15, i60, i42, i15, i42]).
-cycle(i80, [i42, i15, i42, i15, i60, i42, i15, i42, i15, i60, i42]).
-cycle(i80, [i42, i15, i42, i15, i42, i15, i60, i42, i15, i60, i42]).
-cycle(i80, [i42, i15, i42, i15, i42, i15, i42, i15, i42, i15, i42]).
-cycle(i32, [i0, i33, i15, i60, i63, i0, i33, i15, i60, i63, i0]).
-cycle(i36, [i24, i84, i51, i36, i93, i36, i93, i36, i93, i36, i24]).
-cycle(i36, [i24, i84, i51, i36, i93, i36, i24, i84, i51, i36, i24]).
-cycle(i36, [i24, i84, i51, i36, i72, i24, i84, i51, i36, i72, i24]).
-cycle(i36, [i24, i84, i51, i36, i24, i84, i51, i36, i93, i36, i24]).
-cycle(i15, [i96, i36, i96, i36, i96, i36, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i36, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i36, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i36, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i36, i96, i96, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i96, i36, i96, i36, i96, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i96, i36, i96, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i96, i36, i96, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i96, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i96, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i96, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i96, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i36, i96, i96, i96, i96, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i36, i96, i36, i96, i36, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i36, i96, i36, i96, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i96, i36, i96, i36, i96, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i36, i96, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i96, i36, i96, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i36, i96, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i36, i96, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i96, i36, i96, i96, i96, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i36, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i36, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i36, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i36, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i36, i96, i96, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i96, i36, i96, i36, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i96, i36, i96, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i96, i36, i96, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i96, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i96, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i96, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i96, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i36, i96, i96, i96, i96, i96, i96, i96, i96, i96]).
-cycle(i58, [i18, i18, i18, i18, i18, i18, i18, i18, i18, i18, i18]).
-cycle(i70, [i87, i69, i90, i39, i48, i69, i84, i87, i69, i84, i87]).
-cycle(i70, [i87, i69, i90, i39, i48, i69, i84, i75, i69, i84, i87]).
-cycle(i70, [i87, i69, i84, i87, i69, i90, i39, i48, i69, i84, i87]).
-cycle(i70, [i87, i69, i84, i75, i69, i90, i39, i48, i69, i84, i87]).
-cycle(i12, [i45, i45, i45, i45, i45, i45, i45, i45, i45, i45, i45]).
-cycle(i5, [i93, i81, i15, i81, i15, i60, i48, i0, i63, i9, i93]).
-cycle(i5, [i93, i81, i15, i60, i48, i0, i63, i9, i93, i9, i93]).
-cycle(i5, [i93, i81, i15, i60, i15, i60, i48, i0, i63, i9, i93]).
-cycle(i63, [i93, i93, i93, i93, i93, i93, i93, i93, i93, i93, i93]).
-cycle(i52, [i78, i21, i78, i21, i78, i21, i78, i21, i78, i21, i78]).
-cycle(i65, [i96, i18, i57, i72, i9, i96, i18, i57, i72, i9, i96]).
-cycle(i65, [i96, i18, i57, i72, i9, i96, i18, i57, i78, i9, i96]).
-cycle(i65, [i96, i18, i57, i78, i78, i78, i78, i78, i78, i9, i96]).
-cycle(i65, [i96, i18, i57, i78, i78, i9, i3, i84, i45, i9, i96]).
-cycle(i65, [i96, i18, i57, i78, i9, i96, i18, i57, i72, i9, i96]).
-cycle(i65, [i96, i18, i57, i78, i9, i96, i18, i57, i78, i9, i96]).
-cycle(i50, [i39, i33, i9, i33, i9, i33, i9, i27, i15, i30, i39]).
-cycle(i50, [i39, i33, i9, i33, i9, i27, i15, i12, i27, i30, i39]).
-cycle(i50, [i39, i33, i9, i27, i15, i30, i39, i48, i27, i30, i39]).
-cycle(i50, [i39, i33, i9, i27, i30, i39, i33, i9, i27, i30, i39]).
-cycle(i50, [i39, i33, i9, i27, i30, i39, i48, i27, i15, i30, i39]).
-cycle(i65, [i18, i57, i72, i9, i96, i18, i57, i72, i9, i96, i18]).
-cycle(i65, [i18, i57, i72, i9, i96, i18, i57, i78, i9, i96, i18]).
-cycle(i65, [i18, i57, i78, i78, i78, i78, i78, i78, i9, i96, i18]).
-cycle(i65, [i18, i57, i78, i78, i9, i3, i84, i45, i9, i96, i18]).
-cycle(i65, [i18, i57, i78, i9, i96, i18, i57, i72, i9, i96, i18]).
-cycle(i65, [i18, i57, i78, i9, i96, i18, i57, i78, i9, i96, i18]).
-cycle(i88, [i57, i57, i57, i57, i57, i57, i57, i57, i57, i57, i57]).
-cycle(i76, [i60, i78, i60, i78, i60, i78, i60, i78, i60, i78, i60]).
-cycle(i70, [i0, i18, i0, i18, i0, i18, i0, i18, i0, i18, i0]).
-cycle(i5, [i81, i15, i81, i15, i81, i15, i81, i15, i81, i15, i81]).
-cycle(i5, [i81, i15, i81, i15, i81, i15, i81, i15, i60, i15, i81]).
-cycle(i5, [i81, i15, i81, i15, i81, i15, i60, i48, i0, i63, i81]).
-cycle(i5, [i81, i15, i81, i15, i81, i15, i60, i15, i81, i15, i81]).
-cycle(i5, [i81, i15, i81, i15, i81, i15, i60, i15, i60, i15, i81]).
-cycle(i5, [i81, i15, i81, i15, i60, i48, i0, i63, i9, i93, i81]).
-cycle(i5, [i81, i15, i81, i15, i60, i48, i0, i63, i9, i0, i81]).
-cycle(i5, [i81, i15, i81, i15, i60, i48, i0, i63, i81, i15, i81]).
-cycle(i5, [i81, i15, i81, i15, i60, i15, i81, i15, i81, i15, i81]).
-cycle(i5, [i81, i15, i81, i15, i60, i15, i81, i15, i60, i15, i81]).
-cycle(i5, [i81, i15, i81, i15, i60, i15, i60, i48, i0, i63, i81]).
-cycle(i5, [i81, i15, i81, i15, i60, i15, i60, i15, i81, i15, i81]).
-cycle(i5, [i81, i15, i81, i15, i60, i15, i60, i15, i60, i15, i81]).
-cycle(i5, [i81, i15, i60, i48, i0, i63, i9, i93, i81, i15, i81]).
-cycle(i5, [i81, i15, i60, i48, i0, i63, i9, i93, i9, i93, i81]).
-cycle(i5, [i81, i15, i60, i48, i0, i63, i9, i93, i9, i0, i81]).
-cycle(i5, [i81, i15, i60, i48, i0, i63, i9, i0, i81, i15, i81]).
-cycle(i5, [i81, i15, i60, i48, i0, i63, i81, i15, i81, i15, i81]).
-cycle(i5, [i81, i15, i60, i48, i0, i63, i81, i15, i60, i15, i81]).
-cycle(i5, [i81, i15, i60, i48, i0, i81, i15, i60, i48, i0, i81]).
-cycle(i5, [i81, i15, i60, i15, i81, i15, i81, i15, i81, i15, i81]).
-cycle(i5, [i81, i15, i60, i15, i81, i15, i81, i15, i60, i15, i81]).
-cycle(i5, [i81, i15, i60, i15, i81, i15, i60, i48, i0, i63, i81]).
-cycle(i5, [i81, i15, i60, i15, i81, i15, i60, i15, i81, i15, i81]).
-cycle(i5, [i81, i15, i60, i15, i81, i15, i60, i15, i60, i15, i81]).
-cycle(i5, [i81, i15, i60, i15, i60, i48, i0, i63, i9, i93, i81]).
-cycle(i5, [i81, i15, i60, i15, i60, i48, i0, i63, i9, i0, i81]).
-cycle(i5, [i81, i15, i60, i15, i60, i48, i0, i63, i81, i15, i81]).
-cycle(i5, [i81, i15, i60, i15, i60, i15, i81, i15, i81, i15, i81]).
-cycle(i5, [i81, i15, i60, i15, i60, i15, i81, i15, i60, i15, i81]).
-cycle(i5, [i81, i15, i60, i15, i60, i15, i60, i48, i0, i63, i81]).
-cycle(i5, [i81, i15, i60, i15, i60, i15, i60, i15, i81, i15, i81]).
-cycle(i5, [i81, i15, i60, i15, i60, i15, i60, i15, i60, i15, i81]).
-cycle(i50, [i9, i33, i9, i33, i9, i33, i9, i33, i9, i33, i9]).
-cycle(i50, [i9, i33, i9, i33, i9, i27, i15, i30, i39, i33, i9]).
-cycle(i50, [i9, i33, i9, i27, i15, i12, i27, i30, i39, i33, i9]).
-cycle(i50, [i9, i33, i9, i27, i15, i30, i39, i33, i9, i33, i9]).
-cycle(i5, [i93, i9, i93, i81, i15, i60, i48, i0, i63, i9, i93]).
-cycle(i5, [i93, i9, i93, i9, i93, i9, i93, i9, i93, i9, i93]).
-cycle(i5, [i93, i9, i93, i9, i0, i63, i9, i0, i63, i9, i93]).
-cycle(i5, [i93, i9, i0, i63, i9, i93, i9, i0, i63, i9, i93]).
-cycle(i5, [i93, i9, i0, i63, i9, i0, i63, i9, i93, i9, i93]).
-cycle(i5, [i93, i9, i0, i81, i15, i60, i48, i0, i63, i9, i93]).
-cycle(i16, [i39, i42, i45, i93, i39, i42, i45, i93, i45, i93, i39]).
-cycle(i16, [i39, i42, i45, i93, i39, i45, i93, i39, i45, i93, i39]).
-cycle(i16, [i39, i42, i45, i93, i39, i87, i27, i93, i45, i93, i39]).
-cycle(i16, [i39, i42, i45, i93, i45, i93, i39, i42, i45, i93, i39]).
-cycle(i16, [i39, i42, i45, i93, i45, i93, i39, i87, i27, i93, i39]).
-cycle(i16, [i39, i42, i45, i93, i45, i93, i45, i93, i45, i93, i39]).
-cycle(i79, [i3, i69, i9, i69, i9, i69, i9, i69, i9, i39, i3]).
-cycle(i79, [i3, i69, i9, i69, i9, i39, i3, i69, i9, i39, i3]).
-cycle(i79, [i3, i69, i9, i39, i3, i69, i9, i69, i9, i39, i3]).
-cycle(i79, [i3, i69, i9, i39, i81, i3, i69, i9, i39, i81, i3]).
-cycle(i65, [i12, i12, i12, i12, i12, i12, i12, i12, i12, i12, i12]).
-cycle(i17, [i0, i30, i33, i75, i30, i33, i75, i30, i33, i75, i0]).
-cycle(i17, [i0, i30, i33, i75, i0, i30, i33, i63, i42, i54, i0]).
-cycle(i17, [i0, i30, i33, i63, i42, i54, i0, i30, i33, i75, i0]).
-cycle(i80, [i15, i60, i42, i15, i60, i42, i15, i42, i15, i42, i15]).
-cycle(i80, [i15, i60, i42, i15, i42, i15, i60, i42, i15, i42, i15]).
-cycle(i80, [i15, i60, i42, i15, i42, i15, i42, i15, i60, i42, i15]).
-cycle(i80, [i90, i90, i90, i90, i90, i90, i90, i90, i90, i90, i90]).
-cycle(i19, [i36, i21, i87, i33, i12, i93, i66, i36, i72, i66, i36]).
-cycle(i19, [i36, i21, i87, i69, i36, i21, i21, i21, i87, i69, i36]).
-cycle(i19, [i36, i21, i87, i69, i36, i72, i33, i12, i93, i66, i36]).
-cycle(i19, [i36, i21, i87, i69, i36, i72, i66, i36, i72, i66, i36]).
-cycle(i19, [i36, i21, i21, i87, i69, i36, i21, i21, i87, i69, i36]).
-cycle(i19, [i36, i21, i21, i21, i87, i69, i36, i21, i87, i69, i36]).
-cycle(i19, [i36, i21, i21, i21, i21, i87, i33, i12, i93, i66, i36]).
-cycle(i19, [i36, i21, i21, i21, i21, i87, i69, i36, i72, i66, i36]).
-cycle(i19, [i36, i21, i21, i21, i21, i21, i21, i21, i87, i69, i36]).
-cycle(i60, [i33, i12, i63, i93, i27, i39, i48, i42, i45, i99, i33]).
-cycle(i74, [i27, i57, i27, i57, i27, i57, i27, i57, i27, i57, i27]).
-cycle(i36, [i36, i93, i36, i93, i36, i93, i36, i93, i36, i93, i36]).
-cycle(i36, [i36, i93, i36, i93, i36, i93, i36, i24, i84, i51, i36]).
-cycle(i36, [i36, i93, i36, i93, i36, i24, i84, i51, i36, i93, i36]).
-cycle(i36, [i36, i93, i36, i24, i84, i51, i36, i93, i36, i93, i36]).
-cycle(i36, [i36, i93, i36, i24, i84, i51, i36, i24, i84, i51, i36]).
-cycle(i42, [i87, i87, i87, i87, i87, i87, i87, i87, i87, i87, i87]).
-cycle(i29, [i12, i12, i12, i12, i12, i12, i12, i12, i12, i12, i12]).
-cycle(i65, [i3, i84, i45, i9, i96, i18, i57, i78, i78, i9, i3]).
-cycle(i7, [i57, i18, i75, i84, i72, i57, i18, i75, i84, i72, i57]).
-cycle(i19, [i12, i93, i66, i36, i21, i87, i69, i36, i72, i33, i12]).
-cycle(i19, [i12, i93, i66, i36, i21, i21, i21, i21, i87, i33, i12]).
-cycle(i19, [i12, i93, i66, i36, i72, i66, i36, i21, i87, i33, i12]).
-cycle(i25, [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]).
-cycle(i32, [i63, i0, i33, i15, i60, i63, i0, i33, i15, i60, i63]).
-cycle(i54, [i66, i33, i96, i9, i51, i66, i33, i96, i9, i51, i66]).
-cycle(i4, [i57, i57, i57, i57, i57, i57, i57, i57, i57, i57, i57]).
-cycle(i13, [i60, i12, i60, i12, i60, i12, i60, i12, i60, i12, i60]).
-cycle(i65, [i72, i9, i96, i18, i57, i72, i9, i96, i18, i57, i72]).
-cycle(i65, [i72, i9, i96, i18, i57, i78, i9, i96, i18, i57, i72]).
-cycle(i56, [i27, i27, i27, i27, i27, i27, i27, i27, i27, i27, i27]).
-cycle(i96, [i69, i75, i48, i33, i69, i75, i75, i75, i48, i33, i69]).
-cycle(i96, [i69, i75, i75, i48, i33, i69, i75, i75, i48, i33, i69]).
-cycle(i96, [i69, i75, i75, i75, i48, i33, i69, i75, i48, i33, i69]).
-cycle(i96, [i69, i75, i75, i75, i75, i75, i75, i75, i48, i33, i69]).
-cycle(i93, [i48, i33, i48, i33, i48, i33, i48, i33, i48, i33, i48]).
-cycle(i19, [i36, i72, i33, i12, i93, i66, i36, i21, i87, i69, i36]).
-cycle(i19, [i36, i72, i66, i36, i21, i87, i33, i12, i93, i66, i36]).
-cycle(i19, [i36, i72, i66, i36, i21, i87, i69, i36, i72, i66, i36]).
-cycle(i19, [i36, i72, i66, i36, i21, i21, i21, i21, i87, i69, i36]).
-cycle(i19, [i36, i72, i66, i36, i72, i66, i36, i21, i87, i69, i36]).
-cycle(i69, [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]).
-cycle(i98, [i12, i12, i12, i12, i12, i12, i12, i12, i12, i12, i12]).
-cycle(i64, [i42, i42, i42, i42, i42, i42, i42, i42, i42, i42, i42]).
-cycle(i89, [i9, i9, i9, i9, i9, i9, i9, i9, i9, i9, i9]).
-cycle(i9, [i9, i54, i30, i9, i54, i30, i9, i84, i54, i30, i9]).
-cycle(i9, [i9, i54, i30, i9, i84, i54, i30, i9, i54, i30, i9]).
-cycle(i80, [i54, i81, i54, i81, i54, i81, i54, i81, i54, i81, i54]).
-cycle(i95, [i48, i51, i51, i51, i51, i51, i51, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i51, i51, i51, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i51, i51, i51, i48, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i51, i51, i48, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i51, i51, i48, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i51, i48, i51, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i51, i48, i51, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i51, i48, i51, i48, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i48, i51, i51, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i48, i51, i51, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i48, i51, i51, i48, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i48, i51, i48, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i51, i48, i51, i48, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i51, i48, i51, i51, i51, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i48, i51, i51, i51, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i51, i48, i51, i51, i51, i48, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i48, i51, i51, i48, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i48, i51, i51, i48, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i51, i48, i51, i48, i51, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i51, i48, i51, i48, i51, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i51, i48, i51, i48, i51, i48, i51, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i51, i51, i51, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i51, i51, i51, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i51, i51, i51, i48, i51, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i51, i51, i48, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i51, i51, i48, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i51, i48, i51, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i51, i48, i51, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i51, i48, i51, i48, i51, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i48, i51, i51, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i48, i51, i51, i51, i48, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i48, i51, i51, i48, i51, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i48, i51, i48, i51, i51, i51, i48]).
-cycle(i95, [i48, i51, i48, i51, i48, i51, i48, i51, i48, i51, i48]).
-cycle(i36, [i72, i24, i84, i51, i36, i72, i24, i84, i51, i36, i72]).
-cycle(i50, [i54, i72, i78, i87, i99, i54, i72, i78, i87, i99, i54]).
-cycle(i50, [i54, i72, i69, i66, i51, i84, i72, i78, i87, i99, i54]).
-cycle(i16, [i21, i42, i45, i93, i39, i45, i93, i45, i93, i63, i21]).
-cycle(i16, [i21, i42, i45, i93, i63, i21, i42, i45, i93, i63, i21]).
-cycle(i16, [i21, i42, i45, i93, i45, i93, i39, i45, i93, i63, i21]).
-cycle(i18, [i75, i75, i75, i75, i75, i75, i75, i75, i75, i75, i75]).
-cycle(i11, [i39, i39, i39, i39, i39, i39, i39, i39, i39, i39, i39]).
-cycle(i34, [i81, i81, i81, i81, i81, i81, i81, i81, i81, i81, i81]).
-cycle(i70, [i69, i84, i87, i69, i90, i39, i48, i69, i84, i87, i69]).
-cycle(i70, [i69, i84, i87, i69, i90, i39, i48, i69, i84, i75, i69]).
-cycle(i70, [i69, i84, i87, i69, i84, i87, i69, i90, i39, i48, i69]).
-cycle(i70, [i69, i84, i87, i69, i84, i75, i69, i90, i39, i48, i69]).
-cycle(i70, [i69, i84, i75, i69, i90, i39, i48, i69, i84, i87, i69]).
-cycle(i70, [i69, i84, i75, i69, i90, i39, i48, i69, i84, i75, i69]).
-cycle(i70, [i69, i84, i75, i69, i84, i87, i69, i90, i39, i48, i69]).
-cycle(i70, [i69, i84, i75, i69, i84, i75, i69, i90, i39, i48, i69]).
-cycle(i15, [i96, i96, i36, i96, i36, i96, i36, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i36, i96, i36, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i36, i96, i36, i96, i36, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i36, i96, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i96, i36, i96, i36, i96, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i36, i96, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i36, i96, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i36, i96, i36, i96, i96, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i36, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i36, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i36, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i36, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i36, i96, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i96, i36, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i96, i36, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i96, i36, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i96, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i96, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i96, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i96, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i36, i96, i96, i96, i96, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i36, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i36, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i36, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i36, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i36, i96, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i96, i36, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i96, i36, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i96, i36, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i96, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i96, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i96, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i96, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i36, i96, i96, i96, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i36, i96, i36, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i36, i96, i36, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i96, i36, i96, i36, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i36, i96, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i96, i36, i96, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i36, i96, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i36, i96, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i96, i36, i96, i96, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i36, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i36, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i36, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i36, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i36, i96, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i96, i36, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i96, i36, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i96, i36, i96, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i96, i96, i36, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i96, i96, i36, i96, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i96, i96, i96, i36, i96, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i96, i96, i96, i96, i36, i96]).
-cycle(i15, [i96, i96, i96, i96, i96, i96, i96, i96, i96, i96, i96]).
-cycle(i80, [i12, i45, i12, i45, i12, i45, i12, i45, i12, i45, i12]).
-cycle(i60, [i42, i45, i99, i33, i12, i63, i93, i27, i39, i48, i42]).
-cycle(i93, [i84, i84, i84, i84, i84, i84, i84, i84, i84, i84, i84]).
-cycle(i50, [i51, i57, i69, i66, i51, i84, i12, i57, i69, i66, i51]).
-cycle(i50, [i51, i57, i69, i66, i57, i69, i66, i57, i69, i66, i51]).
-cycle(i36, [i51, i36, i93, i36, i93, i36, i93, i36, i24, i84, i51]).
-cycle(i36, [i51, i36, i93, i36, i24, i84, i51, i36, i24, i84, i51]).
-cycle(i36, [i51, i36, i72, i24, i84, i51, i36, i72, i24, i84, i51]).
-cycle(i36, [i51, i36, i24, i84, i51, i36, i93, i36, i24, i84, i51]).
-cycle(i59, [i48, i48, i48, i48, i48, i48, i48, i48, i48, i48, i48]).
-cycle(i83, [i6, i84, i69, i0, i6, i84, i69, i6, i84, i69, i6]).
-cycle(i83, [i6, i84, i69, i6, i84, i69, i0, i6, i84, i69, i6]).
-cycle(i83, [i6, i84, i69, i6, i84, i69, i6, i84, i69, i0, i6]).
-cycle(i65, [i9, i96, i18, i57, i72, i9, i96, i18, i57, i72, i9]).
-cycle(i65, [i9, i96, i18, i57, i72, i9, i96, i18, i57, i78, i9]).
-cycle(i65, [i9, i96, i18, i57, i78, i78, i78, i78, i78, i78, i9]).
-cycle(i65, [i9, i96, i18, i57, i78, i78, i9, i3, i84, i45, i9]).
-cycle(i65, [i9, i96, i18, i57, i78, i9, i96, i18, i57, i72, i9]).
-cycle(i65, [i9, i96, i18, i57, i78, i9, i96, i18, i57, i78, i9]).
-cycle(i48, [i69, i69, i69, i69, i69, i69, i69, i69, i69, i69, i69]).
-cycle(i60, [i27, i39, i48, i42, i45, i99, i33, i12, i63, i93, i27]).
-cycle(i16, [i39, i45, i93, i39, i42, i45, i93, i39, i45, i93, i39]).
-cycle(i16, [i39, i45, i93, i39, i45, i93, i39, i42, i45, i93, i39]).
-cycle(i16, [i39, i45, i93, i39, i45, i93, i39, i87, i27, i93, i39]).
-cycle(i16, [i39, i45, i93, i39, i45, i93, i45, i93, i45, i93, i39]).
-cycle(i16, [i39, i45, i93, i39, i87, i27, i93, i39, i45, i93, i39]).
-cycle(i16, [i39, i45, i93, i63, i21, i42, i45, i93, i45, i93, i39]).
-cycle(i16, [i39, i45, i93, i45, i93, i39, i45, i93, i45, i93, i39]).
-cycle(i16, [i39, i45, i93, i45, i93, i63, i21, i42, i45, i93, i39]).
-cycle(i16, [i39, i45, i93, i45, i93, i45, i93, i39, i45, i93, i39]).
-cycle(i81, [i84, i27, i84, i27, i84, i27, i84, i27, i84, i27, i84]).
-cycle(i44, [i51, i63, i48, i27, i54, i51, i63, i48, i27, i54, i51]).
-cycle(i63, [i72, i72, i72, i72, i72, i72, i72, i72, i72, i72, i72]).
-cycle(i64, [i3, i9, i3, i9, i3, i9, i3, i9, i3, i9, i3]).
-cycle(i58, [i54, i54, i54, i54, i54, i54, i54, i54, i54, i54, i54]).
-cycle(i34, [i0, i30, i0, i30, i0, i30, i0, i30, i0, i30, i0]).
-cycle(i6, [i75, i75, i75, i75, i75, i75, i75, i75, i75, i75, i75]).
-cycle(i50, [i30, i39, i33, i9, i33, i9, i33, i9, i27, i15, i30]).
-cycle(i50, [i30, i39, i33, i9, i33, i9, i27, i15, i12, i27, i30]).
-cycle(i50, [i30, i39, i33, i9, i27, i15, i30, i39, i48, i27, i30]).
-cycle(i50, [i30, i39, i33, i9, i27, i30, i39, i33, i9, i27, i30]).
-cycle(i50, [i30, i39, i33, i9, i27, i30, i39, i48, i27, i15, i30]).
-cycle(i50, [i30, i39, i48, i27, i15, i12, i27, i15, i12, i27, i30]).
-cycle(i50, [i30, i39, i48, i27, i15, i30, i39, i33, i9, i27, i30]).
-cycle(i50, [i30, i39, i48, i27, i15, i30, i39, i48, i27, i15, i30]).
-cycle(i50, [i30, i39, i48, i27, i30, i39, i33, i9, i27, i15, i30]).
-cycle(i83, [i69, i0, i6, i84, i69, i6, i84, i69, i6, i84, i69]).
-cycle(i77, [i24, i24, i24, i24, i24, i24, i24, i24, i24, i24, i24]).
-cycle(i74, [i33, i60, i33, i60, i33, i60, i33, i60, i33, i60, i33]).
-cycle(i78, [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]).
-cycle(i83, [i69, i6, i84, i69, i0, i6, i84, i69, i6, i84, i69]).
-cycle(i83, [i69, i6, i84, i69, i6, i84, i69, i0, i6, i84, i69]).
-cycle(i44, [i48, i27, i54, i51, i63, i48, i27, i54, i51, i63, i48]).
-cycle(i32, [i6, i90, i6, i90, i6, i90, i6, i90, i6, i90, i6]).
-cycle(i11, [i15, i30, i78, i45, i51, i15, i30, i78, i45, i51, i15]).
-cycle(i24, [i33, i24, i33, i24, i33, i24, i33, i24, i33, i24, i33]).
-cycle(i9, [i54, i30, i9, i54, i30, i9, i54, i30, i9, i84, i54]).
-cycle(i9, [i54, i30, i9, i54, i30, i9, i84, i54, i30, i9, i54]).
-cycle(i9, [i54, i30, i9, i84, i54, i30, i9, i54, i30, i9, i54]).
-cycle(i77, [i72, i72, i72, i72, i72, i72, i72, i72, i72, i72, i72]).
-cycle(i81, [i75, i60, i21, i75, i60, i21, i75, i30, i75, i30, i75]).
-cycle(i81, [i75, i60, i21, i75, i30, i75, i60, i21, i75, i30, i75]).
-cycle(i81, [i75, i60, i21, i75, i30, i75, i30, i75, i60, i21, i75]).
-cycle(i97, [i18, i69, i18, i69, i18, i69, i18, i69, i18, i69, i18]).
-cycle(i50, [i39, i48, i27, i15, i12, i27, i15, i12, i27, i30, i39]).
-cycle(i50, [i39, i48, i27, i15, i30, i39, i33, i9, i27, i30, i39]).
-cycle(i50, [i39, i48, i27, i15, i30, i39, i48, i27, i15, i30, i39]).
-cycle(i50, [i39, i48, i27, i30, i39, i33, i9, i27, i15, i30, i39]).
-cycle(i82, [i36, i36, i36, i36, i36, i36, i36, i36, i36, i36, i36]).
-cycle(i44, [i27, i54, i51, i63, i48, i27, i54, i51, i63, i48, i27]).
-cycle(i5, [i60, i48, i0, i63, i9, i93, i81, i15, i81, i15, i60]).
-cycle(i5, [i60, i48, i0, i63, i9, i93, i81, i15, i60, i15, i60]).
-cycle(i5, [i60, i48, i0, i63, i9, i93, i9, i93, i81, i15, i60]).
-cycle(i5, [i60, i48, i0, i63, i9, i93, i9, i0, i81, i15, i60]).
-cycle(i5, [i60, i48, i0, i63, i9, i0, i81, i15, i81, i15, i60]).
-cycle(i5, [i60, i48, i0, i63, i9, i0, i81, i15, i60, i15, i60]).
-cycle(i5, [i60, i48, i0, i63, i81, i15, i81, i15, i81, i15, i60]).
-cycle(i5, [i60, i48, i0, i63, i81, i15, i81, i15, i60, i15, i60]).
-cycle(i5, [i60, i48, i0, i63, i81, i15, i60, i15, i81, i15, i60]).
-cycle(i5, [i60, i48, i0, i63, i81, i15, i60, i15, i60, i15, i60]).
-cycle(i5, [i60, i48, i0, i81, i15, i60, i48, i0, i81, i15, i60]).
-cycle(i5, [i9, i93, i81, i15, i81, i15, i60, i48, i0, i63, i9]).
-cycle(i5, [i9, i93, i81, i15, i60, i48, i0, i63, i9, i93, i9]).
-cycle(i5, [i9, i93, i81, i15, i60, i15, i60, i48, i0, i63, i9]).
-cycle(i5, [i9, i93, i9, i93, i81, i15, i60, i48, i0, i63, i9]).
-cycle(i5, [i9, i93, i9, i93, i9, i93, i9, i93, i9, i93, i9]).
-cycle(i5, [i9, i93, i9, i93, i9, i0, i63, i9, i0, i63, i9]).
-cycle(i5, [i9, i93, i9, i0, i63, i9, i93, i9, i0, i63, i9]).
-cycle(i5, [i9, i93, i9, i0, i63, i9, i0, i63, i9, i93, i9]).
-cycle(i5, [i9, i93, i9, i0, i81, i15, i60, i48, i0, i63, i9]).
-cycle(i60, [i99, i33, i12, i63, i93, i27, i39, i48, i42, i45, i99]).
-cycle(i86, [i0, i0, i0, i0, i0, i0, i0, i0, i0, i0, i0]).
-cycle(i54, [i33, i96, i9, i51, i66, i33, i96, i9, i51, i66, i33]).
-cycle(i70, [i75, i69, i90, i39, i48, i69, i84, i87, i69, i84, i75]).
-cycle(i70, [i75, i69, i90, i39, i48, i69, i84, i75, i69, i84, i75]).
-cycle(i70, [i75, i69, i84, i87, i69, i90, i39, i48, i69, i84, i75]).
-cycle(i70, [i75, i69, i84, i75, i69, i90, i39, i48, i69, i84, i75]).
-cycle(i79, [i9, i69, i9, i69, i9, i69, i9, i69, i9, i69, i9]).
-cycle(i79, [i9, i69, i9, i69, i9, i69, i9, i39, i3, i69, i9]).
-cycle(i79, [i9, i69, i9, i69, i9, i39, i3, i69, i9, i69, i9]).
-cycle(i79, [i9, i69, i9, i39, i3, i69, i9, i69, i9, i69, i9]).
-cycle(i79, [i9, i69, i9, i39, i3, i69, i9, i39, i3, i69, i9]).
-cycle(i44, [i54, i51, i63, i48, i27, i54, i51, i63, i48, i27, i54]).
-cycle(i50, [i15, i12, i27, i15, i12, i27, i30, i39, i48, i27, i15]).
-cycle(i50, [i15, i12, i27, i15, i21, i72, i78, i87, i48, i27, i15]).
-cycle(i50, [i15, i12, i27, i30, i39, i33, i9, i33, i9, i27, i15]).
-cycle(i50, [i15, i12, i27, i30, i39, i48, i27, i15, i12, i27, i15]).
-cycle(i75, [i0, i30, i0, i0, i0, i0, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i0, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i0, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i0, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i0, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i0, i30, i0, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i0, i30, i0, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i0, i30, i0, i30, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i30, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i30, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i30, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i30, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i0, i30, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i0, i30, i0, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i30, i0, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i0, i30, i0, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i30, i0, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i30, i0, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i0, i30, i0, i30, i0, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i0, i30, i0, i30, i0, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i0, i30, i0, i30, i0, i30, i0, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i0, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i0, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i0, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i0, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i0, i0, i30, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i0, i30, i0, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i0, i30, i0, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i0, i30, i0, i30, i0, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i30, i0, i0, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i30, i0, i0, i0, i30, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i30, i0, i0, i30, i0, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i30, i0, i30, i0, i0, i0]).
-cycle(i75, [i0, i30, i0, i30, i0, i30, i0, i30, i0, i30, i0]).
-cycle(i67, [i15, i15, i15, i15, i15, i15, i15, i15, i15, i15, i15]).
-cycle(i67, [i15, i15, i15, i15, i15, i15, i15, i15, i54, i9, i15]).
-cycle(i67, [i15, i15, i15, i15, i15, i15, i15, i54, i9, i15, i15]).
-cycle(i67, [i15, i15, i15, i15, i15, i15, i54, i9, i15, i15, i15]).
-cycle(i67, [i15, i15, i15, i15, i15, i54, i9, i15, i15, i15, i15]).
-cycle(i67, [i15, i15, i15, i15, i15, i54, i9, i15, i54, i9, i15]).
-cycle(i67, [i15, i15, i15, i15, i54, i9, i15, i15, i15, i15, i15]).
-cycle(i67, [i15, i15, i15, i15, i54, i9, i15, i15, i54, i9, i15]).
-cycle(i67, [i15, i15, i15, i15, i54, i9, i15, i54, i9, i15, i15]).
-cycle(i67, [i15, i15, i15, i54, i9, i15, i15, i15, i15, i15, i15]).
-cycle(i67, [i15, i15, i15, i54, i9, i15, i15, i15, i54, i9, i15]).
-cycle(i67, [i15, i15, i15, i54, i9, i15, i15, i54, i9, i15, i15]).
-cycle(i67, [i15, i15, i15, i54, i9, i15, i54, i9, i15, i15, i15]).
-cycle(i67, [i15, i15, i54, i9, i15, i15, i15, i15, i15, i15, i15]).
-cycle(i67, [i15, i15, i54, i9, i15, i15, i15, i15, i54, i9, i15]).
-cycle(i67, [i15, i15, i54, i9, i15, i15, i15, i54, i9, i15, i15]).
-cycle(i67, [i15, i15, i54, i9, i15, i15, i54, i9, i15, i15, i15]).
-cycle(i67, [i15, i15, i54, i9, i15, i54, i9, i15, i15, i15, i15]).
-cycle(i67, [i15, i15, i54, i9, i15, i54, i9, i15, i54, i9, i15]).
-cycle(i70, [i84, i87, i69, i90, i39, i48, i69, i84, i87, i69, i84]).
-cycle(i70, [i84, i87, i69, i90, i39, i48, i69, i84, i75, i69, i84]).
-cycle(i70, [i84, i87, i69, i84, i87, i69, i90, i39, i48, i69, i84]).
-cycle(i70, [i84, i87, i69, i84, i75, i69, i90, i39, i48, i69, i84]).
-cycle(i24, [i27, i27, i27, i27, i27, i27, i27, i27, i27, i27, i27]).
-cycle(i19, [i93, i66, i36, i21, i87, i69, i36, i72, i33, i12, i93]).
-cycle(i19, [i93, i66, i36, i21, i21, i21, i21, i87, i33, i12, i93]).
-cycle(i19, [i93, i66, i36, i72, i66, i36, i21, i87, i33, i12, i93]).
-cycle(i52, [i21, i78, i21, i78, i21, i78, i21, i78, i21, i78, i21]).
-cycle(i44, [i63, i48, i27, i54, i51, i63, i48, i27, i54, i51, i63]).
-cycle(i70, [i39, i48, i69, i84, i87, i69, i84, i87, i69, i90, i39]).
-cycle(i70, [i39, i48, i69, i84, i87, i69, i84, i75, i69, i90, i39]).
-cycle(i70, [i39, i48, i69, i84, i75, i69, i84, i87, i69, i90, i39]).
-cycle(i70, [i39, i48, i69, i84, i75, i69, i84, i75, i69, i90, i39]).
-cycle(i5, [i9, i0, i63, i9, i93, i9, i93, i9, i0, i63, i9]).
-cycle(i5, [i9, i0, i63, i9, i93, i9, i0, i63, i9, i93, i9]).
-cycle(i5, [i9, i0, i63, i9, i0, i63, i9, i93, i9, i93, i9]).
-cycle(i5, [i9, i0, i81, i15, i81, i15, i60, i48, i0, i63, i9]).
-cycle(i5, [i9, i0, i81, i15, i60, i48, i0, i63, i9, i93, i9]).
-cycle(i5, [i9, i0, i81, i15, i60, i15, i60, i48, i0, i63, i9]).
-cycle(i28, [i18, i78, i18, i78, i18, i78, i18, i78, i18, i78, i18]).
-cycle(i60, [i45, i99, i33, i12, i63, i93, i27, i39, i48, i42, i45]).
-cycle(i92, [i84, i45, i84, i45, i84, i45, i84, i45, i84, i45, i84]).
-cycle(i0, [i9, i12, i66, i9, i12, i66, i9, i12, i9, i12, i9]).
-cycle(i0, [i9, i12, i66, i9, i12, i9, i12, i66, i9, i12, i9]).
-cycle(i0, [i9, i12, i66, i9, i12, i9, i12, i9, i12, i66, i9]).
-cycle(i0, [i9, i12, i9, i12, i66, i9, i12, i66, i9, i12, i9]).
-cycle(i0, [i9, i12, i9, i12, i66, i9, i12, i9, i12, i66, i9]).
-cycle(i0, [i9, i12, i9, i12, i9, i12, i66, i9, i12, i66, i9]).
-cycle(i0, [i9, i12, i9, i12, i9, i12, i9, i12, i9, i12, i9]).
-cycle(i2, [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]).
-cycle(i84, [i21, i87, i33, i93, i51, i30, i21, i87, i51, i30, i21]).
-cycle(i84, [i21, i87, i51, i30, i21, i87, i33, i93, i51, i30, i21]).
-cycle(i65, [i78, i78, i78, i78, i78, i78, i78, i78, i78, i78, i78]).
-cycle(i65, [i78, i78, i78, i78, i78, i78, i9, i96, i18, i57, i78]).
-cycle(i65, [i78, i78, i78, i78, i78, i9, i96, i18, i57, i78, i78]).
-cycle(i65, [i78, i78, i78, i78, i9, i96, i18, i57, i78, i78, i78]).
-cycle(i65, [i78, i78, i78, i9, i96, i18, i57, i78, i78, i78, i78]).
-cycle(i65, [i78, i78, i9, i3, i84, i45, i9, i96, i18, i57, i78]).
-cycle(i65, [i78, i78, i9, i96, i18, i57, i78, i78, i78, i78, i78]).
-cycle(i65, [i45, i9, i96, i18, i57, i78, i78, i9, i3, i84, i45]).
-cycle(i21, [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]).
-cycle(i27, [i72, i21, i72, i21, i72, i21, i72, i21, i72, i21, i72]).
-cycle(i5, [i48, i0, i63, i9, i93, i81, i15, i81, i15, i60, i48]).
-cycle(i5, [i48, i0, i63, i9, i93, i81, i15, i60, i15, i60, i48]).
-cycle(i5, [i48, i0, i63, i9, i93, i9, i93, i81, i15, i60, i48]).
-cycle(i5, [i48, i0, i63, i9, i93, i9, i0, i81, i15, i60, i48]).
-cycle(i5, [i48, i0, i63, i9, i0, i81, i15, i81, i15, i60, i48]).
-cycle(i5, [i48, i0, i63, i9, i0, i81, i15, i60, i15, i60, i48]).
-cycle(i5, [i48, i0, i63, i81, i15, i81, i15, i81, i15, i60, i48]).
-cycle(i5, [i48, i0, i63, i81, i15, i81, i15, i60, i15, i60, i48]).
-cycle(i5, [i48, i0, i63, i81, i15, i60, i15, i81, i15, i60, i48]).
-cycle(i5, [i48, i0, i63, i81, i15, i60, i15, i60, i15, i60, i48]).
-cycle(i5, [i48, i0, i81, i15, i60, i48, i0, i81, i15, i60, i48]).
-cycle(i77, [i96, i69, i96, i69, i96, i69, i96, i69, i96, i69, i96]).
-cycle(i16, [i93, i63, i21, i42, i45, i93, i39, i45, i93, i45, i93]).
-cycle(i16, [i93, i63, i21, i42, i45, i93, i63, i21, i42, i45, i93]).
-cycle(i16, [i93, i63, i21, i42, i45, i93, i45, i93, i39, i45, i93]).
-cycle(i53, [i15, i15, i15, i15, i15, i15, i15, i15, i15, i15, i15]).
-cycle(i54, [i96, i9, i51, i66, i33, i96, i9, i51, i66, i33, i96]).
-cycle(i50, [i21, i72, i78, i87, i48, i27, i15, i12, i27, i15, i21]).
-cycle(i42, [i81, i81, i81, i81, i81, i81, i81, i81, i81, i81, i81]).
-cycle(i5, [i0, i63, i9, i93, i81, i15, i81, i15, i60, i48, i0]).
-cycle(i5, [i0, i63, i9, i93, i81, i15, i60, i15, i60, i48, i0]).
-cycle(i5, [i0, i63, i9, i93, i9, i93, i81, i15, i60, i48, i0]).
-cycle(i5, [i0, i63, i9, i93, i9, i93, i9, i0, i63, i9, i0]).
-cycle(i5, [i0, i63, i9, i93, i9, i0, i63, i9, i93, i9, i0]).
-cycle(i5, [i0, i63, i9, i93, i9, i0, i81, i15, i60, i48, i0]).
-cycle(i5, [i0, i63, i9, i0, i63, i9, i93, i9, i93, i9, i0]).
-cycle(i5, [i0, i63, i9, i0, i81, i15, i81, i15, i60, i48, i0]).
-cycle(i5, [i0, i63, i9, i0, i81, i15, i60, i15, i60, i48, i0]).
-cycle(i5, [i0, i63, i81, i15, i81, i15, i81, i15, i60, i48, i0]).
-cycle(i5, [i0, i63, i81, i15, i81, i15, i60, i15, i60, i48, i0]).
-cycle(i5, [i0, i63, i81, i15, i60, i15, i81, i15, i60, i48, i0]).
-cycle(i5, [i0, i63, i81, i15, i60, i15, i60, i15, i60, i48, i0]).
-cycle(i96, [i27, i27, i27, i27, i27, i27, i27, i27, i27, i27, i27]).
-cycle(i70, [i84, i75, i69, i90, i39, i48, i69, i84, i87, i69, i84]).
-cycle(i70, [i84, i75, i69, i90, i39, i48, i69, i84, i75, i69, i84]).
-cycle(i70, [i84, i75, i69, i84, i87, i69, i90, i39, i48, i69, i84]).
-cycle(i70, [i84, i75, i69, i84, i75, i69, i90, i39, i48, i69, i84]).
-cycle(i50, [i69, i66, i51, i84, i72, i78, i87, i99, i66, i57, i69]).
-cycle(i50, [i69, i66, i51, i84, i72, i78, i87, i99, i54, i72, i69]).
-cycle(i50, [i69, i66, i51, i84, i72, i69, i66, i51, i84, i72, i69]).
-cycle(i50, [i69, i66, i51, i84, i12, i57, i69, i66, i51, i57, i69]).
-cycle(i50, [i69, i66, i51, i57, i69, i66, i51, i84, i12, i57, i69]).
-cycle(i50, [i69, i66, i51, i57, i69, i66, i57, i69, i66, i57, i69]).
-cycle(i50, [i69, i66, i57, i69, i66, i51, i57, i69, i66, i57, i69]).
-cycle(i50, [i69, i66, i57, i69, i66, i57, i69, i66, i51, i57, i69]).
-cycle(i32, [i60, i63, i0, i33, i15, i60, i63, i0, i33, i15, i60]).
-cycle(i0, [i12, i66, i9, i12, i66, i9, i12, i9, i12, i9, i12]).
-cycle(i0, [i12, i66, i9, i12, i9, i12, i66, i9, i12, i9, i12]).
-cycle(i0, [i12, i66, i9, i12, i9, i12, i9, i12, i66, i9, i12]).
-cycle(i75, [i30, i0, i0, i0, i0, i0, i0, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i0, i0, i0, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i0, i0, i0, i30, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i0, i0, i30, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i0, i0, i30, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i0, i30, i0, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i0, i30, i0, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i0, i30, i0, i30, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i30, i0, i0, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i30, i0, i0, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i30, i0, i0, i30, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i30, i0, i30, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i0, i30, i0, i30, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i0, i30, i0, i0, i0, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i30, i0, i0, i0, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i0, i30, i0, i0, i0, i30, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i30, i0, i0, i30, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i30, i0, i0, i30, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i0, i30, i0, i30, i0, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i0, i30, i0, i30, i0, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i0, i30, i0, i30, i0, i30, i0, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i0, i0, i0, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i0, i0, i0, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i0, i0, i0, i30, i0, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i0, i0, i30, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i0, i0, i30, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i0, i30, i0, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i0, i30, i0, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i0, i30, i0, i30, i0, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i30, i0, i0, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i30, i0, i0, i0, i30, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i30, i0, i0, i30, i0, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i30, i0, i30, i0, i0, i0, i30]).
-cycle(i75, [i30, i0, i30, i0, i30, i0, i30, i0, i30, i0, i30]).
-cycle(i84, [i93, i51, i30, i21, i87, i51, i30, i21, i87, i33, i93]).
-cycle(i42, [i75, i72, i75, i72, i75, i72, i75, i72, i75, i72, i75]).
-cycle(i5, [i0, i81, i15, i81, i15, i60, i48, i0, i63, i9, i0]).
-cycle(i5, [i0, i81, i15, i60, i48, i0, i63, i9, i93, i9, i0]).
-cycle(i5, [i0, i81, i15, i60, i48, i0, i81, i15, i60, i48, i0]).
-cycle(i5, [i0, i81, i15, i60, i15, i60, i48, i0, i63, i9, i0]).
-cycle(i53, [i21, i75, i78, i96, i6, i21, i75, i78, i96, i6, i21]).
-cycle(i36, [i93, i36, i93, i36, i93, i36, i93, i36, i93, i36, i93]).
-cycle(i36, [i93, i36, i93, i36, i93, i36, i24, i84, i51, i36, i93]).
-cycle(i36, [i93, i36, i93, i36, i24, i84, i51, i36, i93, i36, i93]).
-cycle(i36, [i93, i36, i24, i84, i51, i36, i93, i36, i93, i36, i93]).
-cycle(i36, [i93, i36, i24, i84, i51, i36, i24, i84, i51, i36, i93]).
-cycle(i39, [i96, i96, i96, i96, i96, i96, i96, i96, i96, i96, i96]).
-cycle(i81, [i21, i75, i60, i21, i75, i30, i75, i30, i75, i60, i21]).
-cycle(i81, [i21, i75, i30, i75, i60, i21, i75, i30, i75, i60, i21]).
-cycle(i81, [i21, i75, i30, i75, i30, i75, i60, i21, i75, i60, i21]).
-cycle(i50, [i27, i15, i12, i27, i15, i12, i27, i30, i39, i48, i27]).
-cycle(i50, [i27, i15, i12, i27, i15, i21, i72, i78, i87, i48, i27]).
-cycle(i50, [i27, i15, i12, i27, i30, i39, i33, i9, i33, i9, i27]).
-cycle(i50, [i27, i15, i12, i27, i30, i39, i48, i27, i15, i12, i27]).
-cycle(i50, [i27, i15, i30, i39, i33, i9, i33, i9, i33, i9, i27]).
-cycle(i50, [i27, i15, i30, i39, i33, i9, i27, i30, i39, i48, i27]).
-cycle(i50, [i27, i15, i30, i39, i48, i27, i15, i30, i39, i48, i27]).
-cycle(i50, [i27, i15, i30, i39, i48, i27, i30, i39, i33, i9, i27]).
-cycle(i50, [i27, i15, i21, i72, i78, i87, i48, i27, i15, i12, i27]).
-cycle(i0, [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]).
-cycle(i9, [i84, i54, i30, i9, i54, i30, i9, i54, i30, i9, i84]).
-cycle(i16, [i87, i27, i93, i39, i42, i45, i93, i45, i93, i39, i87]).
-cycle(i16, [i87, i27, i93, i39, i45, i93, i39, i45, i93, i39, i87]).
-cycle(i16, [i87, i27, i93, i39, i87, i27, i93, i45, i93, i39, i87]).
-cycle(i16, [i87, i27, i93, i45, i93, i39, i42, i45, i93, i39, i87]).
-cycle(i16, [i87, i27, i93, i45, i93, i39, i87, i27, i93, i39, i87]).
-cycle(i16, [i87, i27, i93, i45, i93, i45, i93, i45, i93, i39, i87]).
-cycle(i80, [i45, i12, i45, i12, i45, i12, i45, i12, i45, i12, i45]).
-cycle(i88, [i54, i54, i54, i54, i54, i54, i54, i54, i54, i54, i54]).
-cycle(i67, [i15, i54, i9, i15, i15, i15, i15, i15, i15, i15, i15]).
-cycle(i67, [i15, i54, i9, i15, i15, i15, i15, i15, i54, i9, i15]).
-cycle(i67, [i15, i54, i9, i15, i15, i15, i15, i54, i9, i15, i15]).
-cycle(i67, [i15, i54, i9, i15, i15, i15, i54, i9, i15, i15, i15]).
-cycle(i67, [i15, i54, i9, i15, i15, i54, i9, i15, i15, i15, i15]).
-cycle(i67, [i15, i54, i9, i15, i15, i54, i9, i15, i54, i9, i15]).
-cycle(i67, [i15, i54, i9, i15, i54, i9, i15, i15, i15, i15, i15]).
-cycle(i67, [i15, i54, i9, i15, i54, i9, i15, i15, i54, i9, i15]).
-cycle(i67, [i15, i54, i9, i15, i54, i9, i15, i54, i9, i15, i15]).
-cycle(i53, [i78, i96, i6, i21, i75, i78, i96, i6, i21, i75, i78]).
-cycle(i7, [i18, i75, i84, i72, i57, i18, i75, i84, i72, i57, i18]).
-cycle(i82, [i21, i21, i21, i21, i21, i21, i21, i21, i21, i21, i21]).
-cycle(i15, [i36, i96, i36, i96, i36, i96, i36, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i36, i96, i36, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i36, i96, i96, i36, i96, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i36, i96, i96, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i36, i96, i96, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i96, i36, i96, i36, i96, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i96, i36, i96, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i96, i36, i96, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i96, i96, i36, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i96, i96, i36, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i96, i96, i96, i36, i96, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i96, i96, i96, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i36, i96, i96, i96, i96, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i36, i96, i36, i96, i36, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i36, i96, i36, i96, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i96, i36, i96, i36, i96, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i36, i96, i96, i36, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i96, i36, i96, i96, i36, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i36, i96, i96, i96, i36, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i36, i96, i96, i96, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i96, i36, i96, i96, i96, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i36, i96, i36, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i36, i96, i36, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i36, i96, i96, i36, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i36, i96, i96, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i36, i96, i96, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i96, i36, i96, i36, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i96, i36, i96, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i96, i36, i96, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i96, i96, i36, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i96, i96, i36, i96, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i96, i96, i96, i36, i96, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i96, i96, i96, i96, i36, i96, i36]).
-cycle(i15, [i36, i96, i96, i96, i96, i96, i96, i96, i96, i96, i36]).
-cycle(i50, [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]).
-cycle(i79, [i9, i39, i3, i69, i9, i69, i9, i69, i9, i69, i9]).
-cycle(i79, [i9, i39, i3, i69, i9, i69, i9, i39, i3, i69, i9]).
-cycle(i79, [i9, i39, i3, i69, i9, i39, i3, i69, i9, i69, i9]).
-cycle(i79, [i9, i39, i81, i3, i69, i9, i39, i81, i3, i69, i9]).
-cycle(i24, [i78, i78, i78, i78, i78, i78, i78, i78, i78, i78, i78]).
-cycle(i6, [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]).
-cycle(i50, [i84, i12, i57, i69, i66, i51, i57, i69, i66, i51, i84]).
-cycle(i53, [i6, i21, i75, i78, i96, i6, i21, i75, i78, i96, i6]).
-cycle(i70, [i90, i39, i48, i69, i84, i87, i69, i84, i87, i69, i90]).
-cycle(i70, [i90, i39, i48, i69, i84, i87, i69, i84, i75, i69, i90]).
-cycle(i70, [i90, i39, i48, i69, i84, i75, i69, i84, i87, i69, i90]).
-cycle(i70, [i90, i39, i48, i69, i84, i75, i69, i84, i75, i69, i90]).
-cycle(i5, [i15, i81, i15, i81, i15, i81, i15, i81, i15, i81, i15]).
-cycle(i5, [i15, i81, i15, i81, i15, i81, i15, i81, i15, i60, i15]).
-cycle(i5, [i15, i81, i15, i81, i15, i81, i15, i60, i15, i81, i15]).
-cycle(i5, [i15, i81, i15, i81, i15, i81, i15, i60, i15, i60, i15]).
-cycle(i5, [i15, i81, i15, i81, i15, i60, i48, i0, i63, i81, i15]).
-cycle(i5, [i15, i81, i15, i81, i15, i60, i15, i81, i15, i81, i15]).
-cycle(i5, [i15, i81, i15, i81, i15, i60, i15, i81, i15, i60, i15]).
-cycle(i5, [i15, i81, i15, i81, i15, i60, i15, i60, i15, i81, i15]).
-cycle(i5, [i15, i81, i15, i81, i15, i60, i15, i60, i15, i60, i15]).
-cycle(i5, [i15, i81, i15, i60, i48, i0, i63, i9, i93, i81, i15]).
-cycle(i5, [i15, i81, i15, i60, i48, i0, i63, i9, i0, i81, i15]).
-cycle(i5, [i15, i81, i15, i60, i48, i0, i63, i81, i15, i81, i15]).
-cycle(i5, [i15, i81, i15, i60, i48, i0, i63, i81, i15, i60, i15]).
-cycle(i5, [i15, i81, i15, i60, i15, i81, i15, i81, i15, i81, i15]).
-cycle(i5, [i15, i81, i15, i60, i15, i81, i15, i81, i15, i60, i15]).
-cycle(i5, [i15, i81, i15, i60, i15, i81, i15, i60, i15, i81, i15]).
-cycle(i5, [i15, i81, i15, i60, i15, i81, i15, i60, i15, i60, i15]).
-cycle(i5, [i15, i81, i15, i60, i15, i60, i48, i0, i63, i81, i15]).
-cycle(i5, [i15, i81, i15, i60, i15, i60, i15, i81, i15, i81, i15]).
-cycle(i5, [i15, i81, i15, i60, i15, i60, i15, i81, i15, i60, i15]).
-cycle(i5, [i15, i81, i15, i60, i15, i60, i15, i60, i15, i81, i15]).
-cycle(i5, [i15, i81, i15, i60, i15, i60, i15, i60, i15, i60, i15]).
-cycle(i50, [i78, i87, i99, i66, i57, i69, i66, i51, i84, i72, i78]).
-cycle(i50, [i78, i87, i99, i54, i72, i78, i87, i99, i54, i72, i78]).
-cycle(i50, [i78, i87, i99, i54, i72, i69, i66, i51, i84, i72, i78]).
-cycle(i50, [i78, i87, i48, i27, i15, i12, i27, i15, i21, i72, i78]).
-cycle(i67, [i54, i9, i15, i15, i15, i15, i15, i15, i15, i15, i54]).
-cycle(i67, [i54, i9, i15, i15, i15, i15, i15, i54, i9, i15, i54]).
-cycle(i67, [i54, i9, i15, i15, i15, i15, i54, i9, i15, i15, i54]).
-cycle(i67, [i54, i9, i15, i15, i15, i54, i9, i15, i15, i15, i54]).
-cycle(i67, [i54, i9, i15, i15, i54, i9, i15, i15, i15, i15, i54]).
-cycle(i67, [i54, i9, i15, i15, i54, i9, i15, i54, i9, i15, i54]).
-cycle(i67, [i54, i9, i15, i54, i9, i15, i15, i15, i15, i15, i54]).
-cycle(i67, [i54, i9, i15, i54, i9, i15, i15, i54, i9, i15, i54]).
-cycle(i67, [i54, i9, i15, i54, i9, i15, i54, i9, i15, i15, i54]).
-cycle(i84, [i87, i33, i93, i51, i30, i21, i87, i51, i30, i21, i87]).
-cycle(i0, [i12, i9, i12, i66, i9, i12, i66, i9, i12, i9, i12]).
-cycle(i0, [i12, i9, i12, i66, i9, i12, i9, i12, i66, i9, i12]).
-cycle(i0, [i12, i9, i12, i9, i12, i66, i9, i12, i66, i9, i12]).
-cycle(i0, [i12, i9, i12, i9, i12, i9, i12, i9, i12, i9, i12]).
-cycle(i17, [i30, i33, i75, i30, i33, i75, i30, i33, i75, i0, i30]).
-cycle(i17, [i30, i33, i75, i30, i33, i75, i0, i30, i33, i75, i30]).
-cycle(i17, [i30, i33, i75, i0, i30, i33, i75, i30, i33, i75, i30]).
-cycle(i17, [i30, i33, i75, i0, i30, i33, i63, i42, i54, i0, i30]).
-cycle(i17, [i30, i33, i63, i42, i54, i0, i30, i33, i75, i0, i30]).
-cycle(i12, [i66, i66, i66, i66, i66, i66, i66, i66, i66, i66, i66]).
-cycle(i2, [i27, i66, i27, i66, i27, i66, i27, i66, i27, i66, i27]).
-cycle(i83, [i0, i6, i84, i69, i6, i84, i69, i6, i84, i69, i0]).
-cycle(i19, [i66, i36, i21, i87, i33, i12, i93, i66, i36, i72, i66]).
-cycle(i19, [i66, i36, i21, i87, i69, i36, i72, i33, i12, i93, i66]).
-cycle(i19, [i66, i36, i21, i87, i69, i36, i72, i66, i36, i72, i66]).
-cycle(i19, [i66, i36, i21, i21, i21, i21, i87, i33, i12, i93, i66]).
-cycle(i19, [i66, i36, i21, i21, i21, i21, i87, i69, i36, i72, i66]).
-cycle(i19, [i66, i36, i72, i66, i36, i21, i87, i33, i12, i93, i66]).
-cycle(i19, [i66, i36, i72, i66, i36, i21, i87, i69, i36, i72, i66]).
-cycle(i24, [i24, i33, i24, i33, i24, i33, i24, i33, i24, i33, i24]).
-cycle(i71, [i21, i0, i45, i21, i0, i45, i21, i0, i21, i0, i21]).
-cycle(i71, [i21, i0, i45, i21, i0, i21, i0, i45, i21, i0, i21]).
-cycle(i71, [i21, i0, i45, i21, i0, i21, i0, i21, i0, i45, i21]).
-cycle(i71, [i21, i0, i21, i0, i45, i21, i0, i45, i21, i0, i21]).
-cycle(i71, [i21, i0, i21, i0, i45, i21, i0, i21, i0, i45, i21]).
-cycle(i71, [i21, i0, i21, i0, i21, i0, i45, i21, i0, i45, i21]).
-cycle(i71, [i21, i0, i21, i0, i21, i0, i21, i0, i21, i0, i21]).
-cycle(i57, [i48, i69, i48, i69, i48, i69, i48, i69, i48, i69, i48]).
-cycle(i43, [i60, i60, i60, i60, i60, i60, i60, i60, i60, i60, i60]).
-cycle(i84, [i30, i21, i87, i33, i93, i51, i30, i21, i87, i51, i30]).
-cycle(i84, [i30, i21, i87, i51, i30, i21, i87, i33, i93, i51, i30]).
-cycle(i80, [i60, i42, i15, i60, i42, i15, i42, i15, i42, i15, i60]).
-cycle(i80, [i60, i42, i15, i42, i15, i60, i42, i15, i42, i15, i60]).
-cycle(i80, [i60, i42, i15, i42, i15, i42, i15, i60, i42, i15, i60]).
-cycle(i50, [i87, i99, i66, i57, i69, i66, i51, i84, i72, i78, i87]).
-cycle(i50, [i87, i99, i54, i72, i78, i87, i99, i54, i72, i78, i87]).
-cycle(i50, [i87, i99, i54, i72, i69, i66, i51, i84, i72, i78, i87]).
-cycle(i84, [i51, i30, i21, i87, i33, i93, i51, i30, i21, i87, i51]).
-cycle(i84, [i51, i30, i21, i87, i51, i30, i21, i87, i33, i93, i51]).
-cycle(i31, [i3, i15, i3, i15, i3, i15, i3, i15, i3, i15, i3]).
-cycle(i97, [i27, i27, i27, i27, i27, i27, i27, i27, i27, i27, i27]).
-cycle(i96, [i75, i75, i48, i33, i69, i75, i48, i33, i69, i75, i75]).
-cycle(i96, [i75, i75, i48, i33, i69, i75, i75, i48, i33, i69, i75]).
-cycle(i96, [i75, i75, i48, i33, i69, i75, i75, i75, i75, i75, i75]).
-cycle(i96, [i75, i75, i75, i48, i33, i69, i75, i48, i33, i69, i75]).
-cycle(i96, [i75, i75, i75, i48, i33, i69, i75, i75, i75, i75, i75]).
-cycle(i96, [i75, i75, i75, i75, i48, i33, i69, i75, i75, i75, i75]).
-cycle(i96, [i75, i75, i75, i75, i75, i48, i33, i69, i75, i75, i75]).
-cycle(i96, [i75, i75, i75, i75, i75, i75, i48, i33, i69, i75, i75]).
-cycle(i96, [i75, i75, i75, i75, i75, i75, i75, i48, i33, i69, i75]).
-cycle(i96, [i75, i75, i75, i75, i75, i75, i75, i75, i75, i75, i75]).
-cycle(i71, [i0, i45, i21, i0, i45, i21, i0, i21, i0, i21, i0]).
-cycle(i71, [i0, i45, i21, i0, i21, i0, i45, i21, i0, i21, i0]).
-cycle(i71, [i0, i45, i21, i0, i21, i0, i21, i0, i45, i21, i0]).
-cycle(i71, [i45, i21, i0, i45, i21, i0, i21, i0, i21, i0, i45]).
-cycle(i71, [i45, i21, i0, i21, i0, i45, i21, i0, i21, i0, i45]).
-cycle(i71, [i45, i21, i0, i21, i0, i21, i0, i45, i21, i0, i45]).
-cycle(i70, [i18, i0, i18, i0, i18, i0, i18, i0, i18, i0, i18]).
-cycle(i19, [i69, i36, i21, i87, i69, i36, i21, i21, i21, i87, i69]).
-cycle(i19, [i69, i36, i21, i21, i87, i69, i36, i21, i21, i87, i69]).
-cycle(i19, [i69, i36, i21, i21, i21, i87, i69, i36, i21, i87, i69]).
-cycle(i19, [i69, i36, i21, i21, i21, i21, i21, i21, i21, i87, i69]).
-cycle(i19, [i69, i36, i72, i33, i12, i93, i66, i36, i21, i87, i69]).
-cycle(i19, [i69, i36, i72, i66, i36, i21, i21, i21, i21, i87, i69]).
-cycle(i19, [i69, i36, i72, i66, i36, i72, i66, i36, i21, i87, i69]).
-cycle(i16, [i93, i45, i93, i39, i42, i45, i93, i39, i42, i45, i93]).
-cycle(i16, [i93, i45, i93, i39, i42, i45, i93, i39, i87, i27, i93]).
-cycle(i16, [i93, i45, i93, i39, i42, i45, i93, i45, i93, i45, i93]).
-cycle(i16, [i93, i45, i93, i39, i45, i93, i39, i45, i93, i45, i93]).
-cycle(i16, [i93, i45, i93, i39, i45, i93, i63, i21, i42, i45, i93]).
-cycle(i16, [i93, i45, i93, i39, i45, i93, i45, i93, i39, i45, i93]).
-cycle(i16, [i93, i45, i93, i39, i87, i27, i93, i39, i42, i45, i93]).
-cycle(i16, [i93, i45, i93, i39, i87, i27, i93, i39, i87, i27, i93]).
-cycle(i16, [i93, i45, i93, i39, i87, i27, i93, i45, i93, i45, i93]).
-cycle(i16, [i93, i45, i93, i63, i21, i42, i45, i93, i39, i45, i93]).
-cycle(i16, [i93, i45, i93, i45, i93, i39, i42, i45, i93, i45, i93]).
-cycle(i16, [i93, i45, i93, i45, i93, i39, i45, i93, i39, i45, i93]).
-cycle(i16, [i93, i45, i93, i45, i93, i39, i87, i27, i93, i45, i93]).
-cycle(i16, [i93, i45, i93, i45, i93, i45, i93, i39, i42, i45, i93]).
-cycle(i16, [i93, i45, i93, i45, i93, i45, i93, i39, i87, i27, i93]).
-cycle(i16, [i93, i45, i93, i45, i93, i45, i93, i45, i93, i45, i93]).
-cycle(i36, [i36, i72, i24, i84, i51, i36, i72, i24, i84, i51, i36]).
-cycle(i48, [i72, i90, i72, i90, i72, i90, i72, i90, i72, i90, i72]).
-cycle(i50, [i15, i30, i39, i33, i9, i33, i9, i33, i9, i27, i15]).
-cycle(i50, [i15, i30, i39, i33, i9, i27, i30, i39, i48, i27, i15]).
-cycle(i50, [i15, i30, i39, i48, i27, i15, i30, i39, i48, i27, i15]).
-cycle(i50, [i15, i30, i39, i48, i27, i30, i39, i33, i9, i27, i15]).
-cycle(i79, [i69, i9, i69, i9, i69, i9, i69, i9, i69, i9, i69]).
-cycle(i79, [i69, i9, i69, i9, i69, i9, i69, i9, i39, i3, i69]).
-cycle(i79, [i69, i9, i69, i9, i69, i9, i39, i3, i69, i9, i69]).
-cycle(i79, [i69, i9, i69, i9, i39, i3, i69, i9, i69, i9, i69]).
-cycle(i79, [i69, i9, i69, i9, i39, i3, i69, i9, i39, i3, i69]).
-cycle(i79, [i69, i9, i39, i3, i69, i9, i69, i9, i69, i9, i69]).
-cycle(i79, [i69, i9, i39, i3, i69, i9, i69, i9, i39, i3, i69]).
-cycle(i79, [i69, i9, i39, i3, i69, i9, i39, i3, i69, i9, i69]).
-cycle(i79, [i69, i9, i39, i81, i3, i69, i9, i39, i81, i3, i69]).
-cycle(i10, [i15, i78, i60, i33, i87, i15, i78, i60, i33, i87, i15]).
-cycle(i80, [i15, i42, i15, i60, i42, i15, i60, i42, i15, i42, i15]).
-cycle(i80, [i15, i42, i15, i60, i42, i15, i42, i15, i60, i42, i15]).
-cycle(i80, [i15, i42, i15, i42, i15, i60, i42, i15, i60, i42, i15]).
-cycle(i80, [i15, i42, i15, i42, i15, i42, i15, i42, i15, i42, i15]).
-cycle(i65, [i84, i45, i9, i96, i18, i57, i78, i78, i9, i3, i84]).
-cycle(i34, [i18, i18, i18, i18, i18, i18, i18, i18, i18, i18, i18]).
-cycle(i27, [i39, i84, i39, i84, i39, i84, i39, i84, i39, i84, i39]).
-cycle(i50, [i9, i27, i15, i12, i27, i30, i39, i33, i9, i33, i9]).
-cycle(i50, [i9, i27, i15, i30, i39, i33, i9, i33, i9, i33, i9]).
-cycle(i50, [i9, i27, i15, i30, i39, i48, i27, i30, i39, i33, i9]).
-cycle(i50, [i9, i27, i30, i39, i33, i9, i27, i30, i39, i33, i9]).
-cycle(i50, [i9, i27, i30, i39, i48, i27, i15, i30, i39, i33, i9]).
-cycle(i24, [i57, i57, i57, i57, i57, i57, i57, i57, i57, i57, i57]).
-cycle(i16, [i39, i87, i27, i93, i39, i42, i45, i93, i45, i93, i39]).
-cycle(i16, [i39, i87, i27, i93, i39, i45, i93, i39, i45, i93, i39]).
-cycle(i16, [i39, i87, i27, i93, i39, i87, i27, i93, i45, i93, i39]).
-cycle(i16, [i39, i87, i27, i93, i45, i93, i39, i42, i45, i93, i39]).
-cycle(i16, [i39, i87, i27, i93, i45, i93, i39, i87, i27, i93, i39]).
-cycle(i16, [i39, i87, i27, i93, i45, i93, i45, i93, i45, i93, i39]).
-cycle(i16, [i42, i45, i93, i39, i42, i45, i93, i45, i93, i39, i42]).
-cycle(i16, [i42, i45, i93, i39, i45, i93, i39, i45, i93, i39, i42]).
-cycle(i16, [i42, i45, i93, i39, i45, i93, i45, i93, i63, i21, i42]).
-cycle(i16, [i42, i45, i93, i39, i87, i27, i93, i45, i93, i39, i42]).
-cycle(i16, [i42, i45, i93, i63, i21, i42, i45, i93, i63, i21, i42]).
-cycle(i16, [i42, i45, i93, i45, i93, i39, i42, i45, i93, i39, i42]).
-cycle(i16, [i42, i45, i93, i45, i93, i39, i45, i93, i63, i21, i42]).
-cycle(i16, [i42, i45, i93, i45, i93, i39, i87, i27, i93, i39, i42]).
-cycle(i16, [i42, i45, i93, i45, i93, i45, i93, i45, i93, i39, i42]).
-cycle(i19, [i87, i33, i12, i93, i66, i36, i21, i21, i21, i21, i87]).
-cycle(i19, [i87, i33, i12, i93, i66, i36, i72, i66, i36, i21, i87]).
-cycle(i17, [i33, i63, i42, i54, i0, i30, i33, i75, i0, i30, i33]).
-cycle(i65, [i57, i72, i9, i96, i18, i57, i72, i9, i96, i18, i57]).
-cycle(i65, [i57, i72, i9, i96, i18, i57, i78, i9, i96, i18, i57]).
-cycle(i60, [i39, i48, i42, i45, i99, i33, i12, i63, i93, i27, i39]).
-cycle(i28, [i15, i36, i6, i87, i81, i15, i36, i6, i87, i81, i15]).
-cycle(i65, [i78, i9, i3, i84, i45, i9, i96, i18, i57, i78, i78]).
-cycle(i65, [i78, i9, i96, i18, i57, i72, i9, i96, i18, i57, i78]).
-cycle(i65, [i78, i9, i96, i18, i57, i78, i78, i78, i78, i78, i78]).
-cycle(i65, [i78, i9, i96, i18, i57, i78, i9, i96, i18, i57, i78]).
-cycle(i71, [i0, i21, i0, i45, i21, i0, i45, i21, i0, i21, i0]).
-cycle(i71, [i0, i21, i0, i45, i21, i0, i21, i0, i45, i21, i0]).
-cycle(i71, [i0, i21, i0, i21, i0, i45, i21, i0, i45, i21, i0]).
-cycle(i71, [i0, i21, i0, i21, i0, i21, i0, i21, i0, i21, i0]).
-cycle(i16, [i27, i93, i39, i42, i45, i93, i45, i93, i39, i87, i27]).
-cycle(i16, [i27, i93, i39, i45, i93, i39, i45, i93, i39, i87, i27]).
-cycle(i16, [i27, i93, i39, i87, i27, i93, i45, i93, i39, i87, i27]).
-cycle(i16, [i27, i93, i45, i93, i39, i42, i45, i93, i39, i87, i27]).
-cycle(i16, [i27, i93, i45, i93, i39, i87, i27, i93, i39, i87, i27]).
-cycle(i16, [i27, i93, i45, i93, i45, i93, i45, i93, i39, i87, i27]).
-cycle(i79, [i81, i3, i69, i9, i39, i81, i3, i69, i9, i39, i81]).
-cycle(i57, [i69, i48, i69, i48, i69, i48, i69, i48, i69, i48, i69]).
-cycle(i7, [i75, i84, i72, i57, i18, i75, i84, i72, i57, i18, i75]).
-cycle(i5, [i60, i15, i81, i15, i81, i15, i81, i15, i81, i15, i60]).
-cycle(i5, [i60, i15, i81, i15, i81, i15, i81, i15, i60, i15, i60]).
-cycle(i5, [i60, i15, i81, i15, i81, i15, i60, i15, i81, i15, i60]).
-cycle(i5, [i60, i15, i81, i15, i81, i15, i60, i15, i60, i15, i60]).
-cycle(i5, [i60, i15, i81, i15, i60, i48, i0, i63, i81, i15, i60]).
-cycle(i5, [i60, i15, i81, i15, i60, i15, i81, i15, i81, i15, i60]).
-cycle(i5, [i60, i15, i81, i15, i60, i15, i81, i15, i60, i15, i60]).
-cycle(i5, [i60, i15, i81, i15, i60, i15, i60, i15, i81, i15, i60]).
-cycle(i5, [i60, i15, i81, i15, i60, i15, i60, i15, i60, i15, i60]).
-cycle(i5, [i60, i15, i60, i48, i0, i63, i9, i93, i81, i15, i60]).
-cycle(i5, [i60, i15, i60, i48, i0, i63, i9, i0, i81, i15, i60]).
-cycle(i5, [i60, i15, i60, i48, i0, i63, i81, i15, i81, i15, i60]).
-cycle(i5, [i60, i15, i60, i48, i0, i63, i81, i15, i60, i15, i60]).
-cycle(i5, [i60, i15, i60, i15, i81, i15, i81, i15, i81, i15, i60]).
-cycle(i5, [i60, i15, i60, i15, i81, i15, i81, i15, i60, i15, i60]).
-cycle(i5, [i60, i15, i60, i15, i81, i15, i60, i15, i81, i15, i60]).
-cycle(i5, [i60, i15, i60, i15, i81, i15, i60, i15, i60, i15, i60]).
-cycle(i5, [i60, i15, i60, i15, i60, i48, i0, i63, i81, i15, i60]).
-cycle(i5, [i60, i15, i60, i15, i60, i15, i81, i15, i81, i15, i60]).
-cycle(i5, [i60, i15, i60, i15, i60, i15, i81, i15, i60, i15, i60]).
-cycle(i5, [i60, i15, i60, i15, i60, i15, i60, i15, i81, i15, i60]).
-cycle(i5, [i60, i15, i60, i15, i60, i15, i60, i15, i60, i15, i60]).
-cycle(i13, [i81, i87, i45, i48, i78, i81, i87, i45, i48, i78, i81]).
-cycle(i5, [i15, i60, i48, i0, i63, i9, i93, i81, i15, i81, i15]).
-cycle(i5, [i15, i60, i48, i0, i63, i9, i93, i81, i15, i60, i15]).
-cycle(i5, [i15, i60, i48, i0, i63, i9, i93, i9, i93, i81, i15]).
-cycle(i5, [i15, i60, i48, i0, i63, i9, i93, i9, i0, i81, i15]).
-cycle(i5, [i15, i60, i48, i0, i63, i9, i0, i81, i15, i81, i15]).
-cycle(i5, [i15, i60, i48, i0, i63, i9, i0, i81, i15, i60, i15]).
-cycle(i5, [i15, i60, i48, i0, i63, i81, i15, i81, i15, i81, i15]).
-cycle(i5, [i15, i60, i48, i0, i63, i81, i15, i81, i15, i60, i15]).
-cycle(i5, [i15, i60, i48, i0, i63, i81, i15, i60, i15, i81, i15]).
-cycle(i5, [i15, i60, i48, i0, i63, i81, i15, i60, i15, i60, i15]).
-cycle(i5, [i15, i60, i48, i0, i81, i15, i60, i48, i0, i81, i15]).
-cycle(i5, [i15, i60, i15, i81, i15, i81, i15, i81, i15, i81, i15]).
-cycle(i5, [i15, i60, i15, i81, i15, i81, i15, i81, i15, i60, i15]).
-cycle(i5, [i15, i60, i15, i81, i15, i81, i15, i60, i15, i81, i15]).
-cycle(i5, [i15, i60, i15, i81, i15, i81, i15, i60, i15, i60, i15]).
-cycle(i5, [i15, i60, i15, i81, i15, i60, i48, i0, i63, i81, i15]).
-cycle(i5, [i15, i60, i15, i81, i15, i60, i15, i81, i15, i81, i15]).
-cycle(i5, [i15, i60, i15, i81, i15, i60, i15, i81, i15, i60, i15]).
-cycle(i5, [i15, i60, i15, i81, i15, i60, i15, i60, i15, i81, i15]).
-cycle(i5, [i15, i60, i15, i81, i15, i60, i15, i60, i15, i60, i15]).
-cycle(i5, [i15, i60, i15, i60, i48, i0, i63, i9, i93, i81, i15]).
-cycle(i5, [i15, i60, i15, i60, i48, i0, i63, i9, i0, i81, i15]).
-cycle(i5, [i15, i60, i15, i60, i48, i0, i63, i81, i15, i81, i15]).
-cycle(i5, [i15, i60, i15, i60, i48, i0, i63, i81, i15, i60, i15]).
-cycle(i5, [i15, i60, i15, i60, i15, i81, i15, i81, i15, i81, i15]).
-cycle(i5, [i15, i60, i15, i60, i15, i81, i15, i81, i15, i60, i15]).
-cycle(i5, [i15, i60, i15, i60, i15, i81, i15, i60, i15, i81, i15]).
-cycle(i5, [i15, i60, i15, i60, i15, i81, i15, i60, i15, i60, i15]).
-cycle(i5, [i15, i60, i15, i60, i15, i60, i48, i0, i63, i81, i15]).
-cycle(i5, [i15, i60, i15, i60, i15, i60, i15, i81, i15, i81, i15]).
-cycle(i5, [i15, i60, i15, i60, i15, i60, i15, i81, i15, i60, i15]).
-cycle(i5, [i15, i60, i15, i60, i15, i60, i15, i60, i15, i81, i15]).
-cycle(i5, [i15, i60, i15, i60, i15, i60, i15, i60, i15, i60, i15]).
-cycle(i36, [i36, i24, i84, i51, i36, i93, i36, i93, i36, i93, i36]).
-cycle(i36, [i36, i24, i84, i51, i36, i93, i36, i24, i84, i51, i36]).
-cycle(i36, [i36, i24, i84, i51, i36, i24, i84, i51, i36, i93, i36]).
-cycle(i13, [i48, i78, i81, i87, i45, i48, i78, i81, i87, i45, i48]).
-cycle(i83, [i84, i69, i0, i6, i84, i69, i6, i84, i69, i6, i84]).
-cycle(i83, [i84, i69, i6, i84, i69, i0, i6, i84, i69, i6, i84]).
-cycle(i83, [i84, i69, i6, i84, i69, i6, i84, i69, i0, i6, i84]).
-cycle(i19, [i87, i69, i36, i21, i87, i69, i36, i21, i21, i21, i87]).
-cycle(i19, [i87, i69, i36, i21, i21, i87, i69, i36, i21, i21, i87]).
-cycle(i19, [i87, i69, i36, i21, i21, i21, i87, i69, i36, i21, i87]).
-cycle(i19, [i87, i69, i36, i21, i21, i21, i21, i21, i21, i21, i87]).
-cycle(i19, [i87, i69, i36, i72, i33, i12, i93, i66, i36, i21, i87]).
-cycle(i19, [i87, i69, i36, i72, i66, i36, i21, i21, i21, i21, i87]).
-cycle(i19, [i87, i69, i36, i72, i66, i36, i72, i66, i36, i21, i87]).
-cycle(i81, [i60, i21, i75, i60, i21, i75, i30, i75, i30, i75, i60]).
-cycle(i81, [i60, i21, i75, i30, i75, i60, i21, i75, i30, i75, i60]).
-cycle(i81, [i60, i21, i75, i30, i75, i30, i75, i60, i21, i75, i60]).
-cycle(i93, [i54, i69, i54, i69, i54, i69, i54, i69, i54, i69, i54]).
-cycle(i31, [i66, i66, i66, i66, i66, i66, i66, i66, i66, i66, i66]).
-cycle(i96, [i33, i69, i75, i48, i33, i69, i75, i75, i75, i48, i33]).
-cycle(i96, [i33, i69, i75, i75, i48, i33, i69, i75, i75, i48, i33]).
-cycle(i96, [i33, i69, i75, i75, i75, i48, i33, i69, i75, i48, i33]).
-cycle(i96, [i33, i69, i75, i75, i75, i75, i75, i75, i75, i48, i33]).
-cycle(i84, [i33, i93, i51, i30, i21, i87, i51, i30, i21, i87, i33]).
-cycle(i11, [i51, i15, i30, i78, i45, i51, i15, i30, i78, i45, i51]).
-cycle(i9, [i9, i84, i54, i30, i9, i54, i30, i9, i54, i30, i9]).
-cycle(i60, [i12, i63, i93, i27, i39, i48, i42, i45, i99, i33, i12]).
-cycle(i69, [i24, i24, i24, i24, i24, i24, i24, i24, i24, i24, i24]).
-cycle(i13, [i78, i81, i87, i45, i48, i78, i81, i87, i45, i48, i78]).
-cycle(i11, [i78, i45, i51, i15, i30, i78, i45, i51, i15, i30, i78]).
-cycle(i5, [i63, i9, i93, i81, i15, i81, i15, i60, i48, i0, i63]).
-cycle(i5, [i63, i9, i93, i81, i15, i60, i15, i60, i48, i0, i63]).
-cycle(i5, [i63, i9, i93, i9, i93, i81, i15, i60, i48, i0, i63]).
-cycle(i5, [i63, i9, i93, i9, i93, i9, i0, i63, i9, i0, i63]).
-cycle(i5, [i63, i9, i93, i9, i0, i63, i9, i93, i9, i0, i63]).
-cycle(i5, [i63, i9, i93, i9, i0, i81, i15, i60, i48, i0, i63]).
-cycle(i5, [i63, i9, i0, i63, i9, i93, i9, i93, i9, i0, i63]).
-cycle(i5, [i63, i9, i0, i81, i15, i81, i15, i60, i48, i0, i63]).
-cycle(i5, [i63, i9, i0, i81, i15, i60, i15, i60, i48, i0, i63]).
-cycle(i32, [i90, i6, i90, i6, i90, i6, i90, i6, i90, i6, i90]).
-cycle(i84, [i87, i51, i30, i21, i87, i33, i93, i51, i30, i21, i87]).
-cycle(i2, [i66, i27, i66, i27, i66, i27, i66, i27, i66, i27, i66]).
-cycle(i62, [i81, i81, i24, i81, i24, i81, i24, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i24, i81, i24, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i24, i81, i24, i81, i24, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i24, i81, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i81, i24, i81, i24, i81, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i24, i81, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i24, i81, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i24, i81, i24, i81, i81, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i24, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i24, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i24, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i24, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i24, i81, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i81, i24, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i81, i24, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i81, i24, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i81, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i81, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i81, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i81, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i24, i81, i81, i81, i81, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i24, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i24, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i24, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i24, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i24, i81, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i81, i24, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i81, i24, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i81, i24, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i81, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i81, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i81, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i81, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i24, i81, i81, i81, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i24, i81, i24, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i24, i81, i24, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i81, i24, i81, i24, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i24, i81, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i81, i24, i81, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i24, i81, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i24, i81, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i81, i24, i81, i81, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i24, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i24, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i24, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i24, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i24, i81, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i81, i24, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i81, i24, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i81, i24, i81, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i81, i81, i24, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i81, i81, i24, i81, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i81, i81, i81, i24, i81, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i81, i81, i81, i81, i24, i81]).
-cycle(i62, [i81, i81, i81, i81, i81, i81, i81, i81, i81, i81, i81]).
-cycle(i81, [i75, i30, i75, i60, i21, i75, i60, i21, i75, i30, i75]).
-cycle(i81, [i75, i30, i75, i60, i21, i75, i30, i75, i60, i21, i75]).
-cycle(i81, [i75, i30, i75, i30, i75, i60, i21, i75, i60, i21, i75]).
-cycle(i81, [i75, i30, i75, i30, i75, i30, i75, i30, i75, i30, i75]).
-cycle(i97, [i69, i18, i69, i18, i69, i18, i69, i18, i69, i18, i69]).
-cycle(i29, [i39, i39, i39, i39, i39, i39, i39, i39, i39, i39, i39]).
-cycle(i50, [i12, i27, i15, i12, i27, i30, i39, i48, i27, i15, i12]).
-cycle(i50, [i12, i27, i15, i21, i72, i78, i87, i48, i27, i15, i12]).
-cycle(i50, [i12, i27, i30, i39, i33, i9, i33, i9, i27, i15, i12]).
-cycle(i50, [i12, i27, i30, i39, i48, i27, i15, i12, i27, i15, i12]).
-cycle(i56, [i9, i9, i9, i9, i9, i9, i9, i9, i9, i9, i9]).
-cycle(i24, [i60, i87, i60, i87, i60, i87, i60, i87, i60, i87, i60]).
-cycle(i50, [i87, i48, i27, i15, i12, i27, i15, i21, i72, i78, i87]).
-cycle(i7, [i45, i45, i45, i45, i45, i45, i45, i45, i45, i45, i45]).
-cycle(i60, [i63, i93, i27, i39, i48, i42, i45, i99, i33, i12, i63]).
-cycle(i50, [i57, i69, i66, i51, i84, i72, i78, i87, i99, i66, i57]).
-cycle(i50, [i57, i69, i66, i51, i84, i12, i57, i69, i66, i51, i57]).
-cycle(i50, [i57, i69, i66, i51, i57, i69, i66, i51, i84, i12, i57]).
-cycle(i50, [i57, i69, i66, i51, i57, i69, i66, i57, i69, i66, i57]).
-cycle(i50, [i57, i69, i66, i57, i69, i66, i51, i57, i69, i66, i57]).
-cycle(i50, [i57, i69, i66, i57, i69, i66, i57, i69, i66, i51, i57]).
-cycle(i50, [i27, i30, i39, i33, i9, i33, i9, i27, i15, i12, i27]).
-cycle(i50, [i27, i30, i39, i33, i9, i27, i15, i30, i39, i48, i27]).
-cycle(i50, [i27, i30, i39, i33, i9, i27, i30, i39, i33, i9, i27]).
-cycle(i50, [i27, i30, i39, i48, i27, i15, i12, i27, i15, i12, i27]).
-cycle(i50, [i27, i30, i39, i48, i27, i15, i30, i39, i33, i9, i27]).
-cycle(i17, [i42, i54, i0, i30, i33, i75, i0, i30, i33, i63, i42]).
-cycle(i5, [i63, i81, i15, i81, i15, i81, i15, i60, i48, i0, i63]).
-cycle(i5, [i63, i81, i15, i81, i15, i60, i15, i60, i48, i0, i63]).
-cycle(i5, [i63, i81, i15, i60, i15, i81, i15, i60, i48, i0, i63]).
-cycle(i5, [i63, i81, i15, i60, i15, i60, i15, i60, i48, i0, i63]).
-cycle(i57, [i84, i51, i84, i51, i84, i51, i84, i51, i84, i51, i84]).
-cycle(i19, [i72, i66, i36, i21, i87, i33, i12, i93, i66, i36, i72]).
-cycle(i19, [i72, i66, i36, i21, i87, i69, i36, i72, i66, i36, i72]).
-cycle(i19, [i72, i66, i36, i21, i21, i21, i21, i87, i69, i36, i72]).
-cycle(i19, [i72, i66, i36, i72, i66, i36, i21, i87, i69, i36, i72]).
-cycle(i70, [i48, i69, i84, i87, i69, i84, i87, i69, i90, i39, i48]).
-cycle(i70, [i48, i69, i84, i87, i69, i84, i75, i69, i90, i39, i48]).
-cycle(i70, [i48, i69, i84, i75, i69, i84, i87, i69, i90, i39, i48]).
-cycle(i70, [i48, i69, i84, i75, i69, i84, i75, i69, i90, i39, i48]).
-cycle(i54, [i51, i66, i33, i96, i9, i51, i66, i33, i96, i9, i51]).
-cycle(i50, [i99, i66, i57, i69, i66, i51, i84, i72, i78, i87, i99]).
-cycle(i32, [i15, i60, i63, i0, i33, i15, i60, i63, i0, i33, i15]).
-cycle(i54, [i9, i51, i66, i33, i96, i9, i51, i66, i33, i96, i9]).
-cycle(i17, [i75, i0, i30, i33, i75, i30, i33, i75, i30, i33, i75]).
-cycle(i17, [i75, i0, i30, i33, i63, i42, i54, i0, i30, i33, i75]).
-cycle(i60, [i48, i42, i45, i99, i33, i12, i63, i93, i27, i39, i48]).
-cycle(i17, [i63, i42, i54, i0, i30, i33, i75, i0, i30, i33, i63]).
-cycle(i50, [i99, i54, i72, i78, i87, i99, i54, i72, i78, i87, i99]).
-cycle(i50, [i99, i54, i72, i69, i66, i51, i84, i72, i78, i87, i99]).
-cycle(i65, [i57, i78, i78, i78, i78, i78, i78, i9, i96, i18, i57]).
-cycle(i65, [i57, i78, i78, i9, i3, i84, i45, i9, i96, i18, i57]).
-cycle(i65, [i57, i78, i9, i96, i18, i57, i72, i9, i96, i18, i57]).
-cycle(i65, [i57, i78, i9, i96, i18, i57, i78, i9, i96, i18, i57]).
-cycle(i43, [i18, i18, i18, i18, i18, i18, i18, i18, i18, i18, i18]).
-cycle(i81, [i30, i75, i60, i21, i75, i60, i21, i75, i30, i75, i30]).
-cycle(i81, [i30, i75, i60, i21, i75, i30, i75, i60, i21, i75, i30]).
-cycle(i81, [i30, i75, i30, i75, i60, i21, i75, i60, i21, i75, i30]).
-cycle(i81, [i30, i75, i30, i75, i30, i75, i30, i75, i30, i75, i30]).
-cycle(i50, [i12, i57, i69, i66, i51, i57, i69, i66, i51, i84, i12]).
-cycle(i53, [i96, i6, i21, i75, i78, i96, i6, i21, i75, i78, i96]).
-cycle(i16, [i45, i93, i39, i42, i45, i93, i39, i42, i45, i93, i45]).
-cycle(i16, [i45, i93, i39, i42, i45, i93, i39, i45, i93, i39, i45]).
-cycle(i16, [i45, i93, i39, i42, i45, i93, i39, i87, i27, i93, i45]).
-cycle(i16, [i45, i93, i39, i42, i45, i93, i45, i93, i39, i42, i45]).
-cycle(i16, [i45, i93, i39, i42, i45, i93, i45, i93, i45, i93, i45]).
-cycle(i16, [i45, i93, i39, i45, i93, i39, i42, i45, i93, i39, i45]).
-cycle(i16, [i45, i93, i39, i45, i93, i39, i45, i93, i39, i42, i45]).
-cycle(i16, [i45, i93, i39, i45, i93, i39, i45, i93, i45, i93, i45]).
-cycle(i16, [i45, i93, i39, i45, i93, i39, i87, i27, i93, i39, i45]).
-cycle(i16, [i45, i93, i39, i45, i93, i63, i21, i42, i45, i93, i45]).
-cycle(i16, [i45, i93, i39, i45, i93, i45, i93, i39, i45, i93, i45]).
-cycle(i16, [i45, i93, i39, i45, i93, i45, i93, i63, i21, i42, i45]).
-cycle(i16, [i45, i93, i39, i45, i93, i45, i93, i45, i93, i39, i45]).
-cycle(i16, [i45, i93, i39, i87, i27, i93, i39, i42, i45, i93, i45]).
-cycle(i16, [i45, i93, i39, i87, i27, i93, i39, i45, i93, i39, i45]).
-cycle(i16, [i45, i93, i39, i87, i27, i93, i39, i87, i27, i93, i45]).
-cycle(i16, [i45, i93, i39, i87, i27, i93, i45, i93, i39, i42, i45]).
-cycle(i16, [i45, i93, i39, i87, i27, i93, i45, i93, i45, i93, i45]).
-cycle(i16, [i45, i93, i63, i21, i42, i45, i93, i39, i45, i93, i45]).
-cycle(i16, [i45, i93, i63, i21, i42, i45, i93, i63, i21, i42, i45]).
-cycle(i16, [i45, i93, i63, i21, i42, i45, i93, i45, i93, i39, i45]).
-cycle(i16, [i45, i93, i45, i93, i39, i42, i45, i93, i39, i42, i45]).
-cycle(i16, [i45, i93, i45, i93, i39, i42, i45, i93, i45, i93, i45]).
-cycle(i16, [i45, i93, i45, i93, i39, i45, i93, i39, i45, i93, i45]).
-cycle(i16, [i45, i93, i45, i93, i39, i45, i93, i63, i21, i42, i45]).
-cycle(i16, [i45, i93, i45, i93, i39, i45, i93, i45, i93, i39, i45]).
-cycle(i16, [i45, i93, i45, i93, i39, i87, i27, i93, i39, i42, i45]).
-cycle(i16, [i45, i93, i45, i93, i39, i87, i27, i93, i45, i93, i45]).
-cycle(i16, [i45, i93, i45, i93, i63, i21, i42, i45, i93, i39, i45]).
-cycle(i16, [i45, i93, i45, i93, i45, i93, i39, i42, i45, i93, i45]).
-cycle(i16, [i45, i93, i45, i93, i45, i93, i39, i45, i93, i39, i45]).
-cycle(i16, [i45, i93, i45, i93, i45, i93, i39, i87, i27, i93, i45]).
-cycle(i16, [i45, i93, i45, i93, i45, i93, i45, i93, i39, i42, i45]).
-cycle(i16, [i45, i93, i45, i93, i45, i93, i45, i93, i45, i93, i45]).
-cycle(i50, [i15, i21, i72, i78, i87, i48, i27, i15, i12, i27, i15]).
-cycle(i89, [i48, i48, i48, i48, i48, i48, i48, i48, i48, i48, i48]).
+% Prolog result format 4
+query(1, cycle(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 1518).
+answer(1, ['X0' = i35, 'X1' = [i45, i45, i45, i45, i45, i45, i45, i45, i45, i45, i45]]).
+answer(1, ['X0' = i37, 'X1' = [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i24, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i24, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i24, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i24, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i24, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i81, i24, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i81, i24, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i81, i24, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i81, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i81, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i81, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i81, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i24, i81, i81, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i24, i81, i24, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i24, i81, i24, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i24, i81, i24, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i24, i81, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i24, i81, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i24, i81, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i24, i81, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i24, i81, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i24, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i24, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i24, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i24, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i24, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i81, i24, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i81, i24, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i81, i24, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i81, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i81, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i81, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i81, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i24, i81, i81, i81, i81, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i0, 'X1' = [i84, i75, i84, i75, i84, i75, i84, i75, i84, i75, i84]]).
+answer(1, ['X0' = i13, 'X1' = [i87, i45, i48, i78, i81, i87, i45, i48, i78, i81, i87]]).
+answer(1, ['X0' = i55, 'X1' = [i33, i33, i33, i33, i33, i33, i33, i33, i33, i33, i33]]).
+answer(1, ['X0' = i64, 'X1' = [i9, i3, i9, i3, i9, i3, i9, i3, i9, i3, i9]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i51, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i51, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i51, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i51, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i51, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i51, i48, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i51, i48, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i51, i48, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i48, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i48, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i48, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i48, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i51, i48, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i48, i51, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i48, i51, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i48, i51, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i48, i51, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i48, i51, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i48, i51, i48, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i48, i51, i48, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i51, i48, i51, i48, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i51, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i51, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i51, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i51, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i51, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i51, i48, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i51, i48, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i51, i48, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i48, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i48, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i48, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i48, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i51, i48, i51, i48, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i51, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i51, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i51, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i51, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i51, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i51, i48, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i51, i48, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i51, i48, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i48, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i48, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i48, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i48, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i51, i48, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i48, i51, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i48, i51, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i48, i51, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i48, i51, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i48, i51, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i48, i51, i48, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i48, i51, i48, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i51, i48, i51, i48, i51, i48, i51, i48, i51, i51]]).
+answer(1, ['X0' = i34, 'X1' = [i30, i0, i30, i0, i30, i0, i30, i0, i30, i0, i30]]).
+answer(1, ['X0' = i11, 'X1' = [i45, i51, i15, i30, i78, i45, i51, i15, i30, i78, i45]]).
+answer(1, ['X0' = i74, 'X1' = [i90, i90, i90, i90, i90, i90, i90, i90, i90, i90, i90]]).
+answer(1, ['X0' = i39, 'X1' = [i90, i90, i90, i90, i90, i90, i90, i90, i90, i90, i90]]).
+answer(1, ['X0' = i74, 'X1' = [i57, i27, i57, i27, i57, i27, i57, i27, i57, i27, i57]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i0, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i0, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i0, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i0, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i0, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i0, i30, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i0, i30, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i0, i30, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i30, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i30, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i30, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i30, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i0, i30, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i30, i0, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i30, i0, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i30, i0, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i30, i0, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i30, i0, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i30, i0, i30, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i30, i0, i30, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i0, i30, i0, i30, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i0, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i0, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i0, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i0, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i0, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i0, i30, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i0, i30, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i0, i30, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i30, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i30, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i30, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i30, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i0, i30, i0, i30, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i0, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i0, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i0, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i0, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i0, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i0, i30, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i0, i30, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i0, i30, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i30, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i30, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i30, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i30, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i0, i30, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i30, i0, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i30, i0, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i30, i0, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i30, i0, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i30, i0, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i30, i0, i30, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i30, i0, i30, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i0, i30, i0, i30, i0, i30, i0, i30, i0, i0]]).
+answer(1, ['X0' = i65, 'X1' = [i9, i3, i84, i45, i9, i96, i18, i57, i78, i78, i9]]).
+answer(1, ['X0' = i42, 'X1' = [i9, i9, i9, i9, i9, i9, i9, i9, i9, i9, i9]]).
+answer(1, ['X0' = i97, 'X1' = [i84, i75, i84, i75, i84, i75, i84, i75, i84, i75, i84]]).
+answer(1, ['X0' = i80, 'X1' = [i81, i54, i81, i54, i81, i54, i81, i54, i81, i54, i81]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i51, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i51, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i51, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i51, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i51, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i51, i48, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i51, i48, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i51, i48, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i48, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i48, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i48, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i48, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i51, i48, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i48, i51, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i48, i51, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i48, i51, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i48, i51, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i48, i51, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i48, i51, i48, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i48, i51, i48, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i51, i48, i51, i48, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i51, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i51, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i51, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i51, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i51, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i51, i48, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i51, i48, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i51, i48, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i48, i51, i51, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i48, i51, i51, i51, i48, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i48, i51, i51, i48, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i48, i51, i48, i51, i51, i51]]).
+answer(1, ['X0' = i95, 'X1' = [i51, i48, i51, i48, i51, i48, i51, i48, i51, i48, i51]]).
+answer(1, ['X0' = i33, 'X1' = [i69, i69, i69, i69, i69, i69, i69, i69, i69, i69, i69]]).
+answer(1, ['X0' = i95, 'X1' = [i96, i96, i96, i96, i96, i96, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i13, 'X1' = [i12, i60, i12, i60, i12, i60, i12, i60, i12, i60, i12]]).
+answer(1, ['X0' = i67, 'X1' = [i9, i15, i15, i15, i15, i15, i15, i15, i15, i54, i9]]).
+answer(1, ['X0' = i67, 'X1' = [i9, i15, i15, i15, i15, i15, i54, i9, i15, i54, i9]]).
+answer(1, ['X0' = i67, 'X1' = [i9, i15, i15, i15, i15, i54, i9, i15, i15, i54, i9]]).
+answer(1, ['X0' = i67, 'X1' = [i9, i15, i15, i15, i54, i9, i15, i15, i15, i54, i9]]).
+answer(1, ['X0' = i67, 'X1' = [i9, i15, i15, i54, i9, i15, i15, i15, i15, i54, i9]]).
+answer(1, ['X0' = i67, 'X1' = [i9, i15, i15, i54, i9, i15, i54, i9, i15, i54, i9]]).
+answer(1, ['X0' = i67, 'X1' = [i9, i15, i54, i9, i15, i15, i15, i15, i15, i54, i9]]).
+answer(1, ['X0' = i67, 'X1' = [i9, i15, i54, i9, i15, i15, i54, i9, i15, i54, i9]]).
+answer(1, ['X0' = i67, 'X1' = [i9, i15, i54, i9, i15, i54, i9, i15, i15, i54, i9]]).
+answer(1, ['X0' = i53, 'X1' = [i75, i78, i96, i6, i21, i75, i78, i96, i6, i21, i75]]).
+answer(1, ['X0' = i50, 'X1' = [i84, i72, i78, i87, i99, i66, i57, i69, i66, i51, i84]]).
+answer(1, ['X0' = i50, 'X1' = [i84, i72, i78, i87, i99, i54, i72, i69, i66, i51, i84]]).
+answer(1, ['X0' = i50, 'X1' = [i84, i72, i69, i66, i51, i84, i72, i69, i66, i51, i84]]).
+answer(1, ['X0' = i79, 'X1' = [i39, i3, i69, i9, i69, i9, i69, i9, i69, i9, i39]]).
+answer(1, ['X0' = i79, 'X1' = [i39, i3, i69, i9, i69, i9, i39, i3, i69, i9, i39]]).
+answer(1, ['X0' = i79, 'X1' = [i39, i3, i69, i9, i39, i3, i69, i9, i69, i9, i39]]).
+answer(1, ['X0' = i32, 'X1' = [i33, i15, i60, i63, i0, i33, i15, i60, i63, i0, i33]]).
+answer(1, ['X0' = i24, 'X1' = [i87, i60, i87, i60, i87, i60, i87, i60, i87, i60, i87]]).
+answer(1, ['X0' = i50, 'X1' = [i66, i51, i84, i72, i78, i87, i99, i66, i57, i69, i66]]).
+answer(1, ['X0' = i50, 'X1' = [i66, i51, i84, i72, i78, i87, i99, i54, i72, i69, i66]]).
+answer(1, ['X0' = i50, 'X1' = [i66, i51, i84, i72, i69, i66, i51, i84, i72, i69, i66]]).
+answer(1, ['X0' = i50, 'X1' = [i66, i51, i84, i12, i57, i69, i66, i51, i57, i69, i66]]).
+answer(1, ['X0' = i50, 'X1' = [i66, i51, i57, i69, i66, i51, i84, i12, i57, i69, i66]]).
+answer(1, ['X0' = i50, 'X1' = [i66, i51, i57, i69, i66, i57, i69, i66, i57, i69, i66]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i87, i33, i12, i93, i66, i36, i21, i21, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i87, i33, i12, i93, i66, i36, i72, i66, i36, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i87, i69, i36, i21, i87, i69, i36, i21, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i87, i69, i36, i21, i21, i87, i69, i36, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i87, i69, i36, i21, i21, i21, i87, i69, i36, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i87, i69, i36, i21, i21, i21, i21, i21, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i87, i69, i36, i72, i33, i12, i93, i66, i36, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i87, i69, i36, i72, i66, i36, i21, i21, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i87, i69, i36, i72, i66, i36, i72, i66, i36, i21]]).
+answer(1, ['X0' = i93, 'X1' = [i69, i54, i69, i54, i69, i54, i69, i54, i69, i54, i69]]).
+answer(1, ['X0' = i55, 'X1' = [i54, i54, i54, i54, i54, i54, i54, i54, i54, i54, i54]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i90, i39, i48, i69, i84, i87, i69, i84, i87, i69]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i90, i39, i48, i69, i84, i87, i69, i84, i75, i69]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i90, i39, i48, i69, i84, i75, i69, i84, i87, i69]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i90, i39, i48, i69, i84, i75, i69, i84, i75, i69]]).
+answer(1, ['X0' = i15, 'X1' = [i9, i9, i9, i9, i9, i9, i9, i9, i9, i9, i9]]).
+answer(1, ['X0' = i10, 'X1' = [i87, i15, i78, i60, i33, i87, i15, i78, i60, i33, i87]]).
+answer(1, ['X0' = i7, 'X1' = [i84, i72, i57, i18, i75, i84, i72, i57, i18, i75, i84]]).
+answer(1, ['X0' = i97, 'X1' = [i75, i84, i75, i84, i75, i84, i75, i84, i75, i84, i75]]).
+answer(1, ['X0' = i77, 'X1' = [i69, i96, i69, i96, i69, i96, i69, i96, i69, i96, i69]]).
+answer(1, ['X0' = i50, 'X1' = [i72, i78, i87, i99, i66, i57, i69, i66, i51, i84, i72]]).
+answer(1, ['X0' = i50, 'X1' = [i72, i78, i87, i99, i54, i72, i78, i87, i99, i54, i72]]).
+answer(1, ['X0' = i50, 'X1' = [i72, i78, i87, i99, i54, i72, i69, i66, i51, i84, i72]]).
+answer(1, ['X0' = i50, 'X1' = [i72, i78, i87, i48, i27, i15, i12, i27, i15, i21, i72]]).
+answer(1, ['X0' = i28, 'X1' = [i36, i6, i87, i81, i15, i36, i6, i87, i81, i15, i36]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i42, i45, i93, i39, i42, i45, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i42, i45, i93, i39, i45, i93, i39, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i42, i45, i93, i39, i87, i27, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i42, i45, i93, i45, i93, i39, i42, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i42, i45, i93, i45, i93, i39, i87, i27, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i42, i45, i93, i45, i93, i45, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i45, i93, i39, i42, i45, i93, i39, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i45, i93, i39, i45, i93, i39, i42, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i45, i93, i39, i45, i93, i39, i87, i27, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i45, i93, i39, i45, i93, i45, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i45, i93, i39, i87, i27, i93, i39, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i45, i93, i63, i21, i42, i45, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i45, i93, i45, i93, i39, i45, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i45, i93, i45, i93, i63, i21, i42, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i45, i93, i45, i93, i45, i93, i39, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i87, i27, i93, i39, i42, i45, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i87, i27, i93, i39, i45, i93, i39, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i87, i27, i93, i39, i87, i27, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i87, i27, i93, i45, i93, i39, i42, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i87, i27, i93, i45, i93, i39, i87, i27, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i39, i87, i27, i93, i45, i93, i45, i93, i45, i93]]).
+answer(1, ['X0' = i0, 'X1' = [i66, i9, i12, i66, i9, i12, i9, i12, i9, i12, i66]]).
+answer(1, ['X0' = i0, 'X1' = [i66, i9, i12, i9, i12, i66, i9, i12, i9, i12, i66]]).
+answer(1, ['X0' = i0, 'X1' = [i66, i9, i12, i9, i12, i9, i12, i66, i9, i12, i66]]).
+answer(1, ['X0' = i10, 'X1' = [i78, i60, i33, i87, i15, i78, i60, i33, i87, i15, i78]]).
+answer(1, ['X0' = i10, 'X1' = [i60, i33, i87, i15, i78, i60, i33, i87, i15, i78, i60]]).
+answer(1, ['X0' = i64, 'X1' = [i54, i54, i54, i54, i54, i54, i54, i54, i54, i54, i54]]).
+answer(1, ['X0' = i62, 'X1' = [i63, i63, i63, i63, i63, i63, i63, i63, i63, i63, i63]]).
+answer(1, ['X0' = i50, 'X1' = [i33, i9, i33, i9, i33, i9, i33, i9, i33, i9, i33]]).
+answer(1, ['X0' = i50, 'X1' = [i33, i9, i33, i9, i33, i9, i27, i15, i30, i39, i33]]).
+answer(1, ['X0' = i50, 'X1' = [i33, i9, i33, i9, i27, i15, i12, i27, i30, i39, i33]]).
+answer(1, ['X0' = i50, 'X1' = [i33, i9, i33, i9, i27, i15, i30, i39, i33, i9, i33]]).
+answer(1, ['X0' = i50, 'X1' = [i33, i9, i27, i15, i12, i27, i30, i39, i33, i9, i33]]).
+answer(1, ['X0' = i50, 'X1' = [i33, i9, i27, i15, i30, i39, i33, i9, i33, i9, i33]]).
+answer(1, ['X0' = i50, 'X1' = [i33, i9, i27, i15, i30, i39, i48, i27, i30, i39, i33]]).
+answer(1, ['X0' = i50, 'X1' = [i33, i9, i27, i30, i39, i33, i9, i27, i30, i39, i33]]).
+answer(1, ['X0' = i50, 'X1' = [i33, i9, i27, i30, i39, i48, i27, i15, i30, i39, i33]]).
+answer(1, ['X0' = i98, 'X1' = [i15, i15, i15, i15, i15, i15, i15, i15, i15, i15, i15]]).
+answer(1, ['X0' = i66, 'X1' = [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]]).
+answer(1, ['X0' = i36, 'X1' = [i84, i51, i36, i93, i36, i93, i36, i93, i36, i24, i84]]).
+answer(1, ['X0' = i36, 'X1' = [i84, i51, i36, i93, i36, i24, i84, i51, i36, i24, i84]]).
+answer(1, ['X0' = i36, 'X1' = [i84, i51, i36, i72, i24, i84, i51, i36, i72, i24, i84]]).
+answer(1, ['X0' = i36, 'X1' = [i84, i51, i36, i24, i84, i51, i36, i93, i36, i24, i84]]).
+answer(1, ['X0' = i16, 'X1' = [i63, i21, i42, i45, i93, i39, i45, i93, i45, i93, i63]]).
+answer(1, ['X0' = i16, 'X1' = [i63, i21, i42, i45, i93, i63, i21, i42, i45, i93, i63]]).
+answer(1, ['X0' = i16, 'X1' = [i63, i21, i42, i45, i93, i45, i93, i39, i45, i93, i63]]).
+answer(1, ['X0' = i45, 'X1' = [i0, i0, i0, i0, i0, i0, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i50, 'X1' = [i51, i84, i72, i78, i87, i99, i66, i57, i69, i66, i51]]).
+answer(1, ['X0' = i50, 'X1' = [i51, i84, i72, i78, i87, i99, i54, i72, i69, i66, i51]]).
+answer(1, ['X0' = i50, 'X1' = [i51, i84, i72, i69, i66, i51, i84, i72, i69, i66, i51]]).
+answer(1, ['X0' = i50, 'X1' = [i51, i84, i12, i57, i69, i66, i51, i57, i69, i66, i51]]).
+answer(1, ['X0' = i50, 'X1' = [i48, i27, i15, i12, i27, i15, i12, i27, i30, i39, i48]]).
+answer(1, ['X0' = i50, 'X1' = [i48, i27, i15, i12, i27, i15, i21, i72, i78, i87, i48]]).
+answer(1, ['X0' = i50, 'X1' = [i48, i27, i15, i30, i39, i33, i9, i27, i30, i39, i48]]).
+answer(1, ['X0' = i50, 'X1' = [i48, i27, i15, i30, i39, i48, i27, i15, i30, i39, i48]]).
+answer(1, ['X0' = i50, 'X1' = [i48, i27, i30, i39, i33, i9, i27, i15, i30, i39, i48]]).
+answer(1, ['X0' = i81, 'X1' = [i27, i84, i27, i84, i27, i84, i27, i84, i27, i84, i27]]).
+answer(1, ['X0' = i92, 'X1' = [i45, i84, i45, i84, i45, i84, i45, i84, i45, i84, i45]]).
+answer(1, ['X0' = i17, 'X1' = [i75, i30, i33, i75, i30, i33, i75, i0, i30, i33, i75]]).
+answer(1, ['X0' = i17, 'X1' = [i75, i30, i33, i75, i0, i30, i33, i75, i30, i33, i75]]).
+answer(1, ['X0' = i7, 'X1' = [i72, i57, i18, i75, i84, i72, i57, i18, i75, i84, i72]]).
+answer(1, ['X0' = i0, 'X1' = [i75, i84, i75, i84, i75, i84, i75, i84, i75, i84, i75]]).
+answer(1, ['X0' = i50, 'X1' = [i72, i69, i66, i51, i84, i72, i78, i87, i99, i54, i72]]).
+answer(1, ['X0' = i50, 'X1' = [i72, i69, i66, i51, i84, i72, i69, i66, i51, i84, i72]]).
+answer(1, ['X0' = i79, 'X1' = [i39, i81, i3, i69, i9, i39, i81, i3, i69, i9, i39]]).
+answer(1, ['X0' = i97, 'X1' = [i60, i60, i60, i60, i60, i60, i60, i60, i60, i60, i60]]).
+answer(1, ['X0' = i3, 'X1' = [i96, i96, i96, i96, i96, i96, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i50, 'X1' = [i36, i36, i36, i36, i36, i36, i36, i36, i36, i36, i36]]).
+answer(1, ['X0' = i76, 'X1' = [i78, i60, i78, i60, i78, i60, i78, i60, i78, i60, i78]]).
+answer(1, ['X0' = i57, 'X1' = [i51, i84, i51, i84, i51, i84, i51, i84, i51, i84, i51]]).
+answer(1, ['X0' = i17, 'X1' = [i33, i75, i30, i33, i75, i30, i33, i75, i0, i30, i33]]).
+answer(1, ['X0' = i17, 'X1' = [i33, i75, i30, i33, i75, i0, i30, i33, i75, i30, i33]]).
+answer(1, ['X0' = i17, 'X1' = [i33, i75, i0, i30, i33, i75, i30, i33, i75, i30, i33]]).
+answer(1, ['X0' = i17, 'X1' = [i33, i75, i0, i30, i33, i63, i42, i54, i0, i30, i33]]).
+answer(1, ['X0' = i9, 'X1' = [i30, i9, i54, i30, i9, i54, i30, i9, i84, i54, i30]]).
+answer(1, ['X0' = i9, 'X1' = [i30, i9, i54, i30, i9, i84, i54, i30, i9, i54, i30]]).
+answer(1, ['X0' = i9, 'X1' = [i30, i9, i84, i54, i30, i9, i54, i30, i9, i54, i30]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i48, i33, i69, i75, i48, i33, i69, i75, i75, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i48, i33, i69, i75, i75, i48, i33, i69, i75, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i48, i33, i69, i75, i75, i75, i48, i33, i69, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i48, i33, i69, i75, i75, i75, i75, i75, i75, i75]]).
+answer(1, ['X0' = i27, 'X1' = [i21, i72, i21, i72, i21, i72, i21, i72, i21, i72, i21]]).
+answer(1, ['X0' = i11, 'X1' = [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]]).
+answer(1, ['X0' = i17, 'X1' = [i54, i0, i30, i33, i75, i0, i30, i33, i63, i42, i54]]).
+answer(1, ['X0' = i88, 'X1' = [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]]).
+answer(1, ['X0' = i28, 'X1' = [i87, i81, i15, i36, i6, i87, i81, i15, i36, i6, i87]]).
+answer(1, ['X0' = i42, 'X1' = [i72, i75, i72, i75, i72, i75, i72, i75, i72, i75, i72]]).
+answer(1, ['X0' = i84, 'X1' = [i0, i0, i0, i0, i0, i0, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i72, 'X1' = [i60, i60, i60, i60, i60, i60, i60, i60, i60, i60, i60]]).
+answer(1, ['X0' = i60, 'X1' = [i93, i27, i39, i48, i42, i45, i99, i33, i12, i63, i93]]).
+answer(1, ['X0' = i11, 'X1' = [i30, i78, i45, i51, i15, i30, i78, i45, i51, i15, i30]]).
+answer(1, ['X0' = i10, 'X1' = [i33, i87, i15, i78, i60, i33, i87, i15, i78, i60, i33]]).
+answer(1, ['X0' = i19, 'X1' = [i33, i12, i93, i66, i36, i21, i87, i69, i36, i72, i33]]).
+answer(1, ['X0' = i19, 'X1' = [i33, i12, i93, i66, i36, i21, i21, i21, i21, i87, i33]]).
+answer(1, ['X0' = i19, 'X1' = [i33, i12, i93, i66, i36, i72, i66, i36, i21, i87, i33]]).
+answer(1, ['X0' = i13, 'X1' = [i45, i48, i78, i81, i87, i45, i48, i78, i81, i87, i45]]).
+answer(1, ['X0' = i34, 'X1' = [i60, i60, i60, i60, i60, i60, i60, i60, i60, i60, i60]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i24, i81, i24, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i24, i81, i24, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i24, i81, i81, i24, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i24, i81, i81, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i24, i81, i81, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i81, i24, i81, i24, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i81, i24, i81, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i81, i24, i81, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i81, i81, i24, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i81, i81, i24, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i81, i81, i81, i24, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i81, i81, i81, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i24, i81, i81, i81, i81, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i24, i81, i24, i81, i24, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i24, i81, i24, i81, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i24, i81, i24, i81, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i24, i81, i81, i24, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i24, i81, i81, i24, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i24, i81, i81, i81, i24, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i24, i81, i81, i81, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i24, i81, i81, i81, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i24, i81, i24, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i24, i81, i24, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i24, i81, i81, i24, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i24, i81, i81, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i24, i81, i81, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i81, i24, i81, i24, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i81, i24, i81, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i81, i24, i81, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i81, i81, i24, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i81, i81, i24, i81, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i81, i81, i81, i24, i81, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i81, i81, i81, i81, i24, i81, i24]]).
+answer(1, ['X0' = i62, 'X1' = [i24, i81, i81, i81, i81, i81, i81, i81, i81, i81, i24]]).
+answer(1, ['X0' = i4, 'X1' = [i69, i69, i69, i69, i69, i69, i69, i69, i69, i69, i69]]).
+answer(1, ['X0' = i19, 'X1' = [i72, i33, i12, i93, i66, i36, i21, i87, i69, i36, i72]]).
+answer(1, ['X0' = i34, 'X1' = [i24, i24, i24, i24, i24, i24, i24, i24, i24, i24, i24]]).
+answer(1, ['X0' = i93, 'X1' = [i33, i48, i33, i48, i33, i48, i33, i48, i33, i48, i33]]).
+answer(1, ['X0' = i27, 'X1' = [i84, i39, i84, i39, i84, i39, i84, i39, i84, i39, i84]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i87, i33, i12, i93, i66, i36, i21, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i87, i69, i36, i21, i87, i69, i36, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i87, i69, i36, i21, i21, i87, i69, i36, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i87, i69, i36, i21, i21, i21, i21, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i87, i69, i36, i72, i66, i36, i21, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i21, i87, i33, i12, i93, i66, i36, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i21, i87, i69, i36, i21, i87, i69, i36, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i21, i87, i69, i36, i21, i21, i21, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i21, i87, i69, i36, i72, i66, i36, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i21, i21, i87, i33, i12, i93, i66, i36, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i21, i21, i87, i69, i36, i21, i21, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i21, i21, i87, i69, i36, i72, i66, i36, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i21, i21, i21, i87, i69, i36, i21, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i21, i21, i21, i21, i87, i69, i36, i21, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i21, i21, i21, i21, i21, i87, i69, i36, i21]]).
+answer(1, ['X0' = i19, 'X1' = [i21, i21, i21, i21, i21, i21, i21, i21, i21, i21, i21]]).
+answer(1, ['X0' = i31, 'X1' = [i15, i3, i15, i3, i15, i3, i15, i3, i15, i3, i15]]).
+answer(1, ['X0' = i28, 'X1' = [i81, i15, i36, i6, i87, i81, i15, i36, i6, i87, i81]]).
+answer(1, ['X0' = i96, 'X1' = [i48, i33, i69, i75, i48, i33, i69, i75, i75, i75, i48]]).
+answer(1, ['X0' = i96, 'X1' = [i48, i33, i69, i75, i75, i48, i33, i69, i75, i75, i48]]).
+answer(1, ['X0' = i96, 'X1' = [i48, i33, i69, i75, i75, i75, i48, i33, i69, i75, i48]]).
+answer(1, ['X0' = i96, 'X1' = [i48, i33, i69, i75, i75, i75, i75, i75, i75, i75, i48]]).
+answer(1, ['X0' = i28, 'X1' = [i6, i87, i81, i15, i36, i6, i87, i81, i15, i36, i6]]).
+answer(1, ['X0' = i94, 'X1' = [i15, i15, i15, i15, i15, i15, i15, i15, i15, i15, i15]]).
+answer(1, ['X0' = i28, 'X1' = [i78, i18, i78, i18, i78, i18, i78, i18, i78, i18, i78]]).
+answer(1, ['X0' = i48, 'X1' = [i90, i72, i90, i72, i90, i72, i90, i72, i90, i72, i90]]).
+answer(1, ['X0' = i50, 'X1' = [i66, i57, i69, i66, i51, i84, i72, i78, i87, i99, i66]]).
+answer(1, ['X0' = i50, 'X1' = [i66, i57, i69, i66, i51, i57, i69, i66, i57, i69, i66]]).
+answer(1, ['X0' = i50, 'X1' = [i66, i57, i69, i66, i57, i69, i66, i51, i57, i69, i66]]).
+answer(1, ['X0' = i74, 'X1' = [i60, i33, i60, i33, i60, i33, i60, i33, i60, i33, i60]]).
+answer(1, ['X0' = i80, 'X1' = [i42, i15, i60, i42, i15, i60, i42, i15, i42, i15, i42]]).
+answer(1, ['X0' = i80, 'X1' = [i42, i15, i60, i42, i15, i42, i15, i60, i42, i15, i42]]).
+answer(1, ['X0' = i80, 'X1' = [i42, i15, i60, i42, i15, i42, i15, i42, i15, i60, i42]]).
+answer(1, ['X0' = i80, 'X1' = [i42, i15, i42, i15, i60, i42, i15, i60, i42, i15, i42]]).
+answer(1, ['X0' = i80, 'X1' = [i42, i15, i42, i15, i60, i42, i15, i42, i15, i60, i42]]).
+answer(1, ['X0' = i80, 'X1' = [i42, i15, i42, i15, i42, i15, i60, i42, i15, i60, i42]]).
+answer(1, ['X0' = i80, 'X1' = [i42, i15, i42, i15, i42, i15, i42, i15, i42, i15, i42]]).
+answer(1, ['X0' = i32, 'X1' = [i0, i33, i15, i60, i63, i0, i33, i15, i60, i63, i0]]).
+answer(1, ['X0' = i36, 'X1' = [i24, i84, i51, i36, i93, i36, i93, i36, i93, i36, i24]]).
+answer(1, ['X0' = i36, 'X1' = [i24, i84, i51, i36, i93, i36, i24, i84, i51, i36, i24]]).
+answer(1, ['X0' = i36, 'X1' = [i24, i84, i51, i36, i72, i24, i84, i51, i36, i72, i24]]).
+answer(1, ['X0' = i36, 'X1' = [i24, i84, i51, i36, i24, i84, i51, i36, i93, i36, i24]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i36, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i36, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i36, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i36, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i36, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i96, i36, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i96, i36, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i96, i36, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i96, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i96, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i96, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i96, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i36, i96, i96, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i36, i96, i36, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i36, i96, i36, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i36, i96, i36, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i36, i96, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i36, i96, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i36, i96, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i36, i96, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i36, i96, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i36, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i36, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i36, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i36, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i36, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i96, i36, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i96, i36, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i96, i36, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i96, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i96, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i96, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i96, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i36, i96, i96, i96, i96, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i58, 'X1' = [i18, i18, i18, i18, i18, i18, i18, i18, i18, i18, i18]]).
+answer(1, ['X0' = i70, 'X1' = [i87, i69, i90, i39, i48, i69, i84, i87, i69, i84, i87]]).
+answer(1, ['X0' = i70, 'X1' = [i87, i69, i90, i39, i48, i69, i84, i75, i69, i84, i87]]).
+answer(1, ['X0' = i70, 'X1' = [i87, i69, i84, i87, i69, i90, i39, i48, i69, i84, i87]]).
+answer(1, ['X0' = i70, 'X1' = [i87, i69, i84, i75, i69, i90, i39, i48, i69, i84, i87]]).
+answer(1, ['X0' = i12, 'X1' = [i45, i45, i45, i45, i45, i45, i45, i45, i45, i45, i45]]).
+answer(1, ['X0' = i5, 'X1' = [i93, i81, i15, i81, i15, i60, i48, i0, i63, i9, i93]]).
+answer(1, ['X0' = i5, 'X1' = [i93, i81, i15, i60, i48, i0, i63, i9, i93, i9, i93]]).
+answer(1, ['X0' = i5, 'X1' = [i93, i81, i15, i60, i15, i60, i48, i0, i63, i9, i93]]).
+answer(1, ['X0' = i63, 'X1' = [i93, i93, i93, i93, i93, i93, i93, i93, i93, i93, i93]]).
+answer(1, ['X0' = i52, 'X1' = [i78, i21, i78, i21, i78, i21, i78, i21, i78, i21, i78]]).
+answer(1, ['X0' = i65, 'X1' = [i96, i18, i57, i72, i9, i96, i18, i57, i72, i9, i96]]).
+answer(1, ['X0' = i65, 'X1' = [i96, i18, i57, i72, i9, i96, i18, i57, i78, i9, i96]]).
+answer(1, ['X0' = i65, 'X1' = [i96, i18, i57, i78, i78, i78, i78, i78, i78, i9, i96]]).
+answer(1, ['X0' = i65, 'X1' = [i96, i18, i57, i78, i78, i9, i3, i84, i45, i9, i96]]).
+answer(1, ['X0' = i65, 'X1' = [i96, i18, i57, i78, i9, i96, i18, i57, i72, i9, i96]]).
+answer(1, ['X0' = i65, 'X1' = [i96, i18, i57, i78, i9, i96, i18, i57, i78, i9, i96]]).
+answer(1, ['X0' = i50, 'X1' = [i39, i33, i9, i33, i9, i33, i9, i27, i15, i30, i39]]).
+answer(1, ['X0' = i50, 'X1' = [i39, i33, i9, i33, i9, i27, i15, i12, i27, i30, i39]]).
+answer(1, ['X0' = i50, 'X1' = [i39, i33, i9, i27, i15, i30, i39, i48, i27, i30, i39]]).
+answer(1, ['X0' = i50, 'X1' = [i39, i33, i9, i27, i30, i39, i33, i9, i27, i30, i39]]).
+answer(1, ['X0' = i50, 'X1' = [i39, i33, i9, i27, i30, i39, i48, i27, i15, i30, i39]]).
+answer(1, ['X0' = i65, 'X1' = [i18, i57, i72, i9, i96, i18, i57, i72, i9, i96, i18]]).
+answer(1, ['X0' = i65, 'X1' = [i18, i57, i72, i9, i96, i18, i57, i78, i9, i96, i18]]).
+answer(1, ['X0' = i65, 'X1' = [i18, i57, i78, i78, i78, i78, i78, i78, i9, i96, i18]]).
+answer(1, ['X0' = i65, 'X1' = [i18, i57, i78, i78, i9, i3, i84, i45, i9, i96, i18]]).
+answer(1, ['X0' = i65, 'X1' = [i18, i57, i78, i9, i96, i18, i57, i72, i9, i96, i18]]).
+answer(1, ['X0' = i65, 'X1' = [i18, i57, i78, i9, i96, i18, i57, i78, i9, i96, i18]]).
+answer(1, ['X0' = i88, 'X1' = [i57, i57, i57, i57, i57, i57, i57, i57, i57, i57, i57]]).
+answer(1, ['X0' = i76, 'X1' = [i60, i78, i60, i78, i60, i78, i60, i78, i60, i78, i60]]).
+answer(1, ['X0' = i70, 'X1' = [i0, i18, i0, i18, i0, i18, i0, i18, i0, i18, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i81, i15, i81, i15, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i81, i15, i81, i15, i60, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i81, i15, i60, i48, i0, i63, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i81, i15, i60, i15, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i81, i15, i60, i15, i60, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i60, i48, i0, i63, i9, i93, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i60, i48, i0, i63, i9, i0, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i60, i48, i0, i63, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i60, i15, i81, i15, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i60, i15, i81, i15, i60, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i60, i15, i60, i48, i0, i63, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i60, i15, i60, i15, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i81, i15, i60, i15, i60, i15, i60, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i48, i0, i63, i9, i93, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i48, i0, i63, i9, i93, i9, i93, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i48, i0, i63, i9, i93, i9, i0, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i48, i0, i63, i9, i0, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i48, i0, i63, i81, i15, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i48, i0, i63, i81, i15, i60, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i48, i0, i81, i15, i60, i48, i0, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i81, i15, i81, i15, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i81, i15, i81, i15, i60, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i81, i15, i60, i48, i0, i63, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i81, i15, i60, i15, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i81, i15, i60, i15, i60, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i60, i48, i0, i63, i9, i93, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i60, i48, i0, i63, i9, i0, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i60, i48, i0, i63, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i60, i15, i81, i15, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i60, i15, i81, i15, i60, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i60, i15, i60, i48, i0, i63, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i60, i15, i60, i15, i81, i15, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i81, i15, i60, i15, i60, i15, i60, i15, i60, i15, i81]]).
+answer(1, ['X0' = i50, 'X1' = [i9, i33, i9, i33, i9, i33, i9, i33, i9, i33, i9]]).
+answer(1, ['X0' = i50, 'X1' = [i9, i33, i9, i33, i9, i27, i15, i30, i39, i33, i9]]).
+answer(1, ['X0' = i50, 'X1' = [i9, i33, i9, i27, i15, i12, i27, i30, i39, i33, i9]]).
+answer(1, ['X0' = i50, 'X1' = [i9, i33, i9, i27, i15, i30, i39, i33, i9, i33, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i93, i9, i93, i81, i15, i60, i48, i0, i63, i9, i93]]).
+answer(1, ['X0' = i5, 'X1' = [i93, i9, i93, i9, i93, i9, i93, i9, i93, i9, i93]]).
+answer(1, ['X0' = i5, 'X1' = [i93, i9, i93, i9, i0, i63, i9, i0, i63, i9, i93]]).
+answer(1, ['X0' = i5, 'X1' = [i93, i9, i0, i63, i9, i93, i9, i0, i63, i9, i93]]).
+answer(1, ['X0' = i5, 'X1' = [i93, i9, i0, i63, i9, i0, i63, i9, i93, i9, i93]]).
+answer(1, ['X0' = i5, 'X1' = [i93, i9, i0, i81, i15, i60, i48, i0, i63, i9, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i42, i45, i93, i39, i42, i45, i93, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i42, i45, i93, i39, i45, i93, i39, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i42, i45, i93, i39, i87, i27, i93, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i42, i45, i93, i45, i93, i39, i42, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i42, i45, i93, i45, i93, i39, i87, i27, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i42, i45, i93, i45, i93, i45, i93, i45, i93, i39]]).
+answer(1, ['X0' = i79, 'X1' = [i3, i69, i9, i69, i9, i69, i9, i69, i9, i39, i3]]).
+answer(1, ['X0' = i79, 'X1' = [i3, i69, i9, i69, i9, i39, i3, i69, i9, i39, i3]]).
+answer(1, ['X0' = i79, 'X1' = [i3, i69, i9, i39, i3, i69, i9, i69, i9, i39, i3]]).
+answer(1, ['X0' = i79, 'X1' = [i3, i69, i9, i39, i81, i3, i69, i9, i39, i81, i3]]).
+answer(1, ['X0' = i65, 'X1' = [i12, i12, i12, i12, i12, i12, i12, i12, i12, i12, i12]]).
+answer(1, ['X0' = i17, 'X1' = [i0, i30, i33, i75, i30, i33, i75, i30, i33, i75, i0]]).
+answer(1, ['X0' = i17, 'X1' = [i0, i30, i33, i75, i0, i30, i33, i63, i42, i54, i0]]).
+answer(1, ['X0' = i17, 'X1' = [i0, i30, i33, i63, i42, i54, i0, i30, i33, i75, i0]]).
+answer(1, ['X0' = i80, 'X1' = [i15, i60, i42, i15, i60, i42, i15, i42, i15, i42, i15]]).
+answer(1, ['X0' = i80, 'X1' = [i15, i60, i42, i15, i42, i15, i60, i42, i15, i42, i15]]).
+answer(1, ['X0' = i80, 'X1' = [i15, i60, i42, i15, i42, i15, i42, i15, i60, i42, i15]]).
+answer(1, ['X0' = i80, 'X1' = [i90, i90, i90, i90, i90, i90, i90, i90, i90, i90, i90]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i21, i87, i33, i12, i93, i66, i36, i72, i66, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i21, i87, i69, i36, i21, i21, i21, i87, i69, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i21, i87, i69, i36, i72, i33, i12, i93, i66, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i21, i87, i69, i36, i72, i66, i36, i72, i66, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i21, i21, i87, i69, i36, i21, i21, i87, i69, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i21, i21, i21, i87, i69, i36, i21, i87, i69, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i21, i21, i21, i21, i87, i33, i12, i93, i66, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i21, i21, i21, i21, i87, i69, i36, i72, i66, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i21, i21, i21, i21, i21, i21, i21, i87, i69, i36]]).
+answer(1, ['X0' = i60, 'X1' = [i33, i12, i63, i93, i27, i39, i48, i42, i45, i99, i33]]).
+answer(1, ['X0' = i74, 'X1' = [i27, i57, i27, i57, i27, i57, i27, i57, i27, i57, i27]]).
+answer(1, ['X0' = i36, 'X1' = [i36, i93, i36, i93, i36, i93, i36, i93, i36, i93, i36]]).
+answer(1, ['X0' = i36, 'X1' = [i36, i93, i36, i93, i36, i93, i36, i24, i84, i51, i36]]).
+answer(1, ['X0' = i36, 'X1' = [i36, i93, i36, i93, i36, i24, i84, i51, i36, i93, i36]]).
+answer(1, ['X0' = i36, 'X1' = [i36, i93, i36, i24, i84, i51, i36, i93, i36, i93, i36]]).
+answer(1, ['X0' = i36, 'X1' = [i36, i93, i36, i24, i84, i51, i36, i24, i84, i51, i36]]).
+answer(1, ['X0' = i42, 'X1' = [i87, i87, i87, i87, i87, i87, i87, i87, i87, i87, i87]]).
+answer(1, ['X0' = i29, 'X1' = [i12, i12, i12, i12, i12, i12, i12, i12, i12, i12, i12]]).
+answer(1, ['X0' = i65, 'X1' = [i3, i84, i45, i9, i96, i18, i57, i78, i78, i9, i3]]).
+answer(1, ['X0' = i7, 'X1' = [i57, i18, i75, i84, i72, i57, i18, i75, i84, i72, i57]]).
+answer(1, ['X0' = i19, 'X1' = [i12, i93, i66, i36, i21, i87, i69, i36, i72, i33, i12]]).
+answer(1, ['X0' = i19, 'X1' = [i12, i93, i66, i36, i21, i21, i21, i21, i87, i33, i12]]).
+answer(1, ['X0' = i19, 'X1' = [i12, i93, i66, i36, i72, i66, i36, i21, i87, i33, i12]]).
+answer(1, ['X0' = i25, 'X1' = [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]]).
+answer(1, ['X0' = i32, 'X1' = [i63, i0, i33, i15, i60, i63, i0, i33, i15, i60, i63]]).
+answer(1, ['X0' = i54, 'X1' = [i66, i33, i96, i9, i51, i66, i33, i96, i9, i51, i66]]).
+answer(1, ['X0' = i4, 'X1' = [i57, i57, i57, i57, i57, i57, i57, i57, i57, i57, i57]]).
+answer(1, ['X0' = i13, 'X1' = [i60, i12, i60, i12, i60, i12, i60, i12, i60, i12, i60]]).
+answer(1, ['X0' = i65, 'X1' = [i72, i9, i96, i18, i57, i72, i9, i96, i18, i57, i72]]).
+answer(1, ['X0' = i65, 'X1' = [i72, i9, i96, i18, i57, i78, i9, i96, i18, i57, i72]]).
+answer(1, ['X0' = i56, 'X1' = [i27, i27, i27, i27, i27, i27, i27, i27, i27, i27, i27]]).
+answer(1, ['X0' = i96, 'X1' = [i69, i75, i48, i33, i69, i75, i75, i75, i48, i33, i69]]).
+answer(1, ['X0' = i96, 'X1' = [i69, i75, i75, i48, i33, i69, i75, i75, i48, i33, i69]]).
+answer(1, ['X0' = i96, 'X1' = [i69, i75, i75, i75, i48, i33, i69, i75, i48, i33, i69]]).
+answer(1, ['X0' = i96, 'X1' = [i69, i75, i75, i75, i75, i75, i75, i75, i48, i33, i69]]).
+answer(1, ['X0' = i93, 'X1' = [i48, i33, i48, i33, i48, i33, i48, i33, i48, i33, i48]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i72, i33, i12, i93, i66, i36, i21, i87, i69, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i72, i66, i36, i21, i87, i33, i12, i93, i66, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i72, i66, i36, i21, i87, i69, i36, i72, i66, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i72, i66, i36, i21, i21, i21, i21, i87, i69, i36]]).
+answer(1, ['X0' = i19, 'X1' = [i36, i72, i66, i36, i72, i66, i36, i21, i87, i69, i36]]).
+answer(1, ['X0' = i69, 'X1' = [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]]).
+answer(1, ['X0' = i98, 'X1' = [i12, i12, i12, i12, i12, i12, i12, i12, i12, i12, i12]]).
+answer(1, ['X0' = i64, 'X1' = [i42, i42, i42, i42, i42, i42, i42, i42, i42, i42, i42]]).
+answer(1, ['X0' = i89, 'X1' = [i9, i9, i9, i9, i9, i9, i9, i9, i9, i9, i9]]).
+answer(1, ['X0' = i9, 'X1' = [i9, i54, i30, i9, i54, i30, i9, i84, i54, i30, i9]]).
+answer(1, ['X0' = i9, 'X1' = [i9, i54, i30, i9, i84, i54, i30, i9, i54, i30, i9]]).
+answer(1, ['X0' = i80, 'X1' = [i54, i81, i54, i81, i54, i81, i54, i81, i54, i81, i54]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i51, i51, i51, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i51, i51, i51, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i51, i51, i51, i48, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i51, i51, i48, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i51, i51, i48, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i51, i48, i51, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i51, i48, i51, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i51, i48, i51, i48, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i48, i51, i51, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i48, i51, i51, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i48, i51, i51, i48, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i48, i51, i48, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i51, i48, i51, i48, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i48, i51, i51, i51, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i48, i51, i51, i51, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i48, i51, i51, i51, i48, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i48, i51, i51, i48, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i48, i51, i51, i48, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i48, i51, i48, i51, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i48, i51, i48, i51, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i51, i48, i51, i48, i51, i48, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i51, i51, i51, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i51, i51, i51, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i51, i51, i51, i48, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i51, i51, i48, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i51, i51, i48, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i51, i48, i51, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i51, i48, i51, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i51, i48, i51, i48, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i48, i51, i51, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i48, i51, i51, i51, i48, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i48, i51, i51, i48, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i48, i51, i48, i51, i51, i51, i48]]).
+answer(1, ['X0' = i95, 'X1' = [i48, i51, i48, i51, i48, i51, i48, i51, i48, i51, i48]]).
+answer(1, ['X0' = i36, 'X1' = [i72, i24, i84, i51, i36, i72, i24, i84, i51, i36, i72]]).
+answer(1, ['X0' = i50, 'X1' = [i54, i72, i78, i87, i99, i54, i72, i78, i87, i99, i54]]).
+answer(1, ['X0' = i50, 'X1' = [i54, i72, i69, i66, i51, i84, i72, i78, i87, i99, i54]]).
+answer(1, ['X0' = i16, 'X1' = [i21, i42, i45, i93, i39, i45, i93, i45, i93, i63, i21]]).
+answer(1, ['X0' = i16, 'X1' = [i21, i42, i45, i93, i63, i21, i42, i45, i93, i63, i21]]).
+answer(1, ['X0' = i16, 'X1' = [i21, i42, i45, i93, i45, i93, i39, i45, i93, i63, i21]]).
+answer(1, ['X0' = i18, 'X1' = [i75, i75, i75, i75, i75, i75, i75, i75, i75, i75, i75]]).
+answer(1, ['X0' = i11, 'X1' = [i39, i39, i39, i39, i39, i39, i39, i39, i39, i39, i39]]).
+answer(1, ['X0' = i34, 'X1' = [i81, i81, i81, i81, i81, i81, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i84, i87, i69, i90, i39, i48, i69, i84, i87, i69]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i84, i87, i69, i90, i39, i48, i69, i84, i75, i69]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i84, i87, i69, i84, i87, i69, i90, i39, i48, i69]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i84, i87, i69, i84, i75, i69, i90, i39, i48, i69]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i84, i75, i69, i90, i39, i48, i69, i84, i87, i69]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i84, i75, i69, i90, i39, i48, i69, i84, i75, i69]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i84, i75, i69, i84, i87, i69, i90, i39, i48, i69]]).
+answer(1, ['X0' = i70, 'X1' = [i69, i84, i75, i69, i84, i75, i69, i90, i39, i48, i69]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i36, i96, i36, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i36, i96, i36, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i36, i96, i36, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i36, i96, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i36, i96, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i36, i96, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i36, i96, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i36, i96, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i36, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i36, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i36, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i36, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i36, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i96, i36, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i96, i36, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i96, i36, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i96, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i96, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i96, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i96, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i36, i96, i96, i96, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i36, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i36, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i36, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i36, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i36, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i96, i36, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i96, i36, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i96, i36, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i96, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i96, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i96, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i96, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i36, i96, i96, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i36, i96, i36, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i36, i96, i36, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i36, i96, i36, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i36, i96, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i36, i96, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i36, i96, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i36, i96, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i36, i96, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i36, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i36, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i36, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i36, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i36, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i96, i36, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i96, i36, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i96, i36, i96, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i96, i96, i36, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i96, i96, i36, i96, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i96, i96, i96, i36, i96, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i96, i96, i96, i96, i36, i96]]).
+answer(1, ['X0' = i15, 'X1' = [i96, i96, i96, i96, i96, i96, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i80, 'X1' = [i12, i45, i12, i45, i12, i45, i12, i45, i12, i45, i12]]).
+answer(1, ['X0' = i60, 'X1' = [i42, i45, i99, i33, i12, i63, i93, i27, i39, i48, i42]]).
+answer(1, ['X0' = i93, 'X1' = [i84, i84, i84, i84, i84, i84, i84, i84, i84, i84, i84]]).
+answer(1, ['X0' = i50, 'X1' = [i51, i57, i69, i66, i51, i84, i12, i57, i69, i66, i51]]).
+answer(1, ['X0' = i50, 'X1' = [i51, i57, i69, i66, i57, i69, i66, i57, i69, i66, i51]]).
+answer(1, ['X0' = i36, 'X1' = [i51, i36, i93, i36, i93, i36, i93, i36, i24, i84, i51]]).
+answer(1, ['X0' = i36, 'X1' = [i51, i36, i93, i36, i24, i84, i51, i36, i24, i84, i51]]).
+answer(1, ['X0' = i36, 'X1' = [i51, i36, i72, i24, i84, i51, i36, i72, i24, i84, i51]]).
+answer(1, ['X0' = i36, 'X1' = [i51, i36, i24, i84, i51, i36, i93, i36, i24, i84, i51]]).
+answer(1, ['X0' = i59, 'X1' = [i48, i48, i48, i48, i48, i48, i48, i48, i48, i48, i48]]).
+answer(1, ['X0' = i83, 'X1' = [i6, i84, i69, i0, i6, i84, i69, i6, i84, i69, i6]]).
+answer(1, ['X0' = i83, 'X1' = [i6, i84, i69, i6, i84, i69, i0, i6, i84, i69, i6]]).
+answer(1, ['X0' = i83, 'X1' = [i6, i84, i69, i6, i84, i69, i6, i84, i69, i0, i6]]).
+answer(1, ['X0' = i65, 'X1' = [i9, i96, i18, i57, i72, i9, i96, i18, i57, i72, i9]]).
+answer(1, ['X0' = i65, 'X1' = [i9, i96, i18, i57, i72, i9, i96, i18, i57, i78, i9]]).
+answer(1, ['X0' = i65, 'X1' = [i9, i96, i18, i57, i78, i78, i78, i78, i78, i78, i9]]).
+answer(1, ['X0' = i65, 'X1' = [i9, i96, i18, i57, i78, i78, i9, i3, i84, i45, i9]]).
+answer(1, ['X0' = i65, 'X1' = [i9, i96, i18, i57, i78, i9, i96, i18, i57, i72, i9]]).
+answer(1, ['X0' = i65, 'X1' = [i9, i96, i18, i57, i78, i9, i96, i18, i57, i78, i9]]).
+answer(1, ['X0' = i48, 'X1' = [i69, i69, i69, i69, i69, i69, i69, i69, i69, i69, i69]]).
+answer(1, ['X0' = i60, 'X1' = [i27, i39, i48, i42, i45, i99, i33, i12, i63, i93, i27]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i45, i93, i39, i42, i45, i93, i39, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i45, i93, i39, i45, i93, i39, i42, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i45, i93, i39, i45, i93, i39, i87, i27, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i45, i93, i39, i45, i93, i45, i93, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i45, i93, i39, i87, i27, i93, i39, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i45, i93, i63, i21, i42, i45, i93, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i45, i93, i45, i93, i39, i45, i93, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i45, i93, i45, i93, i63, i21, i42, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i45, i93, i45, i93, i45, i93, i39, i45, i93, i39]]).
+answer(1, ['X0' = i81, 'X1' = [i84, i27, i84, i27, i84, i27, i84, i27, i84, i27, i84]]).
+answer(1, ['X0' = i44, 'X1' = [i51, i63, i48, i27, i54, i51, i63, i48, i27, i54, i51]]).
+answer(1, ['X0' = i63, 'X1' = [i72, i72, i72, i72, i72, i72, i72, i72, i72, i72, i72]]).
+answer(1, ['X0' = i64, 'X1' = [i3, i9, i3, i9, i3, i9, i3, i9, i3, i9, i3]]).
+answer(1, ['X0' = i58, 'X1' = [i54, i54, i54, i54, i54, i54, i54, i54, i54, i54, i54]]).
+answer(1, ['X0' = i34, 'X1' = [i0, i30, i0, i30, i0, i30, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i6, 'X1' = [i75, i75, i75, i75, i75, i75, i75, i75, i75, i75, i75]]).
+answer(1, ['X0' = i50, 'X1' = [i30, i39, i33, i9, i33, i9, i33, i9, i27, i15, i30]]).
+answer(1, ['X0' = i50, 'X1' = [i30, i39, i33, i9, i33, i9, i27, i15, i12, i27, i30]]).
+answer(1, ['X0' = i50, 'X1' = [i30, i39, i33, i9, i27, i15, i30, i39, i48, i27, i30]]).
+answer(1, ['X0' = i50, 'X1' = [i30, i39, i33, i9, i27, i30, i39, i33, i9, i27, i30]]).
+answer(1, ['X0' = i50, 'X1' = [i30, i39, i33, i9, i27, i30, i39, i48, i27, i15, i30]]).
+answer(1, ['X0' = i50, 'X1' = [i30, i39, i48, i27, i15, i12, i27, i15, i12, i27, i30]]).
+answer(1, ['X0' = i50, 'X1' = [i30, i39, i48, i27, i15, i30, i39, i33, i9, i27, i30]]).
+answer(1, ['X0' = i50, 'X1' = [i30, i39, i48, i27, i15, i30, i39, i48, i27, i15, i30]]).
+answer(1, ['X0' = i50, 'X1' = [i30, i39, i48, i27, i30, i39, i33, i9, i27, i15, i30]]).
+answer(1, ['X0' = i83, 'X1' = [i69, i0, i6, i84, i69, i6, i84, i69, i6, i84, i69]]).
+answer(1, ['X0' = i77, 'X1' = [i24, i24, i24, i24, i24, i24, i24, i24, i24, i24, i24]]).
+answer(1, ['X0' = i74, 'X1' = [i33, i60, i33, i60, i33, i60, i33, i60, i33, i60, i33]]).
+answer(1, ['X0' = i78, 'X1' = [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]]).
+answer(1, ['X0' = i83, 'X1' = [i69, i6, i84, i69, i0, i6, i84, i69, i6, i84, i69]]).
+answer(1, ['X0' = i83, 'X1' = [i69, i6, i84, i69, i6, i84, i69, i0, i6, i84, i69]]).
+answer(1, ['X0' = i44, 'X1' = [i48, i27, i54, i51, i63, i48, i27, i54, i51, i63, i48]]).
+answer(1, ['X0' = i32, 'X1' = [i6, i90, i6, i90, i6, i90, i6, i90, i6, i90, i6]]).
+answer(1, ['X0' = i11, 'X1' = [i15, i30, i78, i45, i51, i15, i30, i78, i45, i51, i15]]).
+answer(1, ['X0' = i24, 'X1' = [i33, i24, i33, i24, i33, i24, i33, i24, i33, i24, i33]]).
+answer(1, ['X0' = i9, 'X1' = [i54, i30, i9, i54, i30, i9, i54, i30, i9, i84, i54]]).
+answer(1, ['X0' = i9, 'X1' = [i54, i30, i9, i54, i30, i9, i84, i54, i30, i9, i54]]).
+answer(1, ['X0' = i9, 'X1' = [i54, i30, i9, i84, i54, i30, i9, i54, i30, i9, i54]]).
+answer(1, ['X0' = i77, 'X1' = [i72, i72, i72, i72, i72, i72, i72, i72, i72, i72, i72]]).
+answer(1, ['X0' = i81, 'X1' = [i75, i60, i21, i75, i60, i21, i75, i30, i75, i30, i75]]).
+answer(1, ['X0' = i81, 'X1' = [i75, i60, i21, i75, i30, i75, i60, i21, i75, i30, i75]]).
+answer(1, ['X0' = i81, 'X1' = [i75, i60, i21, i75, i30, i75, i30, i75, i60, i21, i75]]).
+answer(1, ['X0' = i97, 'X1' = [i18, i69, i18, i69, i18, i69, i18, i69, i18, i69, i18]]).
+answer(1, ['X0' = i50, 'X1' = [i39, i48, i27, i15, i12, i27, i15, i12, i27, i30, i39]]).
+answer(1, ['X0' = i50, 'X1' = [i39, i48, i27, i15, i30, i39, i33, i9, i27, i30, i39]]).
+answer(1, ['X0' = i50, 'X1' = [i39, i48, i27, i15, i30, i39, i48, i27, i15, i30, i39]]).
+answer(1, ['X0' = i50, 'X1' = [i39, i48, i27, i30, i39, i33, i9, i27, i15, i30, i39]]).
+answer(1, ['X0' = i82, 'X1' = [i36, i36, i36, i36, i36, i36, i36, i36, i36, i36, i36]]).
+answer(1, ['X0' = i44, 'X1' = [i27, i54, i51, i63, i48, i27, i54, i51, i63, i48, i27]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i48, i0, i63, i9, i93, i81, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i48, i0, i63, i9, i93, i81, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i48, i0, i63, i9, i93, i9, i93, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i48, i0, i63, i9, i93, i9, i0, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i48, i0, i63, i9, i0, i81, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i48, i0, i63, i9, i0, i81, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i48, i0, i63, i81, i15, i81, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i48, i0, i63, i81, i15, i81, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i48, i0, i63, i81, i15, i60, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i48, i0, i63, i81, i15, i60, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i48, i0, i81, i15, i60, i48, i0, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i93, i81, i15, i81, i15, i60, i48, i0, i63, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i93, i81, i15, i60, i48, i0, i63, i9, i93, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i93, i81, i15, i60, i15, i60, i48, i0, i63, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i93, i9, i93, i81, i15, i60, i48, i0, i63, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i93, i9, i93, i9, i93, i9, i93, i9, i93, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i93, i9, i93, i9, i0, i63, i9, i0, i63, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i93, i9, i0, i63, i9, i93, i9, i0, i63, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i93, i9, i0, i63, i9, i0, i63, i9, i93, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i93, i9, i0, i81, i15, i60, i48, i0, i63, i9]]).
+answer(1, ['X0' = i60, 'X1' = [i99, i33, i12, i63, i93, i27, i39, i48, i42, i45, i99]]).
+answer(1, ['X0' = i86, 'X1' = [i0, i0, i0, i0, i0, i0, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i54, 'X1' = [i33, i96, i9, i51, i66, i33, i96, i9, i51, i66, i33]]).
+answer(1, ['X0' = i70, 'X1' = [i75, i69, i90, i39, i48, i69, i84, i87, i69, i84, i75]]).
+answer(1, ['X0' = i70, 'X1' = [i75, i69, i90, i39, i48, i69, i84, i75, i69, i84, i75]]).
+answer(1, ['X0' = i70, 'X1' = [i75, i69, i84, i87, i69, i90, i39, i48, i69, i84, i75]]).
+answer(1, ['X0' = i70, 'X1' = [i75, i69, i84, i75, i69, i90, i39, i48, i69, i84, i75]]).
+answer(1, ['X0' = i79, 'X1' = [i9, i69, i9, i69, i9, i69, i9, i69, i9, i69, i9]]).
+answer(1, ['X0' = i79, 'X1' = [i9, i69, i9, i69, i9, i69, i9, i39, i3, i69, i9]]).
+answer(1, ['X0' = i79, 'X1' = [i9, i69, i9, i69, i9, i39, i3, i69, i9, i69, i9]]).
+answer(1, ['X0' = i79, 'X1' = [i9, i69, i9, i39, i3, i69, i9, i69, i9, i69, i9]]).
+answer(1, ['X0' = i79, 'X1' = [i9, i69, i9, i39, i3, i69, i9, i39, i3, i69, i9]]).
+answer(1, ['X0' = i44, 'X1' = [i54, i51, i63, i48, i27, i54, i51, i63, i48, i27, i54]]).
+answer(1, ['X0' = i50, 'X1' = [i15, i12, i27, i15, i12, i27, i30, i39, i48, i27, i15]]).
+answer(1, ['X0' = i50, 'X1' = [i15, i12, i27, i15, i21, i72, i78, i87, i48, i27, i15]]).
+answer(1, ['X0' = i50, 'X1' = [i15, i12, i27, i30, i39, i33, i9, i33, i9, i27, i15]]).
+answer(1, ['X0' = i50, 'X1' = [i15, i12, i27, i30, i39, i48, i27, i15, i12, i27, i15]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i0, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i0, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i0, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i0, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i0, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i0, i30, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i0, i30, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i0, i30, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i30, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i30, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i30, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i30, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i0, i30, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i30, i0, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i30, i0, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i30, i0, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i30, i0, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i30, i0, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i30, i0, i30, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i30, i0, i30, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i0, i30, i0, i30, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i0, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i0, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i0, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i0, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i0, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i0, i30, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i0, i30, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i0, i30, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i30, i0, i0, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i30, i0, i0, i0, i30, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i30, i0, i0, i30, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i30, i0, i30, i0, i0, i0]]).
+answer(1, ['X0' = i75, 'X1' = [i0, i30, i0, i30, i0, i30, i0, i30, i0, i30, i0]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i15, i15, i15, i15, i15, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i15, i15, i15, i15, i15, i54, i9, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i15, i15, i15, i15, i54, i9, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i15, i15, i15, i54, i9, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i15, i15, i54, i9, i15, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i15, i15, i54, i9, i15, i54, i9, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i15, i54, i9, i15, i15, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i15, i54, i9, i15, i15, i54, i9, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i15, i54, i9, i15, i54, i9, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i54, i9, i15, i15, i15, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i54, i9, i15, i15, i15, i54, i9, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i54, i9, i15, i15, i54, i9, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i15, i54, i9, i15, i54, i9, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i54, i9, i15, i15, i15, i15, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i54, i9, i15, i15, i15, i15, i54, i9, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i54, i9, i15, i15, i15, i54, i9, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i54, i9, i15, i15, i54, i9, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i54, i9, i15, i54, i9, i15, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i15, i54, i9, i15, i54, i9, i15, i54, i9, i15]]).
+answer(1, ['X0' = i70, 'X1' = [i84, i87, i69, i90, i39, i48, i69, i84, i87, i69, i84]]).
+answer(1, ['X0' = i70, 'X1' = [i84, i87, i69, i90, i39, i48, i69, i84, i75, i69, i84]]).
+answer(1, ['X0' = i70, 'X1' = [i84, i87, i69, i84, i87, i69, i90, i39, i48, i69, i84]]).
+answer(1, ['X0' = i70, 'X1' = [i84, i87, i69, i84, i75, i69, i90, i39, i48, i69, i84]]).
+answer(1, ['X0' = i24, 'X1' = [i27, i27, i27, i27, i27, i27, i27, i27, i27, i27, i27]]).
+answer(1, ['X0' = i19, 'X1' = [i93, i66, i36, i21, i87, i69, i36, i72, i33, i12, i93]]).
+answer(1, ['X0' = i19, 'X1' = [i93, i66, i36, i21, i21, i21, i21, i87, i33, i12, i93]]).
+answer(1, ['X0' = i19, 'X1' = [i93, i66, i36, i72, i66, i36, i21, i87, i33, i12, i93]]).
+answer(1, ['X0' = i52, 'X1' = [i21, i78, i21, i78, i21, i78, i21, i78, i21, i78, i21]]).
+answer(1, ['X0' = i44, 'X1' = [i63, i48, i27, i54, i51, i63, i48, i27, i54, i51, i63]]).
+answer(1, ['X0' = i70, 'X1' = [i39, i48, i69, i84, i87, i69, i84, i87, i69, i90, i39]]).
+answer(1, ['X0' = i70, 'X1' = [i39, i48, i69, i84, i87, i69, i84, i75, i69, i90, i39]]).
+answer(1, ['X0' = i70, 'X1' = [i39, i48, i69, i84, i75, i69, i84, i87, i69, i90, i39]]).
+answer(1, ['X0' = i70, 'X1' = [i39, i48, i69, i84, i75, i69, i84, i75, i69, i90, i39]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i0, i63, i9, i93, i9, i93, i9, i0, i63, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i0, i63, i9, i93, i9, i0, i63, i9, i93, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i0, i63, i9, i0, i63, i9, i93, i9, i93, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i0, i81, i15, i81, i15, i60, i48, i0, i63, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i0, i81, i15, i60, i48, i0, i63, i9, i93, i9]]).
+answer(1, ['X0' = i5, 'X1' = [i9, i0, i81, i15, i60, i15, i60, i48, i0, i63, i9]]).
+answer(1, ['X0' = i28, 'X1' = [i18, i78, i18, i78, i18, i78, i18, i78, i18, i78, i18]]).
+answer(1, ['X0' = i60, 'X1' = [i45, i99, i33, i12, i63, i93, i27, i39, i48, i42, i45]]).
+answer(1, ['X0' = i92, 'X1' = [i84, i45, i84, i45, i84, i45, i84, i45, i84, i45, i84]]).
+answer(1, ['X0' = i0, 'X1' = [i9, i12, i66, i9, i12, i66, i9, i12, i9, i12, i9]]).
+answer(1, ['X0' = i0, 'X1' = [i9, i12, i66, i9, i12, i9, i12, i66, i9, i12, i9]]).
+answer(1, ['X0' = i0, 'X1' = [i9, i12, i66, i9, i12, i9, i12, i9, i12, i66, i9]]).
+answer(1, ['X0' = i0, 'X1' = [i9, i12, i9, i12, i66, i9, i12, i66, i9, i12, i9]]).
+answer(1, ['X0' = i0, 'X1' = [i9, i12, i9, i12, i66, i9, i12, i9, i12, i66, i9]]).
+answer(1, ['X0' = i0, 'X1' = [i9, i12, i9, i12, i9, i12, i66, i9, i12, i66, i9]]).
+answer(1, ['X0' = i0, 'X1' = [i9, i12, i9, i12, i9, i12, i9, i12, i9, i12, i9]]).
+answer(1, ['X0' = i2, 'X1' = [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]]).
+answer(1, ['X0' = i84, 'X1' = [i21, i87, i33, i93, i51, i30, i21, i87, i51, i30, i21]]).
+answer(1, ['X0' = i84, 'X1' = [i21, i87, i51, i30, i21, i87, i33, i93, i51, i30, i21]]).
+answer(1, ['X0' = i65, 'X1' = [i78, i78, i78, i78, i78, i78, i78, i78, i78, i78, i78]]).
+answer(1, ['X0' = i65, 'X1' = [i78, i78, i78, i78, i78, i78, i9, i96, i18, i57, i78]]).
+answer(1, ['X0' = i65, 'X1' = [i78, i78, i78, i78, i78, i9, i96, i18, i57, i78, i78]]).
+answer(1, ['X0' = i65, 'X1' = [i78, i78, i78, i78, i9, i96, i18, i57, i78, i78, i78]]).
+answer(1, ['X0' = i65, 'X1' = [i78, i78, i78, i9, i96, i18, i57, i78, i78, i78, i78]]).
+answer(1, ['X0' = i65, 'X1' = [i78, i78, i9, i3, i84, i45, i9, i96, i18, i57, i78]]).
+answer(1, ['X0' = i65, 'X1' = [i78, i78, i9, i96, i18, i57, i78, i78, i78, i78, i78]]).
+answer(1, ['X0' = i65, 'X1' = [i45, i9, i96, i18, i57, i78, i78, i9, i3, i84, i45]]).
+answer(1, ['X0' = i21, 'X1' = [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]]).
+answer(1, ['X0' = i27, 'X1' = [i72, i21, i72, i21, i72, i21, i72, i21, i72, i21, i72]]).
+answer(1, ['X0' = i5, 'X1' = [i48, i0, i63, i9, i93, i81, i15, i81, i15, i60, i48]]).
+answer(1, ['X0' = i5, 'X1' = [i48, i0, i63, i9, i93, i81, i15, i60, i15, i60, i48]]).
+answer(1, ['X0' = i5, 'X1' = [i48, i0, i63, i9, i93, i9, i93, i81, i15, i60, i48]]).
+answer(1, ['X0' = i5, 'X1' = [i48, i0, i63, i9, i93, i9, i0, i81, i15, i60, i48]]).
+answer(1, ['X0' = i5, 'X1' = [i48, i0, i63, i9, i0, i81, i15, i81, i15, i60, i48]]).
+answer(1, ['X0' = i5, 'X1' = [i48, i0, i63, i9, i0, i81, i15, i60, i15, i60, i48]]).
+answer(1, ['X0' = i5, 'X1' = [i48, i0, i63, i81, i15, i81, i15, i81, i15, i60, i48]]).
+answer(1, ['X0' = i5, 'X1' = [i48, i0, i63, i81, i15, i81, i15, i60, i15, i60, i48]]).
+answer(1, ['X0' = i5, 'X1' = [i48, i0, i63, i81, i15, i60, i15, i81, i15, i60, i48]]).
+answer(1, ['X0' = i5, 'X1' = [i48, i0, i63, i81, i15, i60, i15, i60, i15, i60, i48]]).
+answer(1, ['X0' = i5, 'X1' = [i48, i0, i81, i15, i60, i48, i0, i81, i15, i60, i48]]).
+answer(1, ['X0' = i77, 'X1' = [i96, i69, i96, i69, i96, i69, i96, i69, i96, i69, i96]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i63, i21, i42, i45, i93, i39, i45, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i63, i21, i42, i45, i93, i63, i21, i42, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i63, i21, i42, i45, i93, i45, i93, i39, i45, i93]]).
+answer(1, ['X0' = i53, 'X1' = [i15, i15, i15, i15, i15, i15, i15, i15, i15, i15, i15]]).
+answer(1, ['X0' = i54, 'X1' = [i96, i9, i51, i66, i33, i96, i9, i51, i66, i33, i96]]).
+answer(1, ['X0' = i50, 'X1' = [i21, i72, i78, i87, i48, i27, i15, i12, i27, i15, i21]]).
+answer(1, ['X0' = i42, 'X1' = [i81, i81, i81, i81, i81, i81, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i9, i93, i81, i15, i81, i15, i60, i48, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i9, i93, i81, i15, i60, i15, i60, i48, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i9, i93, i9, i93, i81, i15, i60, i48, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i9, i93, i9, i93, i9, i0, i63, i9, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i9, i93, i9, i0, i63, i9, i93, i9, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i9, i93, i9, i0, i81, i15, i60, i48, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i9, i0, i63, i9, i93, i9, i93, i9, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i9, i0, i81, i15, i81, i15, i60, i48, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i9, i0, i81, i15, i60, i15, i60, i48, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i81, i15, i81, i15, i81, i15, i60, i48, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i81, i15, i81, i15, i60, i15, i60, i48, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i81, i15, i60, i15, i81, i15, i60, i48, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i63, i81, i15, i60, i15, i60, i15, i60, i48, i0]]).
+answer(1, ['X0' = i96, 'X1' = [i27, i27, i27, i27, i27, i27, i27, i27, i27, i27, i27]]).
+answer(1, ['X0' = i70, 'X1' = [i84, i75, i69, i90, i39, i48, i69, i84, i87, i69, i84]]).
+answer(1, ['X0' = i70, 'X1' = [i84, i75, i69, i90, i39, i48, i69, i84, i75, i69, i84]]).
+answer(1, ['X0' = i70, 'X1' = [i84, i75, i69, i84, i87, i69, i90, i39, i48, i69, i84]]).
+answer(1, ['X0' = i70, 'X1' = [i84, i75, i69, i84, i75, i69, i90, i39, i48, i69, i84]]).
+answer(1, ['X0' = i50, 'X1' = [i69, i66, i51, i84, i72, i78, i87, i99, i66, i57, i69]]).
+answer(1, ['X0' = i50, 'X1' = [i69, i66, i51, i84, i72, i78, i87, i99, i54, i72, i69]]).
+answer(1, ['X0' = i50, 'X1' = [i69, i66, i51, i84, i72, i69, i66, i51, i84, i72, i69]]).
+answer(1, ['X0' = i50, 'X1' = [i69, i66, i51, i84, i12, i57, i69, i66, i51, i57, i69]]).
+answer(1, ['X0' = i50, 'X1' = [i69, i66, i51, i57, i69, i66, i51, i84, i12, i57, i69]]).
+answer(1, ['X0' = i50, 'X1' = [i69, i66, i51, i57, i69, i66, i57, i69, i66, i57, i69]]).
+answer(1, ['X0' = i50, 'X1' = [i69, i66, i57, i69, i66, i51, i57, i69, i66, i57, i69]]).
+answer(1, ['X0' = i50, 'X1' = [i69, i66, i57, i69, i66, i57, i69, i66, i51, i57, i69]]).
+answer(1, ['X0' = i32, 'X1' = [i60, i63, i0, i33, i15, i60, i63, i0, i33, i15, i60]]).
+answer(1, ['X0' = i0, 'X1' = [i12, i66, i9, i12, i66, i9, i12, i9, i12, i9, i12]]).
+answer(1, ['X0' = i0, 'X1' = [i12, i66, i9, i12, i9, i12, i66, i9, i12, i9, i12]]).
+answer(1, ['X0' = i0, 'X1' = [i12, i66, i9, i12, i9, i12, i9, i12, i66, i9, i12]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i0, i0, i0, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i0, i0, i0, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i0, i0, i0, i30, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i0, i0, i30, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i0, i0, i30, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i0, i30, i0, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i0, i30, i0, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i0, i30, i0, i30, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i30, i0, i0, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i30, i0, i0, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i30, i0, i0, i30, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i30, i0, i30, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i0, i30, i0, i30, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i30, i0, i0, i0, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i30, i0, i0, i0, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i30, i0, i0, i0, i30, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i30, i0, i0, i30, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i30, i0, i0, i30, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i30, i0, i30, i0, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i30, i0, i30, i0, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i0, i30, i0, i30, i0, i30, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i0, i0, i0, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i0, i0, i0, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i0, i0, i0, i30, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i0, i0, i30, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i0, i0, i30, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i0, i30, i0, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i0, i30, i0, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i0, i30, i0, i30, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i30, i0, i0, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i30, i0, i0, i0, i30, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i30, i0, i0, i30, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i30, i0, i30, i0, i0, i0, i30]]).
+answer(1, ['X0' = i75, 'X1' = [i30, i0, i30, i0, i30, i0, i30, i0, i30, i0, i30]]).
+answer(1, ['X0' = i84, 'X1' = [i93, i51, i30, i21, i87, i51, i30, i21, i87, i33, i93]]).
+answer(1, ['X0' = i42, 'X1' = [i75, i72, i75, i72, i75, i72, i75, i72, i75, i72, i75]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i81, i15, i81, i15, i60, i48, i0, i63, i9, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i81, i15, i60, i48, i0, i63, i9, i93, i9, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i81, i15, i60, i48, i0, i81, i15, i60, i48, i0]]).
+answer(1, ['X0' = i5, 'X1' = [i0, i81, i15, i60, i15, i60, i48, i0, i63, i9, i0]]).
+answer(1, ['X0' = i53, 'X1' = [i21, i75, i78, i96, i6, i21, i75, i78, i96, i6, i21]]).
+answer(1, ['X0' = i36, 'X1' = [i93, i36, i93, i36, i93, i36, i93, i36, i93, i36, i93]]).
+answer(1, ['X0' = i36, 'X1' = [i93, i36, i93, i36, i93, i36, i24, i84, i51, i36, i93]]).
+answer(1, ['X0' = i36, 'X1' = [i93, i36, i93, i36, i24, i84, i51, i36, i93, i36, i93]]).
+answer(1, ['X0' = i36, 'X1' = [i93, i36, i24, i84, i51, i36, i93, i36, i93, i36, i93]]).
+answer(1, ['X0' = i36, 'X1' = [i93, i36, i24, i84, i51, i36, i24, i84, i51, i36, i93]]).
+answer(1, ['X0' = i39, 'X1' = [i96, i96, i96, i96, i96, i96, i96, i96, i96, i96, i96]]).
+answer(1, ['X0' = i81, 'X1' = [i21, i75, i60, i21, i75, i30, i75, i30, i75, i60, i21]]).
+answer(1, ['X0' = i81, 'X1' = [i21, i75, i30, i75, i60, i21, i75, i30, i75, i60, i21]]).
+answer(1, ['X0' = i81, 'X1' = [i21, i75, i30, i75, i30, i75, i60, i21, i75, i60, i21]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i15, i12, i27, i15, i12, i27, i30, i39, i48, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i15, i12, i27, i15, i21, i72, i78, i87, i48, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i15, i12, i27, i30, i39, i33, i9, i33, i9, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i15, i12, i27, i30, i39, i48, i27, i15, i12, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i15, i30, i39, i33, i9, i33, i9, i33, i9, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i15, i30, i39, i33, i9, i27, i30, i39, i48, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i15, i30, i39, i48, i27, i15, i30, i39, i48, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i15, i30, i39, i48, i27, i30, i39, i33, i9, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i15, i21, i72, i78, i87, i48, i27, i15, i12, i27]]).
+answer(1, ['X0' = i0, 'X1' = [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]]).
+answer(1, ['X0' = i9, 'X1' = [i84, i54, i30, i9, i54, i30, i9, i54, i30, i9, i84]]).
+answer(1, ['X0' = i16, 'X1' = [i87, i27, i93, i39, i42, i45, i93, i45, i93, i39, i87]]).
+answer(1, ['X0' = i16, 'X1' = [i87, i27, i93, i39, i45, i93, i39, i45, i93, i39, i87]]).
+answer(1, ['X0' = i16, 'X1' = [i87, i27, i93, i39, i87, i27, i93, i45, i93, i39, i87]]).
+answer(1, ['X0' = i16, 'X1' = [i87, i27, i93, i45, i93, i39, i42, i45, i93, i39, i87]]).
+answer(1, ['X0' = i16, 'X1' = [i87, i27, i93, i45, i93, i39, i87, i27, i93, i39, i87]]).
+answer(1, ['X0' = i16, 'X1' = [i87, i27, i93, i45, i93, i45, i93, i45, i93, i39, i87]]).
+answer(1, ['X0' = i80, 'X1' = [i45, i12, i45, i12, i45, i12, i45, i12, i45, i12, i45]]).
+answer(1, ['X0' = i88, 'X1' = [i54, i54, i54, i54, i54, i54, i54, i54, i54, i54, i54]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i54, i9, i15, i15, i15, i15, i15, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i54, i9, i15, i15, i15, i15, i15, i54, i9, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i54, i9, i15, i15, i15, i15, i54, i9, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i54, i9, i15, i15, i15, i54, i9, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i54, i9, i15, i15, i54, i9, i15, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i54, i9, i15, i15, i54, i9, i15, i54, i9, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i54, i9, i15, i54, i9, i15, i15, i15, i15, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i54, i9, i15, i54, i9, i15, i15, i54, i9, i15]]).
+answer(1, ['X0' = i67, 'X1' = [i15, i54, i9, i15, i54, i9, i15, i54, i9, i15, i15]]).
+answer(1, ['X0' = i53, 'X1' = [i78, i96, i6, i21, i75, i78, i96, i6, i21, i75, i78]]).
+answer(1, ['X0' = i7, 'X1' = [i18, i75, i84, i72, i57, i18, i75, i84, i72, i57, i18]]).
+answer(1, ['X0' = i82, 'X1' = [i21, i21, i21, i21, i21, i21, i21, i21, i21, i21, i21]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i36, i96, i36, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i36, i96, i36, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i36, i96, i96, i36, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i36, i96, i96, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i36, i96, i96, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i96, i36, i96, i36, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i96, i36, i96, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i96, i36, i96, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i96, i96, i36, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i96, i96, i36, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i96, i96, i96, i36, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i96, i96, i96, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i36, i96, i96, i96, i96, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i36, i96, i36, i96, i36, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i36, i96, i36, i96, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i36, i96, i36, i96, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i36, i96, i96, i36, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i36, i96, i96, i36, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i36, i96, i96, i96, i36, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i36, i96, i96, i96, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i36, i96, i96, i96, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i36, i96, i36, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i36, i96, i36, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i36, i96, i96, i36, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i36, i96, i96, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i36, i96, i96, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i96, i36, i96, i36, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i96, i36, i96, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i96, i36, i96, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i96, i96, i36, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i96, i96, i36, i96, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i96, i96, i96, i36, i96, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i96, i96, i96, i96, i36, i96, i36]]).
+answer(1, ['X0' = i15, 'X1' = [i36, i96, i96, i96, i96, i96, i96, i96, i96, i96, i36]]).
+answer(1, ['X0' = i50, 'X1' = [i6, i6, i6, i6, i6, i6, i6, i6, i6, i6, i6]]).
+answer(1, ['X0' = i79, 'X1' = [i9, i39, i3, i69, i9, i69, i9, i69, i9, i69, i9]]).
+answer(1, ['X0' = i79, 'X1' = [i9, i39, i3, i69, i9, i69, i9, i39, i3, i69, i9]]).
+answer(1, ['X0' = i79, 'X1' = [i9, i39, i3, i69, i9, i39, i3, i69, i9, i69, i9]]).
+answer(1, ['X0' = i79, 'X1' = [i9, i39, i81, i3, i69, i9, i39, i81, i3, i69, i9]]).
+answer(1, ['X0' = i24, 'X1' = [i78, i78, i78, i78, i78, i78, i78, i78, i78, i78, i78]]).
+answer(1, ['X0' = i6, 'X1' = [i3, i3, i3, i3, i3, i3, i3, i3, i3, i3, i3]]).
+answer(1, ['X0' = i50, 'X1' = [i84, i12, i57, i69, i66, i51, i57, i69, i66, i51, i84]]).
+answer(1, ['X0' = i53, 'X1' = [i6, i21, i75, i78, i96, i6, i21, i75, i78, i96, i6]]).
+answer(1, ['X0' = i70, 'X1' = [i90, i39, i48, i69, i84, i87, i69, i84, i87, i69, i90]]).
+answer(1, ['X0' = i70, 'X1' = [i90, i39, i48, i69, i84, i87, i69, i84, i75, i69, i90]]).
+answer(1, ['X0' = i70, 'X1' = [i90, i39, i48, i69, i84, i75, i69, i84, i87, i69, i90]]).
+answer(1, ['X0' = i70, 'X1' = [i90, i39, i48, i69, i84, i75, i69, i84, i75, i69, i90]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i81, i15, i81, i15, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i81, i15, i81, i15, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i81, i15, i81, i15, i60, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i81, i15, i81, i15, i60, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i81, i15, i60, i48, i0, i63, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i81, i15, i60, i15, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i81, i15, i60, i15, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i81, i15, i60, i15, i60, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i81, i15, i60, i15, i60, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i48, i0, i63, i9, i93, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i48, i0, i63, i9, i0, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i48, i0, i63, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i48, i0, i63, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i15, i81, i15, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i15, i81, i15, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i15, i81, i15, i60, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i15, i81, i15, i60, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i15, i60, i48, i0, i63, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i15, i60, i15, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i15, i60, i15, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i15, i60, i15, i60, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i81, i15, i60, i15, i60, i15, i60, i15, i60, i15]]).
+answer(1, ['X0' = i50, 'X1' = [i78, i87, i99, i66, i57, i69, i66, i51, i84, i72, i78]]).
+answer(1, ['X0' = i50, 'X1' = [i78, i87, i99, i54, i72, i78, i87, i99, i54, i72, i78]]).
+answer(1, ['X0' = i50, 'X1' = [i78, i87, i99, i54, i72, i69, i66, i51, i84, i72, i78]]).
+answer(1, ['X0' = i50, 'X1' = [i78, i87, i48, i27, i15, i12, i27, i15, i21, i72, i78]]).
+answer(1, ['X0' = i67, 'X1' = [i54, i9, i15, i15, i15, i15, i15, i15, i15, i15, i54]]).
+answer(1, ['X0' = i67, 'X1' = [i54, i9, i15, i15, i15, i15, i15, i54, i9, i15, i54]]).
+answer(1, ['X0' = i67, 'X1' = [i54, i9, i15, i15, i15, i15, i54, i9, i15, i15, i54]]).
+answer(1, ['X0' = i67, 'X1' = [i54, i9, i15, i15, i15, i54, i9, i15, i15, i15, i54]]).
+answer(1, ['X0' = i67, 'X1' = [i54, i9, i15, i15, i54, i9, i15, i15, i15, i15, i54]]).
+answer(1, ['X0' = i67, 'X1' = [i54, i9, i15, i15, i54, i9, i15, i54, i9, i15, i54]]).
+answer(1, ['X0' = i67, 'X1' = [i54, i9, i15, i54, i9, i15, i15, i15, i15, i15, i54]]).
+answer(1, ['X0' = i67, 'X1' = [i54, i9, i15, i54, i9, i15, i15, i54, i9, i15, i54]]).
+answer(1, ['X0' = i67, 'X1' = [i54, i9, i15, i54, i9, i15, i54, i9, i15, i15, i54]]).
+answer(1, ['X0' = i84, 'X1' = [i87, i33, i93, i51, i30, i21, i87, i51, i30, i21, i87]]).
+answer(1, ['X0' = i0, 'X1' = [i12, i9, i12, i66, i9, i12, i66, i9, i12, i9, i12]]).
+answer(1, ['X0' = i0, 'X1' = [i12, i9, i12, i66, i9, i12, i9, i12, i66, i9, i12]]).
+answer(1, ['X0' = i0, 'X1' = [i12, i9, i12, i9, i12, i66, i9, i12, i66, i9, i12]]).
+answer(1, ['X0' = i0, 'X1' = [i12, i9, i12, i9, i12, i9, i12, i9, i12, i9, i12]]).
+answer(1, ['X0' = i17, 'X1' = [i30, i33, i75, i30, i33, i75, i30, i33, i75, i0, i30]]).
+answer(1, ['X0' = i17, 'X1' = [i30, i33, i75, i30, i33, i75, i0, i30, i33, i75, i30]]).
+answer(1, ['X0' = i17, 'X1' = [i30, i33, i75, i0, i30, i33, i75, i30, i33, i75, i30]]).
+answer(1, ['X0' = i17, 'X1' = [i30, i33, i75, i0, i30, i33, i63, i42, i54, i0, i30]]).
+answer(1, ['X0' = i17, 'X1' = [i30, i33, i63, i42, i54, i0, i30, i33, i75, i0, i30]]).
+answer(1, ['X0' = i12, 'X1' = [i66, i66, i66, i66, i66, i66, i66, i66, i66, i66, i66]]).
+answer(1, ['X0' = i2, 'X1' = [i27, i66, i27, i66, i27, i66, i27, i66, i27, i66, i27]]).
+answer(1, ['X0' = i83, 'X1' = [i0, i6, i84, i69, i6, i84, i69, i6, i84, i69, i0]]).
+answer(1, ['X0' = i19, 'X1' = [i66, i36, i21, i87, i33, i12, i93, i66, i36, i72, i66]]).
+answer(1, ['X0' = i19, 'X1' = [i66, i36, i21, i87, i69, i36, i72, i33, i12, i93, i66]]).
+answer(1, ['X0' = i19, 'X1' = [i66, i36, i21, i87, i69, i36, i72, i66, i36, i72, i66]]).
+answer(1, ['X0' = i19, 'X1' = [i66, i36, i21, i21, i21, i21, i87, i33, i12, i93, i66]]).
+answer(1, ['X0' = i19, 'X1' = [i66, i36, i21, i21, i21, i21, i87, i69, i36, i72, i66]]).
+answer(1, ['X0' = i19, 'X1' = [i66, i36, i72, i66, i36, i21, i87, i33, i12, i93, i66]]).
+answer(1, ['X0' = i19, 'X1' = [i66, i36, i72, i66, i36, i21, i87, i69, i36, i72, i66]]).
+answer(1, ['X0' = i24, 'X1' = [i24, i33, i24, i33, i24, i33, i24, i33, i24, i33, i24]]).
+answer(1, ['X0' = i71, 'X1' = [i21, i0, i45, i21, i0, i45, i21, i0, i21, i0, i21]]).
+answer(1, ['X0' = i71, 'X1' = [i21, i0, i45, i21, i0, i21, i0, i45, i21, i0, i21]]).
+answer(1, ['X0' = i71, 'X1' = [i21, i0, i45, i21, i0, i21, i0, i21, i0, i45, i21]]).
+answer(1, ['X0' = i71, 'X1' = [i21, i0, i21, i0, i45, i21, i0, i45, i21, i0, i21]]).
+answer(1, ['X0' = i71, 'X1' = [i21, i0, i21, i0, i45, i21, i0, i21, i0, i45, i21]]).
+answer(1, ['X0' = i71, 'X1' = [i21, i0, i21, i0, i21, i0, i45, i21, i0, i45, i21]]).
+answer(1, ['X0' = i71, 'X1' = [i21, i0, i21, i0, i21, i0, i21, i0, i21, i0, i21]]).
+answer(1, ['X0' = i57, 'X1' = [i48, i69, i48, i69, i48, i69, i48, i69, i48, i69, i48]]).
+answer(1, ['X0' = i43, 'X1' = [i60, i60, i60, i60, i60, i60, i60, i60, i60, i60, i60]]).
+answer(1, ['X0' = i84, 'X1' = [i30, i21, i87, i33, i93, i51, i30, i21, i87, i51, i30]]).
+answer(1, ['X0' = i84, 'X1' = [i30, i21, i87, i51, i30, i21, i87, i33, i93, i51, i30]]).
+answer(1, ['X0' = i80, 'X1' = [i60, i42, i15, i60, i42, i15, i42, i15, i42, i15, i60]]).
+answer(1, ['X0' = i80, 'X1' = [i60, i42, i15, i42, i15, i60, i42, i15, i42, i15, i60]]).
+answer(1, ['X0' = i80, 'X1' = [i60, i42, i15, i42, i15, i42, i15, i60, i42, i15, i60]]).
+answer(1, ['X0' = i50, 'X1' = [i87, i99, i66, i57, i69, i66, i51, i84, i72, i78, i87]]).
+answer(1, ['X0' = i50, 'X1' = [i87, i99, i54, i72, i78, i87, i99, i54, i72, i78, i87]]).
+answer(1, ['X0' = i50, 'X1' = [i87, i99, i54, i72, i69, i66, i51, i84, i72, i78, i87]]).
+answer(1, ['X0' = i84, 'X1' = [i51, i30, i21, i87, i33, i93, i51, i30, i21, i87, i51]]).
+answer(1, ['X0' = i84, 'X1' = [i51, i30, i21, i87, i51, i30, i21, i87, i33, i93, i51]]).
+answer(1, ['X0' = i31, 'X1' = [i3, i15, i3, i15, i3, i15, i3, i15, i3, i15, i3]]).
+answer(1, ['X0' = i97, 'X1' = [i27, i27, i27, i27, i27, i27, i27, i27, i27, i27, i27]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i75, i48, i33, i69, i75, i48, i33, i69, i75, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i75, i48, i33, i69, i75, i75, i48, i33, i69, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i75, i48, i33, i69, i75, i75, i75, i75, i75, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i75, i75, i48, i33, i69, i75, i48, i33, i69, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i75, i75, i48, i33, i69, i75, i75, i75, i75, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i75, i75, i75, i48, i33, i69, i75, i75, i75, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i75, i75, i75, i75, i48, i33, i69, i75, i75, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i75, i75, i75, i75, i75, i48, i33, i69, i75, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i75, i75, i75, i75, i75, i75, i48, i33, i69, i75]]).
+answer(1, ['X0' = i96, 'X1' = [i75, i75, i75, i75, i75, i75, i75, i75, i75, i75, i75]]).
+answer(1, ['X0' = i71, 'X1' = [i0, i45, i21, i0, i45, i21, i0, i21, i0, i21, i0]]).
+answer(1, ['X0' = i71, 'X1' = [i0, i45, i21, i0, i21, i0, i45, i21, i0, i21, i0]]).
+answer(1, ['X0' = i71, 'X1' = [i0, i45, i21, i0, i21, i0, i21, i0, i45, i21, i0]]).
+answer(1, ['X0' = i71, 'X1' = [i45, i21, i0, i45, i21, i0, i21, i0, i21, i0, i45]]).
+answer(1, ['X0' = i71, 'X1' = [i45, i21, i0, i21, i0, i45, i21, i0, i21, i0, i45]]).
+answer(1, ['X0' = i71, 'X1' = [i45, i21, i0, i21, i0, i21, i0, i45, i21, i0, i45]]).
+answer(1, ['X0' = i70, 'X1' = [i18, i0, i18, i0, i18, i0, i18, i0, i18, i0, i18]]).
+answer(1, ['X0' = i19, 'X1' = [i69, i36, i21, i87, i69, i36, i21, i21, i21, i87, i69]]).
+answer(1, ['X0' = i19, 'X1' = [i69, i36, i21, i21, i87, i69, i36, i21, i21, i87, i69]]).
+answer(1, ['X0' = i19, 'X1' = [i69, i36, i21, i21, i21, i87, i69, i36, i21, i87, i69]]).
+answer(1, ['X0' = i19, 'X1' = [i69, i36, i21, i21, i21, i21, i21, i21, i21, i87, i69]]).
+answer(1, ['X0' = i19, 'X1' = [i69, i36, i72, i33, i12, i93, i66, i36, i21, i87, i69]]).
+answer(1, ['X0' = i19, 'X1' = [i69, i36, i72, i66, i36, i21, i21, i21, i21, i87, i69]]).
+answer(1, ['X0' = i19, 'X1' = [i69, i36, i72, i66, i36, i72, i66, i36, i21, i87, i69]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i39, i42, i45, i93, i39, i42, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i39, i42, i45, i93, i39, i87, i27, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i39, i42, i45, i93, i45, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i39, i45, i93, i39, i45, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i39, i45, i93, i63, i21, i42, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i39, i45, i93, i45, i93, i39, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i39, i87, i27, i93, i39, i42, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i39, i87, i27, i93, i39, i87, i27, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i39, i87, i27, i93, i45, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i63, i21, i42, i45, i93, i39, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i45, i93, i39, i42, i45, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i45, i93, i39, i45, i93, i39, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i45, i93, i39, i87, i27, i93, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i45, i93, i45, i93, i39, i42, i45, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i45, i93, i45, i93, i39, i87, i27, i93]]).
+answer(1, ['X0' = i16, 'X1' = [i93, i45, i93, i45, i93, i45, i93, i45, i93, i45, i93]]).
+answer(1, ['X0' = i36, 'X1' = [i36, i72, i24, i84, i51, i36, i72, i24, i84, i51, i36]]).
+answer(1, ['X0' = i48, 'X1' = [i72, i90, i72, i90, i72, i90, i72, i90, i72, i90, i72]]).
+answer(1, ['X0' = i50, 'X1' = [i15, i30, i39, i33, i9, i33, i9, i33, i9, i27, i15]]).
+answer(1, ['X0' = i50, 'X1' = [i15, i30, i39, i33, i9, i27, i30, i39, i48, i27, i15]]).
+answer(1, ['X0' = i50, 'X1' = [i15, i30, i39, i48, i27, i15, i30, i39, i48, i27, i15]]).
+answer(1, ['X0' = i50, 'X1' = [i15, i30, i39, i48, i27, i30, i39, i33, i9, i27, i15]]).
+answer(1, ['X0' = i79, 'X1' = [i69, i9, i69, i9, i69, i9, i69, i9, i69, i9, i69]]).
+answer(1, ['X0' = i79, 'X1' = [i69, i9, i69, i9, i69, i9, i69, i9, i39, i3, i69]]).
+answer(1, ['X0' = i79, 'X1' = [i69, i9, i69, i9, i69, i9, i39, i3, i69, i9, i69]]).
+answer(1, ['X0' = i79, 'X1' = [i69, i9, i69, i9, i39, i3, i69, i9, i69, i9, i69]]).
+answer(1, ['X0' = i79, 'X1' = [i69, i9, i69, i9, i39, i3, i69, i9, i39, i3, i69]]).
+answer(1, ['X0' = i79, 'X1' = [i69, i9, i39, i3, i69, i9, i69, i9, i69, i9, i69]]).
+answer(1, ['X0' = i79, 'X1' = [i69, i9, i39, i3, i69, i9, i69, i9, i39, i3, i69]]).
+answer(1, ['X0' = i79, 'X1' = [i69, i9, i39, i3, i69, i9, i39, i3, i69, i9, i69]]).
+answer(1, ['X0' = i79, 'X1' = [i69, i9, i39, i81, i3, i69, i9, i39, i81, i3, i69]]).
+answer(1, ['X0' = i10, 'X1' = [i15, i78, i60, i33, i87, i15, i78, i60, i33, i87, i15]]).
+answer(1, ['X0' = i80, 'X1' = [i15, i42, i15, i60, i42, i15, i60, i42, i15, i42, i15]]).
+answer(1, ['X0' = i80, 'X1' = [i15, i42, i15, i60, i42, i15, i42, i15, i60, i42, i15]]).
+answer(1, ['X0' = i80, 'X1' = [i15, i42, i15, i42, i15, i60, i42, i15, i60, i42, i15]]).
+answer(1, ['X0' = i80, 'X1' = [i15, i42, i15, i42, i15, i42, i15, i42, i15, i42, i15]]).
+answer(1, ['X0' = i65, 'X1' = [i84, i45, i9, i96, i18, i57, i78, i78, i9, i3, i84]]).
+answer(1, ['X0' = i34, 'X1' = [i18, i18, i18, i18, i18, i18, i18, i18, i18, i18, i18]]).
+answer(1, ['X0' = i27, 'X1' = [i39, i84, i39, i84, i39, i84, i39, i84, i39, i84, i39]]).
+answer(1, ['X0' = i50, 'X1' = [i9, i27, i15, i12, i27, i30, i39, i33, i9, i33, i9]]).
+answer(1, ['X0' = i50, 'X1' = [i9, i27, i15, i30, i39, i33, i9, i33, i9, i33, i9]]).
+answer(1, ['X0' = i50, 'X1' = [i9, i27, i15, i30, i39, i48, i27, i30, i39, i33, i9]]).
+answer(1, ['X0' = i50, 'X1' = [i9, i27, i30, i39, i33, i9, i27, i30, i39, i33, i9]]).
+answer(1, ['X0' = i50, 'X1' = [i9, i27, i30, i39, i48, i27, i15, i30, i39, i33, i9]]).
+answer(1, ['X0' = i24, 'X1' = [i57, i57, i57, i57, i57, i57, i57, i57, i57, i57, i57]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i87, i27, i93, i39, i42, i45, i93, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i87, i27, i93, i39, i45, i93, i39, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i87, i27, i93, i39, i87, i27, i93, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i87, i27, i93, i45, i93, i39, i42, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i87, i27, i93, i45, i93, i39, i87, i27, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i39, i87, i27, i93, i45, i93, i45, i93, i45, i93, i39]]).
+answer(1, ['X0' = i16, 'X1' = [i42, i45, i93, i39, i42, i45, i93, i45, i93, i39, i42]]).
+answer(1, ['X0' = i16, 'X1' = [i42, i45, i93, i39, i45, i93, i39, i45, i93, i39, i42]]).
+answer(1, ['X0' = i16, 'X1' = [i42, i45, i93, i39, i45, i93, i45, i93, i63, i21, i42]]).
+answer(1, ['X0' = i16, 'X1' = [i42, i45, i93, i39, i87, i27, i93, i45, i93, i39, i42]]).
+answer(1, ['X0' = i16, 'X1' = [i42, i45, i93, i63, i21, i42, i45, i93, i63, i21, i42]]).
+answer(1, ['X0' = i16, 'X1' = [i42, i45, i93, i45, i93, i39, i42, i45, i93, i39, i42]]).
+answer(1, ['X0' = i16, 'X1' = [i42, i45, i93, i45, i93, i39, i45, i93, i63, i21, i42]]).
+answer(1, ['X0' = i16, 'X1' = [i42, i45, i93, i45, i93, i39, i87, i27, i93, i39, i42]]).
+answer(1, ['X0' = i16, 'X1' = [i42, i45, i93, i45, i93, i45, i93, i45, i93, i39, i42]]).
+answer(1, ['X0' = i19, 'X1' = [i87, i33, i12, i93, i66, i36, i21, i21, i21, i21, i87]]).
+answer(1, ['X0' = i19, 'X1' = [i87, i33, i12, i93, i66, i36, i72, i66, i36, i21, i87]]).
+answer(1, ['X0' = i17, 'X1' = [i33, i63, i42, i54, i0, i30, i33, i75, i0, i30, i33]]).
+answer(1, ['X0' = i65, 'X1' = [i57, i72, i9, i96, i18, i57, i72, i9, i96, i18, i57]]).
+answer(1, ['X0' = i65, 'X1' = [i57, i72, i9, i96, i18, i57, i78, i9, i96, i18, i57]]).
+answer(1, ['X0' = i60, 'X1' = [i39, i48, i42, i45, i99, i33, i12, i63, i93, i27, i39]]).
+answer(1, ['X0' = i28, 'X1' = [i15, i36, i6, i87, i81, i15, i36, i6, i87, i81, i15]]).
+answer(1, ['X0' = i65, 'X1' = [i78, i9, i3, i84, i45, i9, i96, i18, i57, i78, i78]]).
+answer(1, ['X0' = i65, 'X1' = [i78, i9, i96, i18, i57, i72, i9, i96, i18, i57, i78]]).
+answer(1, ['X0' = i65, 'X1' = [i78, i9, i96, i18, i57, i78, i78, i78, i78, i78, i78]]).
+answer(1, ['X0' = i65, 'X1' = [i78, i9, i96, i18, i57, i78, i9, i96, i18, i57, i78]]).
+answer(1, ['X0' = i71, 'X1' = [i0, i21, i0, i45, i21, i0, i45, i21, i0, i21, i0]]).
+answer(1, ['X0' = i71, 'X1' = [i0, i21, i0, i45, i21, i0, i21, i0, i45, i21, i0]]).
+answer(1, ['X0' = i71, 'X1' = [i0, i21, i0, i21, i0, i45, i21, i0, i45, i21, i0]]).
+answer(1, ['X0' = i71, 'X1' = [i0, i21, i0, i21, i0, i21, i0, i21, i0, i21, i0]]).
+answer(1, ['X0' = i16, 'X1' = [i27, i93, i39, i42, i45, i93, i45, i93, i39, i87, i27]]).
+answer(1, ['X0' = i16, 'X1' = [i27, i93, i39, i45, i93, i39, i45, i93, i39, i87, i27]]).
+answer(1, ['X0' = i16, 'X1' = [i27, i93, i39, i87, i27, i93, i45, i93, i39, i87, i27]]).
+answer(1, ['X0' = i16, 'X1' = [i27, i93, i45, i93, i39, i42, i45, i93, i39, i87, i27]]).
+answer(1, ['X0' = i16, 'X1' = [i27, i93, i45, i93, i39, i87, i27, i93, i39, i87, i27]]).
+answer(1, ['X0' = i16, 'X1' = [i27, i93, i45, i93, i45, i93, i45, i93, i39, i87, i27]]).
+answer(1, ['X0' = i79, 'X1' = [i81, i3, i69, i9, i39, i81, i3, i69, i9, i39, i81]]).
+answer(1, ['X0' = i57, 'X1' = [i69, i48, i69, i48, i69, i48, i69, i48, i69, i48, i69]]).
+answer(1, ['X0' = i7, 'X1' = [i75, i84, i72, i57, i18, i75, i84, i72, i57, i18, i75]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i81, i15, i81, i15, i81, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i81, i15, i81, i15, i81, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i81, i15, i81, i15, i60, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i81, i15, i81, i15, i60, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i81, i15, i60, i48, i0, i63, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i81, i15, i60, i15, i81, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i81, i15, i60, i15, i81, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i81, i15, i60, i15, i60, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i81, i15, i60, i15, i60, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i48, i0, i63, i9, i93, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i48, i0, i63, i9, i0, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i48, i0, i63, i81, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i48, i0, i63, i81, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i15, i81, i15, i81, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i15, i81, i15, i81, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i15, i81, i15, i60, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i15, i81, i15, i60, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i15, i60, i48, i0, i63, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i15, i60, i15, i81, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i15, i60, i15, i81, i15, i60, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i15, i60, i15, i60, i15, i81, i15, i60]]).
+answer(1, ['X0' = i5, 'X1' = [i60, i15, i60, i15, i60, i15, i60, i15, i60, i15, i60]]).
+answer(1, ['X0' = i13, 'X1' = [i81, i87, i45, i48, i78, i81, i87, i45, i48, i78, i81]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i48, i0, i63, i9, i93, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i48, i0, i63, i9, i93, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i48, i0, i63, i9, i93, i9, i93, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i48, i0, i63, i9, i93, i9, i0, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i48, i0, i63, i9, i0, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i48, i0, i63, i9, i0, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i48, i0, i63, i81, i15, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i48, i0, i63, i81, i15, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i48, i0, i63, i81, i15, i60, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i48, i0, i63, i81, i15, i60, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i48, i0, i81, i15, i60, i48, i0, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i81, i15, i81, i15, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i81, i15, i81, i15, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i81, i15, i81, i15, i60, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i81, i15, i81, i15, i60, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i81, i15, i60, i48, i0, i63, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i81, i15, i60, i15, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i81, i15, i60, i15, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i81, i15, i60, i15, i60, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i81, i15, i60, i15, i60, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i48, i0, i63, i9, i93, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i48, i0, i63, i9, i0, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i48, i0, i63, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i48, i0, i63, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i15, i81, i15, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i15, i81, i15, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i15, i81, i15, i60, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i15, i81, i15, i60, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i15, i60, i48, i0, i63, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i15, i60, i15, i81, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i15, i60, i15, i81, i15, i60, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i15, i60, i15, i60, i15, i81, i15]]).
+answer(1, ['X0' = i5, 'X1' = [i15, i60, i15, i60, i15, i60, i15, i60, i15, i60, i15]]).
+answer(1, ['X0' = i36, 'X1' = [i36, i24, i84, i51, i36, i93, i36, i93, i36, i93, i36]]).
+answer(1, ['X0' = i36, 'X1' = [i36, i24, i84, i51, i36, i93, i36, i24, i84, i51, i36]]).
+answer(1, ['X0' = i36, 'X1' = [i36, i24, i84, i51, i36, i24, i84, i51, i36, i93, i36]]).
+answer(1, ['X0' = i13, 'X1' = [i48, i78, i81, i87, i45, i48, i78, i81, i87, i45, i48]]).
+answer(1, ['X0' = i83, 'X1' = [i84, i69, i0, i6, i84, i69, i6, i84, i69, i6, i84]]).
+answer(1, ['X0' = i83, 'X1' = [i84, i69, i6, i84, i69, i0, i6, i84, i69, i6, i84]]).
+answer(1, ['X0' = i83, 'X1' = [i84, i69, i6, i84, i69, i6, i84, i69, i0, i6, i84]]).
+answer(1, ['X0' = i19, 'X1' = [i87, i69, i36, i21, i87, i69, i36, i21, i21, i21, i87]]).
+answer(1, ['X0' = i19, 'X1' = [i87, i69, i36, i21, i21, i87, i69, i36, i21, i21, i87]]).
+answer(1, ['X0' = i19, 'X1' = [i87, i69, i36, i21, i21, i21, i87, i69, i36, i21, i87]]).
+answer(1, ['X0' = i19, 'X1' = [i87, i69, i36, i21, i21, i21, i21, i21, i21, i21, i87]]).
+answer(1, ['X0' = i19, 'X1' = [i87, i69, i36, i72, i33, i12, i93, i66, i36, i21, i87]]).
+answer(1, ['X0' = i19, 'X1' = [i87, i69, i36, i72, i66, i36, i21, i21, i21, i21, i87]]).
+answer(1, ['X0' = i19, 'X1' = [i87, i69, i36, i72, i66, i36, i72, i66, i36, i21, i87]]).
+answer(1, ['X0' = i81, 'X1' = [i60, i21, i75, i60, i21, i75, i30, i75, i30, i75, i60]]).
+answer(1, ['X0' = i81, 'X1' = [i60, i21, i75, i30, i75, i60, i21, i75, i30, i75, i60]]).
+answer(1, ['X0' = i81, 'X1' = [i60, i21, i75, i30, i75, i30, i75, i60, i21, i75, i60]]).
+answer(1, ['X0' = i93, 'X1' = [i54, i69, i54, i69, i54, i69, i54, i69, i54, i69, i54]]).
+answer(1, ['X0' = i31, 'X1' = [i66, i66, i66, i66, i66, i66, i66, i66, i66, i66, i66]]).
+answer(1, ['X0' = i96, 'X1' = [i33, i69, i75, i48, i33, i69, i75, i75, i75, i48, i33]]).
+answer(1, ['X0' = i96, 'X1' = [i33, i69, i75, i75, i48, i33, i69, i75, i75, i48, i33]]).
+answer(1, ['X0' = i96, 'X1' = [i33, i69, i75, i75, i75, i48, i33, i69, i75, i48, i33]]).
+answer(1, ['X0' = i96, 'X1' = [i33, i69, i75, i75, i75, i75, i75, i75, i75, i48, i33]]).
+answer(1, ['X0' = i84, 'X1' = [i33, i93, i51, i30, i21, i87, i51, i30, i21, i87, i33]]).
+answer(1, ['X0' = i11, 'X1' = [i51, i15, i30, i78, i45, i51, i15, i30, i78, i45, i51]]).
+answer(1, ['X0' = i9, 'X1' = [i9, i84, i54, i30, i9, i54, i30, i9, i54, i30, i9]]).
+answer(1, ['X0' = i60, 'X1' = [i12, i63, i93, i27, i39, i48, i42, i45, i99, i33, i12]]).
+answer(1, ['X0' = i69, 'X1' = [i24, i24, i24, i24, i24, i24, i24, i24, i24, i24, i24]]).
+answer(1, ['X0' = i13, 'X1' = [i78, i81, i87, i45, i48, i78, i81, i87, i45, i48, i78]]).
+answer(1, ['X0' = i11, 'X1' = [i78, i45, i51, i15, i30, i78, i45, i51, i15, i30, i78]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i9, i93, i81, i15, i81, i15, i60, i48, i0, i63]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i9, i93, i81, i15, i60, i15, i60, i48, i0, i63]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i9, i93, i9, i93, i81, i15, i60, i48, i0, i63]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i9, i93, i9, i93, i9, i0, i63, i9, i0, i63]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i9, i93, i9, i0, i63, i9, i93, i9, i0, i63]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i9, i93, i9, i0, i81, i15, i60, i48, i0, i63]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i9, i0, i63, i9, i93, i9, i93, i9, i0, i63]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i9, i0, i81, i15, i81, i15, i60, i48, i0, i63]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i9, i0, i81, i15, i60, i15, i60, i48, i0, i63]]).
+answer(1, ['X0' = i32, 'X1' = [i90, i6, i90, i6, i90, i6, i90, i6, i90, i6, i90]]).
+answer(1, ['X0' = i84, 'X1' = [i87, i51, i30, i21, i87, i33, i93, i51, i30, i21, i87]]).
+answer(1, ['X0' = i2, 'X1' = [i66, i27, i66, i27, i66, i27, i66, i27, i66, i27, i66]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i24, i81, i24, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i24, i81, i24, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i24, i81, i24, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i24, i81, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i24, i81, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i24, i81, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i24, i81, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i24, i81, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i24, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i24, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i24, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i24, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i24, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i81, i24, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i81, i24, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i81, i24, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i81, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i81, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i81, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i81, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i24, i81, i81, i81, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i24, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i24, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i24, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i24, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i24, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i81, i24, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i81, i24, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i81, i24, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i81, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i81, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i81, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i81, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i24, i81, i81, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i24, i81, i24, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i24, i81, i24, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i24, i81, i24, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i24, i81, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i24, i81, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i24, i81, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i24, i81, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i24, i81, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i24, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i24, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i24, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i24, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i24, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i81, i24, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i81, i24, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i81, i24, i81, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i81, i81, i24, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i81, i81, i24, i81, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i81, i81, i81, i24, i81, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i81, i81, i81, i81, i24, i81]]).
+answer(1, ['X0' = i62, 'X1' = [i81, i81, i81, i81, i81, i81, i81, i81, i81, i81, i81]]).
+answer(1, ['X0' = i81, 'X1' = [i75, i30, i75, i60, i21, i75, i60, i21, i75, i30, i75]]).
+answer(1, ['X0' = i81, 'X1' = [i75, i30, i75, i60, i21, i75, i30, i75, i60, i21, i75]]).
+answer(1, ['X0' = i81, 'X1' = [i75, i30, i75, i30, i75, i60, i21, i75, i60, i21, i75]]).
+answer(1, ['X0' = i81, 'X1' = [i75, i30, i75, i30, i75, i30, i75, i30, i75, i30, i75]]).
+answer(1, ['X0' = i97, 'X1' = [i69, i18, i69, i18, i69, i18, i69, i18, i69, i18, i69]]).
+answer(1, ['X0' = i29, 'X1' = [i39, i39, i39, i39, i39, i39, i39, i39, i39, i39, i39]]).
+answer(1, ['X0' = i50, 'X1' = [i12, i27, i15, i12, i27, i30, i39, i48, i27, i15, i12]]).
+answer(1, ['X0' = i50, 'X1' = [i12, i27, i15, i21, i72, i78, i87, i48, i27, i15, i12]]).
+answer(1, ['X0' = i50, 'X1' = [i12, i27, i30, i39, i33, i9, i33, i9, i27, i15, i12]]).
+answer(1, ['X0' = i50, 'X1' = [i12, i27, i30, i39, i48, i27, i15, i12, i27, i15, i12]]).
+answer(1, ['X0' = i56, 'X1' = [i9, i9, i9, i9, i9, i9, i9, i9, i9, i9, i9]]).
+answer(1, ['X0' = i24, 'X1' = [i60, i87, i60, i87, i60, i87, i60, i87, i60, i87, i60]]).
+answer(1, ['X0' = i50, 'X1' = [i87, i48, i27, i15, i12, i27, i15, i21, i72, i78, i87]]).
+answer(1, ['X0' = i7, 'X1' = [i45, i45, i45, i45, i45, i45, i45, i45, i45, i45, i45]]).
+answer(1, ['X0' = i60, 'X1' = [i63, i93, i27, i39, i48, i42, i45, i99, i33, i12, i63]]).
+answer(1, ['X0' = i50, 'X1' = [i57, i69, i66, i51, i84, i72, i78, i87, i99, i66, i57]]).
+answer(1, ['X0' = i50, 'X1' = [i57, i69, i66, i51, i84, i12, i57, i69, i66, i51, i57]]).
+answer(1, ['X0' = i50, 'X1' = [i57, i69, i66, i51, i57, i69, i66, i51, i84, i12, i57]]).
+answer(1, ['X0' = i50, 'X1' = [i57, i69, i66, i51, i57, i69, i66, i57, i69, i66, i57]]).
+answer(1, ['X0' = i50, 'X1' = [i57, i69, i66, i57, i69, i66, i51, i57, i69, i66, i57]]).
+answer(1, ['X0' = i50, 'X1' = [i57, i69, i66, i57, i69, i66, i57, i69, i66, i51, i57]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i30, i39, i33, i9, i33, i9, i27, i15, i12, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i30, i39, i33, i9, i27, i15, i30, i39, i48, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i30, i39, i33, i9, i27, i30, i39, i33, i9, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i30, i39, i48, i27, i15, i12, i27, i15, i12, i27]]).
+answer(1, ['X0' = i50, 'X1' = [i27, i30, i39, i48, i27, i15, i30, i39, i33, i9, i27]]).
+answer(1, ['X0' = i17, 'X1' = [i42, i54, i0, i30, i33, i75, i0, i30, i33, i63, i42]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i81, i15, i81, i15, i81, i15, i60, i48, i0, i63]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i81, i15, i81, i15, i60, i15, i60, i48, i0, i63]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i81, i15, i60, i15, i81, i15, i60, i48, i0, i63]]).
+answer(1, ['X0' = i5, 'X1' = [i63, i81, i15, i60, i15, i60, i15, i60, i48, i0, i63]]).
+answer(1, ['X0' = i57, 'X1' = [i84, i51, i84, i51, i84, i51, i84, i51, i84, i51, i84]]).
+answer(1, ['X0' = i19, 'X1' = [i72, i66, i36, i21, i87, i33, i12, i93, i66, i36, i72]]).
+answer(1, ['X0' = i19, 'X1' = [i72, i66, i36, i21, i87, i69, i36, i72, i66, i36, i72]]).
+answer(1, ['X0' = i19, 'X1' = [i72, i66, i36, i21, i21, i21, i21, i87, i69, i36, i72]]).
+answer(1, ['X0' = i19, 'X1' = [i72, i66, i36, i72, i66, i36, i21, i87, i69, i36, i72]]).
+answer(1, ['X0' = i70, 'X1' = [i48, i69, i84, i87, i69, i84, i87, i69, i90, i39, i48]]).
+answer(1, ['X0' = i70, 'X1' = [i48, i69, i84, i87, i69, i84, i75, i69, i90, i39, i48]]).
+answer(1, ['X0' = i70, 'X1' = [i48, i69, i84, i75, i69, i84, i87, i69, i90, i39, i48]]).
+answer(1, ['X0' = i70, 'X1' = [i48, i69, i84, i75, i69, i84, i75, i69, i90, i39, i48]]).
+answer(1, ['X0' = i54, 'X1' = [i51, i66, i33, i96, i9, i51, i66, i33, i96, i9, i51]]).
+answer(1, ['X0' = i50, 'X1' = [i99, i66, i57, i69, i66, i51, i84, i72, i78, i87, i99]]).
+answer(1, ['X0' = i32, 'X1' = [i15, i60, i63, i0, i33, i15, i60, i63, i0, i33, i15]]).
+answer(1, ['X0' = i54, 'X1' = [i9, i51, i66, i33, i96, i9, i51, i66, i33, i96, i9]]).
+answer(1, ['X0' = i17, 'X1' = [i75, i0, i30, i33, i75, i30, i33, i75, i30, i33, i75]]).
+answer(1, ['X0' = i17, 'X1' = [i75, i0, i30, i33, i63, i42, i54, i0, i30, i33, i75]]).
+answer(1, ['X0' = i60, 'X1' = [i48, i42, i45, i99, i33, i12, i63, i93, i27, i39, i48]]).
+answer(1, ['X0' = i17, 'X1' = [i63, i42, i54, i0, i30, i33, i75, i0, i30, i33, i63]]).
+answer(1, ['X0' = i50, 'X1' = [i99, i54, i72, i78, i87, i99, i54, i72, i78, i87, i99]]).
+answer(1, ['X0' = i50, 'X1' = [i99, i54, i72, i69, i66, i51, i84, i72, i78, i87, i99]]).
+answer(1, ['X0' = i65, 'X1' = [i57, i78, i78, i78, i78, i78, i78, i9, i96, i18, i57]]).
+answer(1, ['X0' = i65, 'X1' = [i57, i78, i78, i9, i3, i84, i45, i9, i96, i18, i57]]).
+answer(1, ['X0' = i65, 'X1' = [i57, i78, i9, i96, i18, i57, i72, i9, i96, i18, i57]]).
+answer(1, ['X0' = i65, 'X1' = [i57, i78, i9, i96, i18, i57, i78, i9, i96, i18, i57]]).
+answer(1, ['X0' = i43, 'X1' = [i18, i18, i18, i18, i18, i18, i18, i18, i18, i18, i18]]).
+answer(1, ['X0' = i81, 'X1' = [i30, i75, i60, i21, i75, i60, i21, i75, i30, i75, i30]]).
+answer(1, ['X0' = i81, 'X1' = [i30, i75, i60, i21, i75, i30, i75, i60, i21, i75, i30]]).
+answer(1, ['X0' = i81, 'X1' = [i30, i75, i30, i75, i60, i21, i75, i60, i21, i75, i30]]).
+answer(1, ['X0' = i81, 'X1' = [i30, i75, i30, i75, i30, i75, i30, i75, i30, i75, i30]]).
+answer(1, ['X0' = i50, 'X1' = [i12, i57, i69, i66, i51, i57, i69, i66, i51, i84, i12]]).
+answer(1, ['X0' = i53, 'X1' = [i96, i6, i21, i75, i78, i96, i6, i21, i75, i78, i96]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i42, i45, i93, i39, i42, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i42, i45, i93, i39, i45, i93, i39, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i42, i45, i93, i39, i87, i27, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i42, i45, i93, i45, i93, i39, i42, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i42, i45, i93, i45, i93, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i45, i93, i39, i42, i45, i93, i39, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i45, i93, i39, i45, i93, i39, i42, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i45, i93, i39, i45, i93, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i45, i93, i39, i87, i27, i93, i39, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i45, i93, i63, i21, i42, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i45, i93, i45, i93, i39, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i45, i93, i45, i93, i63, i21, i42, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i45, i93, i45, i93, i45, i93, i39, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i87, i27, i93, i39, i42, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i87, i27, i93, i39, i45, i93, i39, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i87, i27, i93, i39, i87, i27, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i87, i27, i93, i45, i93, i39, i42, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i39, i87, i27, i93, i45, i93, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i63, i21, i42, i45, i93, i39, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i63, i21, i42, i45, i93, i63, i21, i42, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i63, i21, i42, i45, i93, i45, i93, i39, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i39, i42, i45, i93, i39, i42, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i39, i42, i45, i93, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i39, i45, i93, i39, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i39, i45, i93, i63, i21, i42, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i39, i45, i93, i45, i93, i39, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i39, i87, i27, i93, i39, i42, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i39, i87, i27, i93, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i63, i21, i42, i45, i93, i39, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i45, i93, i39, i42, i45, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i45, i93, i39, i45, i93, i39, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i45, i93, i39, i87, i27, i93, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i45, i93, i45, i93, i39, i42, i45]]).
+answer(1, ['X0' = i16, 'X1' = [i45, i93, i45, i93, i45, i93, i45, i93, i45, i93, i45]]).
+answer(1, ['X0' = i50, 'X1' = [i15, i21, i72, i78, i87, i48, i27, i15, i12, i27, i15]]).
+answer(1, ['X0' = i89, 'X1' = [i48, i48, i48, i48, i48, i48, i48, i48, i48, i48, i48]]).

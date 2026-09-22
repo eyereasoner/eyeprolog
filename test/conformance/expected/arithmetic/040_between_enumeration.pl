@@ -1,3 +1,6 @@
-answer(n, 3).
-answer(n, 4).
-answer(n, 5).
+% Prolog result format 4
+query(1, answer(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 3).
+answer(1, ['X0' = n, 'X1' = 3]).
+answer(1, ['X0' = n, 'X1' = 4]).
+answer(1, ['X0' = n, 'X1' = 5]).

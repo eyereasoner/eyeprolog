@@ -1,148 +1,81 @@
-defaultSupports(nixon, pacifist).
-why(
-  defaultSupports(nixon, pacifist),
-  step(
-    defaultSupports(nixon, pacifist),
-    rule("nixon-diamond.pl", clause(8)),
-    ['Person' = nixon, 'Conclusion' = pacifist],
-    [
-      step(
-        supports_default(nixon, pacifist),
-        rule("nixon-diamond.pl", clause(3)),
-        ['Person' = nixon],
-        [
-          step(kind(nixon, quaker), fact("nixon-diamond.pl", clause(1)), [], [])
-        ]
-      )
-    ]
-  )
-).
+% Prolog result format 4
+query(1, defaultSupports(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 2).
+answer(1, ['X0' = nixon, 'X1' = pacifist]).
+why(1, ['X0' = nixon, 'X1' = pacifist], [defaultSupports(nixon, pacifist)]).
+answer(1, ['X0' = nixon, 'X1' = hawk]).
+why(1, ['X0' = nixon, 'X1' = hawk], [defaultSupports(nixon, hawk)]).
+query(2, conflict(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(2, complete, 2).
+answer(2, ['X0' = nixon, 'X1' = conflict(pacifist, hawk)]).
+why(2,
+    ['X0' = nixon, 'X1' = conflict(pacifist, hawk)],
+    [conflict(nixon, conflict(pacifist, hawk))]).
+answer(2, ['X0' = nixon, 'X1' = conflict(hawk, pacifist)]).
+why(2,
+    ['X0' = nixon, 'X1' = conflict(hawk, pacifist)],
+    [conflict(nixon, conflict(hawk, pacifist))]).
+query(3, status(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(3, complete, 1).
+answer(3, ['X0' = nixon, 'X1' = conflicted_default_case]).
+why(3, ['X0' = nixon, 'X1' = conflicted_default_case], [status(nixon, conflicted_default_case)]).
 
-defaultSupports(nixon, hawk).
-why(
-  defaultSupports(nixon, hawk),
-  step(
-    defaultSupports(nixon, hawk),
-    rule("nixon-diamond.pl", clause(8)),
-    ['Person' = nixon, 'Conclusion' = hawk],
-    [
-      step(
-        supports_default(nixon, hawk),
-        rule("nixon-diamond.pl", clause(4)),
-        ['Person' = nixon],
-        [
-          step(kind(nixon, republican), fact("nixon-diamond.pl", clause(2)), [], [])
-        ]
-      )
-    ]
-  )
-).
+clause(1, kind(nixon, quaker), true).
+clause(2, kind(nixon, republican), true).
+clause(3, supports_default(var('Person'), pacifist), kind(var('Person'), quaker)).
+clause(4, supports_default(var('Person'), hawk), kind(var('Person'), republican)).
+clause(5, contrary(pacifist, hawk), true).
+clause(6, contrary(hawk, pacifist), true).
+clause(7,
+       conflicted(var('Person'), var('A'), var('B')),
+       (supports_default(var('Person'), var('A')),
+        supports_default(var('Person'), var('B')),
+        contrary(var('A'), var('B')))).
+clause(8,
+       defaultSupports(var('Person'), var('Conclusion')),
+       supports_default(var('Person'), var('Conclusion'))).
+clause(9,
+       conflict(var('Person'), conflict(var('A'), var('B'))),
+       conflicted(var('Person'), var('A'), var('B'))).
+clause(10,
+       status(var('Person'), conflicted_default_case),
+       conflicted(var('Person'), anonymous(1), anonymous(2))).
 
-conflict(nixon, conflict(pacifist, hawk)).
-why(
-  conflict(nixon, conflict(pacifist, hawk)),
-  step(
-    conflict(nixon, conflict(pacifist, hawk)),
-    rule("nixon-diamond.pl", clause(9)),
-    ['Person' = nixon, 'A' = pacifist, 'B' = hawk],
-    [
-      step(
-        conflicted(nixon, pacifist, hawk),
-        rule("nixon-diamond.pl", clause(7)),
-        ['Person' = nixon, 'A' = pacifist, 'B' = hawk],
-        [
-          step(
-            supports_default(nixon, pacifist),
-            rule("nixon-diamond.pl", clause(3)),
-            ['Person' = nixon],
-            [
-              step(kind(nixon, quaker), fact("nixon-diamond.pl", clause(1)), [], [])
-            ]
-          ),
-          step(
-            supports_default(nixon, hawk),
-            rule("nixon-diamond.pl", clause(4)),
-            ['Person' = nixon],
-            [
-              step(kind(nixon, republican), fact("nixon-diamond.pl", clause(2)), [], [])
-            ]
-          ),
-          step(contrary(pacifist, hawk), fact("nixon-diamond.pl", clause(5)), [], [])
-        ]
-      )
-    ]
-  )
-).
-
-conflict(nixon, conflict(hawk, pacifist)).
-why(
-  conflict(nixon, conflict(hawk, pacifist)),
-  step(
-    conflict(nixon, conflict(hawk, pacifist)),
-    rule("nixon-diamond.pl", clause(9)),
-    ['Person' = nixon, 'A' = hawk, 'B' = pacifist],
-    [
-      step(
-        conflicted(nixon, hawk, pacifist),
-        rule("nixon-diamond.pl", clause(7)),
-        ['Person' = nixon, 'A' = hawk, 'B' = pacifist],
-        [
-          step(
-            supports_default(nixon, hawk),
-            rule("nixon-diamond.pl", clause(4)),
-            ['Person' = nixon],
-            [
-              step(kind(nixon, republican), fact("nixon-diamond.pl", clause(2)), [], [])
-            ]
-          ),
-          step(
-            supports_default(nixon, pacifist),
-            rule("nixon-diamond.pl", clause(3)),
-            ['Person' = nixon],
-            [
-              step(kind(nixon, quaker), fact("nixon-diamond.pl", clause(1)), [], [])
-            ]
-          ),
-          step(contrary(hawk, pacifist), fact("nixon-diamond.pl", clause(6)), [], [])
-        ]
-      )
-    ]
-  )
-).
-
-status(nixon, conflicted_default_case).
-why(
-  status(nixon, conflicted_default_case),
-  step(
-    status(nixon, conflicted_default_case),
-    rule("nixon-diamond.pl", clause(10)),
-    ['Person' = nixon, '_a' = pacifist, '_b' = hawk],
-    [
-      step(
-        conflicted(nixon, pacifist, hawk),
-        rule("nixon-diamond.pl", clause(7)),
-        ['Person' = nixon, 'A' = pacifist, 'B' = hawk],
-        [
-          step(
-            supports_default(nixon, pacifist),
-            rule("nixon-diamond.pl", clause(3)),
-            ['Person' = nixon],
-            [
-              step(kind(nixon, quaker), fact("nixon-diamond.pl", clause(1)), [], [])
-            ]
-          ),
-          step(
-            supports_default(nixon, hawk),
-            rule("nixon-diamond.pl", clause(4)),
-            ['Person' = nixon],
-            [
-              step(kind(nixon, republican), fact("nixon-diamond.pl", clause(2)), [], [])
-            ]
-          ),
-          step(contrary(pacifist, hawk), fact("nixon-diamond.pl", clause(5)), [], [])
-        ]
-      )
-    ]
-  )
-).
-
+step(defaultSupports(nixon, pacifist),
+     rule(8),
+     ['Person' = nixon, 'Conclusion' = pacifist],
+     [supports_default(nixon, pacifist)]).
+step(supports_default(nixon, pacifist), rule(3), ['Person' = nixon], [kind(nixon, quaker)]).
+step(kind(nixon, quaker), fact(1), [], []).
+step(defaultSupports(nixon, hawk),
+     rule(8),
+     ['Person' = nixon, 'Conclusion' = hawk],
+     [supports_default(nixon, hawk)]).
+step(supports_default(nixon, hawk), rule(4), ['Person' = nixon], [kind(nixon, republican)]).
+step(kind(nixon, republican), fact(2), [], []).
+step(conflict(nixon, conflict(pacifist, hawk)),
+     rule(9),
+     ['Person' = nixon, 'A' = pacifist, 'B' = hawk],
+     [conflicted(nixon, pacifist, hawk)]).
+step(conflicted(nixon, pacifist, hawk),
+     rule(7),
+     ['Person' = nixon, 'A' = pacifist, 'B' = hawk],
+     [supports_default(nixon, pacifist),
+      supports_default(nixon, hawk),
+      contrary(pacifist, hawk)]).
+step(contrary(pacifist, hawk), fact(5), [], []).
+step(conflict(nixon, conflict(hawk, pacifist)),
+     rule(9),
+     ['Person' = nixon, 'A' = hawk, 'B' = pacifist],
+     [conflicted(nixon, hawk, pacifist)]).
+step(conflicted(nixon, hawk, pacifist),
+     rule(7),
+     ['Person' = nixon, 'A' = hawk, 'B' = pacifist],
+     [supports_default(nixon, hawk),
+      supports_default(nixon, pacifist),
+      contrary(hawk, pacifist)]).
+step(contrary(hawk, pacifist), fact(6), [], []).
+step(status(nixon, conflicted_default_case),
+     rule(10),
+     ['Person' = nixon],
+     [conflicted(nixon, pacifist, hawk)]).

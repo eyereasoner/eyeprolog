@@ -207,16 +207,17 @@ export async function main(argv) {
   }
 
   if (options.verifyProof != null) {
-    const explanation = await loadExplanation();
+    const { checkProofDocument, verdict } = await import('./check-proof.js');
     const proofText = await fs.readFile(options.verifyProof, 'utf8');
-    const certificates = explanation.proofCertificatesFromText(proofText, program);
-    if (certificates.length === 0) throw new Error(`no why/2 proof certificate found in ${options.verifyProof}`);
-    const registry = options.isoStrict ? engine.getStrictIsoRegistry() : engine.getEyePrologRegistry();
-    for (let i = 0; i < certificates.length; i++) {
-      const checked = explanation.verifyProof(program, certificates[i], { registry });
-      if (!checked.ok) throw new Error(`proof certificate ${i + 1} failed verification: ${checked.error}`);
+    const report = checkProofDocument(program, proofText);
+    if (report.steps === 0) throw new Error(`no step/4 proof step found in ${options.verifyProof}`);
+    if (!report.valid) {
+      for (const failure of report.failures.slice(0, 5)) {
+        process.stderr.write(`  [${failure.condition}] ${failure.conclusion} -- ${failure.detail}\n`);
+      }
+      throw new Error(`${options.verifyProof} is not a valid proof for this program: ${report.failures.length} failure(s)`);
     }
-    process.stdout.write(`verified ${certificates.length} proof certificate${certificates.length === 1 ? '' : 's'}.\n`);
+    process.stdout.write(`${verdict(report)}.\n`);
     return;
   }
 
@@ -237,7 +238,7 @@ export async function main(argv) {
 
 async function loadEngine() {
   if (engineModule == null) {
-    const [term, parser, program, solver, iso, library, write, quads, execute, cleanup] = await Promise.all([
+    const [term, parser, program, solver, iso, library, write, quads, execute, resultFormat, cleanup] = await Promise.all([
       import('./term.js'),
       import('./parser.js'),
       import('./program.js'),
@@ -247,12 +248,13 @@ async function loadEngine() {
       import('./write.js'),
       import('./quads.js'),
       import('./execute.js'),
+      import('./result-format.js'),
       import('./cleanup.js'),
     ]);
     // CLI loading is an entry-point layer above solver.js and the standard
     // registry, so lifecycle installation stays acyclic.
     cleanup.installCleanupLifecycle(solver.Solver);
-    engineModule = { ...term, ...parser, ...program, ...solver, ...iso, ...library, ...write, ...quads, ...execute };
+    engineModule = { ...term, ...parser, ...program, ...solver, ...iso, ...library, ...write, ...quads, ...execute, ...resultFormat };
   }
   return engineModule;
 }
@@ -295,24 +297,22 @@ async function runDefault(engine, program, options) {
   });
   program = solver.program;
   const goals = engine.normalizeGoals(options.goals, solver);
-  const explanation = options.proof ? await loadExplanation() : null;
   try {
-    const { haltCode } = engine.executeGoals(program, solver, goals, {
-      onAnswer: (line, resolved) => {
-        if (!options.quiet) process.stdout.write(line);
-        if (options.proof) writeExplanation(explanation, program, resolved, registry, options);
-      },
-    });
+    const { haltCode, queries } = engine.executeGoals(program, solver, goals);
+    // A result document states how many answers each query had, so it is
+    // written once the run is over rather than streamed answer by answer.
+    if (!options.quiet) {
+      process.stdout.write(engine.resultDocument(program, queries, {
+        proof: options.proof,
+        registry,
+        proofDetail: options?.proofDetail ?? 'abstract',
+        explain: options.proof ? await loadExplanation() : null,
+      }));
+    }
     if (haltCode != null) process.exitCode = haltCode;
   } finally {
     if (options.stats) printStats(solver.stats);
   }
-}
-
-function writeExplanation(explanation, program, resolved, registry, options = {}) {
-  const proof = explanation.whyProof(program, resolved, { registry, proofDetail: options?.proofDetail ?? 'abstract' });
-  process.stdout.write(proof.text);
-  if (!proof.ok) process.stdout.write(explanation.whyNoProof(resolved));
 }
 
 async function usage(stream) {
@@ -333,7 +333,7 @@ Options:
   -h, --help            Show this help text and exit.
   -p, --proof           Enable proof explanations.
   --proof-detail mode   Use abstract or expanded proof detail (implies --proof).
-  --verify-proof file   Verify why/2 proof certificates against the input program.
+  --verify-proof file   Check a saved proof document against the input program.
   -q, --quads           Run embedded quad tests and fail if any do not hold.
                         Note: -q is quads, not quiet; --quiet has no short form.
   --quiet               Suppress answer terms while preserving Prolog output.

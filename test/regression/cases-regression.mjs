@@ -4,11 +4,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import * as publicApi from '../../src/index.js';
-import { BuiltinRegistry, Env, Program, Solver, atom, compactVariableList, compound, copyResolved, createDefaultRegistry, eyePrologAmbiguousLibraryAutoload, eyePrologLibraryAutoload, eyePrologLibraryAutoloadModules, getEyePrologRegistry, getStrictIsoRegistry, listFromItems, numberTerm, numberTextFromDouble, parseProgramText, run as runEyeProlog, standardLibrarySources, termToString, unify, variable } from '../../src/index.js';
+import { BuiltinRegistry, Env, Program, Solver, atom, compactVariableList, compound, copyResolved, createDefaultRegistry, eyePrologAmbiguousLibraryAutoload, eyePrologLibraryAutoload, eyePrologLibraryAutoloadModules, getEyePrologRegistry, getStrictIsoRegistry, listFromItems, numberTerm, numberTextFromDouble, parseProgramText, run as runEyePrologProgram, standardLibrarySources, termToString, unify, variable } from '../../src/index.js';
 import { ISO_OPERATOR_DEFINITIONS, parseGoalText, parseNumberTokenText, tryParseClausesFastInto } from '../../src/parser.js';
 import { defaultsToStdin } from '../../src/cli.js';
 import { formatTermForWrite } from '../../src/write.js';
 import { assertEqual, assertIncludes, assertNotIncludes } from '../test-style.mjs';
+import { answerFacts } from '../test-support.mjs';
+
+// These assertions are about what a goal answers, not about how a result
+// document is laid out, so they read a run's answers back as bare facts.
+function runEyeProlog(source, options = {}) {
+  const result = runEyePrologProgram(source, options);
+  if (options.proof) return result;
+  return { ...result, stdout: answerFacts(result.stdout) };
+}
 import {
   DCG_HANDOFF_TEST_TIMEOUT_MS,
   bin,
@@ -158,7 +167,7 @@ export function regressionCases() {
         const script = `
           import {run} from './src/index.js';
           const result=run('answer(ok) :- length(P,8192),append(P,[1],L1),append(P,[2],L2),compare(R,L1,L2),compare_si(S,L1,L2),R==(<),S==(<).', {goals:['answer(X)']});
-          if (!result.stdout.includes('answer(ok)')) throw new Error(result.stdout+'\\n'+result.stderr);
+          if (!result.stdout.includes("'X' = ok")) throw new Error(result.stdout+'\\n'+result.stderr);
           console.log('ok');
         `;
         const result = spawnSync(process.execPath, ['--max-old-space-size=128', '--stack-size=256', '--input-type=module', '--eval', script], {
@@ -810,19 +819,17 @@ probe :- empty_assoc(A), copy_term_nat(A, _), bb_b_put(current, ok), bb_get(curr
       run: () => runWhy({
         program: 'type(socrates, man).\ntype(X, mortal) :- type(X, man).\n',
         goalText: 'type(socrates, mortal)',
-        expected: `type(socrates, mortal).
-why(
-  type(socrates, mortal),
-  step(
-    type(socrates, mortal),
-    rule("__FILE__", clause(2)),
-    ['X' = socrates],
-    [
-      step(type(socrates, man), fact("__FILE__", clause(1)), [], [])
-    ]
-  )
-).
+        expected: `% Prolog result format 4
+query(1, type(socrates, mortal), []).
+result(1, complete, 1).
+answer(1, []).
+why(1, [], [type(socrates, mortal)]).
 
+clause(1, type(socrates, man), true).
+clause(2, type(var('X'), mortal), type(var('X'), man)).
+
+step(type(socrates, mortal), rule(2), ['X' = socrates], [type(socrates, man)]).
+step(type(socrates, man), fact(1), [], []).
 `,
       }),
     },
@@ -831,19 +838,16 @@ why(
       run: () => runWhy({
         program: 'p(X) :- between(536, 536, X).\n',
         goalText: 'p(536)',
-        expected: `p(536).
-why(
-  p(536),
-  step(
-    p(536),
-    rule("__FILE__", clause(1)),
-    ['X' = 536],
-    [
-      step(between(536, 536, 536), library(between, 3), [], [])
-    ]
-  )
-).
+        expected: `% Prolog result format 4
+query(1, p(536), []).
+result(1, complete, 1).
+answer(1, []).
+why(1, [], [p(536)]).
 
+clause(1, p(var('X')), between(536, 536, var('X'))).
+
+step(p(536), rule(1), ['X' = 536], [between(536, 536, 536)]).
+step(between(536, 536, 536), builtin, [], []).
 `,
       }),
     },
@@ -852,19 +856,16 @@ why(
       run: () => runWhy({
         program: 'p(X) :- member(X, [a]).\n',
         goalText: 'p(a)',
-        expected: `p(a).
-why(
-  p(a),
-  step(
-    p(a),
-    rule("__FILE__", clause(1)),
-    ['X' = a],
-    [
-      step(member(a, "a"), library(member, 2), [], [])
-    ]
-  )
-).
+        expected: `% Prolog result format 4
+query(1, p(a), []).
+result(1, complete, 1).
+answer(1, []).
+why(1, [], [p(a)]).
 
+clause(1, p(var('X')), member(var('X'), "a")).
+
+step(p(a), rule(1), ['X' = a], [member(a, "a")]).
+step(member(a, "a"), builtin, [], []).
 `,
       }),
     },
@@ -875,9 +876,9 @@ why(
           program: 'p(ok) :- q(X), r(X).\nq(a).\nq(b).\nr(b).\n',
           goalText: 'p(ok)',
         });
-        assertIncludes(result.stdout, 'step(q(b), fact("', 'stdout');
-        assertIncludes(result.stdout, 'step(r(b), fact("', 'stdout');
-        assertNotIncludes(result.stdout, 'no_proof', 'stdout');
+        assertIncludes(result.stdout, 'step(q(b), fact(3), [], []).', 'stdout');
+        assertIncludes(result.stdout, 'step(r(b), fact(4), [], []).', 'stdout');
+        assertNotIncludes(result.stdout, 'unproven', 'stdout');
       },
     },
     {
@@ -887,9 +888,11 @@ why(
           program: 'p(ok) :- q(1), q(1).\nq(0).\nq(1) :- q(0).\n',
           goalText: 'p(ok)',
         });
-        assertIncludes(result.stdout, '    p(ok),\n    rule("', 'stdout');
-        assertIncludes(result.stdout, '        q(1),\n        rule("', 'stdout');
-        assertNotIncludes(result.stdout, 'no_proof', 'stdout');
+        // `q(1)` is used twice and explained once: a flat proof records one
+        // step per conclusion, however many derivations reach it.
+        assertIncludes(result.stdout, 'step(p(ok), rule(1), [], [q(1), q(1)]).', 'stdout');
+        assertIncludes(result.stdout, 'step(q(1), rule(3), [], [q(0)]).', 'stdout');
+        assertNotIncludes(result.stdout, 'unproven', 'stdout');
       },
     },
     {
@@ -3229,8 +3232,9 @@ c4 ?- call((!;1)).
             goal: ${JSON.stringify('length(_,E), E>12, N is 2^E, \\+ \\+ (length(L,N), time(phrase(a,L)))')},
             solutionLimit: 1,
           });
-          if (!result.stdout.startsWith('% Time elapsed ') || !result.stdout.endsWith('s\\n')) {
-            throw new Error('unexpected time/1 output: ' + JSON.stringify(result.stdout));
+          const written = result.stdout.slice(0, result.stdout.indexOf('% Prolog result format 4'));
+          if (!written.startsWith('% Time elapsed ') || !written.endsWith('s\\n')) {
+            throw new Error('unexpected time/1 output: ' + JSON.stringify(written));
           }
           process.stdout.write('ok');
         `;
@@ -4282,7 +4286,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       run: () => {
         const result = runCli(['--proof', '-'], { input: '%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
         assertEqual(result.status, 0, 'exit status');
-        assertIncludes(result.stdout, 'q(a, b).\nwhy(', 'stdout');
+        assertIncludes(result.stdout, "why(1, ['X' = a, 'Y' = b], [q(a, b)]).", 'stdout');
         assertEqual(result.stderr, '', 'stderr');
       },
     },
@@ -4291,7 +4295,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       run: () => {
         const result = runCli(['-p', '-'], { input: '%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
         assertEqual(result.status, 0, 'exit status');
-        assertIncludes(result.stdout, 'q(a, b).\nwhy(', 'stdout');
+        assertIncludes(result.stdout, "why(1, ['X' = a, 'Y' = b], [q(a, b)]).", 'stdout');
         assertEqual(result.stderr, '', 'stderr');
       },
     },
@@ -4302,12 +4306,16 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         const input = '%% goal: q(a)\n:- use_module(library(lists)).\nq(X) :- member(X, [a,b]).\n';
         const result = runCli(['--proof-detail', 'expanded', '-'], { input });
         assertEqual(result.status, 0, 'exit status');
-        assertIncludes(result.stdout, 'fact("src/lib/lists.pl"', 'expanded library source');
+        // Expanded detail explains *through* a library predicate rather than
+        // stopping at it. A library's own clauses are not the program's, so
+        // they carry no citation a reader could follow; the steps are
+        // recorded the way any built-in is.
+        assertIncludes(result.stdout, 'step(member(a, "ab"), builtin,', 'expanded library step');
         assertNotIncludes(result.stdout, 'library(member, 2)', 'abstract library boundary');
       },
     },
     {
-      name: '--verify-proof accepts saved why/2 proof output and rejects tampering',
+      name: '--verify-proof re-performs a saved proof and rejects tampering',
       run: () => {
         const programFile = path.join(temp.dir, `proof-program-${++temp.counter}.pl`);
         const proofFile = path.join(temp.dir, `proof-certificate-${++temp.counter}.pl`);
@@ -4317,15 +4325,15 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         fs.writeFileSync(proofFile, generated.stdout);
         const verified = runCli(['--verify-proof', proofFile, programFile]);
         assertEqual(verified.status, 0, 'verification status');
-        assertEqual(verified.stdout, 'verified 1 proof certificate.\n', 'verification stdout');
+        assertEqual(verified.stdout, 'checked: 2 steps.\n', 'verification stdout');
         const strictVerified = runCli(['--iso-strict', '--verify-proof', proofFile, programFile]);
         assertEqual(strictVerified.status, 0, 'strict verification status');
-        assertEqual(strictVerified.stdout, 'verified 1 proof certificate.\n', 'strict verification stdout');
+        assertEqual(strictVerified.stdout, 'checked: 2 steps.\n', 'strict verification stdout');
         const tamperedFile = path.join(temp.dir, `proof-certificate-bad-${++temp.counter}.pl`);
         fs.writeFileSync(tamperedFile, generated.stdout.replace('step(p(a),', 'step(p(b),'));
         const rejected = runCli(['--verify-proof', tamperedFile, programFile]);
         assertEqual(rejected.status, 1, 'tampered verification status');
-        assertIncludes(rejected.stderr, 'proof certificate 1 failed verification', 'tampered verification stderr');
+        assertIncludes(rejected.stderr, 'is not a valid proof for this program', 'tampered verification stderr');
       },
     },
     {
@@ -4341,7 +4349,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         ].join('\n');
         const result = runCli(['-pw', '-'], { input });
         assertEqual(result.status, 0, 'exit status');
-        assertIncludes(result.stdout, 'answer(ok).\nwhy(', 'stdout');
+        assertIncludes(result.stdout, 'why(1, [], [answer(ok)]).', 'stdout');
         assertIncludes(result.stderr, 'eyeprolog warning: unstratified negation\n', 'stderr');
       },
     },
@@ -5059,7 +5067,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
           input: ':- use_module(library(clpz)).\nanswer(Domain) :- X in 2..4 \\/ 7, fd_dom(X, Domain).\n',
         });
         assertEqual(result.status, 0, 'operator answer status');
-        assertEqual(result.stdout, 'answer(2..4 \\/ 7).\n', 'operator answer stdout');
+        assertIncludes(result.stdout, "answer(1, ['Domain' = 2..4 \\/ 7]).", 'operator answer stdout');
         assertEqual(result.stderr, '', 'operator answer stderr');
       },
     },
@@ -5668,7 +5676,9 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
           '',
         ].join('\n');
         assertEqual(run(source, { goal: 'read_univ(T)' }).stdout, 'read_univ(foo =.. [bar]).\n', 'univ term');
-        assertEqual(run(source, { goal: 'read_custom(T)' }).stdout, 'read_custom(alice likes bob).\n', 'custom operator term');
+        // `likes` is declared by `op/3` while the program runs, so the
+        // answer is read here as the document writes it.
+        assertIncludes(run(source, { goal: 'read_custom(T)' }).stdout, "answer(1, ['T' = alice likes bob]).", 'custom operator term');
         assertEqual(run(source, { goal: 'read_invalid(ok)' }).stdout, 'read_invalid(ok).\n', 'invalid dotted term');
         assertEqual(run(source, { goal: 'read_codes(ok)' }).stdout, 'read_codes(ok).\n', 'double_quotes read flag');
       },
@@ -5733,9 +5743,11 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
           "emit :- write_term(pair(A,B), []), write(' / '), write_term(user_output,B,[]), write(' / '), writeq(A), write(' / '), write_canonical(B), nl.",
           "again :- write_canonical(B+B), nl.",
         ].join('\n'), { goals: ['emit', 'again'] });
+        // A result document is written once the run is over, so everything
+        // the program itself wrote comes first.
         assertEqual(
           result.stdout,
-          'pair(_A,_B) / _B / _A / _B\nemit.\n+(_A,_A)\nagain.\n',
+          'pair(_A,_B) / _B / _A / _B\n+(_A,_A)\nemit.\nagain.\n',
           'stable names across calls and reset at the next top-level query',
         );
       },

@@ -203,20 +203,21 @@ make decisions, combine data from several sources, or need to be reviewed by
 someone who did not write them.
 
 Proofs make successful reasoning easier to inspect, test, teach, and discuss.
-EyeProlog also treats a successful `why/2` term as a portable proof certificate.
-A certificate can be saved, transmitted as ordinary Prolog data, and checked later
-against the program without repeating the search that found the answer. Source
-steps are checked against the named clauses and their substitutions. Built-ins
-and abstract library steps remain explicit trusted boundaries; expanded proof
-detail opens bundled Prolog-library clauses so that more of the derivation can
-be checked from source. The verification result enumerates the remaining trusted
-boundaries rather than folding them into an undifferentiated success result.
+A proof document is ordinary Prolog data: one `step/4` fact per justified
+conclusion, each naming the clause it used, the bindings that use made, and the
+conclusions it rested on. It can be saved, transmitted, and checked later
+against the program without repeating the search that found the answer.
+Checking re-performs each step against the clause it cites and resolves every
+use; built-ins, a completed `\+`, a completed `findall/3` and a clause
+asserted at run time are trusted rather than checked, because deciding them
+again would mean running the program. The result says how many steps rested on
+trust rather than folding them into an undifferentiated success.
 
 Verification and discovery therefore have different jobs: solving searches for
-a derivation, while certificate verification checks a supplied derivation. The
-certificate does not authenticate source data or replace application security.
-Embedders remain responsible for validating inputs and imposing suitable time,
-memory, depth, and solution limits.
+a derivation, while checking verifies a supplied one. A proof does not
+authenticate source data or replace application security. Embedders remain
+responsible for validating inputs and imposing suitable time, memory, depth,
+and solution limits.
 
 ## One engine across JavaScript environments
 

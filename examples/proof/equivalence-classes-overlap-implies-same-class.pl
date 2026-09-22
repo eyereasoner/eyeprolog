@@ -1,720 +1,197 @@
-sameClassBecauseOfSharedMember(a, b, a).
-why(
-  sameClassBecauseOfSharedMember(a, b, a),
-  step(
-    sameClassBecauseOfSharedMember(a, b, a),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = a, 'Y' = b, 'Z' = a],
-    [
-      step(
-        inClassOf(a, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(a, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        sameClass(a, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = a, 'Y' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(\=(a, b), builtin(\=, 2), [], [])
-    ]
-  )
-).
+% Prolog result format 4
+query(1, sameClassBecauseOfSharedMember(_0, _1, _2), ['X0' = _0, 'X1' = _1, 'X2' = _2]).
+result(1, complete, 18).
+answer(1, ['X0' = a, 'X1' = b, 'X2' = a]).
+why(1, ['X0' = a, 'X1' = b, 'X2' = a], [sameClassBecauseOfSharedMember(a, b, a)]).
+answer(1, ['X0' = a, 'X1' = c, 'X2' = a]).
+why(1, ['X0' = a, 'X1' = c, 'X2' = a], [sameClassBecauseOfSharedMember(a, c, a)]).
+answer(1, ['X0' = b, 'X1' = a, 'X2' = a]).
+why(1, ['X0' = b, 'X1' = a, 'X2' = a], [sameClassBecauseOfSharedMember(b, a, a)]).
+answer(1, ['X0' = b, 'X1' = c, 'X2' = a]).
+why(1, ['X0' = b, 'X1' = c, 'X2' = a], [sameClassBecauseOfSharedMember(b, c, a)]).
+answer(1, ['X0' = c, 'X1' = a, 'X2' = a]).
+why(1, ['X0' = c, 'X1' = a, 'X2' = a], [sameClassBecauseOfSharedMember(c, a, a)]).
+answer(1, ['X0' = c, 'X1' = b, 'X2' = a]).
+why(1, ['X0' = c, 'X1' = b, 'X2' = a], [sameClassBecauseOfSharedMember(c, b, a)]).
+answer(1, ['X0' = a, 'X1' = b, 'X2' = b]).
+why(1, ['X0' = a, 'X1' = b, 'X2' = b], [sameClassBecauseOfSharedMember(a, b, b)]).
+answer(1, ['X0' = a, 'X1' = c, 'X2' = b]).
+why(1, ['X0' = a, 'X1' = c, 'X2' = b], [sameClassBecauseOfSharedMember(a, c, b)]).
+answer(1, ['X0' = b, 'X1' = a, 'X2' = b]).
+why(1, ['X0' = b, 'X1' = a, 'X2' = b], [sameClassBecauseOfSharedMember(b, a, b)]).
+answer(1, ['X0' = b, 'X1' = c, 'X2' = b]).
+why(1, ['X0' = b, 'X1' = c, 'X2' = b], [sameClassBecauseOfSharedMember(b, c, b)]).
+answer(1, ['X0' = c, 'X1' = a, 'X2' = b]).
+why(1, ['X0' = c, 'X1' = a, 'X2' = b], [sameClassBecauseOfSharedMember(c, a, b)]).
+answer(1, ['X0' = c, 'X1' = b, 'X2' = b]).
+why(1, ['X0' = c, 'X1' = b, 'X2' = b], [sameClassBecauseOfSharedMember(c, b, b)]).
+answer(1, ['X0' = a, 'X1' = b, 'X2' = c]).
+why(1, ['X0' = a, 'X1' = b, 'X2' = c], [sameClassBecauseOfSharedMember(a, b, c)]).
+answer(1, ['X0' = a, 'X1' = c, 'X2' = c]).
+why(1, ['X0' = a, 'X1' = c, 'X2' = c], [sameClassBecauseOfSharedMember(a, c, c)]).
+answer(1, ['X0' = b, 'X1' = a, 'X2' = c]).
+why(1, ['X0' = b, 'X1' = a, 'X2' = c], [sameClassBecauseOfSharedMember(b, a, c)]).
+answer(1, ['X0' = b, 'X1' = c, 'X2' = c]).
+why(1, ['X0' = b, 'X1' = c, 'X2' = c], [sameClassBecauseOfSharedMember(b, c, c)]).
+answer(1, ['X0' = c, 'X1' = a, 'X2' = c]).
+why(1, ['X0' = c, 'X1' = a, 'X2' = c], [sameClassBecauseOfSharedMember(c, a, c)]).
+answer(1, ['X0' = c, 'X1' = b, 'X2' = c]).
+why(1, ['X0' = c, 'X1' = b, 'X2' = c], [sameClassBecauseOfSharedMember(c, b, c)]).
 
-sameClassBecauseOfSharedMember(a, c, a).
-why(
-  sameClassBecauseOfSharedMember(a, c, a),
-  step(
-    sameClassBecauseOfSharedMember(a, c, a),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = a, 'Y' = c, 'Z' = a],
-    [
-      step(
-        inClassOf(a, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(a, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        sameClass(a, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = a, 'Y' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(\=(a, c), builtin(\=, 2), [], [])
-    ]
-  )
-).
+clause(1, classMember(class_abc, a), true).
+clause(2, classMember(class_abc, b), true).
+clause(3, classMember(class_abc, c), true).
+clause(4,
+       inClassOf(var('U'), var('X')),
+       (classMember(var('Class'), var('U')), classMember(var('Class'), var('X')))).
+clause(5,
+       sameClass(var('X'), var('Y')),
+       (classMember(var('Class'), var('X')), classMember(var('Class'), var('Y')))).
+clause(6,
+       sameClassBecauseOfSharedMember(var('X'), var('Y'), var('Z')),
+       (inClassOf(var('Z'), var('X')),
+        inClassOf(var('Z'), var('Y')),
+        sameClass(var('X'), var('Y')),
+        var('X') \= var('Y'))).
 
-sameClassBecauseOfSharedMember(b, a, a).
-why(
-  sameClassBecauseOfSharedMember(b, a, a),
-  step(
-    sameClassBecauseOfSharedMember(b, a, a),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = b, 'Y' = a, 'Z' = a],
-    [
-      step(
-        inClassOf(a, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(a, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        sameClass(b, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = b, 'Y' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(\=(b, a), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(b, c, a).
-why(
-  sameClassBecauseOfSharedMember(b, c, a),
-  step(
-    sameClassBecauseOfSharedMember(b, c, a),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = b, 'Y' = c, 'Z' = a],
-    [
-      step(
-        inClassOf(a, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(a, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        sameClass(b, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = b, 'Y' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(\=(b, c), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(c, a, a).
-why(
-  sameClassBecauseOfSharedMember(c, a, a),
-  step(
-    sameClassBecauseOfSharedMember(c, a, a),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = c, 'Y' = a, 'Z' = a],
-    [
-      step(
-        inClassOf(a, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(a, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        sameClass(c, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = c, 'Y' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(\=(c, a), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(c, b, a).
-why(
-  sameClassBecauseOfSharedMember(c, b, a),
-  step(
-    sameClassBecauseOfSharedMember(c, b, a),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = c, 'Y' = b, 'Z' = a],
-    [
-      step(
-        inClassOf(a, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(a, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = a, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        sameClass(c, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = c, 'Y' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(\=(c, b), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(a, b, b).
-why(
-  sameClassBecauseOfSharedMember(a, b, b),
-  step(
-    sameClassBecauseOfSharedMember(a, b, b),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = a, 'Y' = b, 'Z' = b],
-    [
-      step(
-        inClassOf(b, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(b, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        sameClass(a, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = a, 'Y' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(\=(a, b), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(a, c, b).
-why(
-  sameClassBecauseOfSharedMember(a, c, b),
-  step(
-    sameClassBecauseOfSharedMember(a, c, b),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = a, 'Y' = c, 'Z' = b],
-    [
-      step(
-        inClassOf(b, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(b, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        sameClass(a, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = a, 'Y' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(\=(a, c), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(b, a, b).
-why(
-  sameClassBecauseOfSharedMember(b, a, b),
-  step(
-    sameClassBecauseOfSharedMember(b, a, b),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = b, 'Y' = a, 'Z' = b],
-    [
-      step(
-        inClassOf(b, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(b, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        sameClass(b, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = b, 'Y' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(\=(b, a), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(b, c, b).
-why(
-  sameClassBecauseOfSharedMember(b, c, b),
-  step(
-    sameClassBecauseOfSharedMember(b, c, b),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = b, 'Y' = c, 'Z' = b],
-    [
-      step(
-        inClassOf(b, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(b, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        sameClass(b, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = b, 'Y' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(\=(b, c), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(c, a, b).
-why(
-  sameClassBecauseOfSharedMember(c, a, b),
-  step(
-    sameClassBecauseOfSharedMember(c, a, b),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = c, 'Y' = a, 'Z' = b],
-    [
-      step(
-        inClassOf(b, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(b, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        sameClass(c, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = c, 'Y' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(\=(c, a), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(c, b, b).
-why(
-  sameClassBecauseOfSharedMember(c, b, b),
-  step(
-    sameClassBecauseOfSharedMember(c, b, b),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = c, 'Y' = b, 'Z' = b],
-    [
-      step(
-        inClassOf(b, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(b, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = b, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        sameClass(c, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = c, 'Y' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(\=(c, b), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(a, b, c).
-why(
-  sameClassBecauseOfSharedMember(a, b, c),
-  step(
-    sameClassBecauseOfSharedMember(a, b, c),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = a, 'Y' = b, 'Z' = c],
-    [
-      step(
-        inClassOf(c, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(c, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        sameClass(a, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = a, 'Y' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(\=(a, b), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(a, c, c).
-why(
-  sameClassBecauseOfSharedMember(a, c, c),
-  step(
-    sameClassBecauseOfSharedMember(a, c, c),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = a, 'Y' = c, 'Z' = c],
-    [
-      step(
-        inClassOf(c, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(c, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        sameClass(a, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = a, 'Y' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(\=(a, c), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(b, a, c).
-why(
-  sameClassBecauseOfSharedMember(b, a, c),
-  step(
-    sameClassBecauseOfSharedMember(b, a, c),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = b, 'Y' = a, 'Z' = c],
-    [
-      step(
-        inClassOf(c, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(c, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        sameClass(b, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = b, 'Y' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(\=(b, a), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(b, c, c).
-why(
-  sameClassBecauseOfSharedMember(b, c, c),
-  step(
-    sameClassBecauseOfSharedMember(b, c, c),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = b, 'Y' = c, 'Z' = c],
-    [
-      step(
-        inClassOf(c, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(c, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        sameClass(b, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = b, 'Y' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(\=(b, c), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(c, a, c).
-why(
-  sameClassBecauseOfSharedMember(c, a, c),
-  step(
-    sameClassBecauseOfSharedMember(c, a, c),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = c, 'Y' = a, 'Z' = c],
-    [
-      step(
-        inClassOf(c, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(c, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(
-        sameClass(c, a),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = c, 'Y' = a, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, a), fact("equivalence-classes-overlap-implies-same-class.pl", clause(1)), [], [])
-        ]
-      ),
-      step(\=(c, a), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
-sameClassBecauseOfSharedMember(c, b, c).
-why(
-  sameClassBecauseOfSharedMember(c, b, c),
-  step(
-    sameClassBecauseOfSharedMember(c, b, c),
-    rule("equivalence-classes-overlap-implies-same-class.pl", clause(6)),
-    ['X' = c, 'Y' = b, 'Z' = c],
-    [
-      step(
-        inClassOf(c, c),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = c, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], [])
-        ]
-      ),
-      step(
-        inClassOf(c, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(4)),
-        ['U' = c, 'X' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(
-        sameClass(c, b),
-        rule("equivalence-classes-overlap-implies-same-class.pl", clause(5)),
-        ['X' = c, 'Y' = b, 'Class' = class_abc],
-        [
-          step(classMember(class_abc, c), fact("equivalence-classes-overlap-implies-same-class.pl", clause(3)), [], []),
-          step(classMember(class_abc, b), fact("equivalence-classes-overlap-implies-same-class.pl", clause(2)), [], [])
-        ]
-      ),
-      step(\=(c, b), builtin(\=, 2), [], [])
-    ]
-  )
-).
-
+step(sameClassBecauseOfSharedMember(a, b, a),
+     rule(6),
+     ['X' = a, 'Y' = b, 'Z' = a],
+     [inClassOf(a, a), inClassOf(a, b), sameClass(a, b), a \= b]).
+step(inClassOf(a, a),
+     rule(4),
+     ['U' = a, 'X' = a, 'Class' = class_abc],
+     [classMember(class_abc, a), classMember(class_abc, a)]).
+step(classMember(class_abc, a), fact(1), [], []).
+step(inClassOf(a, b),
+     rule(4),
+     ['U' = a, 'X' = b, 'Class' = class_abc],
+     [classMember(class_abc, a), classMember(class_abc, b)]).
+step(classMember(class_abc, b), fact(2), [], []).
+step(sameClass(a, b),
+     rule(5),
+     ['X' = a, 'Y' = b, 'Class' = class_abc],
+     [classMember(class_abc, a), classMember(class_abc, b)]).
+step(a \= b, builtin, [], []).
+step(sameClassBecauseOfSharedMember(a, c, a),
+     rule(6),
+     ['X' = a, 'Y' = c, 'Z' = a],
+     [inClassOf(a, a), inClassOf(a, c), sameClass(a, c), a \= c]).
+step(inClassOf(a, c),
+     rule(4),
+     ['U' = a, 'X' = c, 'Class' = class_abc],
+     [classMember(class_abc, a), classMember(class_abc, c)]).
+step(classMember(class_abc, c), fact(3), [], []).
+step(sameClass(a, c),
+     rule(5),
+     ['X' = a, 'Y' = c, 'Class' = class_abc],
+     [classMember(class_abc, a), classMember(class_abc, c)]).
+step(a \= c, builtin, [], []).
+step(sameClassBecauseOfSharedMember(b, a, a),
+     rule(6),
+     ['X' = b, 'Y' = a, 'Z' = a],
+     [inClassOf(a, b), inClassOf(a, a), sameClass(b, a), b \= a]).
+step(sameClass(b, a),
+     rule(5),
+     ['X' = b, 'Y' = a, 'Class' = class_abc],
+     [classMember(class_abc, b), classMember(class_abc, a)]).
+step(b \= a, builtin, [], []).
+step(sameClassBecauseOfSharedMember(b, c, a),
+     rule(6),
+     ['X' = b, 'Y' = c, 'Z' = a],
+     [inClassOf(a, b), inClassOf(a, c), sameClass(b, c), b \= c]).
+step(sameClass(b, c),
+     rule(5),
+     ['X' = b, 'Y' = c, 'Class' = class_abc],
+     [classMember(class_abc, b), classMember(class_abc, c)]).
+step(b \= c, builtin, [], []).
+step(sameClassBecauseOfSharedMember(c, a, a),
+     rule(6),
+     ['X' = c, 'Y' = a, 'Z' = a],
+     [inClassOf(a, c), inClassOf(a, a), sameClass(c, a), c \= a]).
+step(sameClass(c, a),
+     rule(5),
+     ['X' = c, 'Y' = a, 'Class' = class_abc],
+     [classMember(class_abc, c), classMember(class_abc, a)]).
+step(c \= a, builtin, [], []).
+step(sameClassBecauseOfSharedMember(c, b, a),
+     rule(6),
+     ['X' = c, 'Y' = b, 'Z' = a],
+     [inClassOf(a, c), inClassOf(a, b), sameClass(c, b), c \= b]).
+step(sameClass(c, b),
+     rule(5),
+     ['X' = c, 'Y' = b, 'Class' = class_abc],
+     [classMember(class_abc, c), classMember(class_abc, b)]).
+step(c \= b, builtin, [], []).
+step(sameClassBecauseOfSharedMember(a, b, b),
+     rule(6),
+     ['X' = a, 'Y' = b, 'Z' = b],
+     [inClassOf(b, a), inClassOf(b, b), sameClass(a, b), a \= b]).
+step(inClassOf(b, a),
+     rule(4),
+     ['U' = b, 'X' = a, 'Class' = class_abc],
+     [classMember(class_abc, b), classMember(class_abc, a)]).
+step(inClassOf(b, b),
+     rule(4),
+     ['U' = b, 'X' = b, 'Class' = class_abc],
+     [classMember(class_abc, b), classMember(class_abc, b)]).
+step(sameClassBecauseOfSharedMember(a, c, b),
+     rule(6),
+     ['X' = a, 'Y' = c, 'Z' = b],
+     [inClassOf(b, a), inClassOf(b, c), sameClass(a, c), a \= c]).
+step(inClassOf(b, c),
+     rule(4),
+     ['U' = b, 'X' = c, 'Class' = class_abc],
+     [classMember(class_abc, b), classMember(class_abc, c)]).
+step(sameClassBecauseOfSharedMember(b, a, b),
+     rule(6),
+     ['X' = b, 'Y' = a, 'Z' = b],
+     [inClassOf(b, b), inClassOf(b, a), sameClass(b, a), b \= a]).
+step(sameClassBecauseOfSharedMember(b, c, b),
+     rule(6),
+     ['X' = b, 'Y' = c, 'Z' = b],
+     [inClassOf(b, b), inClassOf(b, c), sameClass(b, c), b \= c]).
+step(sameClassBecauseOfSharedMember(c, a, b),
+     rule(6),
+     ['X' = c, 'Y' = a, 'Z' = b],
+     [inClassOf(b, c), inClassOf(b, a), sameClass(c, a), c \= a]).
+step(sameClassBecauseOfSharedMember(c, b, b),
+     rule(6),
+     ['X' = c, 'Y' = b, 'Z' = b],
+     [inClassOf(b, c), inClassOf(b, b), sameClass(c, b), c \= b]).
+step(sameClassBecauseOfSharedMember(a, b, c),
+     rule(6),
+     ['X' = a, 'Y' = b, 'Z' = c],
+     [inClassOf(c, a), inClassOf(c, b), sameClass(a, b), a \= b]).
+step(inClassOf(c, a),
+     rule(4),
+     ['U' = c, 'X' = a, 'Class' = class_abc],
+     [classMember(class_abc, c), classMember(class_abc, a)]).
+step(inClassOf(c, b),
+     rule(4),
+     ['U' = c, 'X' = b, 'Class' = class_abc],
+     [classMember(class_abc, c), classMember(class_abc, b)]).
+step(sameClassBecauseOfSharedMember(a, c, c),
+     rule(6),
+     ['X' = a, 'Y' = c, 'Z' = c],
+     [inClassOf(c, a), inClassOf(c, c), sameClass(a, c), a \= c]).
+step(inClassOf(c, c),
+     rule(4),
+     ['U' = c, 'X' = c, 'Class' = class_abc],
+     [classMember(class_abc, c), classMember(class_abc, c)]).
+step(sameClassBecauseOfSharedMember(b, a, c),
+     rule(6),
+     ['X' = b, 'Y' = a, 'Z' = c],
+     [inClassOf(c, b), inClassOf(c, a), sameClass(b, a), b \= a]).
+step(sameClassBecauseOfSharedMember(b, c, c),
+     rule(6),
+     ['X' = b, 'Y' = c, 'Z' = c],
+     [inClassOf(c, b), inClassOf(c, c), sameClass(b, c), b \= c]).
+step(sameClassBecauseOfSharedMember(c, a, c),
+     rule(6),
+     ['X' = c, 'Y' = a, 'Z' = c],
+     [inClassOf(c, c), inClassOf(c, a), sameClass(c, a), c \= a]).
+step(sameClassBecauseOfSharedMember(c, b, c),
+     rule(6),
+     ['X' = c, 'Y' = b, 'Z' = c],
+     [inClassOf(c, c), inClassOf(c, b), sameClass(c, b), c \= b]).

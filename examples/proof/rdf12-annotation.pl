@@ -1,92 +1,132 @@
-result_rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph).
-why(
-  result_rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph),
-  step(
-    result_rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph),
-    rule("rdf12-annotation.pl", clause(6)),
-    ['S' = iri('https://example.org/alice'), 'P' = iri('https://example.org/name'), 'O' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), '_Reifier' = iri('https://example.org/claim1'), '_Source' = iri('https://example.org/carol'), '_Date' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))],
-    [
-      step(
-        annotated_claim(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), iri('https://example.org/claim1'), iri('https://example.org/carol'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))),
-        rule("rdf12-annotation.pl", clause(5)),
-        ['S' = iri('https://example.org/alice'), 'P' = iri('https://example.org/name'), 'O' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), 'Reifier' = iri('https://example.org/claim1'), 'Source' = iri('https://example.org/carol'), 'Date' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))],
-        [
-          step(rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph), fact("rdf12-annotation.pl", clause(1)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph), fact("rdf12-annotation.pl", clause(2)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph), fact("rdf12-annotation.pl", clause(3)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph), fact("rdf12-annotation.pl", clause(4)), [], [])
-        ]
-      )
-    ]
-  )
-).
+% Prolog result format 4
+query(1,
+      result_rdf(_0, _1, _2, _3),
+      ['__anon0' = _0, '__anon1' = _1, '__anon2' = _2, '__anon3' = _3]).
+result(1, complete, 4).
+answer(1,
+       ['__anon0' = iri('https://example.org/alice'),
+        '__anon1' = iri('https://example.org/name'),
+        '__anon2' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')),
+        '__anon3' = default_graph]).
+why(1,
+    ['__anon0' = iri('https://example.org/alice'),
+     '__anon1' = iri('https://example.org/name'),
+     '__anon2' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')),
+     '__anon3' = default_graph],
+    [result_rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph)]).
+answer(1,
+       ['__anon0' = iri('https://example.org/claim1'),
+        '__anon1' = iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'),
+        '__anon2' = triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))),
+        '__anon3' = default_graph]).
+why(1,
+    ['__anon0' = iri('https://example.org/claim1'),
+     '__anon1' = iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'),
+     '__anon2' = triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))),
+     '__anon3' = default_graph],
+    [result_rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph)]).
+answer(1,
+       ['__anon0' = iri('https://example.org/claim1'),
+        '__anon1' = iri('https://example.org/statedBy'),
+        '__anon2' = iri('https://example.org/carol'),
+        '__anon3' = default_graph]).
+why(1,
+    ['__anon0' = iri('https://example.org/claim1'),
+     '__anon1' = iri('https://example.org/statedBy'),
+     '__anon2' = iri('https://example.org/carol'),
+     '__anon3' = default_graph],
+    [result_rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph)]).
+answer(1,
+       ['__anon0' = iri('https://example.org/claim1'),
+        '__anon1' = iri('https://example.org/recorded'),
+        '__anon2' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')),
+        '__anon3' = default_graph]).
+why(1,
+    ['__anon0' = iri('https://example.org/claim1'),
+     '__anon1' = iri('https://example.org/recorded'),
+     '__anon2' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')),
+     '__anon3' = default_graph],
+    [result_rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph)]).
 
-result_rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph).
-why(
-  result_rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph),
-  step(
-    result_rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph),
-    rule("rdf12-annotation.pl", clause(7)),
-    ['Reifier' = iri('https://example.org/claim1'), 'S' = iri('https://example.org/alice'), 'P' = iri('https://example.org/name'), 'O' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), '_Source' = iri('https://example.org/carol'), '_Date' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))],
-    [
-      step(
-        annotated_claim(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), iri('https://example.org/claim1'), iri('https://example.org/carol'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))),
-        rule("rdf12-annotation.pl", clause(5)),
-        ['S' = iri('https://example.org/alice'), 'P' = iri('https://example.org/name'), 'O' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), 'Reifier' = iri('https://example.org/claim1'), 'Source' = iri('https://example.org/carol'), 'Date' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))],
-        [
-          step(rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph), fact("rdf12-annotation.pl", clause(1)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph), fact("rdf12-annotation.pl", clause(2)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph), fact("rdf12-annotation.pl", clause(3)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph), fact("rdf12-annotation.pl", clause(4)), [], [])
-        ]
-      )
-    ]
-  )
-).
+clause(1,
+       rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph),
+       true).
+clause(2,
+       rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph),
+       true).
+clause(3,
+       rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph),
+       true).
+clause(4,
+       rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph),
+       true).
+clause(5,
+       annotated_claim(var('S'), var('P'), var('O'), var('Reifier'), var('Source'), var('Date')),
+       (rdf(var('S'), var('P'), var('O'), default_graph),
+        rdf(var('Reifier'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(var('S'), var('P'), var('O')), default_graph),
+        rdf(var('Reifier'), iri('https://example.org/statedBy'), var('Source'), default_graph),
+        rdf(var('Reifier'), iri('https://example.org/recorded'), var('Date'), default_graph))).
+clause(6,
+       result_rdf(var('S'), var('P'), var('O'), default_graph),
+       annotated_claim(var('S'), var('P'), var('O'), anonymous(1), anonymous(2), anonymous(3))).
+clause(7,
+       result_rdf(var('Reifier'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(var('S'), var('P'), var('O')), default_graph),
+       annotated_claim(var('S'), var('P'), var('O'), var('Reifier'), anonymous(1), anonymous(2))).
+clause(8,
+       result_rdf(var('Reifier'), iri('https://example.org/statedBy'), var('Source'), default_graph),
+       annotated_claim(anonymous(1), anonymous(2), anonymous(3), var('Reifier'), var('Source'), anonymous(4))).
+clause(9,
+       result_rdf(var('Reifier'), iri('https://example.org/recorded'), var('Date'), default_graph),
+       annotated_claim(anonymous(1), anonymous(2), anonymous(3), var('Reifier'), anonymous(4), var('Date'))).
 
-result_rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph).
-why(
-  result_rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph),
-  step(
-    result_rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph),
-    rule("rdf12-annotation.pl", clause(8)),
-    ['Reifier' = iri('https://example.org/claim1'), 'Source' = iri('https://example.org/carol'), '_S' = iri('https://example.org/alice'), '_P' = iri('https://example.org/name'), '_O' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), '_Date' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))],
-    [
-      step(
-        annotated_claim(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), iri('https://example.org/claim1'), iri('https://example.org/carol'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))),
-        rule("rdf12-annotation.pl", clause(5)),
-        ['S' = iri('https://example.org/alice'), 'P' = iri('https://example.org/name'), 'O' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), 'Reifier' = iri('https://example.org/claim1'), 'Source' = iri('https://example.org/carol'), 'Date' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))],
-        [
-          step(rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph), fact("rdf12-annotation.pl", clause(1)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph), fact("rdf12-annotation.pl", clause(2)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph), fact("rdf12-annotation.pl", clause(3)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph), fact("rdf12-annotation.pl", clause(4)), [], [])
-        ]
-      )
-    ]
-  )
-).
-
-result_rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph).
-why(
-  result_rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph),
-  step(
-    result_rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph),
-    rule("rdf12-annotation.pl", clause(9)),
-    ['Reifier' = iri('https://example.org/claim1'), 'Date' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), '_S' = iri('https://example.org/alice'), '_P' = iri('https://example.org/name'), '_O' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), '_Source' = iri('https://example.org/carol')],
-    [
-      step(
-        annotated_claim(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), iri('https://example.org/claim1'), iri('https://example.org/carol'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))),
-        rule("rdf12-annotation.pl", clause(5)),
-        ['S' = iri('https://example.org/alice'), 'P' = iri('https://example.org/name'), 'O' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), 'Reifier' = iri('https://example.org/claim1'), 'Source' = iri('https://example.org/carol'), 'Date' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))],
-        [
-          step(rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph), fact("rdf12-annotation.pl", clause(1)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph), fact("rdf12-annotation.pl", clause(2)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph), fact("rdf12-annotation.pl", clause(3)), [], []),
-          step(rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph), fact("rdf12-annotation.pl", clause(4)), [], [])
-        ]
-      )
-    ]
-  )
-).
-
+step(result_rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph),
+     rule(6),
+     ['S' = iri('https://example.org/alice'),
+      'P' = iri('https://example.org/name'),
+      'O' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))],
+     [annotated_claim(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), iri('https://example.org/claim1'), iri('https://example.org/carol'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')))]).
+step(annotated_claim(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), iri('https://example.org/claim1'), iri('https://example.org/carol'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))),
+     rule(5),
+     ['S' = iri('https://example.org/alice'),
+      'P' = iri('https://example.org/name'),
+      'O' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')),
+      'Reifier' = iri('https://example.org/claim1'),
+      'Source' = iri('https://example.org/carol'),
+      'Date' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))],
+     [rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph),
+      rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph),
+      rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph),
+      rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph)]).
+step(rdf(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), default_graph),
+     fact(1),
+     [],
+     []).
+step(rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph),
+     fact(2),
+     [],
+     []).
+step(rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph),
+     fact(3),
+     [],
+     []).
+step(rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph),
+     fact(4),
+     [],
+     []).
+step(result_rdf(iri('https://example.org/claim1'), iri('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'), triple(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))), default_graph),
+     rule(7),
+     ['Reifier' = iri('https://example.org/claim1'),
+      'S' = iri('https://example.org/alice'),
+      'P' = iri('https://example.org/name'),
+      'O' = literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string'))],
+     [annotated_claim(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), iri('https://example.org/claim1'), iri('https://example.org/carol'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')))]).
+step(result_rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri('https://example.org/carol'), default_graph),
+     rule(8),
+     ['Reifier' = iri('https://example.org/claim1'),
+      'Source' = iri('https://example.org/carol')],
+     [annotated_claim(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), iri('https://example.org/claim1'), iri('https://example.org/carol'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')))]).
+step(result_rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph),
+     rule(9),
+     ['Reifier' = iri('https://example.org/claim1'),
+      'Date' = literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date'))],
+     [annotated_claim(iri('https://example.org/alice'), iri('https://example.org/name'), literal('Alice', datatype('http://www.w3.org/2001/XMLSchema#string')), iri('https://example.org/claim1'), iri('https://example.org/carol'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')))]).

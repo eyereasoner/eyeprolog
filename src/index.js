@@ -30,14 +30,16 @@ export {
 export { StreamManager } from './io.js';
 export { formatQuadTerm, runQuads } from './quads.js';
 export { executeForwardRules, hasForwardRules } from './execute.js';
+export { RESULT_FORMAT_HEADER, formatFact, formatResultDocument, resultWriteOptions } from './result-format.js';
 
 import { installCleanupLifecycle } from './cleanup.js';
 import { Program, autoloadProgramGoals } from './program.js';
 import { Solver } from './solver.js';
-import { whyNoProof, whyProof } from './explain.js';
+import { flattenProof, proofNodeFor } from './explain.js';
 import { getStrictIsoRegistry } from './iso.js';
 import { getEyePrologRegistry } from './standard-library.js';
 import { executeForwardRules, executeGoals, hasForwardRules, normalizeGoals } from './execute.js';
+import { proofBlocks, resultDocument as formatResultDocumentForRun } from './result-format.js';
 
 // The public API is an entry point above the solver/registry layers, so it can
 // install pruning-aware iterator disposal without introducing an import cycle.
@@ -76,32 +78,46 @@ export function run(source, options = {}) {
   program = solver.program;
   let haltCode = null;
   if (requestedGoals.length === 0 && !strictIso && hasForwardRules(program)) {
+    // An Eyelet forward run asks no question: its `:+/2` rules derive facts
+    // until nothing new follows. There is no query for `query/3` to record
+    // and no answer for `result/3` to count, so the derived facts stand for
+    // themselves and `--proof` adds only the `clause/3` and `step/4` blocks
+    // that explain them.
+    const derived = [];
     ({ haltCode } = executeForwardRules(program, solver, {
       onAnswer: (line, resolved) => {
         output.push(line);
-        if (includeWhy) appendExplanation(output, program, resolved, runOptions.registry, options.proofDetail);
+        derived.push(resolved);
       },
       onFuse: (line) => output.push(line),
       onDiagnostic: (line) => {
         options.ioOptions?.errorWrite?.(line);
       },
     }));
+    if (includeWhy) output.push(forwardProofBlocks(program, derived, runOptions.registry, options.proofDetail));
   } else {
     const goals = normalizeGoals(requestedGoals, solver);
-    ({ haltCode } = executeGoals(program, solver, goals, {
-      onAnswer: (line, resolved) => {
-        output.push(line);
-        if (includeWhy) appendExplanation(output, program, resolved, runOptions.registry, options.proofDetail);
-      },
+    let queries;
+    ({ haltCode, queries } = executeGoals(program, solver, goals));
+    output.push(resultDocument(program, queries, {
+      proof: includeWhy,
+      registry: runOptions.registry,
+      proofDetail: options.proofDetail,
     }));
   }
   return { stdout: output.join(''), stats: solver.stats, haltCode };
 }
 
-function appendExplanation(output, program, resolved, registry, proofDetail = 'abstract') {
-  const proof = whyProof(program, resolved, { registry, proofDetail });
-  output.push(proof.text);
-  if (!proof.ok) output.push(whyNoProof(resolved));
+// The whole run, as a Prolog result document.
+export function resultDocument(program, queries, options = {}) {
+  return formatResultDocumentForRun(program, queries, { ...options, explain: { flattenProof, proofNodeFor } });
+}
+
+// The `clause/3` and `step/4` blocks alone, for a run with no query.
+function forwardProofBlocks(program, derived, registry, proofDetail = 'abstract') {
+  const roots = derived.map((fact) => proofNodeFor(program, fact, { registry, proofDetail })).filter(Boolean);
+  const { clauses, steps } = flattenProof(roots, program);
+  return proofBlocks(program, clauses, steps);
 }
 
 export * from './explain.js';

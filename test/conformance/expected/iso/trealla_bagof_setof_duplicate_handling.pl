@@ -1,1 +1,4 @@
-bagof_setof_duplicate_handling("cdaafeg", "acdefg").
+% Prolog result format 4
+query(1, bagof_setof_duplicate_handling(_0, _1), ['X0' = _0, 'X1' = _1]).
+result(1, complete, 1).
+answer(1, ['X0' = "cdaafeg", 'X1' = "acdefg"]).
