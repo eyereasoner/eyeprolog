@@ -1123,13 +1123,22 @@ class Parser {
       this.expectAndAdvance(TOK.DOT, '.');
     }
     if (answers.length === 0) {
-      // A bare `?- Goal.` with nothing indented under it is the ISO query
-      // form, not a quad missing its answers: the standard defines `?-` as a
-      // prefix operator, and this engine's quad syntax only adds an infix
-      // one on top. Reading it as a query is what lets a program written for
-      // another ISO processor -- eyeron writes its queries this way -- run
-      // here unchanged. A *labelled* quad with no answers stays an error,
-      // because a quad with nothing to check is not a quad.
+      // A bare `?- Goal.` with nothing indented under it is a goal to run,
+      // not a quad missing its answers.
+      //
+      // ISO Table 7 gives `?-` as a prefix operator (1200 fx) and no infix
+      // one, so the quad syntax is this engine's extension and the prefix
+      // form is the standard's. What the standard does *not* do is make
+      // `?- G.` in a Prolog text a query: 6.2.1 admits only directive-terms
+      // (principal functor `(:-)/1`, 3.58) and clause-terms, and its own
+      // "query" (3.143) is interactive top-level input, which it does not
+      // require a processor to have at all. Reading a `?-` term from a file
+      // as a goal is instead 7.7.3's implementation-defined "method by which
+      // a user delivers a goal" -- the notation nearly every Prolog uses for
+      // one, and the notation eyeron's documented subset defines, so a
+      // program written that way runs in both. `--iso-strict` does not
+      // accept it. A *labelled* quad with no answers stays an error, because
+      // a quad with nothing to check is not a quad.
       if (id == null) {
         accept({ kind: 'query', goal: query, source: { filename: this.filename, line } });
         return;

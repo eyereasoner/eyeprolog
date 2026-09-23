@@ -905,10 +905,10 @@ step(member(a, "a"), builtin, [], []).
     {
       name: 'a bare ?- is the ISO query form, a labelled one is still a quad',
       run: () => {
-        // `?-` is a prefix operator in the standard, and the quad syntax adds
-        // an infix one on top. A query written the ISO way -- which is how
-        // eyeron writes its own -- must run here rather than be read as a
-        // quad that forgot its answers.
+        // `?-` is a prefix operator in ISO Table 7 and the quad syntax adds
+        // an infix one on top, so a goal written the usual way -- which is
+        // how eyeron writes its own -- must run here rather than be read as
+        // a quad that forgot its answers.
         const source = `p(1).\n\nnamed ?- p(X).\n   X = 1.\n\n?- p(X).\n`;
         const program = Program.parseSources([{ text: source, filename: 'both-forms.pl' }]);
         assertEqual(program.quads.length, 1, 'quad count');

@@ -9568,12 +9568,20 @@ that same query in a comment:
 
 When no `-g` or `--goal` option is present, the CLI runs the queries it finds
 in the input sources, in source order; an explicit goal option overrides them.
-The two spellings differ only in who runs them. A `?-` query is what the
-standard defines and what a sibling engine such as eyeron writes, so a program
-written that way runs in both. A `%% ?-` comment is invisible to any other
-processor, which is what keeps a file portable to the external Prologs the
-conformance harness runs it through. External goals are still preferable when
-a script, shell history, or API call should make the observed question
+
+Both spellings are extensions, in the precise sense of 7.7.3: "the method by
+which a user delivers a goal to the Prolog processor shall be implementation
+defined". A Prolog text itself (6.2.1) holds only `:-` directive-terms and
+clause-terms, and the standard's own *query* (3.143) is interactive top-level
+input it does not require a processor to have. What the two spellings differ
+in is who else runs them. A `?-` term is the notation nearly every Prolog
+uses for a goal, and the one eyeron's documented subset defines, so a program
+written that way runs in both engines; `--iso-strict` does not accept it. A
+`%% ?-` comment is invisible to every other processor, which keeps a file
+portable to the external Prologs the conformance harness runs it through. The
+standard's own way to put a goal in a text is `:- initialization(Goal).`
+(7.4.2.6), which works here too. External goals remain preferable when a
+script, shell history, or API call should make the observed question
 explicit.
 
 | Option | Meaning |
