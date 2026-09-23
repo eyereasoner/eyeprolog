@@ -52,3 +52,4 @@ step(feature_constraints(1, 0, 1, 1),
      [sat((1 # 0) * (1 =< 1) * (0 =< 1))]).
 step(sat((1 # 0) * (1 =< 1) * (0 =< 1)), builtin, [], []).
 step(labeling([1, 0, 1, 1]), builtin, [], []).
+step(feature_plan_count(4), unproven, [], []).

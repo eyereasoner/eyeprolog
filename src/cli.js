@@ -317,10 +317,23 @@ async function runDefault(engine, program, options) {
     });
     if (options.proof && !options.quiet) {
       const explanation = await loadExplanation();
-      const roots = claimed
-        .map((fact) => explanation.proofNodeFor(program, fact, { registry, proofDetail: options?.proofDetail ?? 'abstract' }))
-        .filter(Boolean);
+      const detail = options?.proofDetail ?? 'abstract';
+      const roots = [];
+      const unexplained = [];
+      for (const fact of claimed) {
+        const node = explanation.proofNodeFor(program, fact, { registry, proofDetail: detail });
+        if (node) roots.push(node);
+        else unexplained.push(fact);
+      }
       const { clauses, steps } = explanation.flattenProof(roots, program);
+      // An answer the explanation replay cannot reproduce is recorded as
+      // `unproven` rather than left without a step: a document containing
+      // one is not a valid proof, and saying so is the point.
+      const concluded = new Set(steps.map((step) => engine.termToString(step.conclusion, new engine.Env(), true)));
+      for (const fact of unexplained) {
+        if (concluded.has(engine.termToString(fact, new engine.Env(), true))) continue;
+        steps.push({ conclusion: fact, by: engine.atom('unproven'), bindings: [], uses: [] });
+      }
       process.stdout.write(engine.proofBlocks(program, clauses, steps));
     }
     if (haltCode != null) process.exitCode = haltCode;

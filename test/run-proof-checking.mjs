@@ -29,12 +29,21 @@ const KNOWN_GAPS = new Map([
   ['clpb-feature-model.pl', 'a CLP(B) answer decided by propagation, not by resolution'],
 ]);
 
+const totals = { steps: 0, verified: 0, trusted: 0 };
+
 export function runProofChecking(reporter = new TestReporter()) {
   reporter.section('Proof checking');
+  totals.steps = 0;
+  totals.verified = 0;
+  totals.trusted = 0;
   for (const name of [...proofExamples].sort()) {
     reporter.test(name, () => checkPackagedProof(name));
   }
   reporter.sectionTotal('proof checking');
+  // What the corpus establishes, in the terms the specification uses: a
+  // verified step was re-performed, a trusted one was recorded because
+  // re-deciding it would mean running the program.
+  reporter.section(`${totals.steps} steps, ${totals.verified} verified, ${totals.trusted} trusted`);
 }
 
 function checkPackagedProof(name) {
@@ -42,6 +51,9 @@ function checkPackagedProof(name) {
   const proof = fs.readFileSync(path.join(examplesDir, 'proof', name), 'utf8');
   const program = Program.parseSources([{ text: source, filename: name }], { sourceMetadata: true });
   const report = checkProofDocument(program, proof);
+  totals.steps += report.steps;
+  totals.verified += report.verified;
+  totals.trusted += report.trusted.length;
   const gap = KNOWN_GAPS.get(name);
   if (gap) {
     assertEqual(report.valid, false, `${name} now checks; remove it from KNOWN_GAPS (${gap})`);

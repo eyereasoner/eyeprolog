@@ -39,3 +39,4 @@ step(xor_row(row(1, 0, 1)),
 step(xor_circuit(1, 0, 1), rule(1), ['X' = 1, 'Y' = 0, 'Z' = 1], [sat(1 =:= 1 * ~ 0 + ~ 1 * 0)]).
 step(sat(1 =:= 1 * ~ 0 + ~ 1 * 0), builtin, [], []).
 step(labeling([1, 0, 1]), builtin, [], []).
+step(xor_circuit_verified(1), unproven, [], []).

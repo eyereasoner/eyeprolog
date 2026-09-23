@@ -40,6 +40,7 @@ import { getStrictIsoRegistry } from './iso.js';
 import { getEyePrologRegistry } from './standard-library.js';
 import { executeForwardRules, executeGoals, hasForwardRules, normalizeGoals } from './execute.js';
 import { proofBlocks } from './result-format.js';
+import { Env, atom, termToString } from './term.js';
 
 // The public API is an entry point above the solver/registry layers, so it can
 // install pruning-aware iterator disposal without introducing an import cycle.
@@ -110,9 +111,25 @@ export function run(source, options = {}) {
 // The `clause/3` and `step/4` blocks explaining the facts a run claimed.
 // One walk across every claim, so a conclusion several of them rest on is
 // explained once.
+//
+// An answer the solver found but the explanation replay cannot reproduce --
+// a CLP(B) answer decided by propagation rather than by resolution -- is
+// recorded as `unproven` rather than quietly left without a step. A document
+// containing one is not a valid proof, and saying so is the point.
 function proofBlocksFor(program, claimed, registry, proofDetail = 'abstract') {
-  const roots = claimed.map((fact) => proofNodeFor(program, fact, { registry, proofDetail })).filter(Boolean);
+  const roots = [];
+  const unexplained = [];
+  for (const fact of claimed) {
+    const node = proofNodeFor(program, fact, { registry, proofDetail });
+    if (node) roots.push(node);
+    else unexplained.push(fact);
+  }
   const { clauses, steps } = flattenProof(roots, program);
+  const concluded = new Set(steps.map((step) => termToString(step.conclusion, new Env(), true)));
+  for (const fact of unexplained) {
+    if (concluded.has(termToString(fact, new Env(), true))) continue;
+    steps.push({ conclusion: fact, by: atom('unproven'), bindings: [], uses: [] });
+  }
   return proofBlocks(program, clauses, steps);
 }
 
