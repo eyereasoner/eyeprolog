@@ -9969,7 +9969,7 @@ Review questions:
 The [examples directory](https://github.com/eyereasoner/eyeprolog/tree/main/examples/) is the book's executable companion. The
 top-level directory contains **235 self-contained runnable programs**. Every
 source program has an exact answer file under
-[examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **103 selected programs** have a checked
+[examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **109 selected programs** have a checked
 explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/). The thematic lists link every top-level program and open the program
 itself rather than merely naming it.
 

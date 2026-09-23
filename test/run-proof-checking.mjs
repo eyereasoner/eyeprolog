@@ -23,17 +23,18 @@ const examplesDir = path.join(root, 'examples');
 /// cannot reproduce the answer, so the writer records it as `unproven` and
 /// says so rather than leaving it out.
 ///
-/// Explaining through the solver that produced the answer closed the three
-/// CLP(B) gaps that used to be here, so the list is empty: every packaged
-/// proof checks, and this test fails if one stops doing so.
+/// Proofs that do not check, and what each one exposes. An entry here is a
+/// gap in proof *generation*, not in the checker: the explanation replay
+/// cannot reach the answer, so the writer records it as `unproven` and says
+/// so rather than leaving it out.
 ///
-/// The CLP(Z) examples are not in this corpus, and not because they fail:
-/// `clpz`'s goal expansion names the variables it introduces from a counter
-/// that advances across a run, so a `clause/3` record of an expanded body
-/// differs between runs and cannot be compared against a golden. Checked
-/// directly rather than through a golden, `clpz-factorial`, `clpz-n-queens`,
-/// `clpz-global-constraints` and `clpz-sudoku-9x9` all check.
-const KNOWN_GAPS = new Map([]);
+/// Both of these answers come from a search the replay would have to run
+/// again to reproduce -- a labeling and an optimisation -- rather than from
+/// a derivation it can follow.
+const KNOWN_GAPS = new Map([
+  ['clpb-weighted-planning.pl', 'an answer reached by optimising, which the replay would have to run again'],
+  ['clpz-resource-allocation.pl', 'an answer reached by labeling, which the replay would have to run again'],
+]);
 
 const totals = { steps: 0, verified: 0, trusted: 0 };
 

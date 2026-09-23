@@ -104,13 +104,40 @@ function bindingsTerm(bindings) {
 // terms so that their identity survives being split out into a separate
 // `clause/3` fact, where ordinary variables would each be read back as a
 // fresh one.
-function templateTerm(value, anonymous) {
+// A variable the engine minted rather than a programmer wrote carries the
+// value of a counter that advances across the whole run, so the same clause
+// records a different name each time it is explained -- `Var#821735` in one
+// run and `Var#225415` in the next. Only the identity matters, not the
+// number, so the number is reassigned here from the clause's own order. Two
+// distinct variables stay distinct; the record stops depending on how much
+// work preceded it.
+function mintedName(name, minted) {
+  const stem = name.slice(0, name.indexOf('#'));
+  if (!minted.has(name)) minted.set(name, minted.size + 1);
+  return `${stem}#${minted.get(name)}`;
+}
+
+// The same renaming for a term a step records, which is an ordinary term
+// rather than a clause template. A step's uses can carry a minted variable
+// the goal left unbound, and it has to be the same name the `clause/3`
+// record gives it.
+function renameMinted(value, minted) {
+  if (value == null) return value;
+  if (value.type === VAR) return value.name.includes('#') ? variable(mintedName(value.name, minted)) : value;
+  if (value.type === COMPOUND) return compound(value.name, value.args.map((arg) => renameMinted(arg, minted)));
+  return value;
+}
+
+function templateTerm(value, anonymous, minted) {
   if (value.type === VAR) {
-    if (value.name !== '_' && !value.name.startsWith('_')) return compound('var', [atom(value.name)]);
+    if (value.name !== '_' && !value.name.startsWith('_')) {
+      const name = value.name.includes('#') ? mintedName(value.name, minted) : value.name;
+      return compound('var', [atom(name)]);
+    }
     if (!anonymous.has(value.name)) anonymous.set(value.name, anonymous.size + 1);
     return compound('anonymous', [numberTerm(BigInt(anonymous.get(value.name)))]);
   }
-  if (value.type === COMPOUND) return compound(value.name, value.args.map((arg) => templateTerm(arg, anonymous)));
+  if (value.type === COMPOUND) return compound(value.name, value.args.map((arg) => templateTerm(arg, anonymous, minted)));
   return value;
 }
 
@@ -119,23 +146,33 @@ function bodyTerm(body) {
   return body.reduceRight((rest, goal, index) => (index === body.length - 1 ? goal : compound(',', [goal, rest])), body[body.length - 1]);
 }
 
-function clauseTerm(number, clause) {
+function clauseTerm(number, clause, minted) {
   const anonymous = new Map();
   return compound('clause', [
     numberTerm(BigInt(number)),
-    templateTerm(clause.head, anonymous),
-    templateTerm(bodyTerm(clause.body), anonymous),
+    templateTerm(clause.head, anonymous, minted),
+    templateTerm(bodyTerm(clause.body), anonymous, minted),
   ]);
 }
 
-function stepTerm(step) {
-  return compound('step', [step.conclusion, step.by, bindingsTerm(step.bindings), listFromItems(step.uses)]);
+function stepTerm(step, minted) {
+  return compound('step', [
+    renameMinted(step.conclusion, minted),
+    step.by,
+    bindingsTerm(step.bindings.map((binding) => ({ name: binding.name, value: renameMinted(binding.value, minted) }))),
+    listFromItems(step.uses.map((use) => renameMinted(use, minted))),
+  ]);
 }
 
 
 function blockLines(clauses, steps, writeOptions) {
   const lines = [];
-  for (const block of [clauses.map(([number, clause]) => clauseTerm(number, clause)), steps.map(stepTerm)]) {
+  // One numbering across the whole document, so a minted variable is the
+  // same name wherever it appears -- in a clause record and in the step that
+  // cites it.
+  const minted = new Map();
+  const clauseTerms = clauses.map(([number, clause]) => clauseTerm(number, clause, minted));
+  for (const block of [clauseTerms, steps.map((step) => stepTerm(step, minted))]) {
     if (!block.length) continue;
     lines.push('');
     for (const term of block) lines.push(formatFact(term, writeOptions));
