@@ -11,11 +11,11 @@
 % childOf relation can feed the ordinary hasParent rule.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: log_impliedBy(X0, X1)
+%% ?- log_impliedBy(X0, X1).
 
-%% goal: childOf(X0, X1)
+%% ?- childOf(X0, X1).
 
-%% goal: hasParent(X0, X1)
+%% ?- hasParent(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

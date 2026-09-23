@@ -8,7 +8,7 @@ optional_b --> a, (b; []).
 bar_choice --> [x] | [y] | [z].
 nested_choice --> ([a], [b]; [a], [c]).
 
-%% goal: phrase(sequence, X)
-%% goal: phrase(optional_b, X)
-%% goal: phrase(bar_choice, X)
-%% goal: phrase(nested_choice, X)
+%% ?- phrase(sequence, X).
+%% ?- phrase(optional_b, X).
+%% ?- phrase(bar_choice, X).
+%% ?- phrase(nested_choice, X).

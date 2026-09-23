@@ -1,5 +1,5 @@
 % Each `_` occurrence is anonymous and independent.
-%% goal: answer(X0)
+%% ?- answer(X0).
 
 pair(a, b).
 pair(c, d).

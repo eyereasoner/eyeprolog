@@ -2,5 +2,5 @@
 choice(a).
 choice(b).
 answer(first, X) :- once(choice(X)).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

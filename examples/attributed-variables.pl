@@ -7,8 +7,8 @@
 :- use_module(library(atts)).
 :- attribute required/1.
 
-%% goal: accepts_required_value(ok)
-%% goal: alias_preserves_attribute(ok)
+%% ?- accepts_required_value(ok).
+%% ?- alias_preserves_attribute(ok).
 
 attach_required(Variable, Value) :-
     put_atts(Variable, required(Value)).

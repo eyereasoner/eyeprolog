@@ -2,7 +2,7 @@
 % See test/conformance/THIRD_PARTY.md.
 :- use_module(library(ordsets)).
 
-%% goal: ordsets_is_ordset_basic(ok)
+%% ?- ordsets_is_ordset_basic(ok).
 
 ordsets_is_ordset_basic(ok) :-
     is_ordset([a, b, c]), !.
@@ -11,7 +11,7 @@ ordsets_is_ordset_basic(ok) :-
 % rather than being implemented as a cheap sort(L,L) check -- that would
 % wrongly succeed here, since X and Y are indistinguishable unbound
 % variables at the point [Y,X] is checked.
-%% goal: ordsets_is_ordset_unbound_pair(ok)
+%% ?- ordsets_is_ordset_unbound_pair(ok).
 
 unbound_pair(_).
 

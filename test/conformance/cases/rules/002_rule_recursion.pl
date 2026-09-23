@@ -1,5 +1,5 @@
 % Reference 6, 7: definite clauses, conjunction, and recursive proof search.
-%% goal: ancestor(X0, X1)
+%% ?- ancestor(X0, X1).
 
 parent(pat, jan).
 parent(jan, emma).

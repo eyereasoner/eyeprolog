@@ -1,4 +1,4 @@
-%% goal: arithmetic_underflow_rounds
+%% ?- arithmetic_underflow_rounds.
 
 arithmetic_underflow_rounds :-
     A is 0.1*10** -999,

@@ -1,5 +1,5 @@
 % Corrigendum 2: sort/2 removes identical duplicates; keysort/2 is stable.
-%% goal: corrigenda_sort_keysort(ok)
+%% ?- corrigenda_sort_keysort(ok).
 
 corrigenda_sort_keysort(ok) :-
     sort([1+Y, z, a, V, 1, 2, V, 1, 7.0, 8.0, 1+Y, 1+2, 8.0, -a, -X, a], Sorted),

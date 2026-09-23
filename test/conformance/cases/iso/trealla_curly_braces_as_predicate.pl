@@ -1,6 +1,6 @@
 % Adapted from Trealla Prolog tests/tests/test0059.pl (test17).
 % See test/conformance/THIRD_PARTY.md.
-%% goal: curly_braces_as_predicate(ok)
+%% ?- curly_braces_as_predicate(ok).
 
 curly_braces_as_predicate(ok) :-
     assertz({abc, 123}), assertz({xyz, 456}),

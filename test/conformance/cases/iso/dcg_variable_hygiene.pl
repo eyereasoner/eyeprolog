@@ -5,5 +5,5 @@ capture_states(S0, S, Input, Output) -->
     {Input = source_input, Output = source_output}.
 anonymous_pair --> [_, _].
 
-%% goal: phrase(capture_states(A, B, Input, Output), [left, right])
-%% goal: phrase(anonymous_pair, [one, two])
+%% ?- phrase(capture_states(A, B, Input, Output), [left, right]).
+%% ?- phrase(anonymous_pair, [one, two]).

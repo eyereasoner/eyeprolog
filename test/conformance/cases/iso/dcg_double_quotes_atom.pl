@@ -4,4 +4,4 @@
 ab --> [recognized].
 uses_atom_body --> "ab".
 
-%% goal: phrase(uses_atom_body, Tokens)
+%% ?- phrase(uses_atom_body, Tokens).

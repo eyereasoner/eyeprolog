@@ -4,45 +4,45 @@
 % check values as ordinary relation output.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: label(X0, X1)
+%% ?- label(X0, X1).
 
-%% goal: description(X0, X1)
+%% ?- description(X0, X1).
 
-%% goal: careTeamLinked(X0, X1)
+%% ?- careTeamLinked(X0, X1).
 
-%% goal: subjectOptIn(X0, X1)
+%% ?- subjectOptIn(X0, X1).
 
-%% goal: subjectOptOut(X0, X1)
+%% ?- subjectOptOut(X0, X1).
 
-%% goal: decision(X0, X1)
+%% ?- decision(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
-%% goal: matchedPolicyUid(X0, X1)
+%% ?- matchedPolicyUid(X0, X1).
 
-%% goal: matchedProhibition(X0, X1)
+%% ?- matchedProhibition(X0, X1).
 
-%% goal: trace(X0, X1)
+%% ?- trace(X0, X1).
 
-%% goal: checkC1(X0, X1)
+%% ?- checkC1(X0, X1).
 
-%% goal: checkC2(X0, X1)
+%% ?- checkC2(X0, X1).
 
-%% goal: checkC3(X0, X1)
+%% ?- checkC3(X0, X1).
 
-%% goal: checkC4(X0, X1)
+%% ?- checkC4(X0, X1).
 
-%% goal: checkC5(X0, X1)
+%% ?- checkC5(X0, X1).
 
-%% goal: checkC6(X0, X1)
+%% ?- checkC6(X0, X1).
 
-%% goal: checkC7(X0, X1)
+%% ?- checkC7(X0, X1).
 
-%% goal: checkC8(X0, X1)
+%% ?- checkC8(X0, X1).
 
-%% goal: checkC9(X0, X1)
+%% ?- checkC9(X0, X1).
 
-%% goal: checkC10Text(X0, X1)
+%% ?- checkC10Text(X0, X1).
 
 
 :- discontiguous(policyUid/2).

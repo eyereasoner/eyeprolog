@@ -1,5 +1,5 @@
 % ISO 8.11-8.12: stream lifecycle, text/binary units, term I/O, and properties.
-%% goal: text_roundtrip(Term, Peek, Code, Mode, Alias)
+%% ?- text_roundtrip(Term, Peek, Code, Mode, Alias).
 
 text_roundtrip(Term, Peek, Code, Mode, Alias) :-
     open('/tmp/eyeprolog-iso-text.txt', write, Output, [alias(iso_text_output), type(text)]),
@@ -16,7 +16,7 @@ text_roundtrip(Term, Peek, Code, Mode, Alias) :-
     at_end_of_stream(Input),
     close(Input).
 
-%% goal: binary_roundtrip(Peek, Byte, End)
+%% ?- binary_roundtrip(Peek, Byte, End).
 
 binary_roundtrip(Peek, Byte, End) :-
     open('/tmp/eyeprolog-iso-binary.bin', write, Output, [type(binary)]),
@@ -28,7 +28,7 @@ binary_roundtrip(Peek, Byte, End) :-
     get_byte(Input, End),
     close(Input).
 
-%% goal: read_term_metadata(ok)
+%% ?- read_term_metadata(ok).
 
 read_term_metadata(ok) :-
     open('/tmp/eyeprolog-iso-read-term.txt', write, Output, []),
@@ -51,7 +51,7 @@ read_term_metadata(ok) :-
     C \== D,
     close(Input).
 
-%% goal: default_streams(ok)
+%% ?- default_streams(ok).
 
 default_streams(ok) :-
     current_input(Input),
@@ -60,13 +60,13 @@ default_streams(ok) :-
     stream_property(Output, alias(user_output)),
     flush_output(Output).
 
-%% goal: standard_write(ok)
+%% ?- standard_write(ok).
 
 standard_write(ok) :-
     write(io_marker),
     nl.
 
-%% goal: numeric_escape_term_input(ok)
+%% ?- numeric_escape_term_input(ok).
 
 numeric_escape_term_input(ok) :-
     open('/tmp/eyeprolog-iso-read-escapes.txt', write, Output, []),
@@ -86,7 +86,7 @@ numeric_escape_term_input(ok) :-
     B == '\a'.
 
 
-%% goal: malformed_quoted_term_input(ok)
+%% ?- malformed_quoted_term_input(ok).
 
 malformed_quoted_term_input(ok) :-
     open('/tmp/eyeprolog-iso-bad-quoted-term.txt', write, Output, []),

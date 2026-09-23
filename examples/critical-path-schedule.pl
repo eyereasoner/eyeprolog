@@ -9,7 +9,7 @@
 % adds task duration.  Critical tasks are reconstructed by following predecessors
 % that attain those maxima.  Memoization lets the schedule, finish date, and path
 % queries share the same project-network subproblems.
-%% goal: critical_path_answer(X0, X1)
+%% ?- critical_path_answer(X0, X1).
 
 
 

@@ -1,5 +1,5 @@
 % Reference 9.3: comparison handles numbers, durations, character lists, and lexical scalars.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(integer_order, ok) :- (9 < 10).
 answer(decimal_equal_le, ok) :- (2.0 =< 2).

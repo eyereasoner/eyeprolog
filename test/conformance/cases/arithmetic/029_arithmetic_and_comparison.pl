@@ -8,4 +8,4 @@ answer(power, X) :- (X is 2 ** 8).
 answer(minimum, X) :- (3 =< 9 -> X = 3 ; X = 9).
 answer(less_than, true) :- (3 < 9).
 answer(greater_equal, true) :- (9 >= 9).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).

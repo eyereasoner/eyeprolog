@@ -9,11 +9,11 @@
 % Inclusion criteria are positive requirements; exclusion criteria veto a
 % candidate even when the inclusion checks pass. The emitted reason/2 facts are
 % the audit trail a coordinator would need for a screen-failure report.
-%% goal: type(X0, X1)
+%% ?- type(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

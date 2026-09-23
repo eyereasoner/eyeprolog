@@ -5,8 +5,8 @@ guarded --> ([a] -> [b] ; [c]).
 not_a --> \+ [a], [_].
 committed --> ([a], ! ; [b]).
 
-%% goal: phrase(token(a), [a])
-%% goal: phrase(choice, X)
-%% goal: phrase(guarded, X)
-%% goal: phrase(not_a, [b])
-%% goal: phrase(committed, X)
+%% ?- phrase(token(a), [a]).
+%% ?- phrase(choice, X).
+%% ?- phrase(guarded, X).
+%% ?- phrase(not_a, [b]).
+%% ?- phrase(committed, X).

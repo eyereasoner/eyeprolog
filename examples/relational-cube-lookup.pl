@@ -1,7 +1,7 @@
 % Performance example: repeated multi-key relational lookups.
-%% goal: lookupResult(X0, X1)
+%% ?- lookupResult(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 relation(a0, b0, c0, v0_0).

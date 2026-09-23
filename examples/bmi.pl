@@ -8,67 +8,67 @@
 
 % Editable metric input.
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: unitSystem(X0, X1)
+%% ?- unitSystem(X0, X1).
 
-%% goal: weight(X0, X1)
+%% ?- weight(X0, X1).
 
-%% goal: height(X0, X1)
+%% ?- height(X0, X1).
 
-%% goal: weightKg(X0, X1)
+%% ?- weightKg(X0, X1).
 
-%% goal: heightM(X0, X1)
+%% ?- heightM(X0, X1).
 
-%% goal: units(X0, X1)
+%% ?- units(X0, X1).
 
-%% goal: heightSquared(X0, X1)
+%% ?- heightSquared(X0, X1).
 
-%% goal: bmi(X0, X1)
+%% ?- bmi(X0, X1).
 
-%% goal: bmiRoundedInt(X0, X1)
+%% ?- bmiRoundedInt(X0, X1).
 
-%% goal: healthyMinKg(X0, X1)
+%% ?- healthyMinKg(X0, X1).
 
-%% goal: healthyMaxKg(X0, X1)
+%% ?- healthyMaxKg(X0, X1).
 
-%% goal: healthyMinKgRoundedInt(X0, X1)
+%% ?- healthyMinKgRoundedInt(X0, X1).
 
-%% goal: healthyMaxKgRoundedInt(X0, X1)
+%% ?- healthyMaxKgRoundedInt(X0, X1).
 
-%% goal: category(X0, X1)
+%% ?- category(X0, X1).
 
-%% goal: heightCm(X0, X1)
+%% ?- heightCm(X0, X1).
 
-%% goal: formula(X0, X1)
+%% ?- formula(X0, X1).
 
-%% goal: calculation(X0, X1)
+%% ?- calculation(X0, X1).
 
-%% goal: categoryRule(X0, X1)
+%% ?- categoryRule(X0, X1).
 
-%% goal: unitsExplanation(X0, X1)
+%% ?- unitsExplanation(X0, X1).
 
-%% goal: c1(X0, X1)
+%% ?- c1(X0, X1).
 
-%% goal: c2(X0, X1)
+%% ?- c2(X0, X1).
 
-%% goal: c3(X0, X1)
+%% ?- c3(X0, X1).
 
-%% goal: c4(X0, X1)
+%% ?- c4(X0, X1).
 
-%% goal: c5(X0, X1)
+%% ?- c5(X0, X1).
 
-%% goal: c6(X0, X1)
+%% ?- c6(X0, X1).
 
-%% goal: c7(X0, X1)
+%% ?- c7(X0, X1).
 
-%% goal: c8(X0, X1)
+%% ?- c8(X0, X1).
 
-%% goal: c9(X0, X1)
+%% ?- c9(X0, X1).
 
-%% goal: result(X0, X1)
+%% ?- result(X0, X1).
 
-%% goal: healthyWeightRangeKg(X0, X1)
+%% ?- healthyWeightRangeKg(X0, X1).
 
-%% goal: checkPassed(X0, X1)
+%% ?- checkPassed(X0, X1).
 
 
 :- discontiguous(weightKg/2).

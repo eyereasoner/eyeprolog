@@ -5,17 +5,17 @@
 % narrower-or-equal relation, and the concepts that roll up to ref_car.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: broader(X0, X1)
+%% ?- broader(X0, X1).
 
-%% goal: narrower(X0, X1)
+%% ?- narrower(X0, X1).
 
-%% goal: broaderTransitive(X0, X1)
+%% ?- broaderTransitive(X0, X1).
 
-%% goal: narrowerTransitive(X0, X1)
+%% ?- narrowerTransitive(X0, X1).
 
-%% goal: narrowerOrEqualOf(X0, X1)
+%% ?- narrowerOrEqualOf(X0, X1).
 
-%% goal: rollsUpTo(X0, X1)
+%% ?- rollsUpTo(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

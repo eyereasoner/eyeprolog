@@ -1,5 +1,5 @@
 % Reference 9.6: number_string/2, atom_string/2, and term_string/2 are portable scalar bridges.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(number_to_string, X) :- number_string(42, X).
 answer(decimal_string_to_number, X) :- number_string(X, '-12.75').

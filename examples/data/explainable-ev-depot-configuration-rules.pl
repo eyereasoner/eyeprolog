@@ -2,10 +2,10 @@
 % The same relational model answers: what fits, why does an option fail, and
 % what would have to change to make a rejected option viable?
 
-%% goal: compatible(X0, X1)
-%% goal: recommendation(X0, X1)
-%% goal: blocker(X0, X1, X2)
-%% goal: required_change(X0, X1, X2)
+%% ?- compatible(X0, X1).
+%% ?- recommendation(X0, X1).
+%% ?- blocker(X0, X1, X2).
+%% ?- required_change(X0, X1, X2).
 
 v(available_power,iri('https://example.org/vocab/availablePowerKw')).
 v(required_charge,iri('https://example.org/vocab/requiredChargeKw')).

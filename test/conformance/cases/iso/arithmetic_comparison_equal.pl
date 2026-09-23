@@ -1,4 +1,4 @@
 % Isolated ISO mode-table success case.
-%% goal: answer
+%% ?- answer.
 
 answer :- 2 + 3 =:= 5.

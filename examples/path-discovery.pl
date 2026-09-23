@@ -7,7 +7,7 @@
 % visited list so it works without the removed finite-search helper builtins.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: airroute(X0, X1, X2, X3)
+%% ?- airroute(X0, X1, X2, X3).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

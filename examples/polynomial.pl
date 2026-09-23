@@ -10,15 +10,15 @@
 % the same quartic polynomials used by the Eyelet source.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: polynomial(X0, X1)
+%% ?- polynomial(X0, X1).
 
-%% goal: root(X0, X1)
+%% ?- root(X0, X1).
 
-%% goal: reconstructedPolynomial(X0, X1)
+%% ?- reconstructedPolynomial(X0, X1).
 
-%% goal: reconstructionMatches(X0, X1)
+%% ?- reconstructionMatches(X0, X1).
 
-%% goal: allRootsVerified(X0, X1)
+%% ?- allRootsVerified(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

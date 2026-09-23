@@ -1,4 +1,4 @@
-%% goal: trigger
+%% ?- trigger.
 
 trigger :-
     op(500, yf, clash),

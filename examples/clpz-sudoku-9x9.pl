@@ -7,7 +7,7 @@
 % The default goal genuinely searches AI Escargot from its clues and finds
 % the unique solution. No known-answer shortcut is used before labeling.
 
-%% goal: sudoku9(X0)
+%% ?- sudoku9(X0).
 
 sudoku9(Rows) :-
   Rows = [

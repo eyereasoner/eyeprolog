@@ -15,7 +15,7 @@
 % direct edges are printed.  Starting with the concrete generator `oneway/2`
 % first makes each recursive step smaller and yields the complete closure.
 
-%% goal: path(X0, X1)
+%% ?- path(X0, X1).
 
 
 oneway(paris, orleans).

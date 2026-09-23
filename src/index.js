@@ -91,7 +91,10 @@ export function run(source, options = {}) {
     }));
     if (includeWhy) output.push(proofBlocksFor(program, derived, runOptions.registry, options.proofDetail));
   } else {
-    const goals = normalizeGoals(requestedGoals, solver);
+    // A bare `?- Goal.` asks its question the same way a `%% ?-` comment
+    // does; only the parser can find it, so it is picked up here.
+    const declared = requestedGoals.length === 0 ? program.queries.map((query) => query.goal) : requestedGoals;
+    const goals = normalizeGoals(declared, solver);
     const claimed = [];
     ({ haltCode } = executeGoals(program, solver, goals, {
       onAnswer: (line, resolved) => {

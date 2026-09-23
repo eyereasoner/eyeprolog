@@ -6,27 +6,27 @@
 % paths accumulate action sequence, duration, cost, belief, and comfort; table
 % keeps repeated comparison and explanation queries from recomputing paths.
 
-%% goal: recommendedRoute(X0, X1)
+%% ?- recommendedRoute(X0, X1).
 
-%% goal: outcome(X0, X1)
+%% ?- outcome(X0, X1).
 
-%% goal: statement(X0, X1, X2)
+%% ?- statement(X0, X1, X2).
 
-%% goal: label(X0, X1)
+%% ?- label(X0, X1).
 
-%% goal: actionSequence(X0, X1)
+%% ?- actionSequence(X0, X1).
 
-%% goal: durationSeconds(X0, X1)
+%% ?- durationSeconds(X0, X1).
 
-%% goal: cost(X0, X1)
+%% ?- cost(X0, X1).
 
-%% goal: belief(X0, X1)
+%% ?- belief(X0, X1).
 
-%% goal: comfort(X0, X1)
+%% ?- comfort(X0, X1).
 
-%% goal: selectedRoute(X0, X1)
+%% ?- selectedRoute(X0, X1).
 
-%% goal: comparison(X0, X1)
+%% ?- comparison(X0, X1).
 
 
 

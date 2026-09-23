@@ -1,7 +1,7 @@
 elk(milo).
 insect(ant).
 
-%% goal: answer(X0, X1, X2, X3)
+%% ?- answer(X0, X1, X2, X3).
 
 answer(Unified, First, Arity, Repeated) :-
     unify_with_occurs_check(pair(X, X), pair(ok, Y)),

@@ -3,15 +3,15 @@
 % reproduction-risk estimate.  The recommended policy is the only candidate
 % that satisfies the outbreak threshold in this simplified model.
 
-%% goal: riskScore(X0, X1)
+%% ?- riskScore(X0, X1).
 
-%% goal: cost(X0, X1)
+%% ?- cost(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: recommendedPolicy(X0, X1)
+%% ?- recommendedPolicy(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Candidate interventions combine vaccination and mask factors.

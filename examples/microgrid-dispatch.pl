@@ -7,17 +7,17 @@
 %
 % The dispatch policy is greedy but auditable: use renewables first, discharge
 % the battery only down to reserve, then import the remaining deficit from grid.
-%% goal: renewablePower_kW(X0, X1)
+%% ?- renewablePower_kW(X0, X1).
 
-%% goal: batteryDispatch_kW(X0, X1)
+%% ?- batteryDispatch_kW(X0, X1).
 
-%% goal: gridImport_kW(X0, X1)
+%% ?- gridImport_kW(X0, X1).
 
-%% goal: reserveAfterDispatch_kW(X0, X1)
+%% ?- reserveAfterDispatch_kW(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

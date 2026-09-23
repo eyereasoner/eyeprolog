@@ -10,7 +10,7 @@
 % Source/history:
 % https://gerrit.googlesource.com/prolog-cafe/+/73b5ce4f5fbef086a22de3292a53e1ffe2947fab/examples/benchmarks/src/bench.pl
 
-%% goal: bench_result(X0)
+%% ?- bench_result(X0).
 
 nrev([], []).
 nrev([X|Rest], Ans) :-

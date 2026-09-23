@@ -3,7 +3,7 @@
 % See test/conformance/THIRD_PARTY.md.
 :- use_module(library(assoc)).
 
-%% goal: assoc_is_assoc_rejects_unbalanced(ok)
+%% ?- assoc_is_assoc_rejects_unbalanced(ok).
 
 assoc_is_assoc_rejects_unbalanced(ok) :-
     \+ is_assoc(t(5, 1, <, t(3, 1, <, t(2, 1, <, t(1, 1, -, t, t), t), t(4, 1, -, t, t)),
@@ -14,7 +14,7 @@ assoc_is_assoc_rejects_unbalanced(ok) :-
                   t(8, 1, -, t(7, 1, <, t(6, 1, -, t, t), t), t(10, 1, -, t(9, 1, -, t, t), t(11, 1, >, t, t))))),
     !.
 
-%% goal: assoc_is_assoc_rejects_unordered(ok)
+%% ?- assoc_is_assoc_rejects_unordered(ok).
 
 assoc_is_assoc_rejects_unordered(ok) :-
     \+ is_assoc(t(5, 1, -, t(3, 1, <, t(2, 1, >, t, t(1, 1, -, t, t)), t(4, 1, -, t, t)),
@@ -25,7 +25,7 @@ assoc_is_assoc_rejects_unordered(ok) :-
                   t(8, 1, -, t(7, 1, <, t(6, 1, -, t, t), t), t(10, 1, -, t(9, 1, -, t, t), t(11, 1, -, t, t))))),
     !.
 
-%% goal: assoc_is_assoc_rejects_bad_structure(ok)
+%% ?- assoc_is_assoc_rejects_bad_structure(ok).
 
 assoc_is_assoc_rejects_bad_structure(ok) :-
     \+ is_assoc(t(5, 1, =, t(3, 1, <, t(2, 1, <, t(1, 1, -, t, t), t), t(4, 1, -, t, t)),

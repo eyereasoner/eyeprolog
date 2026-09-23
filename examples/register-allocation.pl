@@ -10,7 +10,7 @@
 % few temporaries to two registers or memory, reject register conflicts, and use
 % aggregate_min/5 to choose the cheapest spill plan.
 
-%% goal: registerAnswer(X0, X1)
+%% ?- registerAnswer(X0, X1).
 
 
 % Two physical registers are available.  The synthetic place spill means the

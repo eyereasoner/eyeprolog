@@ -4,11 +4,11 @@
 % rule remains ordinary eyeprolog: if A implies B and B is false, then A is false.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: refutes(X0, X1)
+%% ?- refutes(X0, X1).
 
-%% goal: method(X0, X1)
+%% ?- method(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

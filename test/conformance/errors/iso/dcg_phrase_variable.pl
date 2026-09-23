@@ -1,1 +1,1 @@
-%% goal: phrase(Body, [])
+%% ?- phrase(Body, []).

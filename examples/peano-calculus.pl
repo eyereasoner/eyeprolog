@@ -5,7 +5,7 @@
 % s(s(z)), and so on.  The rules are relational; the query answers choose
 % a few finite calculations as readable examples.
 
-%% goal: peano_answer(X0, X1)
+%% ?- peano_answer(X0, X1).
 
 
 % Addition.

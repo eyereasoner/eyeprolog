@@ -8,18 +8,18 @@ elk(X) :- moose(X).
 
 moose(bertha).
 
-%% goal: public_clause(X0)
+%% ?- public_clause(X0).
 
 public_clause(Body) :-
     clause(elk(bertha), Body).
 
-%% goal: private_clause(X0)
+%% ?- private_clause(X0).
 
 private_clause(Culprit) :-
     catch(clause(moose(_), _), error(Formal, _), true),
     Formal = permission_error(access, private_procedure, Culprit).
 
-%% goal: asserted_clause(X0)
+%% ?- asserted_clause(X0).
 
 asserted_clause(Body) :-
     assertz(caribou(rudolf)),

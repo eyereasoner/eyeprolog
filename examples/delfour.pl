@@ -12,65 +12,65 @@
 % facts that could contradict another policy formula in the same program.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: caseName(X0, X1)
+%% ?- caseName(X0, X1).
 
-%% goal: needsLowSugar(X0, X1)
+%% ?- needsLowSugar(X0, X1).
 
-%% goal: derivedFromNeed(X0, X1)
+%% ?- derivedFromNeed(X0, X1).
 
-%% goal: outcome(X0, X1)
+%% ?- outcome(X0, X1).
 
-%% goal: target(X0, X1)
+%% ?- target(X0, X1).
 
-%% goal: metric(X0, X1)
+%% ?- metric(X0, X1).
 
-%% goal: threshold(X0, X1)
+%% ?- threshold(X0, X1).
 
-%% goal: scope(X0, X1)
+%% ?- scope(X0, X1).
 
-%% goal: retailer(X0, X1)
+%% ?- retailer(X0, X1).
 
-%% goal: expiresAt(X0, X1)
+%% ?- expiresAt(X0, X1).
 
-%% goal: scannedProduct(X0, X1)
+%% ?- scannedProduct(X0, X1).
 
-%% goal: suggestedAlternative(X0, X1)
+%% ?- suggestedAlternative(X0, X1).
 
-%% goal: headline(X0, X1)
+%% ?- headline(X0, X1).
 
-%% goal: note(X0, X1)
+%% ?- note(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
-%% goal: value(X0, X1)
+%% ?- value(X0, X1).
 
-%% goal: alg(X0, X1)
+%% ?- alg(X0, X1).
 
-%% goal: auditEntries(X0, X1)
+%% ?- auditEntries(X0, X1).
 
-%% goal: filesWritten(X0, X1)
+%% ?- filesWritten(X0, X1).
 
-%% goal: allChecksPass(X0, X1)
+%% ?- allChecksPass(X0, X1).
 
-%% goal: signatureVerifies(X0, X1)
+%% ?- signatureVerifies(X0, X1).
 
-%% goal: payloadHashMatches(X0, X1)
+%% ?- payloadHashMatches(X0, X1).
 
-%% goal: minimizationStripsSensitiveTerms(X0, X1)
+%% ?- minimizationStripsSensitiveTerms(X0, X1).
 
-%% goal: scopeComplete(X0, X1)
+%% ?- scopeComplete(X0, X1).
 
-%% goal: authorizationAllowed(X0, X1)
+%% ?- authorizationAllowed(X0, X1).
 
-%% goal: bannerFlagsHighSugar(X0, X1)
+%% ?- bannerFlagsHighSugar(X0, X1).
 
-%% goal: alternativeIsLowerSugar(X0, X1)
+%% ?- alternativeIsLowerSugar(X0, X1).
 
-%% goal: dutyTimingConsistent(X0, X1)
+%% ?- dutyTimingConsistent(X0, X1).
 
-%% goal: marketingProhibited(X0, X1)
+%% ?- marketingProhibited(X0, X1).
 
-%% goal: filesWrittenExpected(X0, X1)
+%% ?- filesWrittenExpected(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

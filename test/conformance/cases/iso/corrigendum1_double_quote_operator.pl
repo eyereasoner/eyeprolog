@@ -2,7 +2,7 @@
 :- op(500, xfy, likes).
 :- set_prolog_flag(double_quotes, atom).
 
-%% goal: corrigendum1_double_quote_operator(ok)
+%% ?- corrigendum1_double_quote_operator(ok).
 
 corrigendum1_double_quote_operator(ok) :-
     (alice "likes" bob) = likes(alice, bob),

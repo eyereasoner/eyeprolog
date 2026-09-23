@@ -38,9 +38,9 @@
 % exactly that and is ISO-portable; WFS would not change the answer there,
 % only the machinery needed to get it.
 
-%% goal: reimbursementQuestion(X0, X1, X2)
-%% goal: conflictQuestion(X0, X1, X2)
-%% goal: explicitConflictQuestion(X0, X1, X2)
+%% ?- reimbursementQuestion(X0, X1, X2).
+%% ?- conflictQuestion(X0, X1, X2).
+%% ?- explicitConflictQuestion(X0, X1, X2).
 
 % --- Submitted expenses and the facts a claims clerk would see ------------
 

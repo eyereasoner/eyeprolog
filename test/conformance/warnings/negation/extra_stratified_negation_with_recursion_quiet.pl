@@ -1,4 +1,4 @@
-%% goal: open(X0)
+%% ?- open(X0).
 
 edge(a, b).
 path(X, Y) :- edge(X, Y).

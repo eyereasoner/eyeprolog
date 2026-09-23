@@ -43,47 +43,47 @@ callee_cut_disjunction :-
 between_disjunction :-
     (between(1, 1, _), false; true).
 
-%% goal: committed_answer(X0)
+%% ?- committed_answer(X0).
 
 committed_answer(Value) :-
     committed(Value).
 
-%% goal: left_answer(X0)
+%% ?- left_answer(X0).
 
 left_answer(Value) :-
     left_choice(Value).
 
-%% goal: right_answer(X0, X1)
+%% ?- right_answer(X0, X1).
 
 right_answer(Left, Right) :-
     right_choice(Left, Right).
 
-%% goal: cut_failure_answer
+%% ?- cut_failure_answer.
 
 cut_failure_answer :-
     \+(cut_failure).
 
-%% goal: disjunction_answer(X0)
+%% ?- disjunction_answer(X0).
 
 disjunction_answer(Value) :-
     disjunction_cut(Value).
 
-%% goal: call_local_answer(X0, X1)
+%% ?- call_local_answer(X0, X1).
 
 call_local_answer(Kind, Value) :-
     call_is_local(Kind, Value).
 
-%% goal: if_then_answer(X0)
+%% ?- if_then_answer(X0).
 
 if_then_answer(Value) :-
     if_then_cut(Value).
 
-%% goal: callee_cut_disjunction_answer
+%% ?- callee_cut_disjunction_answer.
 
 callee_cut_disjunction_answer :-
     callee_cut_disjunction.
 
-%% goal: between_disjunction_answer
+%% ?- between_disjunction_answer.
 
 between_disjunction_answer :-
     between_disjunction.

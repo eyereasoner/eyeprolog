@@ -5,13 +5,13 @@
 % local_time/1 fact, difference/3, and duration comparison. Declaring the date
 % as scenario data keeps the result reproducible across hosts and runs.
 
-%% goal: birthDay(X0, X1)
+%% ?- birthDay(X0, X1).
 
-%% goal: duration(X0, X1)
+%% ?- duration(X0, X1).
 
-%% goal: ageAbove(X0, X1)
+%% ?- ageAbove(X0, X1).
 
-%% goal: holds_result(X0, X1)
+%% ?- holds_result(X0, X1).
 
 
 birthDay(patH, '1944-08-21').

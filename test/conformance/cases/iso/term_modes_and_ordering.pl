@@ -1,5 +1,5 @@
 % ISO 8.3-8.5: type tests, term order, functor/3, arg/3, and copy_term/2.
-%% goal: types(X0, X1, X2, X3)
+%% ?- types(X0, X1, X2, X3).
 
 types(Variable, Integer, Float, Compound) :-
     Integer = 7,
@@ -17,7 +17,7 @@ types(Variable, Integer, Float, Compound) :-
     ground(Compound),
     Variable = was_variable.
 
-%% goal: ordering(X0, X1, X2)
+%% ?- ordering(X0, X1, X2).
 
 ordering(Less, Equal, Greater) :-
     compare(Less, a, b),
@@ -28,7 +28,7 @@ ordering(Less, Equal, Greater) :-
     3 @> 2,
     z @>= z.
 
-%% goal: functors(X0, X1, X2, X3)
+%% ?- functors(X0, X1, X2, X3).
 
 functors(Built, Name, Arity, Second) :-
     functor(Built, node, 2),
@@ -37,7 +37,7 @@ functors(Built, Name, Arity, Second) :-
     Second = right,
     functor(Built, Name, Arity).
 
-%% goal: copied(X0, X1)
+%% ?- copied(X0, X1).
 
 copied(Original, Copy) :-
     Original = pair(Shared, Shared),

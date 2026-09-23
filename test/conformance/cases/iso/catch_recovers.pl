@@ -1,4 +1,4 @@
 % Isolated ISO mode-table success case.
-%% goal: answer
+%% ?- answer.
 
 answer :- catch(throw(ball), ball, true).

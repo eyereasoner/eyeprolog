@@ -1,5 +1,5 @@
 % Uppercase variables are ordinary ISO Prolog-style variables.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 edge(a, b).
 edge(b, c).

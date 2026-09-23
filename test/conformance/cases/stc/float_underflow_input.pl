@@ -3,7 +3,7 @@
 % whether the published power-underflow errors should depend on the 9.1.4.2
 % resultF choice.
 % https://github.com/eyereasoner/eyeprolog/issues/54
-%% goal: float_underflow_input
+%% ?- float_underflow_input.
 
 float_underflow_input :-
   number_chars(Positive, "1.0e-99999"),

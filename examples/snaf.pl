@@ -1,6 +1,6 @@
 % Alice loves Bob; Bob is a person. If Alice does not hate a person, conclude she hates Nobody.
 
-%% goal: hates(alice, nobody)
+%% ?- hates(alice, nobody).
 
 % Facts
 loves(alice, bob).

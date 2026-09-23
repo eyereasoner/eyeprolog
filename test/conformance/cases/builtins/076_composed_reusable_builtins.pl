@@ -1,5 +1,5 @@
 % Reference 9.1: reusable built-ins compose without special host predicates.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 line('  red,green,blue  ').
 answer(clean_join, X) :- line(Raw), trim(Raw, Trimmed), split(Trimmed, ',', Parts), join(Parts, '|', X).

@@ -8,7 +8,7 @@
 % Non-locally-stratified Win instance; requires well-founded negation for ORB-equivalent semantics.
 win(X) :- move(X,Y), tnot(win(Y)).
 benchmark(Count) :- findall(X, win(X), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 move(1,2).
 move(2,3).

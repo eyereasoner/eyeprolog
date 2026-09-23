@@ -1,4 +1,4 @@
-%% goal: stop
+%% ?- stop.
 
 stop :-
     write(before_halt),

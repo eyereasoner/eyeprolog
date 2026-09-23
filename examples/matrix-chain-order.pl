@@ -10,7 +10,7 @@
 % cost(I, J, Cost) is the minimum scalar multiplication cost for matrices I..J.
 % best_split/3 records which split obtains that cost, and parenthesization/3
 % reconstructs one optimal multiplication tree.
-%% goal: matrix_chain_answer(X0, X1)
+%% ?- matrix_chain_answer(X0, X1).
 
 
 

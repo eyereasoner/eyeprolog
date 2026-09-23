@@ -3,7 +3,7 @@
 % those gates into next-state logic for three flip-flops, and testgcc/3 runs the
 % counter over a finite clock sequence.
 
-%% goal: isgcc(X0, X1)
+%% ?- isgcc(X0, X1).
 
 
 % Boolean gates are truth tables; the circuit rules compose them.

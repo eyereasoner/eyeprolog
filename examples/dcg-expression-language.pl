@@ -5,7 +5,7 @@
 % accumulator instead of left recursion.  A second DCG pretty-prints an AST
 % with only the parentheses required to preserve its structure, making the
 % example useful in both directions.
-%% goal: dcg_expression_example(X0, X1)
+%% ?- dcg_expression_example(X0, X1).
 
 % expression//1: + and - are the lowest-precedence operators.
 expression(AST) -->

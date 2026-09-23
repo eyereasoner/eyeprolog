@@ -1,7 +1,7 @@
 % Adapted from Logtalk iso_term_comparison_01 through 19 and
 % lgt_term_comparison_20 through 27. Modified for EyeProlog's conformance harness.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: term_comparison_order
+%% ?- term_comparison_order.
 
 
 term_comparison_order :-

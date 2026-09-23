@@ -11,7 +11,7 @@ rdf(iri('https://example.org/claim1'), iri('https://example.org/statedBy'), iri(
 rdf(iri('https://example.org/claim1'), iri('https://example.org/recorded'), literal('2025-01-15', datatype('http://www.w3.org/2001/XMLSchema#date')), default_graph).
 
 % Recover an asserted triple together with its RDF 1.2 annotations.
-%% goal: result_rdf(_, _, _, _)
+%% ?- result_rdf(_, _, _, _).
 
 annotated_claim(S, P, O, Reifier, Source, Date) :-
   rdf(S, P, O, default_graph),

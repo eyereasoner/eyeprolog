@@ -1,5 +1,5 @@
 % Part 3 phrase/3 accepts partial terminal sequences and preserves their tail.
-%% goal: partial_sequence(X0)
+%% ?- partial_sequence(X0).
 
 partial_sequence(one) :-
     phrase([a], [a|Tail], Tail),

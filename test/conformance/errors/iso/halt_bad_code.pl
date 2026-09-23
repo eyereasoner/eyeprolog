@@ -1,3 +1,3 @@
-%% goal: trigger
+%% ?- trigger.
 
 trigger :- halt(not_an_integer).

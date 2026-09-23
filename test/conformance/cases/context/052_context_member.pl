@@ -1,5 +1,5 @@
 % Reference 9.9: ordinary recursion over comma context data.
-%% goal: answer(X, Term)
+%% ?- answer(X, Term).
 
 context((name(alice, "Alice"), knows(alice, bob))).
 context_member((Left, _right), Member) :- context_member(Left, Member).

@@ -5,5 +5,5 @@ answer(prefix, X) :- string_concat(X, 'prolog', 'eyeprolog').
 answer(suffix, X) :- string_concat('eye', X, 'eyeprolog').
 answer(split, Left, Right) :- string_concat(Left, Right, 'eye').
 answer(atom_inputs, X) :- string_concat(eye, prolog, X).
-%% goal: answer(X0, X1)
-%% goal: answer(X0, X1, X2)
+%% ?- answer(X0, X1).
+%% ?- answer(X0, X1, X2).

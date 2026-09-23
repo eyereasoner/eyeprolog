@@ -7,7 +7,7 @@
 % subset/2 enumerates candidate expedition packs; total_weight/2 and total_value/2
 % score each pack.  feasible_pack/3 applies the capacity limit, and best_pack/3
 % keeps the highest-value feasible choice together with its weight.
-%% goal: knapsack_answer(X0, X1)
+%% ?- knapsack_answer(X0, X1).
 
 
 % Capacity and item table are separated from the optimization rule for easy tuning.

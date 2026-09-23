@@ -1,7 +1,7 @@
 % Adapted from Logtalk iso_arg_3_01 through 07, eddbali_arg_3_15, and
 % lgt_arg_3_17 through 19. Modified for EyeProlog's conformance harness.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: arg_results(X0, X1, X2, X3)
+%% ?- arg_results(X0, X1, X2, X3).
 
 
 arg_results(First, Unified, Head, Tail) :-

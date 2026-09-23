@@ -2,7 +2,7 @@
 %
 % Conversion predicates work in both documented directions. sub_atom/5 also
 % exposes how a source atom is split around a selected fragment.
-%% goal: report(X0, X1)
+%% ?- report(X0, X1).
 
 
 report(joined, Atom) :-

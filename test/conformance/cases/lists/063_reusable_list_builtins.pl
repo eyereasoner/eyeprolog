@@ -1,5 +1,5 @@
 % Reference 9.1: reusable list selectors, slices, summaries, and stable set conversion.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(first, X) :- [X|_tail] = [alpha, beta, gamma, beta].
 answer(last, X) :- last([alpha, beta, gamma, beta], X).

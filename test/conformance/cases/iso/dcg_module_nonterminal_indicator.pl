@@ -4,5 +4,5 @@
 word(X) --> [X].
 answer(X) :- phrase(word(X), [hello]).
 
-%% goal: dcg_vocab:answer(X)
-%% goal: phrase(dcg_vocab:word(hello), [hello])
+%% ?- dcg_vocab:answer(X).
+%% ?- phrase(dcg_vocab:word(hello), [hello]).

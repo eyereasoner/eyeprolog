@@ -14,8 +14,8 @@
 % search and multiple-solution enumeration, small enough to stay fast
 % without making the default example suite a CLP(Z) benchmark.
 
-%% goal: queens8_witness(X0)
-%% goal: queens(4, X0)
+%% ?- queens8_witness(X0).
+%% ?- queens(4, X0).
 
 queens8_witness(Rows) :-
   Rows = [1, 5, 8, 6, 3, 7, 2, 4],

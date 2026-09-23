@@ -3,7 +3,7 @@
 
 % Output declaration: host-supplied goals select the relation written to this
 % example's golden output.
-%% goal: different(X0, X1)
+%% ?- different(X0, X1).
 
 
 % Under unrestricted Tarskian semantics, alice and bob could denote the same

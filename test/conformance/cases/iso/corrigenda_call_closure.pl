@@ -1,5 +1,5 @@
 % Corrigendum 2: call/2 through call/8 append arguments to a closure.
-%% goal: corrigenda_call_closure(A, B, C, D, E, F, G)
+%% ?- corrigenda_call_closure(A, B, C, D, E, F, G).
 
 seven(a, b, c, d, e, f, g).
 

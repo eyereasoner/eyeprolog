@@ -5,13 +5,13 @@
 % the cache is effective.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: hitRate(X0, X1)
+%% ?- hitRate(X0, X1).
 
-%% goal: averageLatency_ms(X0, X1)
+%% ?- averageLatency_ms(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % cache_sample/5 contains hits, misses, and the two latency classes; threshold/3

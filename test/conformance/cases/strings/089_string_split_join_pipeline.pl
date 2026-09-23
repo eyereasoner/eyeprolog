@@ -1,5 +1,5 @@
 % Reference 9.6: split/join/trim compose for simple data-cleaning workflows.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 raw('  alpha,beta,gamma  ').
 answer(parts, X) :- raw(R), trim(R, T), split(T, ',', X).

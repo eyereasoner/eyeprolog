@@ -7,13 +7,13 @@
 % checks are purely structural.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: plan(X0, X1)
+%% ?- plan(X0, X1).
 
-%% goal: finalState(X0, X1)
+%% ?- finalState(X0, X1).
 
-%% goal: blockCount(X0, X1)
+%% ?- blockCount(X0, X1).
 
 
 % The initial and goal states are lists of on/2 facts.  Sorting successor states

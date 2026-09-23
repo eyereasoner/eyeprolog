@@ -67,17 +67,17 @@ rdf(iri('https://example.org/city/review/r3'), iri('https://example.org/vocab/no
 % symbiotic-knowledge-graph-input.nq.  RDF stays the interchange and storage
 % model; these rules provide the explicit reasoning and governance layer.
 
-%% goal: proposal_state(X0, X1)
-%% goal: conflict(X0, X1, X2, X3)
-%% goal: knowledge_gain(X0, X1, X2)
-%% goal: recommended_action(X0, X1, X2)
-%% goal: decision_reason(X0, X1, X2)
-%% goal: audit(X0, X1, X2, X3, X4)
-%% goal: feedback_signal(X0, X1, X2)
-%% goal: symbiosis_gain(X0, X1)
-%% goal: knowledge_exchange(X0, X1)
-%% goal: pipeline_step(X0, X1)
-%% goal: cognitive_parallel(X0, X1)
+%% ?- proposal_state(X0, X1).
+%% ?- conflict(X0, X1, X2, X3).
+%% ?- knowledge_gain(X0, X1, X2).
+%% ?- recommended_action(X0, X1, X2).
+%% ?- decision_reason(X0, X1, X2).
+%% ?- audit(X0, X1, X2, X3, X4).
+%% ?- feedback_signal(X0, X1, X2).
+%% ?- symbiosis_gain(X0, X1).
+%% ?- knowledge_exchange(X0, X1).
+%% ?- pipeline_step(X0, X1).
+%% ?- cognitive_parallel(X0, X1).
 
 % --- RDF vocabulary ----------------------------------------------------------
 

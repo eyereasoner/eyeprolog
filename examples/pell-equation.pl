@@ -8,7 +8,7 @@
 % The fundamental solution (3,2) induces a linear recurrence for all positive
 % solutions of x^2 - 2y^2 = 1.  The example querys later solutions and also
 % rechecks the Diophantine identity so the generated sequence is auditable.
-%% goal: pell_answer(X0, X1)
+%% ?- pell_answer(X0, X1).
 
 
 

@@ -19,7 +19,7 @@ fixed_list_max([X|Xs], Max) :-
     fixed_list_max(Xs, Max0),
     ( X > Max0 -> Max = X ; Max = Max0 ).
 
-%% goal: answer(X0, X1, X2, X3)
+%% ?- answer(X0, X1, X2, X3).
 
 answer(WholeListWrongAnswer, TwoElementSublistAlreadyWrong, BaseCaseIsCorrect, FixedAnswer) :-
     % The full query already gives the wrong maximum...

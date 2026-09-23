@@ -2,5 +2,5 @@
 record((left(a), right(b))).
 accept((left(a), right(b))).
 answer(ok, F) :- (record(F), accept(F)).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

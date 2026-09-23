@@ -7,7 +7,7 @@
 % with lowercase atom names.  `once/1` asks for one valid colouring rather than
 % enumerating all possible four-colour assignments.
 
-%% goal: four_color_answer(X0, X1)
+%% ?- four_color_answer(X0, X1).
 
 
 color(red).

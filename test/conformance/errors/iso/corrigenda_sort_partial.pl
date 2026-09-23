@@ -1,3 +1,3 @@
-%% goal: trigger
+%% ?- trigger.
 
 trigger :- sort([a|_], _).

@@ -6,13 +6,13 @@
 % mean is 5, variance is 4, and standard dederivation is 2.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: count(X0, X1)
+%% ?- count(X0, X1).
 
-%% goal: mean(X0, X1)
+%% ?- mean(X0, X1).
 
-%% goal: populationVariance(X0, X1)
+%% ?- populationVariance(X0, X1).
 
-%% goal: populationStddev(X0, X1)
+%% ?- populationStddev(X0, X1).
 
 
 % The sample is one list fact, which lets recursive list folds demonstrate

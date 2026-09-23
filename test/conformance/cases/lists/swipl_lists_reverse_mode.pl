@@ -2,7 +2,7 @@
 % See test/conformance/THIRD_PARTY.md.
 :- use_module(library(lists)).
 
-%% goal: lists_reverse_mode(X0)
+%% ?- lists_reverse_mode(X0).
 
 % A trailing cut keeps this deterministic: nothing else stops the search
 % for a second (nonexistent) solution once L's unique correct length is

@@ -1,7 +1,7 @@
 % Adapted from Logtalk op/3 tests 01, 02, 09, 18, 32, and 33 and
 % current_op/3 tests 01 through 39. Modified for EyeProlog's harness.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: operator_results(X0, X1, X2)
+%% ?- operator_results(X0, X1, X2).
 
 operator_results(RulePriority, PlusPriority, PlusSpecifier) :-
     current_op(RulePriority, xfx, ':-'),

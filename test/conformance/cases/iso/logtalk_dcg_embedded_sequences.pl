@@ -5,6 +5,6 @@ three_checks(X) --> {X = a}, {atom(X)}, {X == a}, [X].
 grouped_checks(X) --> {X = b, atom(X)}, [X].
 embedded_choice --> ({fail}; {true}), [ok].
 
-%% goal: phrase(three_checks(X), Tokens)
-%% goal: phrase(grouped_checks(X), Tokens)
-%% goal: phrase(embedded_choice, Tokens)
+%% ?- phrase(three_checks(X), Tokens).
+%% ?- phrase(grouped_checks(X), Tokens).
+%% ?- phrase(embedded_choice, Tokens).

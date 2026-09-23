@@ -5,7 +5,7 @@
 % stage, builds a trace with an explicit difference-list tail, checks every
 % transition, and compares variable-sharing schemas modulo variable names.
 
-%% goal: pipeline_audit(X0)
+%% ?- pipeline_audit(X0).
 
 stage(0, receive).
 stage(1, parse).

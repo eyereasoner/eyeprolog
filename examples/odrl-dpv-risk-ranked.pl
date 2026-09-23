@@ -55,7 +55,7 @@ rdf(iri('https://example.org/data-portability'), iri('https://example.org/import
 
 % ODRL agreement rules and DPV-style needs are RDF data. The rules derive one
 % risk per conflict, score it, and return one deterministic ranking.
-%% goal: result_rdf(_, _, _, _)
+%% ?- result_rdf(_, _, _, _).
 
 consumer_risk_report(Ranked) :-
   findall(

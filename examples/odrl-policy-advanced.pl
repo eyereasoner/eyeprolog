@@ -27,7 +27,7 @@ rdf(iri('https://example.org/transfer-prohibition'), iri('http://www.w3.org/ns/o
 % One policy is evaluated against three requests. The report demonstrates a
 % constrained permission with a duty, a failed purpose constraint, and an
 % explicit prohibition.
-%% goal: result_rdf(_, _, _, _)
+%% ?- result_rdf(_, _, _, _).
 
 request(research_use, research_hospital, use, health_dataset, medical_research, eu).
 request(commercial_use, research_hospital, use, health_dataset, commercial, eu).

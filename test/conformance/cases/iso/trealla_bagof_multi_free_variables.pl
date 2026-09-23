@@ -7,17 +7,17 @@ foo(b, c, ff).
 foo(c, c, gg).
 foo(d, e, gg).
 
-%% goal: bagof_grouped_by_two_free_variables(X0)
+%% ?- bagof_grouped_by_two_free_variables(X0).
 
 bagof_grouped_by_two_free_variables(Cs) :-
     bagof(C, foo(_, _, C), Cs).
 
-%% goal: bagof_two_free_variables_quantified(X0)
+%% ?- bagof_two_free_variables_quantified(X0).
 
 bagof_two_free_variables_quantified(Cs) :-
     bagof(C, A^B^foo(A, B, C), Cs).
 
-%% goal: setof_two_free_variables_quantified(X0)
+%% ?- setof_two_free_variables_quantified(X0).
 
 setof_two_free_variables_quantified(Cs) :-
     setof(C, A^B^foo(A, B, C), Cs).

@@ -4,11 +4,11 @@
 % same tiny inheritance idea with plain vocabulary names.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: type(X0, X1)
+%% ?- type(X0, X1).
 
-%% goal: subclassOf(X0, X1)
+%% ?- subclassOf(X0, X1).
 
-%% goal: succeeds(X0, X1)
+%% ?- succeeds(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

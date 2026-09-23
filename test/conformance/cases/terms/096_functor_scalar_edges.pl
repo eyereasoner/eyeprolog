@@ -1,5 +1,5 @@
 % Reference 9.10: functor/3 reports atomic terms with arity zero and lists as ./2 cells.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(atom, pair(Name, Arity)) :- functor(alpha, Name, Arity).
 answer(quoted_atom, pair(Name, Arity)) :- functor('hello-world', Name, Arity).

@@ -32,7 +32,7 @@ a(X,Y) :- a4(X,Y).
 a(X,Y) :- a5(X,Y).
 
 benchmark(Count) :- findall(pair(X,Y), a(X,Y), A), length(A, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 c2(71,362).
 c2(750,56).

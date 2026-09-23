@@ -1,5 +1,5 @@
 % `_name` is a named variable and must be reused within a clause.
-%% goal: answer(X0)
+%% ?- answer(X0).
 
 pair(a, a).
 pair(a, b).

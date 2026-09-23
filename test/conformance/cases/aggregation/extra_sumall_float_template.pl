@@ -1,4 +1,4 @@
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 val(1.5).
 val(2.25).

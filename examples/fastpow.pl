@@ -7,15 +7,15 @@
 % The file also includes deliberately slower and tower-style reports, making it a
 % small arithmetic benchmark for recursive definitions, modular arithmetic, and
 % bounded output selection.
-%% goal: pow(X0, X1)
+%% ?- pow(X0, X1).
 
-%% goal: powSlow(X0, X1)
+%% ?- powSlow(X0, X1).
 
-%% goal: powMod1e6(X0, X1)
+%% ?- powMod1e6(X0, X1).
 
-%% goal: tower(X0, X1)
+%% ?- tower(X0, X1).
 
-%% goal: towerMod1e6(X0, X1)
+%% ?- towerMod1e6(X0, X1).
 
 
 % Base case and parity split for exponentiation by squaring.  Even exponents

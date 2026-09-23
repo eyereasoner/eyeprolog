@@ -47,7 +47,7 @@ export function validateOpenRuleBench(root = ROOT) {
 }
 
 function validateSource(engine, name, text, errors) {
-  if (!/^%% goal:\s*.+$/m.test(text)) errors.push(`${engine}/${name}: missing %% goal:`);
+  if (!/^%%\s*\?-\s*.+$/m.test(text)) errors.push(`${engine}/${name}: missing %% ?- goal`);
   if ((text.match(/\(/g) ?? []).length !== (text.match(/\)/g) ?? []).length) {
     errors.push(`${engine}/${name}: unbalanced parentheses`);
   }

@@ -6,7 +6,7 @@ replace, [a, b] --> [foo].
 push_one(X), [X] --> [X].
 push_pair(X, Y), [X, Y] --> [X, Y].
 
-%% goal: phrase(look_ahead(a), [a], Rest)
-%% goal: phrase(replace, [foo, tail], Rest)
-%% goal: phrase(push_one(x), [x], Rest)
-%% goal: phrase(push_pair(a, b), [a, b], Rest)
+%% ?- phrase(look_ahead(a), [a], Rest).
+%% ?- phrase(replace, [foo, tail], Rest).
+%% ?- phrase(push_one(x), [x], Rest).
+%% ?- phrase(push_pair(a, b), [a, b], Rest).

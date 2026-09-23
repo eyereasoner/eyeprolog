@@ -5,7 +5,7 @@
 :- op(200, yf, done).
 :- op(650, xfx, [links, relates]).
 
-%% goal: operator_terms(A, B, C, D)
+%% ?- operator_terms(A, B, C, D).
 
 operator_terms(A, B, C, D) :-
     A = (alice likes bob likes carol),
@@ -13,24 +13,24 @@ operator_terms(A, B, C, D) :-
     C = (maybe maybe alice),
     D = (alice done done).
 
-%% goal: declared_operator(P, S)
+%% ?- declared_operator(P, S).
 
 declared_operator(P, S) :-
     current_op(P, S, likes).
 
-%% goal: operator_list_declaration(A, B)
+%% ?- operator_list_declaration(A, B).
 
 operator_list_declaration(A, B) :-
     A = (alice links bob),
     B = (alice relates bob).
 
-%% goal: runtime_operator(P, S)
+%% ?- runtime_operator(P, S).
 
 runtime_operator(P, S) :-
     op(675, xfx, runtime_link),
     current_op(P, S, runtime_link).
 
-%% goal: removed_operator(ok)
+%% ?- removed_operator(ok).
 
 removed_operator(ok) :-
     op(675, xfx, temporary_link),

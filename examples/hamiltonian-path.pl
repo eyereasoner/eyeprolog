@@ -7,9 +7,9 @@
 % once.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: hasHamiltonianPath(X0, X1)
+%% ?- hasHamiltonianPath(X0, X1).
 
-%% goal: hamiltonianPath(X0, X1)
+%% ?- hamiltonianPath(X0, X1).
 
 
 % The finite six-vertex graph is small enough to search directly.  adjacent/2

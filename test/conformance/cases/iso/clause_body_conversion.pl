@@ -14,17 +14,17 @@ nested(A, B, C) :- (A ; B), (C -> true ; true).
 cut_scope(Goal) :- Goal.
 cut_scope(_) :- true.
 
-%% goal: text_body(X0)
+%% ?- text_body(X0).
 
 text_body(Body) :-
     clause(from_text(true), Body).
 
-%% goal: nested_body(X0)
+%% ?- nested_body(X0).
 
 nested_body(Body) :-
     clause(nested(a, b, c), Body).
 
-%% goal: assert_agrees_with_text(X0)
+%% ?- assert_agrees_with_text(X0).
 
 % The same clause added at run time must convert to the same body term.
 assert_agrees_with_text(Agree) :-
@@ -33,7 +33,7 @@ assert_agrees_with_text(Agree) :-
     clause(asserted(true), AssertedBody),
     ( TextBody == AssertedBody -> Agree = agree ; Agree = differ ).
 
-%% goal: cut_is_local(X0)
+%% ?- cut_is_local(X0).
 
 % 7.8.3: a cut in the argument of call/1 is local to that call, so it must not
 % prune the remaining clauses of cut_scope/1.

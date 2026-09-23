@@ -1,6 +1,6 @@
 % Adapted from Trealla Prolog tests/tests/test0059.pl (test18).
 % See test/conformance/THIRD_PARTY.md.
-%% goal: ground_progressive_backtracking(ok)
+%% ?- ground_progressive_backtracking(ok).
 
 t18a2(X) :- X = f(a, b), fail.
 t18a2(X) :- X = f(b, c), fail.

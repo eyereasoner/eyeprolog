@@ -1,7 +1,7 @@
 % Adapted from Scryer Prolog tests-pl/iso-conformity-tests.pl, test
 % 53. See test/conformance/THIRD_PARTY.md.
 
-%% goal: large_float_exponent(X)
+%% ?- large_float_exponent(X).
 
 large_float_exponent(X) :-
     X = 1.0e100,

@@ -5,7 +5,7 @@
 % list without requiring a host accelerator.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: primes(X0, X1)
+%% ?- primes(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

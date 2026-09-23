@@ -1,5 +1,5 @@
 % Reference 11.1: recursive predicates are tabled only when declared explicitly.
-%% goal: reach(X0, X1)
+%% ?- reach(X0, X1).
 
 :- table reach_any/2.
 

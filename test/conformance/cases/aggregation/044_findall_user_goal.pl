@@ -3,5 +3,5 @@ p(b).
 p(a).
 p(b).
 answer(bag, X) :- findall(P, p(P), X).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

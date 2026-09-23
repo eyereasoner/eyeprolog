@@ -4,7 +4,7 @@
 % non-overlapping schedules, value cardinalities with costs, Hamiltonian
 % circuits, distinct-value counting, and three-way integer comparison.
 
-%% goal: advanced_clpz(X0, X1)
+%% ?- advanced_clpz(X0, X1).
 
 advanced_clpz(table, compatible(4, Y, Distinct)) :-
   tuples_in([[X, Y]], [[1, 2], [1, 5], [4, 0], [4, 3]]),

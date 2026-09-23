@@ -1,5 +1,5 @@
 % Reference 9.1: reusable string built-ins cover empty results and scalar list items.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(split_missing_separator, X) :- split('abc', ',', X).
 answer(split_empty_separator, X) :- split('abc', '', X).

@@ -2,7 +2,7 @@
 % Modified for EyeProlog's conformance harness. See test/conformance/THIRD_PARTY.md.
 :- dynamic(foo/1).
 foo(a).
-%% goal: abolish_result
+%% ?- abolish_result.
 
 abolish_result :-
     abolish(foo/1),

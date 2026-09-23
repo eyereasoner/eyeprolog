@@ -5,11 +5,11 @@
 % combination/3 generates the same subset in several selection orders.  findall/3
 % collects those candidates, and sort/2 canonicalizes the list so each unordered
 % 3-combination of five items is reported once.
-%% goal: combinations(X0, X1)
+%% ?- combinations(X0, X1).
 
-%% goal: count(X0, X1)
+%% ?- count(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % select/3 nondeterministically removes one item from a list; because it is an

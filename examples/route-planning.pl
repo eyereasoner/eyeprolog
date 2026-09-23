@@ -5,7 +5,7 @@
 % and a structured `go(..., ..., ...)` plan.  The plan is ordinary data, so the
 % route can be inspected, stored, or used by later rules.
 
-%% goal: route_to_nantes(X0, X1)
+%% ?- route_to_nantes(X0, X1).
 
 oneway(paris, orleans).
 oneway(paris, chartres).

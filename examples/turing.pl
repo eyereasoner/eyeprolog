@@ -7,11 +7,11 @@
 % updates that zipper representation.  The blank tape symbol is #.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: input(X0, X1)
+%% ?- input(X0, X1).
 
-%% goal: output(X0, X1)
+%% ?- output(X0, X1).
 
-%% goal: addsOne(X0, X1)
+%% ?- addsOne(X0, X1).
 
 
 % compute/2 initializes the tape and starts from the machine's start state.

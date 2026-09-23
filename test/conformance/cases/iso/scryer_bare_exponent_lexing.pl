@@ -3,7 +3,7 @@
 
 :- op(9, xf, e9).
 
-%% goal: bare_exponent_lexing(X)
+%% ?- bare_exponent_lexing(X).
 
 bare_exponent_lexing(X) :-
     X = (1e9),

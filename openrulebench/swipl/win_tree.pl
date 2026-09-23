@@ -6,7 +6,7 @@
 % Locally stratified Win instance (scaled portable data).
 win(X) :- move(X,Y), \+ win(Y).
 benchmark(Count) :- findall(X, win(X), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 move(1,2).
 move(1,3).

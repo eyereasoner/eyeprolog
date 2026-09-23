@@ -8,13 +8,13 @@
 % Each derived quantity is represented as its own predicate rather than a single
 % formula blob, making the proof trace useful for debugging a failed actuator
 % normalization or control-signal calculation.
-%% goal: controlSignal(X0, X1)
+%% ?- controlSignal(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: normalizedMeasurement(X0, X1)
+%% ?- normalizedMeasurement(X0, X1).
 
-%% goal: log10(X0, X1)
+%% ?- log10(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

@@ -9,7 +9,7 @@
 tc(X,Y) :- par(X,Y).
 tc(X,Y) :- par(X,Z), tc(Z,Y).
 benchmark(Count) :- findall(pair(X,Y), tc(X,Y), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 par(210,27).
 par(329,114).

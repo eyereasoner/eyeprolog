@@ -1,5 +1,5 @@
 % Reference 7.3, 9.2, 9.5: finite arithmetic recursion works with generated ranges.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 even(0).
 even(N) :- (N > 0), (M is N - 1), odd(M).

@@ -1,4 +1,4 @@
-%% goal: answer(X0)
+%% ?- answer(X0).
 
 p(a) :- \+ q(a).
 q(a) :- \+ p(a).

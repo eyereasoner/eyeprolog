@@ -1,6 +1,6 @@
 % Adapted from Trealla Prolog tests/issues/test1137.pl.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: write_term_ignore_ops_quoted_independence(ok)
+%% ?- write_term_ignore_ops_quoted_independence(ok).
 
 write_term_ignore_ops_quoted_independence(ok) :-
     write_term('a b', [ignore_ops(true)]), nl,

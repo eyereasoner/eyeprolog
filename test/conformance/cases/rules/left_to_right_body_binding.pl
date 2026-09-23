@@ -1,4 +1,4 @@
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 parent(alice, bob).
 parent(bob, clara).

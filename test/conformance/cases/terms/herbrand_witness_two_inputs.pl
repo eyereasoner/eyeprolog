@@ -1,5 +1,5 @@
 % Existential-style consequence with two universal variables represented as a Herbrand term.
-%% goal: answer(X0, X1, X2)
+%% ?- answer(X0, X1, X2).
 
 takes(alice, logic).
 takes(alice, math).

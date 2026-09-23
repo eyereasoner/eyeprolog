@@ -3,7 +3,7 @@
 
 :- op(1, yf, yf1).
 
-%% goal: postfix_operator_negative_number(T)
+%% ?- postfix_operator_negative_number(T).
 
 postfix_operator_negative_number(T) :-
     T = {-1 yf1},

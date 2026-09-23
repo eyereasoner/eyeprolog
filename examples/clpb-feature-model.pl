@@ -4,8 +4,8 @@
 % requires encryption; an edge deployment additionally requires auditing.
 % sat_count/2 counts all valid configurations without enumerating them first.
 
-%% goal: feature_plan(X0)
-%% goal: feature_plan_count(X0)
+%% ?- feature_plan(X0).
+%% ?- feature_plan_count(X0).
 
 feature_constraints(Cloud, Edge, Audit, Encryption) :-
   sat((Cloud # Edge) *

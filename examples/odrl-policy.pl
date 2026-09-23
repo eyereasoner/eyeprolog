@@ -14,7 +14,7 @@ rdf(iri('https://example.org/purpose-constraint'), iri('http://www.w3.org/ns/odr
 rdf(iri('https://example.org/purpose-constraint'), iri('http://www.w3.org/ns/odrl/2/rightOperand'), iri('https://example.org/research'), default_graph).
 
 % Read one deterministic decision from the ODRL policy graph.
-%% goal: result_rdf(_, _, _, _)
+%% ?- result_rdf(_, _, _, _).
 
 odrl_policy_decision(permit(use, research, dataset)) :-
   rdf(

@@ -9558,18 +9558,23 @@ their ground answers in the order the goals were supplied.
 Use `--quiet` for command-style goals: Prolog output such as `write/1` remains
 visible, while the resolved answer terms are suppressed.
 
-For a self-running example, place the host goal in an ordinary comment:
+A program can also carry its own question. Write it as an ISO query, or as
+that same query in a comment:
 
-```eyeprolog
-%% goal: ancestor(ada, Who)
+```text
+?- ancestor(ada, Who).      % run by this and any other ISO processor
+%% ?- ancestor(ada, Who).   % run by this one, invisible to the rest
 ```
 
-When no `-g` or `--goal` option is present, the CLI reads these comments from all
-input sources and runs them in source order. An explicit goal option overrides them.
-Because `%% goal:` is a comment rather than a Prolog directive, another ISO
-processor may ignore it and the program remains portable Prolog text. External
-goals are still preferable when a script, shell history, or API call should
-make the observed question explicit.
+When no `-g` or `--goal` option is present, the CLI runs the queries it finds
+in the input sources, in source order; an explicit goal option overrides them.
+The two spellings differ only in who runs them. A `?-` query is what the
+standard defines and what a sibling engine such as eyeron writes, so a program
+written that way runs in both. A `%% ?-` comment is invisible to any other
+processor, which is what keeps a file portable to the external Prologs the
+conformance harness runs it through. External goals are still preferable when
+a script, shell history, or API call should make the observed question
+explicit.
 
 | Option | Meaning |
 | --- | --- |
@@ -9585,7 +9590,7 @@ make the observed question explicit.
 | `-s`, `--stats` | Print final solver and memory statistics to stderr after execution |
 | `-v`, `--version` | Print the package version |
 | `-w`, `--warnings` | Print non-fatal portability warnings |
-| `-g`, `--goal Goal` | Solve a callable goal; may be repeated; overrides `%% goal:` comments |
+| `-g`, `--goal Goal` | Solve a callable goal; may be repeated; overrides queries in the source |
 | `--` | Treat following arguments as inputs |
 
 Short flags may be combined, so `-pqw` is equivalent to `-p -q -w`.

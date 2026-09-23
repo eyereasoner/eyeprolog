@@ -1,5 +1,5 @@
 % Reference 9.10: term inspection can decompose and recompose compound terms.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(functor_compound, pair(Name, Arity)) :- functor(edge(a, b), Name, Arity).
 answer(arg_first, X) :- arg(1, edge(a, b), X).

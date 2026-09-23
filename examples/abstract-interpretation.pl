@@ -11,11 +11,11 @@
 % deliberately conservative: if the join point can see y = zero on any path, the
 % division is reported as a possible division-by-zero warning.
 
-%% goal: absState(X0, X1, X2)
+%% ?- absState(X0, X1, X2).
 
-%% goal: absWarning(X0, X1)
+%% ?- absWarning(X0, X1).
 
-%% goal: absConclusion(X0, X1)
+%% ?- absConclusion(X0, X1).
 
 
 

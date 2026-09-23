@@ -8,17 +8,17 @@
 % its original shape, describe the alignment declaratively, and derive target facts
 % without rewriting the original assertions.
 
-%% goal: type(X0, X1)
+%% ?- type(X0, X1).
 
-%% goal: target_fact(X0, X1, X2)
+%% ?- target_fact(X0, X1, X2).
 
-%% goal: runtime_rule(X0, X1)
+%% ?- runtime_rule(X0, X1).
 
-%% goal: target_predicate(X0, X1)
+%% ?- target_predicate(X0, X1).
 
-%% goal: flow_emits(X0, X1)
+%% ?- flow_emits(X0, X1).
 
-%% goal: trusted_by(X0, X1)
+%% ?- trusted_by(X0, X1).
 
 
 sub_class(local_observation, sosa_observation).

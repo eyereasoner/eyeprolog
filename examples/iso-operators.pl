@@ -5,7 +5,7 @@
 :- op(600, xfx, reports).
 :- op(500, xfy, and).
 
-%% goal: report(X0, X1)
+%% ?- report(X0, X1).
 
 
 sensor_7 reports temperature.

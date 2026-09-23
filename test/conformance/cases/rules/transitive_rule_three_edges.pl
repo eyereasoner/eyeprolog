@@ -1,4 +1,4 @@
-%% goal: path(X0, X1)
+%% ?- path(X0, X1).
 
 edge(a, b).
 edge(b, c).

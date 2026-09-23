@@ -4,7 +4,7 @@
 % explicit and reproducible: each `does/2` fact records an observed employee
 % action, and the rules classify compliant and non-compliant behaviour.
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
 
 employee(alice).

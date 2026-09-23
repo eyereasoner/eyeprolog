@@ -1,5 +1,5 @@
 % Reference 9.2: transcendental functions have stable exact outputs at simple inputs.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(sin_zero, X) :- (X is sin(0)).
 answer(cos_zero, X) :- (X is cos(0)).

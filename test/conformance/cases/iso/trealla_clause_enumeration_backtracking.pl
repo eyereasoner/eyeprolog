@@ -1,6 +1,6 @@
 % Adapted from Trealla Prolog tests/tests/test0019.pl.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: clause_enumeration_backtracking(X0)
+%% ?- clause_enumeration_backtracking(X0).
 
 populate_x24c :-
     assertz(x24c(0)),

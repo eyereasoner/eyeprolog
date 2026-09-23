@@ -1,5 +1,5 @@
 % Reference 9.6 and 9.9: matches/3 turns named captures into context terms.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 line('level=warn code=E42 user=bob').
 context_member((Left, _right), Member) :- context_member(Left, Member).

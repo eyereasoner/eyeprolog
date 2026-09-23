@@ -24,7 +24,7 @@ gloss(W,G) :- s(S,_,W,_,_,_), gloss_fact(S,G).
 antonyms(W1,W2) :- s(S1,_,W1,_,_,_), antonym_synsets(S1,S2), s(S2,_,W2,_,_,_).
 adjective_clusters(W1,W2) :- s(S1,_,W1,_,_,_), similar_synsets(S1,S2), s(S2,_,W2,_,_,_).
 benchmark(Count) :- findall(pair(W1,W2), hypernyms(W1,W2), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 s(s1,1,word1a,n,1,0).
 s(s1,2,word1b,n,1,0).

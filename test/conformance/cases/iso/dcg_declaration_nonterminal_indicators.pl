@@ -4,4 +4,4 @@
 
 shared --> [x].
 
-%% goal: phrase(shared, [x])
+%% ?- phrase(shared, [x]).

@@ -11,7 +11,7 @@ c1(X,Y) :- d1(X,Z), d2(Z,Y).
 benchmark_ff(Count) :- findall(pair(X,Y), a(X,Y), A), length(A, Count).
 benchmark_bf(Count) :- findall(Y, a(1,Y), A), length(A, Count).
 benchmark_fb(Count) :- findall(X, a(X,1), A), length(A, Count).
-%% goal: benchmark_ff(Count)
+%% ?- benchmark_ff(Count).
 
 c2(610,383).
 c2(889,268).

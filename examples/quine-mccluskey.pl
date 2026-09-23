@@ -15,11 +15,11 @@
    ─────────────────────────────────────────────────────────────────────────── */
 
 % Eyelet Directives
-%% goal: answer(_)
+%% ?- answer(_).
 
-%% goal: reason(_)
+%% ?- reason(_).
 
-%% goal: check(_, _, _)
+%% ?- check(_, _, _).
 
 
 :- dynamic(solution_cache/2).

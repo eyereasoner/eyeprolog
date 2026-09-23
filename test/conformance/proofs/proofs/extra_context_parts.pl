@@ -1,4 +1,4 @@
-%% goal: answer(X0, X1, X2)
+%% ?- answer(X0, X1, X2).
 
 context_statement(alpha).
 context_statement(beta(2)).

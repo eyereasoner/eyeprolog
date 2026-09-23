@@ -3,9 +3,9 @@
 % built-ins through ordinary relations.  The want_* facts keep the example from
 % enumerating an unbounded arithmetic domain.
 
-%% goal: prod(X0, X1)
+%% ?- prod(X0, X1).
 
-%% goal: pow(X0, X1)
+%% ?- pow(X0, X1).
 
 
 % Inputs are explicit so the example does not enumerate an unbounded domain.

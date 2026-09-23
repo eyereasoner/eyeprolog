@@ -1,5 +1,5 @@
 % Reference 9.10: ISO negation and portable once/1 are scoped control operations.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 choice(a).
 choice(b).

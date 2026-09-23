@@ -18,7 +18,7 @@ edge(b, c).
 path(X, Y) :- path(X, Z), edge(Z, Y).
 path(X, Y) :- edge(X, Y).
 
-%% goal: overlap_example(Result)
+%% ?- overlap_example(Result).
 
 overlap_example(overlap(
     booleans([X,Y]),

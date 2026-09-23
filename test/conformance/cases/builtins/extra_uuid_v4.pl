@@ -10,4 +10,4 @@ answer(uuid_v4, true) :-
   sub_atom(UUID, 19, 1, 16, Variant),
   member(Variant, ['8', '9', a, b]),
   sub_atom(UUID, 23, 1, 12, '-').
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).

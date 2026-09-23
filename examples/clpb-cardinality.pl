@@ -4,8 +4,8 @@
 % and exactly one of Bob and Dan must participate. card/2 states the quorum
 % size directly; labeling/1 enumerates the admissible Boolean assignments.
 
-%% goal: review_quorum(X0)
-%% goal: review_quorum_count(X0)
+%% ?- review_quorum(X0).
+%% ?- review_quorum_count(X0).
 
 review_constraints(Alice, Bob, Carol, Dan) :-
   sat(card([2], [Alice, Bob, Carol, Dan]) *

@@ -1,5 +1,5 @@
 % Corrigendum 3: variable_names/1 accepts A=T pairs and uses the leftmost match.
-%% goal: corrigendum3_write_variable_names
+%% ?- corrigendum3_write_variable_names.
 
 corrigendum3_write_variable_names :-
     write_term(pair(X, Y), [

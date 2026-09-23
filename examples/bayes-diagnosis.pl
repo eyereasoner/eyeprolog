@@ -5,17 +5,17 @@
 % in the Eyeling repository.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: scores(X0, X1)
+%% ?- scores(X0, X1).
 
-%% goal: evidenceTotal(X0, X1)
+%% ?- evidenceTotal(X0, X1).
 
-%% goal: result(X0, X1)
+%% ?- result(X0, X1).
 
-%% goal: disease(X0, X1)
+%% ?- disease(X0, X1).
 
-%% goal: unnormalized(X0, X1)
+%% ?- unnormalized(X0, X1).
 
-%% goal: posterior(X0, X1)
+%% ?- posterior(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

@@ -9,7 +9,7 @@
 % after translating N3 statements to eyeprolog relation terms.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: cycle(X0, X1)
+%% ?- cycle(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

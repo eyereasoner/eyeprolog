@@ -1,5 +1,5 @@
 % Corrigendum 2 arithmetic additions and distinct // versus div rounding.
-%% goal: corrigenda_arithmetic(Div, Trunc, Max, Min, Power, Asin, Acos, Atan2, Tan, Pi, Xor)
+%% ?- corrigenda_arithmetic(Div, Trunc, Max, Min, Power, Asin, Acos, Atan2, Tan, Pi, Xor).
 
 corrigenda_arithmetic(Div, Trunc, Max, Min, Power, Asin, Acos, Atan2, Tan, Pi, Xor) :-
     Div is -7 div 3,

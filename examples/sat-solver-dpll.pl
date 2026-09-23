@@ -8,13 +8,13 @@
 % impossible, and accepts a complete assignment when every clause is satisfied.
 % aggregate_min/5 is then used only to choose one canonical satisfying model.
 
-%% goal: satModel(X0)
+%% ?- satModel(X0).
 
-%% goal: satValue(X0, X1)
+%% ?- satValue(X0, X1).
 
-%% goal: satClauseStatus(X0, X1)
+%% ?- satClauseStatus(X0, X1).
 
-%% goal: satConclusion(X0, X1)
+%% ?- satConclusion(X0, X1).
 
 
 % CNF formula:

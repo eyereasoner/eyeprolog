@@ -3,7 +3,7 @@
 % recursive finder stops when |f(x)| is below tolerance; otherwise it applies
 % x := x - f(x)/f'(x) using the corresponding derivative rule.
 
-%% goal: findRoot(X0, X1)
+%% ?- findRoot(X0, X1).
 
 
 want_root([1, 1.0, 1.0e-15]).

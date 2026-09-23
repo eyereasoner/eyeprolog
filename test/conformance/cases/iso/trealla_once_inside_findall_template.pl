@@ -1,6 +1,6 @@
 % Adapted from Trealla Prolog tests/tests/test0059.pl (test16c).
 % See test/conformance/THIRD_PARTY.md.
-%% goal: once_inside_findall_template(X0)
+%% ?- once_inside_findall_template(X0).
 
 age_once(peter, 7).
 age_once(anne, 5).

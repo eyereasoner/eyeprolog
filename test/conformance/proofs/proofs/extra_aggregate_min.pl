@@ -1,4 +1,4 @@
-%% goal: answer(X0, X1, X2)
+%% ?- answer(X0, X1, X2).
 
 score(2, b).
 score(1, a).

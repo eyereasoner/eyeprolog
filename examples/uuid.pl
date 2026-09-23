@@ -6,7 +6,7 @@
 % The same initial seed reproduces the same UUID across runs. Threading the
 % returned seed into another call produces the next UUID in the sequence.
 
-%% goal: uuid_example(Result)
+%% ?- uuid_example(Result).
 
 uuid_example(true) :-
   uuid(20260807, UUID, _),

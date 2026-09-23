@@ -3,9 +3,9 @@
 % minimisation, special-category safeguards, and international-transfer safety.
 % Separate failure rules produce concise reasons for noncompliant cases.
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % case_alpha is intended to pass; case_beta is intentionally incomplete.

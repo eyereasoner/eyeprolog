@@ -8,7 +8,7 @@
 % subjects with more than four registered dogs.
 %
 % The example is intentionally tiny but useful as an aggregate-counting pattern.
-%% goal: mustHave(X0, X1)
+%% ?- mustHave(X0, X1).
 
 
 hasDog(alice, dog1).

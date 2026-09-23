@@ -14,7 +14,7 @@ nonsg(X,Y) :- tc(X,Y).
 nonsg(X,Y) :- tc(Y,X).
 sg2(X,Y) :- sg(X,Y), \+ nonsg(X,Y).
 benchmark(Count) :- findall(pair(X,Y), sg2(X,Y), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 par(336,121).
 par(149,136).

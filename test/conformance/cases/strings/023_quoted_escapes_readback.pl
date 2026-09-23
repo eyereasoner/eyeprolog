@@ -2,4 +2,4 @@
 raw(char_list, "line\nnext\t\\slash").
 raw(atom, 'line\nnext\t\\slash').
 answer(K, V) :- raw(K, V).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).

@@ -8,9 +8,9 @@
 % route network is not asserted as ambient edge facts.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: edge(X0, X1)
+%% ?- edge(X0, X1).
 
-%% goal: path(X0, X1)
+%% ?- path(X0, X1).
 
 
 % The weighted graph stays inside weighted_graph/2; base_link/3 projects only

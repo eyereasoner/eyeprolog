@@ -8,17 +8,17 @@
 % The constants describe one regulator design. The rules intentionally keep
 % each engineering equation separate so proof output can point to the exact
 % calculation that made the design pass or fail.
-%% goal: dutyCycle(X0, X1)
+%% ?- dutyCycle(X0, X1).
 
-%% goal: inductorRipple_A(X0, X1)
+%% ?- inductorRipple_A(X0, X1).
 
-%% goal: rippleRatio(X0, X1)
+%% ?- rippleRatio(X0, X1).
 
-%% goal: capacitorRipple_V(X0, X1)
+%% ?- capacitorRipple_V(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

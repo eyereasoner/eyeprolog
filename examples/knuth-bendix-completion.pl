@@ -9,7 +9,7 @@
 % but bounds the hard part: the rewrite system is fixed, and a small catalog of
 % critical overlaps is checked for joinability by normalization.
 
-%% goal: kbAnswer(X0, X1)
+%% ?- kbAnswer(X0, X1).
 
 
 

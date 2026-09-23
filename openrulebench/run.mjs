@@ -77,8 +77,8 @@ function findExe(engine) {
 
 function goalFor(file) {
   const text = fs.readFileSync(file, 'utf8');
-  const match = text.match(/^%% goal:\s*(.+)$/m);
-  if (!match) throw new Error(`no %% goal: in ${file}`);
+  const match = text.match(/^%%\s*\?-\s*(.+?)\.?\s*$/m);
+  if (!match) throw new Error(`no %% ?- goal in ${file}`);
   return match[1].trim();
 }
 

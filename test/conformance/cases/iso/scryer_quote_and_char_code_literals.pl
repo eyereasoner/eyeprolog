@@ -1,7 +1,7 @@
 % Adapted from Scryer Prolog tests-pl/iso-conformity-tests.pl, tests
 % 100, 103, 114-116, and 165. See test/conformance/THIRD_PARTY.md.
 
-%% goal: quote_and_char_code_literals(A, B, C, D)
+%% ?- quote_and_char_code_literals(A, B, C, D).
 
 quote_and_char_code_literals(A, B, C, D) :-
     '''' = '\'',

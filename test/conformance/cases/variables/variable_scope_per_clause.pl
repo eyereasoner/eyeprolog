@@ -1,5 +1,5 @@
 % Reusing a variable name in separate clauses does not connect the clauses.
-%% goal: answer(X0)
+%% ?- answer(X0).
 
 left(a).
 right(b).

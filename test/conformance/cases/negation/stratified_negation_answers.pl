@@ -1,5 +1,5 @@
 % Stratified negation is portable and produces ordinary answers.
-%% goal: open(X0)
+%% ?- open(X0).
 
 place(a).
 place(b).

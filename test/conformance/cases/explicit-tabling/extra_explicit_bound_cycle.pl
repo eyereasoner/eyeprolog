@@ -1,4 +1,4 @@
-%% goal: reach(X0, X1)
+%% ?- reach(X0, X1).
 
 :- table path/2.
 

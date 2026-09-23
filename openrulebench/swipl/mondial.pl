@@ -11,7 +11,7 @@ province_stat(P,Area,Population,City,CityPopulation) :-
     located(City,prov(P,china)),
     att(City,population,CityPopulation).
 benchmark(Count) :- findall(row(P,A,N,C,CN), province_stat(P,A,N,C,CN), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 isa(china,country).
 isa(prov(p0_0,china),provi).

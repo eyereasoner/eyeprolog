@@ -3,7 +3,7 @@
 % The grammar separates surface tokens from the structured command term used
 % by an application.  phrase/2 requires complete input, while phrase/3 leaves
 % unconsumed tokens available to a surrounding parser.
-%% goal: dcg_example(X0, X1)
+%% ?- dcg_example(X0, X1).
 
 command(set(light(Room), State)) -->
   [set], room(Room), [light, to], state(State).

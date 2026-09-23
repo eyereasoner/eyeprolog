@@ -6,17 +6,17 @@
 % =============================================================================================================================
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: holds_result(X0, X1)
+%% ?- holds_result(X0, X1).
 
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
-%% goal: result(X0, X1)
+%% ?- result(X0, X1).
 
-%% goal: checkPassed(X0, X1)
+%% ?- checkPassed(X0, X1).
 
-%% goal: arc(X0, X1)
+%% ?- arc(X0, X1).
 
 
 :- discontiguous(a/2).

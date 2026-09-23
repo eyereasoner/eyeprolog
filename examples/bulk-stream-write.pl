@@ -9,7 +9,7 @@
 % character round-trips. The path is under /tmp so the source tree is
 % unchanged.
 
-%% goal: bulk_write_result(X0, X1)
+%% ?- bulk_write_result(X0, X1).
 
 bulk_write_chars(_, 0) :- !.
 bulk_write_chars(Stream, N) :-

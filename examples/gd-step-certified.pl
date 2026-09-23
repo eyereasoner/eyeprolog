@@ -5,23 +5,23 @@
 % This is a proof-friendly optimization trace: every numeric fact needed to
 % justify the step is queried, so proof output can certify why the update
 % is accepted.
-%% goal: eta(X0, X1)
+%% ?- eta(X0, X1).
 
-%% goal: etaLeHalf(X0, X1)
+%% ?- etaLeHalf(X0, X1).
 
-%% goal: xBounds(X0, X1)
+%% ?- xBounds(X0, X1).
 
-%% goal: midpoint(X0, X1)
+%% ?- midpoint(X0, X1).
 
-%% goal: width(X0, X1)
+%% ?- width(X0, X1).
 
-%% goal: gradientBounds(X0, X1)
+%% ?- gradientBounds(X0, X1).
 
-%% goal: stepBounds(X0, X1)
+%% ?- stepBounds(X0, X1).
 
-%% goal: objectiveBounds(X0, X1)
+%% ?- objectiveBounds(X0, X1).
 
-%% goal: widthContractsAt(X0, X1)
+%% ?- widthContractsAt(X0, X1).
 
 
 :- discontiguous(x_bounds/3).

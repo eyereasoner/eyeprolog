@@ -4,7 +4,7 @@
 % Its selected output computes (1 * 2 + 3)! and emits the factorial of 5.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: factorial(X0, X1)
+%% ?- factorial(X0, X1).
 
 
 % Numbers are represented only with 0 and successor terms s(...).  The final

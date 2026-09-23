@@ -15,7 +15,7 @@ result_rdf(S, iri('https://example.org/knows'), O, G) :-
     triple(S, iri('https://example.org/knows'), O),
     G
   ).
-%% goal: result_rdf(_, _, _, _)
+%% ?- result_rdf(_, _, _, _).
 
 % ISO Prolog helper: print the complete test result as rdf/4 facts.
 write_results :-

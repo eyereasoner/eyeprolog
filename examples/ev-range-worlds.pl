@@ -3,13 +3,13 @@
 % The same trips are evaluated under four modelling worlds: base consumption,
 % speed-aware consumption, physics-aware consumption, and physics plus safety
 % reserve.  This makes the output a small possible-worlds comparison.
-%% goal: safeInWorld(X0, X1)
+%% ?- safeInWorld(X0, X1).
 
-%% goal: riskyInWorld(X0, X1)
+%% ?- riskyInWorld(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
 
 % trip_data/7 stores distance, speed, temperature, payload, battery, and base

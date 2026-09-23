@@ -5,13 +5,13 @@
 %
 % This keeps the language small: arithmetic, comparison, and string operations are native,
 % while list decomposition uses ordinary Prolog pattern matching.
-%% goal: value(X0, X1)
+%% ?- value(X0, X1).
 
-%% goal: ok(X0, X1)
+%% ?- ok(X0, X1).
 
-%% goal: tail(X0, X1)
+%% ?- tail(X0, X1).
 
-%% goal: label(X0, X1)
+%% ?- label(X0, X1).
 
 
 % The first four rules call native built-ins; the last two rules show that

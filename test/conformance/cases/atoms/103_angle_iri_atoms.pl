@@ -1,7 +1,7 @@
 % Reference 3.5: absolute IRIs may be written as angle-bracket atom constants.
-%% goal: iri_subject(X0)
+%% ?- iri_subject(X0).
 
-%% goal: iri_object(X0)
+%% ?- iri_object(X0).
 
 triple('<https://example.org/alice>', '<https://schema.org/name>', "Alice").
 triple('<urn:example:bob>', '<https://schema.org/knows>', '<https://example.org/alice>').

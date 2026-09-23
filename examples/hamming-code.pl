@@ -7,17 +7,17 @@
 %
 % Positions are one-based to match the textbook parity-check layout. The
 % syndrome value is both the error certificate and the index of the bit to fix.
-%% goal: syndrome(X0, X1)
+%% ?- syndrome(X0, X1).
 
-%% goal: errorBit(X0, X1)
+%% ?- errorBit(X0, X1).
 
-%% goal: correctedCodeword(X0, X1)
+%% ?- correctedCodeword(X0, X1).
 
-%% goal: decodedPayload(X0, X1)
+%% ?- decodedPayload(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

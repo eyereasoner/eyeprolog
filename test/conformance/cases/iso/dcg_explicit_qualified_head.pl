@@ -3,4 +3,4 @@
 
 dcg_explicit:word --> [x].
 
-%% goal: phrase(dcg_explicit:word, [x])
+%% ?- phrase(dcg_explicit:word, [x]).

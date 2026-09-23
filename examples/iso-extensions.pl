@@ -4,7 +4,7 @@
 % bounded integer generation, successor arithmetic, difference-list
 % collection, variant testing, and solution counting.
 
-%% goal: extension_example(X0, X1)
+%% ?- extension_example(X0, X1).
 
 color(red).
 color(green).

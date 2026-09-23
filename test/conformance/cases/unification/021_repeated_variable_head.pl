@@ -4,5 +4,5 @@ pair(a, b).
 pair(c, c).
 diagonal(X) :- pair(X, X).
 answer(diagonal, X) :- diagonal(X).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

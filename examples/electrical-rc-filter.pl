@@ -6,11 +6,11 @@
 % The model uses key/value component facts so the same pattern can be extended to
 % multiple named filters or extra component attributes without changing the rules.
 
-%% goal: type(X0, X1)
+%% ?- type(X0, X1).
 
-%% goal: timeConstant_s(X0, X1)
+%% ?- timeConstant_s(X0, X1).
 
-%% goal: cutoffFrequency_Hz(X0, X1)
+%% ?- cutoffFrequency_Hz(X0, X1).
 
 
 component(filter1, resistor_ohm, 10000.0).

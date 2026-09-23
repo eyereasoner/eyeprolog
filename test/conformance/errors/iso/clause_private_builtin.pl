@@ -1,4 +1,4 @@
-%% goal: answer
+%% ?- answer.
 
 answer :-
     clause(atom(Value), Body).

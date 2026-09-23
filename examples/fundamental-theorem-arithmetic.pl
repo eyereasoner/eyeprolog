@@ -11,23 +11,23 @@
 % The goal is not to be a production factorizer; it is a readable encoding of
 % divisibility, primality, two factorization strategies, and agreement between
 % normalized factor lists.
-%% goal: n(X0, X1)
+%% ?- n(X0, X1).
 
-%% goal: factorsSmallest(X0, X1)
+%% ?- factorsSmallest(X0, X1).
 
-%% goal: factorsLargest(X0, X1)
+%% ?- factorsLargest(X0, X1).
 
-%% goal: product(X0, X1)
+%% ?- product(X0, X1).
 
-%% goal: expectedFactorsMatched(X0, X1)
+%% ?- expectedFactorsMatched(X0, X1).
 
-%% goal: productReconstructsInput(X0, X1)
+%% ?- productReconstructsInput(X0, X1).
 
-%% goal: distinctPrimeCount(X0, X1)
+%% ?- distinctPrimeCount(X0, X1).
 
-%% goal: smallestPrimeFactor(X0, X1)
+%% ?- smallestPrimeFactor(X0, X1).
 
-%% goal: largestPrimeFactor(X0, X1)
+%% ?- largestPrimeFactor(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

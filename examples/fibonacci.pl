@@ -8,7 +8,7 @@
 %
 % Memoization is important for the large cases: several requested Fibonacci
 % numbers reuse the same half-size fib_pair/3 subproblems.
-%% goal: fibonacci(X0, X1)
+%% ?- fibonacci(X0, X1).
 
 
 % fib_case/1 bounds the public queries, while fib_pair/3 implements the

@@ -12,7 +12,7 @@
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 % Explicit tabling caches shared suffix trajectories so the 1000 starts do not recompute
 % the same Collatz tails hundreds of times.
-%% goal: collatzTrajectory(X0, X1)
+%% ?- collatzTrajectory(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

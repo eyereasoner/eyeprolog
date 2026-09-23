@@ -1,4 +1,4 @@
 % Isolated ISO mode-table success case.
-%% goal: answer
+%% ?- answer.
 
 answer :- compound(pair(a, b)).

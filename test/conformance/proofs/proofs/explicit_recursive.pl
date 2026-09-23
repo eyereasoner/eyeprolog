@@ -1,6 +1,6 @@
 % Reference 12: explicitly tabled recursive proofs still explain the successful derivation path.
 :- table path/2.
-%% goal: path(X0, X1)
+%% ?- path(X0, X1).
 
 edge(a, b).
 edge(b, c).

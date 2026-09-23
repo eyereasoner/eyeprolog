@@ -2,7 +2,7 @@
 %
 % findall/3 makes one flat collection. bagof/3 groups answers by free
 % variables, while setof/3 additionally sorts and removes duplicates.
-%% goal: report(X0, X1)
+%% ?- report(X0, X1).
 
 
 % clause/2 may only inspect a public procedure, so sale/3 is declared dynamic.

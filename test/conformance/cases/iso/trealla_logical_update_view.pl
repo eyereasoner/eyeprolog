@@ -5,7 +5,7 @@
 insect(ant).
 insect(bee).
 
-%% goal: logical_update(X)
+%% ?- logical_update(X).
 
 logical_update(X) :-
     retract(insect(X)),

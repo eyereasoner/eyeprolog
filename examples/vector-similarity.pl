@@ -7,13 +7,13 @@
 % The example keeps vectors as ordinary EyeProlog lists, so it doubles as a compact
 % demonstration of numeric recursion over list structure.
 
-%% goal: dotProduct(X0, X1)
+%% ?- dotProduct(X0, X1).
 
-%% goal: normA(X0, X1)
+%% ?- normA(X0, X1).
 
-%% goal: normB(X0, X1)
+%% ?- normB(X0, X1).
 
-%% goal: cosineSimilarity(X0, X1)
+%% ?- cosineSimilarity(X0, X1).
 
 
 % Two named vectors form the single cosine-similarity case.

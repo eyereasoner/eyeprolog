@@ -7,7 +7,7 @@
 sg(X,Y) :- sib(X,Y).
 sg(X,Y) :- par(X,Z), sg(Z,Z1), par(Y,Z1).
 benchmark(Count) :- findall(pair(X,Y), sg(X,Y), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 par(261,466).
 par(54,63).

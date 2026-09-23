@@ -7,15 +7,15 @@
 %
 % The example is intentionally qualitative: several independent signals must
 % align before a candidate is promoted from plausible to confirmed in a world.
-%% goal: ppvPlanetGivenDetection(X0, X1)
+%% ?- ppvPlanetGivenDetection(X0, X1).
 
-%% goal: confirmsInWorld(X0, X1)
+%% ?- confirmsInWorld(X0, X1).
 
-%% goal: rejectsInWorld(X0, X1)
+%% ?- rejectsInWorld(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 :- discontiguous(confirms_in_world/2).

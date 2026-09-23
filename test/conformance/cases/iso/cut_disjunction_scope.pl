@@ -2,4 +2,4 @@
 inner(X) :- (X = a, ! ; X = b).
 outer(X) :- (inner(X) ; X = c).
 
-%% goal: outer(X)
+%% ?- outer(X).

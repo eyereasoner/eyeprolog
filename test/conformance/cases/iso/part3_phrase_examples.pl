@@ -38,4 +38,4 @@ answer(first_generated, Sentence) :-
     first_four(All, Sentence).
 
 first_four([A,B,C,D|_], [A,B,C,D]).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).

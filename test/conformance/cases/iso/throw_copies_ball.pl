@@ -1,6 +1,6 @@
 % ISO 7.12.1: throw/1 copies the ball before searching for a catcher.
-%% goal: user_throw_copy
-%% goal: error_throw_copy
+%% ?- user_throw_copy.
+%% ?- error_throw_copy.
 
 user_throw_copy :-
     catch(throw(g(X)), g(V), true),

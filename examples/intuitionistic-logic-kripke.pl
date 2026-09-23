@@ -5,9 +5,9 @@
 % implication is checked at every future world.  This lets the example show a
 % constructive implication that holds while excluded middle is not forced at the
 % root world.
-%% goal: intuitionistic_truth(X0, X1, X2)
+%% ?- intuitionistic_truth(X0, X1, X2).
 
-%% goal: intuitionistic_countermodel(X0, X1, X2)
+%% ?- intuitionistic_countermodel(X0, X1, X2).
 
 
 

@@ -37,7 +37,7 @@ rdf(iri('https://example.org/flow-ads'), iri('https://example.org/requestedPurpo
 
 % ODRL policy rules, trust scores, and requested flows are RDF data. The rules
 % produce one deterministic FPV-style decision report.
-%% goal: result_rdf(_, _, _, _)
+%% ?- result_rdf(_, _, _, _).
 
 trust_flow_report([Care, Clinic, Ads]) :-
   flow_decision(flow_care, Care),

@@ -1,7 +1,7 @@
 % Adapted from Logtalk iso_atom_concat_3_01 through 04 and
 % lgt_atom_concat_3_15 through 20. Modified for EyeProlog's conformance harness.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: atom_concat_results(X0, X1, X2, X3)
+%% ?- atom_concat_results(X0, X1, X2, X3).
 
 atom_concat_results(Joined, Prefix, Splits, EmptyPair) :-
     atom_concat(hello, ' world', Joined),

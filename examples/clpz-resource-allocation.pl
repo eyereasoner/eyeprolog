@@ -4,7 +4,7 @@
 % product, a sum with a derived total, reification, labeling options, and
 % domain reflection. Worker numbers select job-specific duration tables.
 
-%% goal: clpz_example(X0, X1)
+%% ?- clpz_example(X0, X1).
 
 clpz_example(allocation, plan([A, B, C], durations([DA, DB, DC]), Total)) :-
   [A, B, C] ins 1..3,

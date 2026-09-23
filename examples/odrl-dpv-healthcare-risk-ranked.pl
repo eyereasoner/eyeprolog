@@ -43,7 +43,7 @@ rdf(iri('https://example.org/retention-limit-3-years'), iri('https://example.org
 
 % ODRL permissions and DPV-style risk profiles are RDF data. The rules detect
 % missing safeguards, score the risks, and return one deterministic ranking.
-%% goal: result_rdf(_, _, _, _)
+%% ?- result_rdf(_, _, _, _).
 
 healthcare_risk_report(Ranked) :-
   findall(

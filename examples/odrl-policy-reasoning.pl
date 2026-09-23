@@ -10,12 +10,12 @@
 % References: https://www.w3.org/TR/odrl-model/#conflict
 %             https://w3c.github.io/odrl/formal-semantics/
 
-%% goal: actionQuestion(X0, X1, X2, X3)
-%% goal: ruleQuestion(X0, X1, X2, X3)
-%% goal: enforcementQuestion(X0, X1, X2, X3, X4, X5)
-%% goal: conflictQuestion(X0, X1, X2, X3, X4)
-%% goal: subsumptionQuestion(X0, X1, X2, X3)
-%% goal: wfsQuestion(X0, X1)
+%% ?- actionQuestion(X0, X1, X2, X3).
+%% ?- ruleQuestion(X0, X1, X2, X3).
+%% ?- enforcementQuestion(X0, X1, X2, X3, X4, X5).
+%% ?- conflictQuestion(X0, X1, X2, X3, X4).
+%% ?- subsumptionQuestion(X0, X1, X2, X3).
+%% ?- wfsQuestion(X0, X1).
 
 % --- ODRL action vocabulary -----------------------------------------------
 

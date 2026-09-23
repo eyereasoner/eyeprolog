@@ -9,7 +9,7 @@
 % Because each convergent depends on the previous two, memoization avoids the
 % exponential recomputation that the direct Horn-clause recurrence would have.
 % pell_error/2 connects the approximation sequence with P^2 - 2Q^2 = +/-1.
-%% goal: convergent_answer(X0, X1)
+%% ?- convergent_answer(X0, X1).
 
 
 

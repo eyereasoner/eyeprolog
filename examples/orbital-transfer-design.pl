@@ -8,19 +8,19 @@
 %
 % The design is a Hohmann-transfer estimate: compute transfer orbit geometry,
 % departure/arrival burns, total delta-v, transfer time, and budget status.
-%% goal: transferSemiMajorAxis_km(X0, X1)
+%% ?- transferSemiMajorAxis_km(X0, X1).
 
-%% goal: departureDeltaV_km_s(X0, X1)
+%% ?- departureDeltaV_km_s(X0, X1).
 
-%% goal: arrivalDeltaV_km_s(X0, X1)
+%% ?- arrivalDeltaV_km_s(X0, X1).
 
-%% goal: totalDeltaV_km_s(X0, X1)
+%% ?- totalDeltaV_km_s(X0, X1).
 
-%% goal: transferTime_days(X0, X1)
+%% ?- transferTime_days(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

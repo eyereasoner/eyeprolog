@@ -1,3 +1,3 @@
-%% goal: trigger
+%% ?- trigger.
 
 trigger :- keysort([a], _).

@@ -1,12 +1,12 @@
 % ISO double-quoted list notation follows the active double_quotes flag.
-%% goal: default_chars(X0)
-%% goal: default_empty(X0)
-%% goal: default_shape(X0)
-%% goal: atom_mode(X0)
-%% goal: atom_functor(X0)
-%% goal: atom_shape(X0)
-%% goal: codes_mode(X0)
-%% goal: codes_shape(X0)
+%% ?- default_chars(X0).
+%% ?- default_empty(X0).
+%% ?- default_shape(X0).
+%% ?- atom_mode(X0).
+%% ?- atom_functor(X0).
+%% ?- atom_shape(X0).
+%% ?- codes_mode(X0).
+%% ?- codes_shape(X0).
 
 stored_chars("ab").
 stored_empty("").

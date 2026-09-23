@@ -16,7 +16,7 @@
 % reason c1 with the conflict c2 learns not(a).  After backjumping, learned
 % not(a) forces a=false, c2 gives c=false, and c3 forces b=true.
 
-%% goal: cdclAnswer(X0, X1)
+%% ?- cdclAnswer(X0, X1).
 
 
 sat_clause(c1, [neg(a), pos(c)]).

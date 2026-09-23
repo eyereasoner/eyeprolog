@@ -195,6 +195,14 @@ export async function main(argv) {
     onWarning: printSourceWarning,
   });
 
+  // A bare `?- Goal.` asks its question the same way a `%% ?-` comment
+  // does, but only the parser can find it, so it is picked up here rather
+  // than from the source text.
+  if (options.goals.length === 0 && !options.quads && options.verifyProof == null && program.queries.length > 0) {
+    options.goals.push(...program.queries.map((query) => query.goal));
+    program = engine.autoloadProgramGoals(program, options.goals, { autoload: options.autoload });
+  }
+
   const portabilityFailures = program.interopPortabilityWarnings ?? [];
   // Shadowing is reported unconditionally: silently replacing a library
   // predicate for the whole program is the failure mode this diagnostic exists
@@ -351,7 +359,7 @@ Options:
   -v, --version         Show the package version and exit.
   -w, --warnings        Print non-fatal portability warnings to stderr.
   -g, --goal goal       Solve goal and print its ground answers; may be repeated.
-                        If omitted, use %% goal: comments from the inputs.
+                        If omitted, use ?- queries and %% ?- comments.
   --                    Stop option parsing; following arguments are treated as files.
 `);
 }

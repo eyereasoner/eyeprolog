@@ -4,13 +4,13 @@
 % practical executable form is to put a named functional term directly in the
 % rule head.  The term is ordinary data: stable, visible, and proof-friendly.
 
-%% goal: has_parent(X0, X1)
+%% ?- has_parent(X0, X1).
 
-%% goal: registration(X0, X1, X2)
+%% ?- registration(X0, X1, X2).
 
-%% goal: same_witness(X0, X1)
+%% ?- same_witness(X0, X1).
 
-%% goal: distinct_witnesses(X0, X1)
+%% ?- distinct_witnesses(X0, X1).
 
 
 person(alice).

@@ -3,7 +3,7 @@
 
 bar_term((a | b)).
 
-%% goal: corrigenda_bar_operator(ok)
+%% ?- corrigenda_bar_operator(ok).
 
 corrigenda_bar_operator(ok) :-
     bar_term('|'(a, b)),

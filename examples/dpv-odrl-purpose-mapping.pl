@@ -33,7 +33,7 @@ rdf(iri('https://example.org/alpha_basis_constraint'), iri('http://www.w3.org/ns
 
 % The DPV process and ODRL policy are RDF data. The rules verify the six
 % correspondences and return one deterministic mapping report.
-%% goal: result_rdf(_, _, _, _)
+%% ?- result_rdf(_, _, _, _).
 
 dpv_odrl_purpose_mapping(Mappings) :-
   findall(

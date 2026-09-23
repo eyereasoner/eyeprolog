@@ -3,7 +3,7 @@
 This archive is a multi-engine OpenRuleBench-to-Prolog adaptation. It contains
 the same generated benchmark data in four source directories:
 
-- `eyeprolog/` — EyeProlog-oriented files, including `%% goal:` comments.
+- `eyeprolog/` — EyeProlog-oriented files, including `%% ?-` goal comments.
 - `trealla/` — Trealla-ready copies. Positive recursive programs declare `library(tabling)` when needed.
 - `scryer/` — Scryer-ready copies with the same tabling declarations.
 - `swipl/` — SWI-Prolog copies using native `table/1`; the WFS benchmarks use native `tnot/1`.
@@ -163,7 +163,7 @@ eyeprolog --goal 'benchmark(Count)' eyeprolog/tc.pl
 ```
 
 For Join1 the default goal is `benchmark_ff(Count)` rather than `benchmark(Count)`;
-`run.mjs` reads each file's `%% goal:` line automatically.
+`run.mjs` reads each file's `%% ?-` line automatically.
 
 ## Expected portable-profile counts
 

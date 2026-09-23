@@ -3,7 +3,7 @@
 % inspect a public procedure (ISO 8.8.1.3), so reading a static user procedure
 % is a permission error rather than a source of solutions.
 % https://github.com/eyereasoner/eyeprolog/issues/96
-%% goal: answer
+%% ?- answer.
 
 elk(X) :- moose(X).
 

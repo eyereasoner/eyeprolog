@@ -17,7 +17,7 @@
 % The point is not to be fast.  The point is to show the declarative shape of an
 % e-graph optimizer in a language that was not designed for it.
 
-%% goal: egraphAnswer(X0, X1)
+%% ?- egraphAnswer(X0, X1).
 
 
 

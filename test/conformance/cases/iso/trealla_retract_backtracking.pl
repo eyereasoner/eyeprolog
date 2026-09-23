@@ -1,6 +1,6 @@
 % Adapted from Trealla Prolog tests/tests/test0021.pl.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: retract_backtracking(ok)
+%% ?- retract_backtracking(ok).
 
 :- dynamic(x24/1).
 

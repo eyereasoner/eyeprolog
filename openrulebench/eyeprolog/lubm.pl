@@ -6,7 +6,7 @@ query1(X) :- takesCourse(X,graduateCourse0), graduateStudent(X).
 query2(X,Y,Z) :- graduateStudent(X), memberOf(X,Z), undergraduateDegreeFrom(X,Y), university(Y), department(Z), subOrganizationOf_0(Z,Y).
 query9(X,Y,Z) :- advisor(X,Y), teacherOf(Y,Z), takesCourse(X,Z), student(X), faculty(Y), course(Z).
 benchmark(Count) :- findall(X, query1(X), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 course(graduateCourse0).
 university(u0).

@@ -1,5 +1,5 @@
 % phrase/2 expands dynamically constructed grammar bodies using static semantics.
-%% goal: dynamic_body(X0, X1)
+%% ?- dynamic_body(X0, X1).
 
 dynamic_body(sequence, Tokens) :-
     Body = ([a], [b]),

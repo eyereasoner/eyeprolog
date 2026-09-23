@@ -4,5 +4,5 @@ candidate(b).
 allowed(a).
 answer(X, ok) :- candidate(X), allowed(X).
 
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

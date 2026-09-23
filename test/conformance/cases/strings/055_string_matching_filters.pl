@@ -3,5 +3,5 @@ text(a, 'alpha').
 text(b, 'beta').
 answer(has_ph, K) :- text(K, T), matches(T, 'ph').
 answer(no_ph, K) :- text(K, T), \+ matches(T, 'ph').
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

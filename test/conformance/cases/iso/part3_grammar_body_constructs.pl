@@ -31,4 +31,4 @@ answer(negation_blocks, no) :- \+ phrase(\+ [a], [a], _).
 
 % ('.')//2 separates a terminal from the rest of the sequence.
 answer(terminal_split, D) :- phrase(digit(D), [b]).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).

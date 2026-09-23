@@ -5,6 +5,6 @@ delegate(Body) --> Body.
 surrounded(Body) --> [left], Body, [right].
 body_or_fallback(Body) --> Body | [fallback].
 
-%% goal: phrase(delegate([a, b]), Tokens)
-%% goal: phrase(surrounded([center]), Tokens)
-%% goal: phrase(body_or_fallback([chosen]), Tokens)
+%% ?- phrase(delegate([a, b]), Tokens).
+%% ?- phrase(surrounded([center]), Tokens).
+%% ?- phrase(body_or_fallback([chosen]), Tokens).

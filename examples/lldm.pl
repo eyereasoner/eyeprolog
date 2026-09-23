@@ -5,17 +5,17 @@
 % the alarm plus the small set of relations explaining why the alarm fired.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: type(X0, X1)
+%% ?- type(X0, X1).
 
-%% goal: lld_left_length_cm(X0, X1)
+%% ?- lld_left_length_cm(X0, X1).
 
-%% goal: lld_right_length_cm(X0, X1)
+%% ?- lld_right_length_cm(X0, X1).
 
-%% goal: lld_discrepancy_cm(X0, X1)
+%% ?- lld_discrepancy_cm(X0, X1).
 
-%% goal: lld_threshold_cm(X0, X1)
+%% ?- lld_threshold_cm(X0, X1).
 
-%% goal: lld_reason(X0, X1)
+%% ?- lld_reason(X0, X1).
 
 
 :- discontiguous(val/3).

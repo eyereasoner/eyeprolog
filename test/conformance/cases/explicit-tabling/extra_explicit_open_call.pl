@@ -1,4 +1,4 @@
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 :- table answer/2.
 

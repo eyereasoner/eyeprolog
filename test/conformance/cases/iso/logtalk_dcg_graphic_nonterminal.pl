@@ -3,5 +3,5 @@
 
 '[' --> [open].
 
-%% goal: graphic_nonterminal(X0)
+%% ?- graphic_nonterminal(X0).
 graphic_nonterminal(open) :- phrase('[', [open]).

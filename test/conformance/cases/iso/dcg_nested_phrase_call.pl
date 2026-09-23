@@ -3,4 +3,4 @@
 inner --> [i].
 outer --> phrase(inner), call(inner), [o].
 
-%% goal: phrase(outer, Tokens)
+%% ?- phrase(outer, Tokens).

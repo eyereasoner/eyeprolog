@@ -6,7 +6,7 @@ bind(X) --> {X = bound}.
 embedded_sequence(X) --> {X = a, atom(X)}, [X].
 embedded_if --> ({true} -> [yes] ; [no]).
 
-%% goal: phrase(checked(token), [token])
-%% goal: phrase(bind(X), [])
-%% goal: phrase(embedded_sequence(X), Tokens)
-%% goal: phrase(embedded_if, Tokens)
+%% ?- phrase(checked(token), [token]).
+%% ?- phrase(bind(X), []).
+%% ?- phrase(embedded_sequence(X), Tokens).
+%% ?- phrase(embedded_if, Tokens).

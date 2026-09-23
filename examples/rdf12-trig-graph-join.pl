@@ -22,7 +22,7 @@ result_rdf(S, iri('https://example.org/reportedBy'), Station, default_graph) :-
     _,
     iri('https://example.org/sensorGraph')
   ).
-%% goal: result_rdf(_, _, _, _)
+%% ?- result_rdf(_, _, _, _).
 
 % ISO Prolog helper: print the complete test result as rdf/4 facts.
 write_results :-

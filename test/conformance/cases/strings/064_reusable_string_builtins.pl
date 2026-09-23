@@ -1,5 +1,5 @@
 % Reference 9.1: reusable string normalization, splitting, joining, replacement, and conversions.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(trim, X) :- trim('  Hello EyeProlog  ', X).
 answer(lower, X) :- lowercase('Hello EyeProlog', X).

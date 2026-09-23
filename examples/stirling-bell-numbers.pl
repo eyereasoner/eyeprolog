@@ -7,7 +7,7 @@
 %   S(N,K) = (1/K!) * sum(I=0..K, (-1)^(K-I) * C(K,I) * I^N)
 % instead of the overlapping two-branch recurrence.  Bell numbers use
 %   B(0) = 1, B(N) = sum(K=0..N-1, C(N-1,K) * B(K)).
-%% goal: stirling_bell_answer(X0, X1)
+%% ?- stirling_bell_answer(X0, X1).
 
 
 

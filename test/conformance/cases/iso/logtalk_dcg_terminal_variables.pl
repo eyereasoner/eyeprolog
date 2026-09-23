@@ -4,6 +4,6 @@
 capture(X) --> [X].
 duplicate(X) --> [X, X].
 
-%% goal: phrase(capture(X), [term(a)])
-%% goal: phrase(capture(value), Tokens)
-%% goal: phrase(duplicate(same), Tokens)
+%% ?- phrase(capture(X), [term(a)]).
+%% ?- phrase(capture(value), Tokens).
+%% ?- phrase(duplicate(same), Tokens).

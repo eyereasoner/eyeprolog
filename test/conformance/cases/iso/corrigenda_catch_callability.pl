@@ -1,5 +1,5 @@
 % Corrigendum 2: conversion/execution errors of catch/3's protected goal are catchable.
-%% goal: corrigenda_catch_callability(ok)
+%% ?- corrigenda_catch_callability(ok).
 
 corrigenda_catch_callability(ok) :-
     catch(Goal, error(instantiation_error, _), true),

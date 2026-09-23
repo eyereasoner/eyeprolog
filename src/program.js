@@ -214,6 +214,10 @@ export class Program {
     // appended initializations without repeating earlier side effects.
     this._initializationsExecutedCount = 0;
     this.quads = [];
+    // Goals written as a bare `?- Goal.`, the ISO query form. A host runs
+    // these when it was given no goals of its own, exactly as it runs the
+    // `%% ?-` comments.
+    this.queries = [];
     this.prologFlagDirectives = [];
     this.charConversionDirectives = [];
     this.doubleQuotes = options.doubleQuotes ?? 'chars';
@@ -799,6 +803,12 @@ class ProgramBuilder {
         const module = clause.module ?? 'user';
         annotateGoalModule(clause.query, module);
         program.quads.push({ ...clause, module });
+        continue;
+      }
+      if (clause?.kind === 'query') {
+        const module = clause.module ?? 'user';
+        annotateGoalModule(clause.goal, module);
+        program.queries.push({ ...clause, module });
         continue;
       }
       clause.index = program.clauses.length;
@@ -1552,7 +1562,7 @@ function loadSourceIntoBuilder(builder, source, options, ensured, loadedModules,
 
   const processClause = (inputClause) => {
     let clause = inputClause;
-    if (clause?.kind === 'quad') {
+    if (clause?.kind === 'quad' || clause?.kind === 'query') {
       flush();
       clause.module = context.module;
       builder.addClauses([clause]);
@@ -1763,7 +1773,7 @@ function loadSourceIntoBuilder(builder, source, options, ensured, loadedModules,
 }
 
 function normalizeQualifiedClauseHead(clause, lexicalModule = 'user') {
-  if (clause == null || clause.kind === 'quad' || isDirectiveClause(clause)) return clause;
+  if (clause == null || clause.kind === 'quad' || clause.kind === 'query' || isDirectiveClause(clause)) return clause;
   const head = clause.head;
   if (head?.type !== COMPOUND || head.name !== ':' || head.arity !== 2) return clause;
   const qualifier = head.args[0];

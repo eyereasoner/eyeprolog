@@ -6,15 +6,15 @@
 %
 % Keeping each physical quantity as its own relation makes the proof explanation
 % read like a worked calculation.
-%% goal: type(X0, X1)
+%% ?- type(X0, X1).
 
-%% goal: temperatureDifference_K(X0, X1)
+%% ?- temperatureDifference_K(X0, X1).
 
-%% goal: thermalResistance_K_W(X0, X1)
+%% ?- thermalResistance_K_W(X0, X1).
 
-%% goal: heatLoss_W(X0, X1)
+%% ?- heatLoss_W(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
 
 % Wall properties are stored as key/value facts: conductivity, area, thickness,

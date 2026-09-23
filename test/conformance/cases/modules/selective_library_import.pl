@@ -2,4 +2,4 @@
 
 answer(X) :- member(X, [module]).
 
-%% goal: answer(X)
+%% ?- answer(X).

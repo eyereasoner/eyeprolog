@@ -6,9 +6,9 @@
 % The symbolic names t0, t1, and t2 stand for schematic type variables in the
 % displayed answers; concrete examples such as apply_id annotate the argument as
 % int so the application can be checked.
-%% goal: type_answer(X0, X1)
+%% ?- type_answer(X0, X1).
 
-%% goal: type_reason(X0, X1)
+%% ?- type_reason(X0, X1).
 
 
 

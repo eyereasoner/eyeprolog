@@ -4,5 +4,5 @@ article --> [the].
 noun --> [cat].
 verb --> [sleeps].
 
-%% goal: phrase(sentence, X)
-%% goal: phrase(article, [the, rest], R)
+%% ?- phrase(sentence, X).
+%% ?- phrase(article, [the, rest], R).

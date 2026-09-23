@@ -18,7 +18,7 @@ rdf(iri('https://example.org/anonymousPost'), iri('https://example.org/trustScor
 
 % Rank conflicting RDF 1.2 annotated claims by annotation confidence and
 % source trust, then derive one auditable bridge-use decision.
-%% goal: result_rdf(_, _, _, _)
+%% ?- result_rdf(_, _, _, _).
 
 bridge_status_report(
   report(

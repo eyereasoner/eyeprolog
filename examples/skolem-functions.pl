@@ -5,19 +5,19 @@
 % unique, such as skolem_observation(Patient, Test).
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: type(X0, X1)
+%% ?- type(X0, X1).
 
-%% goal: patient(X0, X1)
+%% ?- patient(X0, X1).
 
-%% goal: test(X0, X1)
+%% ?- test(X0, X1).
 
-%% goal: value(X0, X1)
+%% ?- value(X0, X1).
 
-%% goal: about(X0, X1)
+%% ?- about(X0, X1).
 
-%% goal: sameInputsSameId(X0, X1)
+%% ?- sameInputsSameId(X0, X1).
 
-%% goal: noObservationClash(X0, X1)
+%% ?- noObservationClash(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

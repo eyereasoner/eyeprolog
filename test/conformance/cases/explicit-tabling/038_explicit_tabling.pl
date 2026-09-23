@@ -1,6 +1,6 @@
 % Reference 11.1: explicit tabling preserves recursive closure answers.
 :- table reach_any/2.
-%% goal: reach(X0, X1)
+%% ?- reach(X0, X1).
 
 edge(a, b).
 edge(b, c).

@@ -1,4 +1,4 @@
-%% goal: answer
+%% ?- answer.
 
 answer :-
     atom_chars(Atom, Chars).

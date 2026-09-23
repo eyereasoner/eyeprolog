@@ -3,7 +3,7 @@
 
 :- op(9, xf, e).
 
-%% goal: exponent_minus_lexing(X, Y)
+%% ?- exponent_minus_lexing(X, Y).
 
 exponent_minus_lexing(X, Y) :-
     X = (1e-9),

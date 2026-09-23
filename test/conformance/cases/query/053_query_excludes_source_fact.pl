@@ -1,5 +1,5 @@
 % Reference 11: query output excludes source facts even if also derivable.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 seed(a).
 answer(a, ok).

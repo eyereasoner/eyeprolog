@@ -11,7 +11,7 @@
 % choose_step/5 uses the multiplicative recurrence
 %   C(N, I+1) = C(N, I) * (N-I) / (I+1)
 % and is explicitly tabled because row sums and identities reuse prefixes.
-%% goal: binomial_answer(X0, X1)
+%% ?- binomial_answer(X0, X1).
 
 
 

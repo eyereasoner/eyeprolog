@@ -1,4 +1,4 @@
-%% goal: answer(occurs_check)
+%% ?- answer(occurs_check).
 
 
 answer(occurs_check) :-

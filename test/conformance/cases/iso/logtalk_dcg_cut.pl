@@ -1,6 +1,6 @@
 % Adapted from Logtalk dcgs_cut_01-06. Modified for EyeProlog's harness.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: cut_result(X0, X1)
+%% ?- cut_result(X0, X1).
 
 committed --> ([a], ! ; [b]).
 cut_then_fail --> ([a], !, {fail} ; [b]).

@@ -3,10 +3,10 @@
 % accepted truth. Prolog combines study design, sample size, independence, and
 % conflicting evidence into explicit evidence states.
 
-%% goal: evidence_state(X0, X1)
-%% goal: supporting_study(X0, X1)
-%% goal: counterevidence(X0, X1, X2)
-%% goal: evidence_reason(X0, X1)
+%% ?- evidence_state(X0, X1).
+%% ?- supporting_study(X0, X1).
+%% ?- counterevidence(X0, X1, X2).
+%% ?- evidence_reason(X0, X1).
 
 v(statement,iri('https://example.org/vocab/statement')).
 v(direction,iri('https://example.org/vocab/direction')).

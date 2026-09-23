@@ -11,11 +11,11 @@
 % The countries form a small planar-style adjacency graph. The example is a
 % constraint problem: assign colours, reject border conflicts, then query
 % the canonical colour vector and validation status.
-%% goal: color(X0, X1)
+%% ?- color(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

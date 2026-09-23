@@ -1,5 +1,5 @@
 % Reference 9.6: substring and replace have finite boundary behavior.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(prefix, X) :- substring('eyeprologlanglet', 0, 9, X).
 answer(middle, X) :- substring('eyeprologlanglet', 9, 2, X).

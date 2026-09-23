@@ -1,6 +1,6 @@
 :- set_prolog_flag(unknown, fail).
 
-%% goal: answer(X0)
+%% ?- answer(X0).
 
 p(a).
 r(c).

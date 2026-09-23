@@ -3,8 +3,8 @@
 % Integrity conditions are ordinary predicates. A host that requires validated
 % input queries invalid_state/2 before it trusts domain conclusions.
 
-%% goal: invalid_state(X, Reason)
-%% goal: status(X, Value)
+%% ?- invalid_state(X, Reason).
+%% ?- status(X, Value).
 
 color(stone, black).
 color(stone, white).

@@ -1,5 +1,5 @@
 % Reference 9.7: list patterns and last/take/drop/slice compose deterministically.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 data([zero, one, two, three, four]).
 answer(first, X) :- data([X|_tail]).

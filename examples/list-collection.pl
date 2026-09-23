@@ -4,15 +4,15 @@
 % Demonstrates list literals, member/2, length/2, append/3, and [Head|Tail].
 % Each queried relation demonstrates one list operation.
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: collectionLength(X0, X1)
+%% ?- collectionLength(X0, X1).
 
-%% goal: collectionMember(X0, X1)
+%% ?- collectionMember(X0, X1).
 
-%% goal: collectionAppend(X0, X1)
+%% ?- collectionAppend(X0, X1).
 
-%% goal: head(X0, X1)
+%% ?- head(X0, X1).
 
-%% goal: tail(X0, X1)
+%% ?- tail(X0, X1).
 
 
 % The collection/2 facts keep complete lists as first-class terms rather than

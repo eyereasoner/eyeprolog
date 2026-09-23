@@ -1,5 +1,5 @@
 % Reference 9.1: reusable list selectors and slices have explicit finite boundary behavior.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(take_zero, X) :- take(0, [a, b, c], X).
 answer(drop_all, X) :- drop(3, [a, b, c], X).

@@ -4,11 +4,11 @@
 % for authorization data. A payment outage should still produce a finite impact set.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: impactedByFailureOf(X0, X1)
+%% ?- impactedByFailureOf(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: businessFunctionAtRisk(X0, X1)
+%% ?- businessFunctionAtRisk(X0, X1).
 
 
 :- table impacted/2.

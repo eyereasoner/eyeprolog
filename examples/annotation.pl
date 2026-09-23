@@ -4,13 +4,13 @@
 % Context members become default output only when explicit rules project them.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: name(X0, X1)
+%% ?- name(X0, X1).
 
-%% goal: log_nameOf(X0, X1)
+%% ?- log_nameOf(X0, X1).
 
-%% goal: statedBy(X0, X1)
+%% ?- statedBy(X0, X1).
 
-%% goal: recorded(X0, X1)
+%% ?- recorded(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

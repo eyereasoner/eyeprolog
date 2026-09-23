@@ -5,13 +5,13 @@
 % is asserted globally unless a rule explicitly projects it.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: log_nameOf(X0, X1)
+%% ?- log_nameOf(X0, X1).
 
-%% goal: dataGraph(X0, X1)
+%% ?- dataGraph(X0, X1).
 
-%% goal: signatureGraph(X0, X1)
+%% ?- signatureGraph(X0, X1).
 
-%% goal: metadataGraph(X0, X1)
+%% ?- metadataGraph(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

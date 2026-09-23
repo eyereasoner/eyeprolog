@@ -35,7 +35,7 @@ export function apiCases() {
     {
       name: 'run queries through public API without proof by default',
       run: () => {
-        const result = run('%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n');
+        const result = run('%% ?- q(X, Y).\np(a, b).\nq(X, Y) :- p(X, Y).\n');
         assertEqual(result.stdout, 'q(a, b).\n', 'stdout');
       },
     },
@@ -58,7 +58,7 @@ export function apiCases() {
           ':- dynamic(saved/1).',
           ':- initialization(assertz(saved(ready))).',
           ':- op(500, xfy, joins).',
-          '%% goal: answer(X)',
+          '%% ?- answer(X).',
           'answer(X) :- saved(ready), X = (a joins b joins c).',
         ].join('\n'));
         assertEqual(result.stdout, 'answer(a joins b joins c).\n', 'stdout');
@@ -69,7 +69,7 @@ export function apiCases() {
       run: () => {
         const result = run([
           ':- dynamic(cache/1).',
-          '%% goal: answer(X)',
+          '%% ?- answer(X).',
           'answer(X) :- cache(X), !.',
           'answer(computed) :- assertz(cache(computed)).',
         ].join('\n'));
@@ -80,10 +80,10 @@ export function apiCases() {
       name: 'scalar fact acceleration preserves Prolog term types',
       run: () => {
         const result = run([
-          '%% goal: number_fact(X)',
-          '%% goal: atom_fact(X)',
-          '%% goal: string_fact(X)',
-          '%% goal: repeated(X)',
+          '%% ?- number_fact(X).',
+          '%% ?- atom_fact(X).',
+          '%% ?- string_fact(X).',
+          '%% ?- repeated(X).',
           'number_fact(X) :- scalar(7, X).',
           "atom_fact(X) :- scalar('7', X).",
           'string_fact(X) :- scalar("7", X).',
@@ -108,7 +108,7 @@ export function apiCases() {
           ':- dynamic(edge/2).',
           'path(X, Y) :- edge(X, Y).',
           'path(X, Y) :- edge(X, Z), path(Z, Y).',
-          '%% goal: test(Before, After)',
+          '%% ?- test(Before, After).',
           'test(Before, After) :-',
           '  assertz(edge(a, b)),',
           '  findall(X, path(a, X), Before),',
@@ -123,7 +123,7 @@ export function apiCases() {
       run: () => {
         const program = Program.parse([
           ':- dynamic(item/1).',
-          '%% goal: done',
+          '%% ?- done.',
           'done :- assertz(item(a)), retract(item(a)), assertz(item(b)), abolish(item/1).',
         ].join('\n'));
         const result = run(program, { goal: 'done', registry: getEyePrologRegistry() });
@@ -147,7 +147,7 @@ export function apiCases() {
     {
       name: 'query constants restrict answers',
       run: () => {
-        const result = run('%% goal: answer(a, X)\nseed(a, one).\nseed(b, two).\nanswer(K, V) :- seed(K, V).\n');
+        const result = run('%% ?- answer(a, X).\nseed(a, one).\nseed(b, two).\nanswer(K, V) :- seed(K, V).\n');
         assertEqual(result.stdout, 'answer(a, one).\n', 'stdout');
       },
     },
@@ -234,7 +234,7 @@ true :+ ready.
     {
       name: 'run query can enable proof explanations',
       run: () => {
-        const result = run('%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n', { proof: true });
+        const result = run('%% ?- q(X, Y).\np(a, b).\nq(X, Y) :- p(X, Y).\n', { proof: true });
         assertIncludes(result.stdout, 'q(a, b).\n', 'claim');
         assertIncludes(result.stdout, "step(q(a, b), rule(2), ['X' = a, 'Y' = b], [p(a, b)]).", 'step');
       },
@@ -357,7 +357,7 @@ true :+ ready.
       name: 'program reports stratified negation metadata',
       run: () => {
         const program = Program.parse(`
-%% goal: open(X0)
+%% ?- open(X0).
 candidate(a).
 blocked(b).
 closed(X) :- blocked(X).
@@ -1716,7 +1716,7 @@ answer(A, B, C) :-
       name: 'EyeProlog library preserves relational and arithmetic behavior',
       run: () => {
         const result = run([
-          '%% goal: answer(A, B, S, M)',
+          '%% ?- answer(A, B, S, M).',
           'answer(A, B, S, M) :-',
           '  append(A, B, [a, b]),',
           '  sumall(X + 1, member(X, [1, 2]), S),',

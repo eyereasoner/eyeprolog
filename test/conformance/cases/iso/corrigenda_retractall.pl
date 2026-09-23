@@ -1,5 +1,5 @@
 % Corrigendum 2: retractall/1 preserves the known dynamic procedure.
-%% goal: corrigenda_retractall(ok)
+%% ?- corrigenda_retractall(ok).
 
 :- dynamic(insect/1).
 insect(ant).

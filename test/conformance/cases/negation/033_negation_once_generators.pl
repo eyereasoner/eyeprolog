@@ -4,5 +4,5 @@ candidate(b).
 closed(b).
 answer(open, X) :- candidate(X), \+ closed(X).
 answer(first_between, X) :- once(between(2, 4, X)).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

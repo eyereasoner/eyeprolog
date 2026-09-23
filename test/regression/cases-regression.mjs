@@ -290,7 +290,7 @@ export function regressionCases() {
         // Bound the reported generator so the regression exhausts every
         // answer, including sizes beyond the original 256-cell failure.
         const result = runCli(['-'], { input:
-          '%% goal: answer(I,R,S)\n' +
+          '%% ?- answer(I,R,S).\n' +
           'answer(I,R,S) :- length(_,I), (I =< 9 -> true ; !, fail), ' +
           'N is 2^I, length(P,N), append(P,[1],L1), append(P,[2],L2), ' +
           'time(compare(R,L1,L2)), time(compare_si(S,L1,L2)).\n',
@@ -354,7 +354,7 @@ export function regressionCases() {
           'catch(can_be(integer,a),error(type_error(integer,a),[predicate-can_be/2]),true)',
         ];
         for (const goal of goals) {
-          const result = runCli(['-'], { input: `:- use_module(library(error)).\n%% goal: answer(X)\nanswer(ok) :- ${goal}.\n` });
+          const result = runCli(['-'], { input: `:- use_module(library(error)).\n%% ?- answer(X).\nanswer(ok) :- ${goal}.\n` });
           assertEqual(result.status, 0, `${goal}: ${result.stderr}`);
           assertIncludes(result.stdout, 'answer(ok)', goal);
         }
@@ -363,7 +363,7 @@ export function regressionCases() {
     {
       name: 'call_with_error_context/2 preserves repeated variables in context pairs (issue #104)',
       run: () => {
-        const result = runCli(['-'], { input: ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+        const result = runCli(['-'], { input: ':- use_module(library(error)).\n%% ?- answer(X).\n' +
           'answer(ok) :- catch(call_with_error_context(throw(error(problem(X),[inner-X])),outer-f(Y,Y)),error(problem(A),[outer-f(B,C),inner-D]),true),B==C,A==D,var(Y).\n' });
         assertEqual(result.status, 0, result.stderr);
         assertIncludes(result.stdout, 'answer(ok)', 'shared error variables');
@@ -376,7 +376,7 @@ export function regressionCases() {
         const repl = runCli([], { input: `${goal}.\n.\nhalt.\n` });
         assertNotIncludes(repl.stdout, 'existence_error', 'first REPL call');
         assertIncludes(repl.stdout, 'S = (<)', 'timed comparison');
-        const file = runCli(['-'], { input: `%% goal: answer(X)\nanswer(ok) :- ${goal},R==S.\n` });
+        const file = runCli(['-'], { input: `%% ?- answer(X).\nanswer(ok) :- ${goal},R==S.\n` });
         assertEqual(file.status, 0, file.stderr);
         assertIncludes(file.stdout, 'answer(ok)', 'file autoload');
       },
@@ -900,6 +900,36 @@ step(member(a, "a"), builtin, [], []).
         assertEqual(Boolean(program.findGroup('p', 1)), true, 'preceding clause indexed');
         assertEqual(Boolean(program.findGroup('q', 1)), true, 'following clause indexed');
         assertEqual(Boolean(program.findGroup('?-', 2)), false, 'quad is inert');
+      },
+    },
+    {
+      name: 'a bare ?- is the ISO query form, a labelled one is still a quad',
+      run: () => {
+        // `?-` is a prefix operator in the standard, and the quad syntax adds
+        // an infix one on top. A query written the ISO way -- which is how
+        // eyeron writes its own -- must run here rather than be read as a
+        // quad that forgot its answers.
+        const source = `p(1).\n\nnamed ?- p(X).\n   X = 1.\n\n?- p(X).\n`;
+        const program = Program.parseSources([{ text: source, filename: 'both-forms.pl' }]);
+        assertEqual(program.quads.length, 1, 'quad count');
+        assertEqual(program.queries.length, 1, 'query count');
+        assertEqual(program.queries[0].goal.name, 'p', 'query goal');
+        assertEqual(program.queries[0].source.line, 6, 'query line');
+        assertEqual(program.clauses.length, 1, 'ordinary clause count');
+
+        // A declared query answers like a `%% ?-` comment does.
+        assertEqual(run('human(socrates).\nmortal(X) :- human(X).\n?- mortal(Who).\n').stdout,
+          'mortal(socrates).\n', 'a bare ?- asks its question');
+
+        // A labelled quad with nothing indented under it is still an error:
+        // a quad with nothing to check is not a quad.
+        let labelledWithoutAnswers = '';
+        try {
+          Program.parse('p(1).\nnamed ?- p(X).\n');
+        } catch (error) {
+          labelledWithoutAnswers = String(error?.message ?? error);
+        }
+        assertIncludes(labelledWithoutAnswers, 'quad requires an indented answer description', 'labelled quad still needs answers');
       },
     },
     {
@@ -4131,7 +4161,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       name: 'CLI loads an explicitly imported standard library module',
       run: () => {
         const result = runCli(['-'], {
-          input: ':- use_module(library(lists), [member/2]).\n%% goal: answer(X)\nanswer(X) :- member(X, [library]).\n',
+          input: ':- use_module(library(lists), [member/2]).\n%% ?- answer(X).\nanswer(X) :- member(X, [library]).\n',
         });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, 'answer(library).\n', 'stdout');
@@ -4193,7 +4223,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: 'stdin input is accepted',
       run: () => {
-        const result = runCli(['-'], { input: '%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
+        const result = runCli(['-'], { input: '%% ?- q(X, Y).\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, 'q(a, b).\n', 'stdout');
         assertEqual(result.stderr, '', 'stderr');
@@ -4204,8 +4234,8 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       name: 'CLI reads repeated goal comments when --goal is omitted',
       run: () => {
         const input = [
-          '%% goal: answer(first, X)',
-          '%% goal: answer(second, X)',
+          '%% ?- answer(first, X).',
+          '%% ?- answer(second, X).',
           'value(first, one).',
           'value(second, two).',
           'answer(Kind, Value) :- value(Kind, Value).',
@@ -4221,7 +4251,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       name: 'explicit CLI goals override goal comments',
       run: () => {
         const input = [
-          '%% goal: answer(metadata, X)',
+          '%% ?- answer(metadata, X).',
           'value(metadata, ignored).',
           'value(explicit, selected).',
           'answer(Kind, Value) :- value(Kind, Value).',
@@ -4237,7 +4267,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       name: '-g supplies an explicit CLI goal',
       run: () => {
         const input = [
-          '%% goal: answer(metadata, X)',
+          '%% ?- answer(metadata, X).',
           'value(metadata, ignored).',
           'value(explicit, selected).',
           'answer(Kind, Value) :- value(Kind, Value).',
@@ -4275,7 +4305,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: '--proof enables query explanations',
       run: () => {
-        const result = runCli(['--proof', '-'], { input: '%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
+        const result = runCli(['--proof', '-'], { input: '%% ?- q(X, Y).\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
         assertEqual(result.status, 0, 'exit status');
         assertIncludes(result.stdout, 'q(a, b).\n', 'claim');
         assertIncludes(result.stdout, "step(q(a, b), rule(2), ['X' = a, 'Y' = b], [p(a, b)]).", 'step');
@@ -4285,7 +4315,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: '-p enables query explanations',
       run: () => {
-        const result = runCli(['-p', '-'], { input: '%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
+        const result = runCli(['-p', '-'], { input: '%% ?- q(X, Y).\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
         assertEqual(result.status, 0, 'exit status');
         assertIncludes(result.stdout, 'q(a, b).\n', 'claim');
         assertIncludes(result.stdout, "step(q(a, b), rule(2), ['X' = a, 'Y' = b], [p(a, b)]).", 'step');
@@ -4296,7 +4326,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: '--proof-detail expanded exposes bundled Prolog library clauses',
       run: () => {
-        const input = '%% goal: q(a)\n:- use_module(library(lists)).\nq(X) :- member(X, [a,b]).\n';
+        const input = '%% ?- q(a).\n:- use_module(library(lists)).\nq(X) :- member(X, [a,b]).\n';
         const result = runCli(['--proof-detail', 'expanded', '-'], { input });
         assertEqual(result.status, 0, 'exit status');
         // Expanded detail explains *through* a library predicate rather than
@@ -4312,7 +4342,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       run: () => {
         const programFile = path.join(temp.dir, `proof-program-${++temp.counter}.pl`);
         const proofFile = path.join(temp.dir, `proof-certificate-${++temp.counter}.pl`);
-        fs.writeFileSync(programFile, '%% goal: q(a)\np(a).\nq(X) :- p(X).\n');
+        fs.writeFileSync(programFile, '%% ?- q(a).\np(a).\nq(X) :- p(X).\n');
         const generated = runCli(['--proof', programFile]);
         assertEqual(generated.status, 0, 'proof generation status');
         fs.writeFileSync(proofFile, generated.stdout);
@@ -4333,7 +4363,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       name: '-pw combines proof and warning flags',
       run: () => {
         const input = [
-          '%% goal: answer(ok)',
+          '%% ?- answer(ok).',
           'p :- \\+ q.',
           'q :- \\+ p.',
           'seed.',
@@ -4360,7 +4390,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: '--stats prints solver and memory statistics to stderr',
       run: () => {
-        const result = runCli(['--stats', '-'], { input: '%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
+        const result = runCli(['--stats', '-'], { input: '%% ?- q(X, Y).\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, 'q(a, b).\n', 'stdout');
         assertIncludes(result.stderr, 'eyeprolog stats:\n', 'stderr');
@@ -4376,7 +4406,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: '--stats is still printed when a query raises an error',
       run: () => {
-        const result = runCli(['--stats', '-'], { input: "%% goal: number_chars(N, ['x'])\n" });
+        const result = runCli(['--stats', '-'], { input: "%% ?- number_chars(N, ['x']).\n" });
         assertEqual(result.status, 1, 'exit status');
         assertIncludes(result.stderr, 'eyeprolog stats:\n', 'stderr');
         assertIncludes(result.stderr, '  memory_heap_used_bytes:', 'stderr');
@@ -4386,7 +4416,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: '-s prints solver statistics to stderr',
       run: () => {
-        const result = runCli(['-s', '-'], { input: '%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
+        const result = runCli(['-s', '-'], { input: '%% ?- q(X, Y).\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, 'q(a, b).\n', 'stdout');
         assertIncludes(result.stderr, 'eyeprolog stats:\n', 'stderr');
@@ -4396,7 +4426,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: 'statistics/0 prints snapshots during execution',
       run: () => {
-        const input = '%% goal: live\nlive :- statistics, statistics.\n';
+        const input = '%% ?- live.\nlive :- statistics, statistics.\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertEqual((result.stdout.match(/eyeprolog stats:/g) ?? []).length, 2, 'in-run snapshot count');
@@ -4408,7 +4438,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: 'statistics/2 exposes current counters and memory values',
       run: () => {
-        const input = '%% goal: live(Used)\nlive(Used) :- statistics(memory_guard_used_bytes, Used).\n';
+        const input = '%% ?- live(Used).\nlive(Used) :- statistics(memory_guard_used_bytes, Used).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(/^live\(\d+\)\.\n$/.test(result.stdout), true, 'numeric memory statistic');
@@ -4429,7 +4459,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: 'statistics predicates are excluded from strict ISO mode',
       run: () => {
-        const result = runCli(['--iso-strict', '-'], { input: '%% goal: statistics\n' });
+        const result = runCli(['--iso-strict', '-'], { input: '%% ?- statistics.\n' });
         assertEqual(result.status, 1, 'exit status');
         assertIncludes(result.stderr, 'existence_error(procedure)', 'stderr');
       },
@@ -4437,7 +4467,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: 'portable library predicates autoload without use_module directives',
       run: () => {
-        const input = '%% goal: answer(X)\nanswer(X) :- member(X, [a,b]).\n';
+        const input = '%% ?- answer(X).\nanswer(X) :- member(X, [a,b]).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, 'answer(a).\nanswer(b).\n', 'stdout');
@@ -4447,7 +4477,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: 'between/3 autoload removes the EyeProlog-specific prologue dependency',
       run: () => {
-        const input = '%% goal: answer(X)\nanswer(X) :- between(1, 3, X).\n';
+        const input = '%% ?- answer(X).\nanswer(X) :- between(1, 3, X).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, 'answer(1).\nanswer(2).\nanswer(3).\n', 'stdout');
@@ -4471,9 +4501,9 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       name: 'all bundled library exports participate in generic autoloading',
       run: () => {
         const input = [
-          '%% goal: pair_answer(K,V)',
-          '%% goal: string_answer(X)',
-          '%% goal: prime_answer(X)',
+          '%% ?- pair_answer(K,V).',
+          '%% ?- string_answer(X).',
+          '%% ?- prime_answer(X).',
           'pair_answer(K,V) :- pairs_keys_values([a-1,b-2], K, V).',
           'string_answer(X) :- uppercase("hello", X).',
           'prime_answer(X) :- smallest_divisor_from(91, 2, X).',
@@ -4519,7 +4549,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       run: () => {
         const input = [
           ':- use_module(library(lists)).',
-          '%% goal: fourth_length(N)',
+          '%% ?- fourth_length(N).',
           'fourth_length(N) :- call_nth(length(_Xs, N), 4).',
           '',
         ].join('\n');
@@ -4535,7 +4565,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         const input = [
           ':- use_module(library(lists)).',
           ':- use_module(library(iso_ext)).',
-          '%% goal: answer(N)',
+          '%% ?- answer(N).',
           'answer(N) :- call_nth(member(_, [a,b,c]), N), N = 2.',
           '',
         ].join('\n');
@@ -4548,7 +4578,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: 'strict ISO mode disables bundled-library autoloading',
       run: () => {
-        const input = '%% goal: answer(X)\nanswer(X) :- member(X, [a,b]).\n';
+        const input = '%% ?- answer(X).\nanswer(X) :- member(X, [a,b]).\n';
         const result = runCli(['--iso-strict', '-'], { input });
         assertEqual(result.status, 1, 'exit status');
         assertIncludes(result.stderr, 'existence_error(procedure)', 'stderr');
@@ -4595,7 +4625,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
     {
       name: '--portable accepts the common interop profile',
       run: () => {
-        const input = ':- use_module(library(lists)).\n%% goal: answer(X)\nanswer(X) :- member(X, [a]).\n';
+        const input = ':- use_module(library(lists)).\n%% ?- answer(X).\nanswer(X) :- member(X, [a]).\n';
         const result = runCli(['--portable', '-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, 'answer(a).\n', 'stdout');
@@ -4622,7 +4652,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
     {
       name: '--portable rejects implementation-specific library dependencies',
       run: () => {
-        const input = ':- use_module(library(prologue), [between/3]).\n%% goal: answer\nanswer :- between(1, 1, _).\n';
+        const input = ':- use_module(library(prologue), [between/3]).\n%% ?- answer.\nanswer :- between(1, 1, _).\n';
         const result = runCli(['--portable', '-'], { input });
         assertEqual(result.status, 1, 'exit status');
         assertEqual(result.stdout, '', 'stdout');
@@ -4632,7 +4662,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
     {
       name: '--no-autoload exposes unresolved portable dependencies',
       run: () => {
-        const input = '%% goal: answer(X)\nanswer(X) :- member(X, [a]).\n';
+        const input = '%% ?- answer(X).\nanswer(X) :- member(X, [a]).\n';
         const result = runCli(['--no-autoload', '-'], { input });
         assertEqual(result.status, 1, 'exit status');
         assertIncludes(result.stderr, 'existence_error(procedure)', 'stderr');
@@ -4674,7 +4704,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
     {
       name: '--warnings flags explicit library(prologue) dependencies',
       run: () => {
-        const input = ':- use_module(library(prologue), [between/3]).\n%% goal: answer\nanswer :- between(1, 1, _).\n';
+        const input = ':- use_module(library(prologue), [between/3]).\n%% ?- answer.\nanswer :- between(1, 1, _).\n';
         const result = runCli(['--warnings', '-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertIncludes(result.stderr, 'eyeprolog warning: non-portable library dependency\n', 'stderr');
@@ -4684,7 +4714,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
     {
       name: '--warnings flags EyeProlog-only predicates from library(lists)',
       run: () => {
-        const input = ':- use_module(library(lists)).\n%% goal: answer(X)\nanswer(X) :- set_nth0(0, [a], b, X).\n';
+        const input = ':- use_module(library(lists)).\n%% ?- answer(X).\nanswer(X) :- set_nth0(0, [a], b, X).\n';
         const result = runCli(['--warnings', '-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertIncludes(result.stderr, 'eyeprolog warning: non-portable library predicate\n', 'stderr');
@@ -4694,7 +4724,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
     {
       name: '--warnings stays quiet for the common library(lists) profile',
       run: () => {
-        const input = ':- use_module(library(lists)).\n%% goal: answer(X)\nanswer(X) :- member(X, [a]).\n';
+        const input = ':- use_module(library(lists)).\n%% ?- answer(X).\nanswer(X) :- member(X, [a]).\n';
         const result = runCli(['--warnings', '-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, 'answer(a).\n', 'stdout');
@@ -4705,7 +4735,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       name: '--warnings prints unstratified negation diagnostics without failing',
       run: () => {
         const input = [
-          '%% goal: answer(X)',
+          '%% ?- answer(X).',
           'p(a) :- \\+ q(a).',
           'q(a) :- \\+ p(a).',
           'answer(ok).',
@@ -4723,7 +4753,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       name: '-w prints unstratified negation diagnostics without failing',
       run: () => {
         const input = [
-          '%% goal: answer(X)',
+          '%% ?- answer(X).',
           'p(a) :- \\+ q(a).',
           'q(a) :- \\+ p(a).',
           'answer(ok).',
@@ -4738,7 +4768,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
     {
       name: '--warnings stays quiet for stratified negation',
       run: () => {
-        const input = '%% goal: answer(X)\np(a).\nq(_) :- fail.\nanswer(ok) :- \\+ q(a).\n';
+        const input = '%% ?- answer(X).\np(a).\nq(_) :- fail.\nanswer(ok) :- \\+ q(a).\n';
         const result = runCli(['--warnings', '-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, 'answer(ok).\n', 'stdout');
@@ -4751,7 +4781,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // definition instead of the library one (issue #97 follow-up).
       name: 'autoload shadowing is reported without opting in to --warnings',
       run: () => {
-        const input = '%% goal: answer(X)\nappend(left, right, joined).\np(a).\nanswer(ok) :- p(a).\n';
+        const input = '%% ?- answer(X).\nappend(left, right, joined).\np(a).\nanswer(ok) :- p(a).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, 'answer(ok).\n', 'stdout');
@@ -4764,7 +4794,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // local definition overrides it with a warning rather than an error.
       name: 'whole-module library import still allows a warned local override',
       run: () => {
-        const input = ':- use_module(library(lists)).\n%% goal: answer(X)\nappend(left, right, joined).\np(a).\nanswer(ok) :- p(a).\n';
+        const input = ':- use_module(library(lists)).\n%% ?- answer(X).\nappend(left, right, joined).\np(a).\nanswer(ok) :- p(a).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
         assertIncludes(result.stderr, 'shadows a bundled library predicate', 'shadowing warning');
@@ -4775,7 +4805,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // contradiction, so it is a permission_error rather than a warning.
       name: 'explicitly imported library predicates cannot be redefined',
       run: () => {
-        const input = ':- use_module(library(lists), [append/3]).\n%% goal: answer(X)\nappend(left, right, joined).\nanswer(ok).\n';
+        const input = ':- use_module(library(lists), [append/3]).\n%% ?- answer(X).\nappend(left, right, joined).\nanswer(ok).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 1, 'exit status');
         assertIncludes(result.stderr, 'permission_error(modify, static_procedure)', 'permission error');
@@ -4787,7 +4817,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // exports, so ordinary user predicates stay quiet.
       name: '--warnings stays quiet for user predicates that shadow nothing',
       run: () => {
-        const input = '%% goal: answer(X)\nmy_own_join(a, b, ab).\nanswer(ok) :- my_own_join(a, b, _ab).\n';
+        const input = '%% ?- answer(X).\nmy_own_join(a, b, ab).\nanswer(ok) :- my_own_join(a, b, _ab).\n';
         const result = runCli(['--warnings', '-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertNotIncludes(result.stderr, 'shadows a bundled library predicate', 'no shadowing warning');
@@ -4798,7 +4828,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // user definition must not change library behaviour (issue #97).
       name: 'user definitions do not leak into bundled library internals',
       run: () => {
-        const input = '%% goal: answer(X)\nappend(left, right, joined).\nanswer(L) :- append([[1,2],[3]], L).\n';
+        const input = '%% ?- answer(X).\nappend(left, right, joined).\nanswer(L) :- append([[1,2],[3]], L).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
         assertIncludes(result.stdout, 'answer([1, 2, 3])', 'library append/2 still uses the library append/3');
@@ -4846,7 +4876,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // proper list instead of the improper [Element|eyeprolog] it used to be.
       name: 'error contexts compose into proper lists (issue #98)',
       run: () => {
-        const input = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+        const input = ':- use_module(library(error)).\n%% ?- answer(X).\n' +
           'answer(C) :- catch(call_with_error_context(atom_length(1.0,_), outer-1), error(_,C), true).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
@@ -4860,13 +4890,13 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // composed into an improper list.
       name: 'library predicates yield composable contexts, not manual ones',
       run: () => {
-        const input = ':- use_module(library(error)).\n:- use_module(library(random)).\n%% goal: answer(X)\n' +
+        const input = ':- use_module(library(error)).\n:- use_module(library(random)).\n%% ?- answer(X).\n' +
           'answer(C) :- catch(must_be(integer, a), error(_,C), true).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
         assertIncludes(result.stdout, 'answer([predicate - must_be / 2])', 'must_be context is a list');
 
-        const composed = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+        const composed = ':- use_module(library(error)).\n%% ?- answer(X).\n' +
           'answer(C) :- catch(call_with_error_context(must_be(integer, a), outer-1), error(_,C), true).\n';
         const nested = runCli(['-'], { input: composed });
         assertEqual(nested.status, 0, `nested exit status; stderr=${nested.stderr}`);
@@ -4893,7 +4923,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // costs a child Solver per call and made the suite ~35% slower.
       name: 'must_be/2 does not pay for a catch frame on success',
       run: () => {
-        const input = '%% goal: answer(X)\n' +
+        const input = '%% ?- answer(X).\n' +
           'loop(0) :- !.\nloop(N) :- must_be(integer, N), M is N - 1, loop(M).\n' +
           'answer(ok) :- loop(20000).\n';
         const started = Date.now();
@@ -4911,7 +4941,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // clause selection does, and this guard used to dominate the wrapper.
       name: 'call_with_error_context/2 pair check stays off the hot path',
       run: () => {
-        const input = '%% goal: answer(X)\np(X) :- integer(X).\n' +
+        const input = '%% ?- answer(X).\np(X) :- integer(X).\n' +
           'loop(0) :- !.\nloop(N) :- call_with_error_context(p(N), c-1), M is N - 1, loop(M).\n' +
           'answer(ok) :- loop(20000).\n';
         const started = Date.now();
@@ -4925,7 +4955,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
     {
       name: 'sufficient-instantiation list checks reject unknown tails without binding elements',
       run: () => {
-        const input = ':- use_module(library(si)).\n%% goal: answer(X)\n' +
+        const input = ':- use_module(library(si)).\n%% ?- answer(X).\n' +
           'answer(ok) :- ' +
           'catch(list_si(X), error(instantiation_error,_), C1 = caught), C1 == caught, var(X), ' +
           'catch(list_si([a|T]), error(instantiation_error,_), C2 = caught), C2 == caught, var(T), ' +
@@ -4954,7 +4984,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
           ['compare_si(O, 1, 1.0)', '>'],
         ];
         for (const [goal, order] of decided) {
-          const input = ':- use_module(library(si)).\n%% goal: answer(X)\n' +
+          const input = ':- use_module(library(si)).\n%% ?- answer(X).\n' +
             `answer(O) :- ${goal}.\n`;
           const result = runCli(['-'], { input });
           assertEqual(result.status, 0, `${goal} status; stderr=${result.stderr}`);
@@ -4962,7 +4992,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
         }
         for (const goal of ['compare_si(O, X, 1)', 'compare_si(O, f(a), f(Y))',
           'compare_si(O, X, Y)', 'compare_si(O, [a|X], [a|Y])']) {
-          const input = ':- use_module(library(si)).\n%% goal: answer(X)\n' +
+          const input = ':- use_module(library(si)).\n%% ?- answer(X).\n' +
             `answer(E) :- catch(${goal}, error(E,_), true).\n`;
           const result = runCli(['-'], { input });
           assertEqual(result.status, 0, `${goal} status; stderr=${result.stderr}`);
@@ -4974,7 +5004,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // compare_si/3 must not bind anything while deciding.
       name: 'compare_si/3 leaves its arguments unbound',
       run: () => {
-        const input = ':- use_module(library(si)).\n%% goal: answer(X)\n' +
+        const input = ':- use_module(library(si)).\n%% ?- answer(X).\n' +
           'answer(ok) :- X = f(Y), compare_si(<, X, g(1)), var(Y).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
@@ -4986,18 +5016,18 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // Trealla, and predicate contexts use the predicate-F/A convention.
       name: 'call_with_error_context/2 requires a pair as its context element',
       run: () => {
-        const bad = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+        const bad = ':- use_module(library(error)).\n%% ?- answer(X).\n' +
           'answer(C) :- catch(call_with_error_context(true, x), error(E,_), C = E).\n';
         const result = runCli(['-'], { input: bad });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
         assertIncludes(result.stdout, 'answer(type_error(pair, x))', 'non-pair element rejected');
 
-        const unbound = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+        const unbound = ':- use_module(library(error)).\n%% ?- answer(X).\n' +
           'answer(C) :- catch(call_with_error_context(true, _), error(E,_), C = E).\n';
         const varResult = runCli(['-'], { input: unbound });
         assertIncludes(varResult.stdout, 'answer(instantiation_error)', 'unbound element rejected');
 
-        const good = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+        const good = ':- use_module(library(error)).\n%% ?- answer(X).\n' +
           'answer(ok) :- call_with_error_context(true, a-b).\n';
         const okResult = runCli(['-'], { input: good });
         assertIncludes(okResult.stdout, 'answer(ok)', 'pair element accepted');
@@ -5007,7 +5037,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // Nesting prepends outermost-first and keeps the raising predicate last.
       name: 'nested call_with_error_context/2 accumulates outermost first',
       run: () => {
-        const input = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+        const input = ':- use_module(library(error)).\n%% ?- answer(X).\n' +
           'answer(C) :- catch(call_with_error_context(call_with_error_context(atom_length(1.0,_), inner-1), outer-2), error(_,C), true).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
@@ -5019,7 +5049,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       // does not need a separate copy_term/2 call (issue #104).
       name: 'throw/1 freshens variables in the propagated context element',
       run: () => {
-        const input = ':- use_module(library(error)).\n%% goal: answer(X)\n' +
+        const input = ':- use_module(library(error)).\n%% ?- answer(X).\n' +
           'answer(ok) :- catch(call_with_error_context(atom_length(1.0,_), ctx-V), error(_,[ctx-W|_]), (V == W -> fail ; true)).\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, `exit status; stderr=${result.stderr}`);
@@ -5030,7 +5060,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       name: 'double dash permits option-shaped file names',
       run: () => {
         const file = path.join(temp.dir, '-h');
-        fs.writeFileSync(file, '%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n');
+        fs.writeFileSync(file, '%% ?- q(X, Y).\np(a, b).\nq(X, Y) :- p(X, Y).\n');
         const result = runCli(['--', file]);
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, 'q(a, b).\n', 'stdout');
@@ -5828,7 +5858,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
     {
       name: 'CLI false/0 fails as an ordinary goal',
       run: () => {
-        const input = '%% goal: answer(X)\nanswer(ok) :- false.\n';
+        const input = '%% ?- answer(X).\nanswer(ok) :- false.\n';
         const result = runCli(['-'], { input });
         assertEqual(result.status, 0, 'exit status');
         assertEqual(result.stdout, '', 'stdout');

@@ -7,23 +7,23 @@
 % It is useful as a larger rule-translation example because many output facts are
 % copied or transformed from state-transition relations.
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: dp_type(X0, X1)
+%% ?- dp_type(X0, X1).
 
-%% goal: dp_in(X0, X1)
+%% ?- dp_in(X0, X1).
 
-%% goal: dp_from(X0, X1)
+%% ?- dp_from(X0, X1).
 
-%% goal: dp_to(X0, X1)
+%% ?- dp_to(X0, X1).
 
-%% goal: dp_fork(X0, X1)
+%% ?- dp_fork(X0, X1).
 
-%% goal: dp_philosopher(X0, X1)
+%% ?- dp_philosopher(X0, X1).
 
-%% goal: dp_mealNo(X0, X1)
+%% ?- dp_mealNo(X0, X1).
 
-%% goal: dp_inSlot(X0, X1)
+%% ?- dp_inSlot(X0, X1).
 
-%% goal: dp_usesFork(X0, X1)
+%% ?- dp_usesFork(X0, X1).
 
 
 % The trace is represented as numbered configurations and slots.  Each slot

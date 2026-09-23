@@ -39,7 +39,7 @@ knights_tour(Start, Tour) :-
     tour_(Start, [Start], SquareCount, ReverseTour),
     reverse(ReverseTour, Tour).
 
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(SquareCount, Tour) :-
     knights_tour(p(1, 1), Tour),

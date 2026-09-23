@@ -8,11 +8,11 @@
 
 % |R) = |0, 0) + |1, 1)
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: decodesAs(X0, X1)
+%% ?- decodesAs(X0, X1).
 
-%% goal: preservesMessage(X0, X1)
+%% ?- preservesMessage(X0, X1).
 
-%% goal: cancelsCrossTalk(X0, X1)
+%% ?- cancelsCrossTalk(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

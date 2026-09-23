@@ -2,5 +2,5 @@
 pair(a, one).
 pair(b, two).
 answer(fresh, yes) :- pair(a, _), pair(b, _).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

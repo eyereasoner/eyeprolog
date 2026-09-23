@@ -10,11 +10,11 @@
 % a variable placeholder inside the quoted formula.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: type(X0, X1)
+%% ?- type(X0, X1).
 
-%% goal: log_implies(X0, X1)
+%% ?- log_implies(X0, X1).
 
-%% goal: holds_result(X0, X1)
+%% ?- holds_result(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

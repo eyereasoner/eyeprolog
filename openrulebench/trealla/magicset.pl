@@ -14,7 +14,7 @@ magicab(Y) :- magicab(X), b(X,Y).
 magicab(Y) :- magicfb(X), d(X), \+ ab(X), h(X,Y).
 magicab(X) :- magicfb(X), d(X).
 benchmark(Count) :- findall(X, fb(X), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 magicfb(1).
 d(1).

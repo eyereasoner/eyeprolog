@@ -5,7 +5,7 @@ item(old).
 temp(a).
 temp(b).
 
-%% goal: database_roundtrip(X0, X1, X2)
+%% ?- database_roundtrip(X0, X1, X2).
 
 database_roundtrip(All, Remaining, RuleBody) :-
     asserta(item(first)),
@@ -18,7 +18,7 @@ database_roundtrip(All, Remaining, RuleBody) :-
     abolish(derived/1),
     \+(current_predicate(derived/1)).
 
-%% goal: retracted(X0)
+%% ?- retracted(X0).
 
 retracted(Value) :-
     retract(temp(Value)).

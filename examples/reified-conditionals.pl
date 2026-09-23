@@ -11,7 +11,7 @@
 even_t(N, true) :- 0 is N mod 2, !.
 even_t(_, false).
 
-%% goal: answer(X0, X1, X2, X3)
+%% ?- answer(X0, X1, X2, X3).
 
 answer(Evens, Odds, First, Second) :-
     tfilter(even_t, [1, 2, 3, 4, 5, 6, 7, 8], Evens),

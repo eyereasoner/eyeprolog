@@ -4,9 +4,9 @@
 % eyeprolog arithmetic predicates to derive the discriminant and the two roots.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: discriminant(X0, X1)
+%% ?- discriminant(X0, X1).
 
-%% goal: root(X0, X1)
+%% ?- root(X0, X1).
 
 
 % equation/4 stores coefficients A, B, and C for each quadratic.  The examples

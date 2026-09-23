@@ -5,13 +5,13 @@
 % The graph is undirected; edges have identifiers so the trail consumes each
 % physical edge exactly once even when vertices are revisited.  The remaining
 % edge-id list is the explicit search state.
-%% goal: oddVertices(X0, X1)
+%% ?- oddVertices(X0, X1).
 
-%% goal: path(X0, X1)
+%% ?- path(X0, X1).
 
-%% goal: edgeCount(X0, X1)
+%% ?- edgeCount(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Edge identifiers are part of the search state: the DFS removes ids, not just

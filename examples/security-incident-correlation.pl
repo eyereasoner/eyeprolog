@@ -4,11 +4,11 @@
 % signals into an escalation decision with concise reason relations.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: type(X0, X1)
+%% ?- type(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

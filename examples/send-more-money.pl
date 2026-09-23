@@ -6,7 +6,7 @@
 % The solver assigns distinct decimal digits to letters while enforcing the
 % column-by-column carries.  Rather than generate all digit assignments first,
 % each column constraint is applied as soon as its letters are chosen.
-%% goal: cryptarithm_answer(X0, X1)
+%% ?- cryptarithm_answer(X0, X1).
 
 
 % The search domain is a shrinking digit list threaded through select/3 calls.

@@ -4,7 +4,7 @@
 dog.
 elk(X) :- moose(X).
 
-%% goal: predicate_reflection(X0)
+%% ?- predicate_reflection(X0).
 
 predicate_reflection(Arity) :-
     current_predicate(dog/0),

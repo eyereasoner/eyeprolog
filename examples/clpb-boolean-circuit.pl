@@ -4,8 +4,8 @@
 % complete truth table; the second uses universally quantified Boolean atoms
 % and taut/2 to verify equivalence to the XOR (#) specification.
 
-%% goal: xor_row(X0)
-%% goal: xor_circuit_verified(X0)
+%% ?- xor_row(X0).
+%% ?- xor_circuit_verified(X0).
 
 xor_circuit(X, Y, Z) :-
   sat(Z =:= ((X * ~Y) + (~X * Y))).

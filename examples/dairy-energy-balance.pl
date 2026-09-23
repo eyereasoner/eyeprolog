@@ -3,15 +3,15 @@
 % cow(Cow, BodyWeightKg, MilkKgPerDay, RationEnergyMcalPerKgDM, IntakeKgDM)
 % records a small herd.  Rules estimate maintenance demand, milk-production
 % demand, ration supply, and the resulting energy-balance class.
-%% goal: energyBalance_Mcal(X0, X1)
+%% ?- energyBalance_Mcal(X0, X1).
 
-%% goal: rationSupportedMilk_kg(X0, X1)
+%% ?- rationSupportedMilk_kg(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
-%% goal: strongestDeficit(X0, X1)
+%% ?- strongestDeficit(X0, X1).
 
 
 % Four cows cover negative, near-neutral, and positive balance cases.

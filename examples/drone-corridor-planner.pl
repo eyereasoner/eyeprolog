@@ -5,7 +5,7 @@
 % bounds recursion; path/9 sums duration and cost while multiplying belief and
 % comfort.  Memoization helps because many surviving-plan checks reuse prefixes.
 
-%% goal: gps_plan(X0, X1)
+%% ?- gps_plan(X0, X1).
 
 
 

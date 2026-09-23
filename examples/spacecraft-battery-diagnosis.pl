@@ -5,11 +5,11 @@
 % The values and limits are illustrative; they are not operational flight
 % rules.
 
-%% goal: metric(X0, X1, X2)
+%% ?- metric(X0, X1, X2).
 
-%% goal: diagnosis(X0, X1)
+%% ?- diagnosis(X0, X1).
 
-%% goal: action(X0, X1)
+%% ?- action(X0, X1).
 
 
 % Primary telemetry for battery pack bp1.

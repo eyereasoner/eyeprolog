@@ -1,9 +1,9 @@
 % Flagship example: cross-organization data-sharing decisions using RDF,
 % W3C ODRL vocabulary, DPV terms, and portable ISO Prolog policy rules.
 
-%% goal: sharing_decision(X0, X1)
-%% goal: obligation(X0, X1)
-%% goal: decision_reason(X0, X1)
+%% ?- sharing_decision(X0, X1).
+%% ?- obligation(X0, X1).
+%% ?- decision_reason(X0, X1).
 
 v(dataset, iri('https://example.org/vocab/dataset')).
 v(recipient, iri('https://example.org/vocab/recipient')).

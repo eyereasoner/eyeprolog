@@ -53,6 +53,6 @@ node(n(A1, N1), [n(A, N)|T]-[n(A1, N1), n(A, N)|T]) :-
     A1 is A+1.
 
 % query
-%% goal: fft([0, 1, 2, 3, 4, 5, 6, 7], _)
+%% ?- fft([0, 1, 2, 3, 4, 5, 6, 7], _).
 
 :- set_prolog_flag(unknown, fail).

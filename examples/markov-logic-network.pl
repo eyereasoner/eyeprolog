@@ -8,21 +8,21 @@
 % choose the highest-scoring world.  Weights are stored as integer tenths of a
 % log weight so the example stays reproducible without floating-point noise.
 
-%% goal: mlnWeight(X0, X1)
+%% ?- mlnWeight(X0, X1).
 
-%% goal: mlnWorld(X0, X1)
+%% ?- mlnWorld(X0, X1).
 
-%% goal: mlnSatisfied(X0, X1)
+%% ?- mlnSatisfied(X0, X1).
 
-%% goal: mlnViolated(X0, X1)
+%% ?- mlnViolated(X0, X1).
 
-%% goal: mlnContribution(X0, X1, X2)
+%% ?- mlnContribution(X0, X1, X2).
 
-%% goal: mlnWorldScore(X0, X1)
+%% ?- mlnWorldScore(X0, X1).
 
-%% goal: mlnMapWorld(X0, X1)
+%% ?- mlnMapWorld(X0, X1).
 
-%% goal: mlnConclusion(X0, X1)
+%% ?- mlnConclusion(X0, X1).
 
 
 % Evidence and candidate hidden assignments.

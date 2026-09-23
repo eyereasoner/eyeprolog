@@ -1,5 +1,5 @@
 % Explicit tabling is a search-control strategy and does not change answers.
-%% goal: path(X0, X1)
+%% ?- path(X0, X1).
 
 :- table path/2.
 

@@ -4,7 +4,7 @@
 
 q(Id,T,A,Y,M) :- att(Id,title,T), att(Id,year,Y), att(Id,author,A), att(Id,month,M).
 benchmark(Count) :- findall(row(Id,T,A,Y,M), q(Id,T,A,Y,M), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 att(pub1,title,title1).
 att(pub1,year,y1991).

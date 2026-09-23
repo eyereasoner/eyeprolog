@@ -5,17 +5,17 @@
 %   rate = Vmax * Substrate / (Km_effective + Substrate)
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: effectiveKm_uM(X0, X1)
+%% ?- effectiveKm_uM(X0, X1).
 
-%% goal: uninhibitedRate_uM_s(X0, X1)
+%% ?- uninhibitedRate_uM_s(X0, X1).
 
-%% goal: inhibitedRate_uM_s(X0, X1)
+%% ?- inhibitedRate_uM_s(X0, X1).
 
-%% goal: inhibitionFraction(X0, X1)
+%% ?- inhibitionFraction(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

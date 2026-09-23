@@ -5,13 +5,13 @@
 % field_points_to/2 facts.  This is the classic Datalog shape used in scalable
 % pointer-analysis papers, reduced to a small readable instance.
 
-%% goal: pointsTo(X0, X1)
+%% ?- pointsTo(X0, X1).
 
-%% goal: heapField(X0, X1)
+%% ?- heapField(X0, X1).
 
-%% goal: pointerFlow(X0, X1)
+%% ?- pointerFlow(X0, X1).
 
-%% goal: pointerConclusion(X0, X1)
+%% ?- pointerConclusion(X0, X1).
 
 
 

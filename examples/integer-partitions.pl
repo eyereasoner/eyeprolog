@@ -8,7 +8,7 @@
 % partitions(N, K, Count) counts unordered sums of N using parts no larger than K.
 % The two recursive branches are the standard include-K / exclude-K split.  Without
 % memoization the same (N,K) subproblems are reached many times.
-%% goal: partition_answer(X0, X1)
+%% ?- partition_answer(X0, X1).
 
 
 

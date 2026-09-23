@@ -8,7 +8,7 @@
 %   - explicit `table/1` declarations for tabled predicates
 %   - quoted angle-bracket atoms for web-shaped identifiers
 
-%% goal: path(X0, X1)
+%% ?- path(X0, X1).
 
 edge('<urn:example:a>', '<urn:example:b>').
 edge('<urn:example:b>', '<urn:example:c>').

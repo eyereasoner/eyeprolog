@@ -1,7 +1,7 @@
 % Adapted from Logtalk iso_atom_codes_2_01 through 07 and
 % lgt_atom_codes_2_15 through 20, 24, and 25. Modified for EyeProlog's harness.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: atom_codes_results(X0, X1, X2, X3)
+%% ?- atom_codes_results(X0, X1, X2, X3).
 
 atom_codes_results(Empty, Brackets, Ant, Built) :-
     atom_codes('', Empty),

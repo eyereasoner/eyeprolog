@@ -14,36 +14,36 @@ elk(X) :- moose(X).
 
 moose(bertha).
 
-%% goal: declared_public(X0)
+%% ?- declared_public(X0).
 
 declared_public(Body) :-
     clause(elk(bertha), Body).
 
-%% goal: undeclared_sibling(X0)
+%% ?- undeclared_sibling(X0).
 
 % moose/1 carries no declaration, so it stays private.
 undeclared_sibling(Culprit) :-
     catch(clause(moose(_), _), error(Formal, _), true),
     Formal = permission_error(access, private_procedure, Culprit).
 
-%% goal: public_is_not_dynamic(X0)
+%% ?- public_is_not_dynamic(X0).
 
 public_is_not_dynamic(Formal) :-
     catch(assertz(elk(clara)), error(Formal, _), true).
 
-%% goal: flag_default(X0)
+%% ?- flag_default(X0).
 
 flag_default(Access) :-
     current_prolog_flag(default_procedure_access, Access).
 
-%% goal: flag_opens_every_procedure(X0)
+%% ?- flag_opens_every_procedure(X0).
 
 flag_opens_every_procedure(Body) :-
     set_prolog_flag(default_procedure_access, public),
     clause(moose(bertha), Body),
     set_prolog_flag(default_procedure_access, private).
 
-%% goal: builtins_stay_private(X0)
+%% ?- builtins_stay_private(X0).
 
 builtins_stay_private(Culprit) :-
     set_prolog_flag(default_procedure_access, public),

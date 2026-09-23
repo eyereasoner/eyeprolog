@@ -5,7 +5,7 @@
 % stream explicitly. The path is under /tmp so the source tree is unchanged.
 :- initialization(write_fixture).
 
-%% goal: report(X0, X1)
+%% ?- report(X0, X1).
 
 
 fixture_path('/tmp/eyeprolog-iso-term-io-example.pl').

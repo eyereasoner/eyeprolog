@@ -6,15 +6,15 @@
 % who burns is a witch.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: floats(X0)
+%% ?- floats(X0).
 
-%% goal: madeOfWood(X0)
+%% ?- madeOfWood(X0).
 
-%% goal: burns(X0)
+%% ?- burns(X0).
 
-%% goal: witch(X0)
+%% ?- witch(X0).
 
-%% goal: holds_result(X0, X1)
+%% ?- holds_result(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

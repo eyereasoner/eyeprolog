@@ -1,5 +1,5 @@
 % phrase/3 is steadfast in its third argument.
-%% goal: steadfast(X0)
+%% ?- steadfast(X0).
 
 steadfast(bound_before) :-
     Rest = [b],

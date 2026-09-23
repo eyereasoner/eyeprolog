@@ -4,5 +4,5 @@ q(a).
 r(a).
 ok(X) :- (p(X), q(X), r(X)).
 answer(ok, X) :- ok(X).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

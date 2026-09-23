@@ -1,6 +1,6 @@
 % Adapted from Trealla Prolog tests/issues/test1136.pl.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: copy_term_binding_direction(ok)
+%% ?- copy_term_binding_direction(ok).
 
 copy_term_binding_direction(ok) :-
     copy_term(X, 3), var(X),

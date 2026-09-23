@@ -4,13 +4,13 @@
 % as pi^2 m/s^2 so a one-meter pendulum has a period of two seconds.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: period_s(X0, X1)
+%% ?- period_s(X0, X1).
 
-%% goal: periodError_s(X0, X1)
+%% ?- periodError_s(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

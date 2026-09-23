@@ -7,13 +7,13 @@
 % which environments support a belief and which environments are inconsistent
 % because they support contradictory conclusions.
 
-%% goal: tmsSupport(X0, X1)
+%% ?- tmsSupport(X0, X1).
 
-%% goal: tmsJustification(X0, X1, X2)
+%% ?- tmsJustification(X0, X1, X2).
 
-%% goal: tmsInconsistent(X0)
+%% ?- tmsInconsistent(X0).
 
-%% goal: tmsConclusion(X0, X1)
+%% ?- tmsConclusion(X0, X1).
 
 
 

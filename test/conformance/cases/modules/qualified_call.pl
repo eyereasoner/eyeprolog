@@ -3,4 +3,4 @@
 tone(blue).
 answer(X) :- tone(X).
 
-%% goal: colors:answer(X)
+%% ?- colors:answer(X).

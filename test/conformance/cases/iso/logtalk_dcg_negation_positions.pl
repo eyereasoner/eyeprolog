@@ -1,6 +1,6 @@
 % Adapted from Logtalk dcgs_negation_01-02.
 % Modified for EyeProlog's harness. See test/conformance/THIRD_PARTY.md.
-%% goal: negation_result(X0, X1)
+%% ?- negation_result(X0, X1).
 
 not_b --> \+ [b], [_].
 middle_not_x --> [a], \+ [x], [_].

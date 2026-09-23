@@ -2,7 +2,7 @@
 % See test/conformance/THIRD_PARTY.md.
 :- use_module(library(assoc)).
 
-%% goal: assoc_is_assoc_valid(ok)
+%% ?- assoc_is_assoc_valid(ok).
 
 assoc_is_assoc_valid(ok) :-
     is_assoc(t(5, 1, -, t(3, 1, <, t(2, 1, <, t(1, 1, -, t, t), t), t(4, 1, -, t, t)),

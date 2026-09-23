@@ -9,7 +9,7 @@
 % numbers are described by proper divisors, primes are candidates that are not
 % composite, and `totient/2` counts numbers coprime with the input.
 
-%% goal: prime_result(X0, X1)
+%% ?- prime_result(X0, X1).
 
 
 candidate(N) :-

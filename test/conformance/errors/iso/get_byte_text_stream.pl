@@ -1,4 +1,4 @@
-%% goal: trigger
+%% ?- trigger.
 
 trigger :-
     current_input(Input),

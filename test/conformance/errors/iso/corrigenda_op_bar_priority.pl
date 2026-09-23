@@ -1,3 +1,3 @@
-%% goal: trigger
+%% ?- trigger.
 
 trigger :- op(1000, xfy, '|').

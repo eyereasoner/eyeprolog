@@ -1122,7 +1122,20 @@ class Parser {
       answers.push(answer);
       this.expectAndAdvance(TOK.DOT, '.');
     }
-    if (answers.length === 0) throw new Error(`parse line ${line}: quad requires an indented answer description`);
+    if (answers.length === 0) {
+      // A bare `?- Goal.` with nothing indented under it is the ISO query
+      // form, not a quad missing its answers: the standard defines `?-` as a
+      // prefix operator, and this engine's quad syntax only adds an infix
+      // one on top. Reading it as a query is what lets a program written for
+      // another ISO processor -- eyeron writes its queries this way -- run
+      // here unchanged. A *labelled* quad with no answers stays an error,
+      // because a quad with nothing to check is not a quad.
+      if (id == null) {
+        accept({ kind: 'query', goal: query, source: { filename: this.filename, line } });
+        return;
+      }
+      throw new Error(`parse line ${line}: quad requires an indented answer description`);
+    }
 
     accept({
       kind: 'quad',

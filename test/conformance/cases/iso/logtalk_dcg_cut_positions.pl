@@ -1,6 +1,6 @@
 % Adapted from Logtalk dcgs_cut_01-04 and 06.
 % Modified for EyeProlog's harness. See test/conformance/THIRD_PARTY.md.
-%% goal: cut_position(X0, X1)
+%% ?- cut_position(X0, X1).
 
 cut_first --> !, [a].
 cut_middle --> [a], !, [b].

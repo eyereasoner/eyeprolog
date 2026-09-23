@@ -1,6 +1,6 @@
 % Adapted from Trealla Prolog tests/tests/test0049.pl.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: bagof_setof_duplicate_handling(X0, X1)
+%% ?- bagof_setof_duplicate_handling(X0, X1).
 
 foo_dup(a, b, c).
 foo_dup(a, b, d).

@@ -5,7 +5,7 @@
 % sameInputByCompositeInjectivity(h, a, b) and the symmetric counterpart.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: sameInputByCompositeInjectivity(X0, X1, X2)
+%% ?- sameInputByCompositeInjectivity(X0, X1, X2).
 
 
 :- discontiguous(app/3).

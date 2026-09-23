@@ -3,7 +3,7 @@
 
 :- op(100, yfx, ~).
 
-%% goal: user_operator_with_prefix_minus(A, B, C)
+%% ?- user_operator_with_prefix_minus(A, B, C).
 
 user_operator_with_prefix_minus(A, B, C) :-
     A = (- (1~2~3)),

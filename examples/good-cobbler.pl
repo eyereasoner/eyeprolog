@@ -4,7 +4,7 @@
 % Here the quoted assertion is represented as a eyeprolog term.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: holds_result(X0, X1)
+%% ?- holds_result(X0, X1).
 
 
 % The asserted fact is kept separate from the output form so the rule can show

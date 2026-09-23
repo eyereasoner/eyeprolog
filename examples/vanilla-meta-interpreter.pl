@@ -23,7 +23,7 @@ parent(pat, jim).
 grandparent(X, Z) :- parent(X, Y), parent(Y, Z).
 great_grandparent(X, Z) :- parent(X, Y), grandparent(Y, Z).
 
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(Grandchildren, GreatGrandchildren) :-
     findall(X, solve(grandparent(tom, X)), Grandchildren),

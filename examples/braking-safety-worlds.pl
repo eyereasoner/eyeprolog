@@ -4,13 +4,13 @@
 % real safety calculator; it demonstrates rule-level model comparison.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: safeInWorld(X0, X1)
+%% ?- safeInWorld(X0, X1).
 
-%% goal: riskyInWorld(X0, X1)
+%% ?- riskyInWorld(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

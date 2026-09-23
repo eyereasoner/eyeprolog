@@ -6,5 +6,5 @@ branch --> dcg_chain:leaf.
 wrapper --> phrase(dcg_chain:branch).
 answer(Tokens) :- phrase(wrapper, Tokens).
 
-%% goal: dcg_chain:answer(Tokens)
-%% goal: phrase(dcg_chain:wrapper, Tokens)
+%% ?- dcg_chain:answer(Tokens).
+%% ?- phrase(dcg_chain:wrapper, Tokens).

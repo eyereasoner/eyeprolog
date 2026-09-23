@@ -5,7 +5,7 @@
 % `log/1`, and so on.  The result is intentionally unsimplified so the rule that
 % produced each part remains visible.
 
-%% goal: derivative_result(X0, X1)
+%% ?- derivative_result(X0, X1).
 
 
 expr(square, mul(var(x), var(x))).

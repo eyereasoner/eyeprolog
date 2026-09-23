@@ -4,7 +4,7 @@
 % requires audit logging. weighted_maximum/3 finds the admissible assignment
 % with maximum business value and labels the Boolean variables to that optimum.
 
-%% goal: best_release_plan(X0, X1)
+%% ?- best_release_plan(X0, X1).
 
 best_release_plan(plan(
     api(Api), cache(Cache), audit(Audit), search(Search)), Score) :-

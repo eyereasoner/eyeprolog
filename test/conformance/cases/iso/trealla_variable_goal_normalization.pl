@@ -3,7 +3,7 @@
 :- dynamic(legs/2).
 legs(A, 7) :- A, call(A).
 
-%% goal: variable_goal_normalized_in_clause_body(ok)
+%% ?- variable_goal_normalized_in_clause_body(ok).
 
 variable_goal_normalized_in_clause_body(ok) :-
     clause(legs(_, 7), Body),

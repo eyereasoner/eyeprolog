@@ -5,11 +5,11 @@
 % Butcher remainders, the final month/day, and a separate window check showing
 % that the result lies in the legal Gregorian Easter range.
 
-%% goal: easterDate(X0, X1)
+%% ?- easterDate(X0, X1).
 
-%% goal: computusRemainders(X0, X1)
+%% ?- computusRemainders(X0, X1).
 
-%% goal: legalGregorianWindow(X0, X1)
+%% ?- legalGregorianWindow(X0, X1).
 
 
 % Sample years for which the computed Easter date is queried.

@@ -6,7 +6,7 @@ via_phrase --> phrase([x, y]).
 look_ahead(X), [X] --> [X].
 variable_body(Body) --> Body.
 
-%% goal: phrase(via_call(a), [a])
-%% goal: phrase(via_phrase, X)
-%% goal: phrase(look_ahead(a), [a], R)
-%% goal: phrase(variable_body([z]), X)
+%% ?- phrase(via_call(a), [a]).
+%% ?- phrase(via_phrase, X).
+%% ?- phrase(look_ahead(a), [a], R).
+%% ?- phrase(variable_body([z]), X).

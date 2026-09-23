@@ -15,7 +15,7 @@
 % below deliberately stops after that first solution so this file's own
 % checked output stays finite -- do not replace it with findall/3.
 
-%% goal: answer(X0, X1, X2)
+%% ?- answer(X0, X1, X2).
 
 answer(AllSplitsOfBoundList, SplitCount, FoundFirstSplitOfUnboundList) :-
     findall(X - Y, append(X, Y, [a, b, c]), AllSplitsOfBoundList),

@@ -4,15 +4,15 @@
 % allowed budget, even when latency is still acceptable.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: errorRate(X0, X1)
+%% ?- errorRate(X0, X1).
 
-%% goal: p95Latency_ms(X0, X1)
+%% ?- p95Latency_ms(X0, X1).
 
-%% goal: latencyCheck(X0, X1)
+%% ?- latencyCheck(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % canary/4 records request count, error count, and p95 latency; thresholds

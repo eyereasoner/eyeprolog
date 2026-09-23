@@ -14,27 +14,27 @@
 % probabilities from symptoms, then score each therapy by averaging outcomes
 % over that posterior distribution. The recursive predicates are
 % shared layers used by several queried reports.
-%% goal: diseases(X0, X1)
+%% ?- diseases(X0, X1).
 
-%% goal: therapies(X0, X1)
+%% ?- therapies(X0, X1).
 
-%% goal: evidence(X0, X1)
+%% ?- evidence(X0, X1).
 
-%% goal: scores(X0, X1)
+%% ?- scores(X0, X1).
 
-%% goal: evidenceTotal(X0, X1)
+%% ?- evidenceTotal(X0, X1).
 
-%% goal: posteriors(X0, X1)
+%% ?- posteriors(X0, X1).
 
-%% goal: posterior(X0, X1)
+%% ?- posterior(X0, X1).
 
-%% goal: expectedSuccess(X0, X1)
+%% ?- expectedSuccess(X0, X1).
 
-%% goal: expectedAdverse(X0, X1)
+%% ?- expectedAdverse(X0, X1).
 
-%% goal: utility(X0, X1)
+%% ?- utility(X0, X1).
 
-%% goal: recommendedTherapy(X0, X1)
+%% ?- recommendedTherapy(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

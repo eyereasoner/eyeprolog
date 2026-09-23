@@ -57,7 +57,7 @@ holds(Prop, S) :- member(Prop, S).
 diamond(Program, Formula, S0) :- run(Program, S0, S1), holds(Formula, S1).
 box(Program, Formula, S0) :- \+ (run(Program, S0, S1), \+ holds(Formula, S1)).
 
-%% goal: answer(X0, X1, X2, X3, X4, X5, X6)
+%% ?- answer(X0, X1, X2, X3, X4, X5, X6).
 
 answer(FullPathReachesGarden, VacuousBoxHolds, GenuineBoxHolds,
        ChoiceBoxFails, ChoiceDiamondHolds, StarPreservesLocation, TestGuardedPathWorks) :-

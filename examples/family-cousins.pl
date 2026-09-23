@@ -1,11 +1,11 @@
 % Memoize scoped family projection and recursive labels; cousin derivation asks
 % for the same generation and branch facts many times.
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: generation(X0, X1)
+%% ?- generation(X0, X1).
 
-%% goal: branch(X0, X1)
+%% ?- branch(X0, X1).
 
-%% goal: cousin(X0, X1)
+%% ?- cousin(X0, X1).
 
 
 :- discontiguous(branch/2).

@@ -4,11 +4,11 @@
 % choose one extension.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: defaultSupports(X0, X1)
+%% ?- defaultSupports(X0, X1).
 
-%% goal: conflict(X0, X1)
+%% ?- conflict(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

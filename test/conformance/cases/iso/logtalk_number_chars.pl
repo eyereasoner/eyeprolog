@@ -1,6 +1,6 @@
 % Adapted from Logtalk iso_number_chars_2_01 through 08 and 11 through 13.
 % Modified for EyeProlog's conformance harness. See test/conformance/THIRD_PARTY.md.
-%% goal: number_char_results(X0, X1, X2, X3)
+%% ?- number_char_results(X0, X1, X2, X3).
 
 number_char_results(IntegerChars, Float, Negative, Spaced) :-
     number_chars(33, IntegerChars),

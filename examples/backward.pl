@@ -4,7 +4,7 @@
 % tiny: it demonstrates that a derived fact can be justified by a numeric
 % comparison in the rule body.
 
-%% goal: isIndeedMoreInterestingThan(X0, X1)
+%% ?- isIndeedMoreInterestingThan(X0, X1).
 
 
 moreInterestingThan(X, Y) :- (X > Y).

@@ -1,5 +1,5 @@
 % Reference 9.6: matches/3 extracts named regular-expression captures into a context.
-%% goal: answer(X0, X1, X2)
+%% ?- answer(X0, X1, X2).
 
 
 line('event=login_failed user=alice trace=4bf92f3577b34da6a3ce929d0e0e4736').

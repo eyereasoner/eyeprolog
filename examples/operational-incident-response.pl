@@ -24,10 +24,10 @@ rdf(iri('https://example.org/operations/runbook/db-failover'), iri('https://exam
 % Prolog correlates evidence, traverses service dependencies, and recommends a
 % bounded mitigation with an inspectable evidence chain.
 
-%% goal: root_cause(X0, X1, X2)
-%% goal: impacted_service(X0, X1)
-%% goal: recommended_action(X0, X1)
-%% goal: evidence_chain(X0, X1)
+%% ?- root_cause(X0, X1, X2).
+%% ?- impacted_service(X0, X1).
+%% ?- recommended_action(X0, X1).
+%% ?- evidence_chain(X0, X1).
 
 v(depends_on,iri('https://example.org/vocab/dependsOn')).
 v(symptom,iri('https://example.org/vocab/symptom')).

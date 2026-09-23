@@ -7,9 +7,9 @@
 % computes the arity, and checks that shape against an allowed schema.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: context_shape(X0, X1, X2)
+%% ?- context_shape(X0, X1, X2).
 
-%% goal: schema_violation(X0, X1, X2)
+%% ?- schema_violation(X0, X1, X2).
 
 
 % Program structure: each message carries heterogeneous context data.  The

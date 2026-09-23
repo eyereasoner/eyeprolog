@@ -1,5 +1,5 @@
 % An explicit query selects the answers to print.
-%% goal: ancestor(X, Y)
+%% ?- ancestor(X, Y).
 
 parent(pat, jan).
 parent(jan, emma).

@@ -1,6 +1,6 @@
 /* ISO bracketed comments may
    span multiple lines. */
-%% goal: answer(X0, X1, X2, X3, X4, X5, X6, X7, X8)
+%% ?- answer(X0, X1, X2, X3, X4, X5, X6, X7, X8).
 
 answer(Binary, Octal, Hex, Character, Escaped, Curly, EmptyCurly, IntegerPart, FractionalPart) :-
     =(Binary, 0b101010),

@@ -7,15 +7,15 @@
 %
 % Accumulating sufficient statistics keeps the regression formulas compact and
 % makes the proof show the same intermediate values a hand calculation would use.
-%% goal: slope(X0, X1)
+%% ?- slope(X0, X1).
 
-%% goal: intercept(X0, X1)
+%% ?- intercept(X0, X1).
 
-%% goal: rSquared(X0, X1)
+%% ?- rSquared(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

@@ -1,6 +1,6 @@
 % Adapted from Logtalk phrase_3_15 through 21. Modified for EyeProlog's harness.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: phrase_identity(X0, X1)
+%% ?- phrase_identity(X0, X1).
 
 phrase_identity(empty_braces, Rest) :- phrase({}, [tail], Rest).
 phrase_identity(true_goal, Rest) :- phrase({true}, [tail], Rest).

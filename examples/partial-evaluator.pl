@@ -6,7 +6,7 @@
 % constants are folded, known variables are substituted, and dynamic variables
 % remain as residual code.
 
-%% goal: partialEvalAnswer(X0, X1)
+%% ?- partialEvalAnswer(X0, X1).
 
 
 

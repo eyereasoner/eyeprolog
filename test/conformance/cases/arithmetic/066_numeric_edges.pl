@@ -1,5 +1,5 @@
 % Reference 9.1: reusable numeric functions preserve integer paths and define finite failure modes.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(max_negative, X) :- (-10 >= -3 -> X = -10 ; X = -3).
 answer(min_float, X) :- (2.5 =< -1.25 -> X = 2.5 ; X = -1.25).

@@ -1,4 +1,4 @@
-%% goal: answer
+%% ?- answer.
 
 answer :-
     atom_length(atom, -1).

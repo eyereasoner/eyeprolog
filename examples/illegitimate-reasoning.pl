@@ -8,19 +8,19 @@
 % Affirming the consequent:
 %   If it rained, the street is wet. The street is wet. Therefore it rained.
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: type(X0, X1)
+%% ?- type(X0, X1).
 
-%% goal: fallacy(X0, X1)
+%% ?- fallacy(X0, X1).
 
-%% goal: conclusion(X0, X1)
+%% ?- conclusion(X0, X1).
 
-%% goal: reason(X0, X1)
+%% ?- reason(X0, X1).
 
-%% goal: sampleSize(X0, X1)
+%% ?- sampleSize(X0, X1).
 
-%% goal: requiredSampleSize(X0, X1)
+%% ?- requiredSampleSize(X0, X1).
 
-%% goal: omittedAlternative(X0, X1)
+%% ?- omittedAlternative(X0, X1).
 
 
 :- discontiguous(argument/1).

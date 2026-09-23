@@ -1193,7 +1193,7 @@ w059(X) :- e084(X,_).
 w060(X) :- e095(X,_).
 
 benchmark(Count) :- findall(X, wine(X), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 e000(item1,item2).
 e000(item2,item9).

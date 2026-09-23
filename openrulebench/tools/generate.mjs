@@ -154,8 +154,7 @@ c1(X,Y) :- d1(X,Z), d2(Z,Y).
 benchmark_ff(Count) :- findall(pair(X,Y), a(X,Y), A), length(A, Count).
 benchmark_bf(Count) :- findall(Y, a(1,Y), A), length(A, Count).
 benchmark_fb(Count) :- findall(X, a(X,1), A), length(A, Count).
-%% goal: benchmark_ff(Count)
-
+%% ?- benchmark_ff(Count).
 `;
   let data = '';
   ['c2', 'c3', 'c4', 'd1', 'd2'].forEach((predicate, i) => { data += facts2(predicate, pairs(rows, domain, 101 + i)); });
@@ -173,7 +172,7 @@ function genJoindup(out, rows = 10000, domain = 1000) {
     );
   }
   for (let i = 1; i <= 5; i++) parts.push(`a(X,Y) :- a${i}(X,Y).\n`);
-  parts.push('\nbenchmark(Count) :- findall(pair(X,Y), a(X,Y), A), length(A, Count).\n%% goal: benchmark(Count)\n\n');
+  parts.push('\nbenchmark(Count) :- findall(pair(X,Y), a(X,Y), A), length(A, Count).\n%% ?- benchmark(Count).\n\n');
   ['c2', 'c3', 'c4', 'd1', 'd2'].forEach((predicate, i) => parts.push(facts2(predicate, pairs(rows, domain, 201 + i))));
   write(path.join(out, 'joindup.pl'), parts.join(''));
 }
@@ -188,8 +187,7 @@ q3(C) :- r(_,_,C,_,_).
 q4(D) :- r(_,_,_,D,_).
 q5(E) :- r(_,_,_,_,E).
 benchmark(Count) :- findall(A, q1(A), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
-
+%% ?- benchmark(Count).
 `;
   const data = Array.from({ length: 19 }, (_, i) => `p(a${i}).\n`).join('');
   write(path.join(out, 'join2.pl'), rules + data);
@@ -199,8 +197,7 @@ function genTc(out, edges = 50000, domain = 1000) {
   const rules = `tc(X,Y) :- par(X,Y).
 tc(X,Y) :- par(X,Z), tc(Z,Y).
 benchmark(Count) :- findall(pair(X,Y), tc(X,Y), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
-
+%% ?- benchmark(Count).
 `;
   write(path.join(out, 'tc.pl'), rules + facts2('par', pairs(edges, domain, 301)));
 }
@@ -214,8 +211,7 @@ function genSg(out, total = 6000, domain = 1000) {
   const rules = `sg(X,Y) :- sib(X,Y).
 sg(X,Y) :- par(X,Z), sg(Z,Z1), par(Y,Z1).
 benchmark(Count) :- findall(pair(X,Y), sg(X,Y), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
-
+%% ?- benchmark(Count).
 `;
   write(path.join(out, 'sg.pl'), rules + sgData(total, domain, 401));
 }
@@ -229,8 +225,7 @@ nonsg(X,Y) :- tc(X,Y).
 nonsg(X,Y) :- tc(Y,X).
 sg2(X,Y) :- sg(X,Y), \\+ nonsg(X,Y).
 benchmark(Count) :- findall(pair(X,Y), sg2(X,Y), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
-
+%% ?- benchmark(Count).
 `;
   write(path.join(out, 'modsg.pl'), rules + sgData(total, domain, 501));
 }
@@ -238,8 +233,7 @@ benchmark(Count) :- findall(pair(X,Y), sg2(X,Y), Answers), length(Answers, Count
 function genWin(out, n = 10000) {
   const rule = `win(X) :- move(X,Y), \\+ win(Y).
 benchmark(Count) :- findall(X, win(X), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
-
+%% ?- benchmark(Count).
 `;
   let tree = '';
   for (let i = 1; i <= n; i++) tree += `move(${i},${2 * i}).\nmove(${i},${2 * i + 1}).\n`;
@@ -259,8 +253,7 @@ magicab(Y) :- magicab(X), b(X,Y).
 magicab(Y) :- magicfb(X), d(X), \\+ ab(X), h(X,Y).
 magicab(X) :- magicfb(X), d(X).
 benchmark(Count) :- findall(X, fb(X), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
-
+%% ?- benchmark(Count).
 magicfb(1).
 `;
   let unaries = '';
@@ -273,8 +266,7 @@ magicfb(1).
 function genDblp(out, pubs = 20000) {
   const rules = `q(Id,T,A,Y,M) :- att(Id,title,T), att(Id,year,Y), att(Id,author,A), att(Id,month,M).
 benchmark(Count) :- findall(row(Id,T,A,Y,M), q(Id,T,A,Y,M), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
-
+%% ?- benchmark(Count).
 `;
   const parts = [rules];
   for (let i = 1; i <= pubs; i++) {
@@ -297,8 +289,7 @@ function genLubm(out, universities = 10, departments = 10, students = 100, facul
 query2(X,Y,Z) :- graduateStudent(X), memberOf(X,Z), undergraduateDegreeFrom(X,Y), university(Y), department(Z), subOrganizationOf_0(Z,Y).
 query9(X,Y,Z) :- advisor(X,Y), teacherOf(Y,Z), takesCourse(X,Z), student(X), faculty(Y), course(Z).
 benchmark(Count) :- findall(X, query1(X), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
-
+%% ?- benchmark(Count).
 course(graduateCourse0).
 `;
   const parts = [rules];
@@ -357,8 +348,7 @@ gloss(W,G) :- s(S,_,W,_,_,_), gloss_fact(S,G).
 antonyms(W1,W2) :- s(S1,_,W1,_,_,_), antonym_synsets(S1,S2), s(S2,_,W2,_,_,_).
 adjective_clusters(W1,W2) :- s(S1,_,W1,_,_,_), similar_synsets(S1,S2), s(S2,_,W2,_,_,_).
 benchmark(Count) :- findall(pair(W1,W2), hypernyms(W1,W2), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
-
+%% ?- benchmark(Count).
 `;
   const parts = [rules];
   for (let i = 1; i <= synsets; i++) {
@@ -382,8 +372,7 @@ province_stat(P,Area,Population,City,CityPopulation) :-
     located(City,prov(P,china)),
     att(City,population,CityPopulation).
 benchmark(Count) :- findall(row(P,A,N,C,CN), province_stat(P,A,N,C,CN), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
-
+%% ?- benchmark(Count).
 `;
   const parts = [rules];
   for (let ci = 0; ci < countries; ci++) {
@@ -436,7 +425,7 @@ function genWine(out) {
   if (total !== 654) throw new Error(`wine fact count ${total} != 654`);
   let text = '% Structural Wine surrogate: preserves 961-rule / 225-IDB / 113-EDB / 654-fact stress shape; not the historical OWL-to-rules program.\n';
   text += rules.join('');
-  text += '\nbenchmark(Count) :- findall(X, wine(X), Answers), length(Answers, Count).\n%% goal: benchmark(Count)\n\n';
+  text += '\nbenchmark(Count) :- findall(X, wine(X), Answers), length(Answers, Count).\n%% ?- benchmark(Count).\n\n';
   text += facts.join('');
   write(path.join(out, 'wine.pl'), text);
 }

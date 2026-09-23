@@ -10,13 +10,13 @@ distributed(first).
 between_clause(ok).
 distributed(second).
 
-%% goal: directive_state(Value, Debug)
+%% ?- directive_state(Value, Debug).
 
 directive_state(Value, Debug) :-
     stored(Value),
     current_prolog_flag(debug, Debug).
 
-%% goal: character_conversion(Term, From, To)
+%% ?- character_conversion(Term, From, To).
 
 character_conversion(Term, From, To) :-
     open('/tmp/eyeprolog-iso-conversion.txt', write, Output),
@@ -28,7 +28,7 @@ character_conversion(Term, From, To) :-
     close(Input),
     current_char_conversion(From, To).
 
-%% goal: remove_conversion(ok)
+%% ?- remove_conversion(ok).
 
 remove_conversion(ok) :-
     char_conversion('&', '&'),

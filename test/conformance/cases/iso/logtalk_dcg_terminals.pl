@@ -8,8 +8,8 @@ mixed --> [[], {}, 3, 3.2, a(b)].
 letters --> "abc".
 letters_or_q --> "abc" | "q".
 
-%% goal: phrase(empty, [])
-%% goal: phrase(one(value), [value])
-%% goal: phrase(mixed, [[], {}, 3, 3.2, a(b)])
-%% goal: phrase(letters, X)
-%% goal: phrase(letters_or_q, X)
+%% ?- phrase(empty, []).
+%% ?- phrase(one(value), [value]).
+%% ?- phrase(mixed, [[], {}, 3, 3.2, a(b)]).
+%% ?- phrase(letters, X).
+%% ?- phrase(letters_or_q, X).

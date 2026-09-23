@@ -1,6 +1,6 @@
 fixed(value).
 
-%% goal: answer
+%% ?- answer.
 
 answer :-
     retract(fixed(value)).

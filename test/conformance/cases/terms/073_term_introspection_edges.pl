@@ -1,5 +1,5 @@
 % Reference 9.1: term-inspection built-ins expose scalars, nested arguments, and atom construction from an empty argument list.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(functor_atom, pair(Name, Arity)) :- functor(alpha, Name, Arity).
 answer(functor_number, pair(Name, Arity)) :- functor(42, Name, Arity).

@@ -6,7 +6,7 @@
 %
 % This is useful for proof output: the conclusion is not just that two class
 % labels coincide, but also which element explains the overlap.
-%% goal: sameClassBecauseOfSharedMember(X0, X1, X2)
+%% ?- sameClassBecauseOfSharedMember(X0, X1, X2).
 
 
 classMember(class_abc, a).

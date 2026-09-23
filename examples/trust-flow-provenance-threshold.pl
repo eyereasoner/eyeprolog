@@ -7,13 +7,13 @@
 % The multiplication chain is intentionally explicit so proof output shows how a
 % provenance trail becomes a single trust decision.
 
-%% goal: confidence(X0, X1)
+%% ?- confidence(X0, X1).
 
-%% goal: trust_flow_state(X0, X1)
+%% ?- trust_flow_state(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
-%% goal: risk(X0, X1)
+%% ?- risk(X0, X1).
 
 
 message(message_a, publisher_a, transform_a, signature_a, receiver_app).

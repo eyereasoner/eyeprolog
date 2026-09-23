@@ -1,5 +1,5 @@
 % Reference 9.7: list summaries over valid numeric and ordered-term inputs.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(sum_integers, X) :- sum_list([1, 2, 3, 4], X).
 answer(sum_decimals, X) :- sum_list([1.5, 2.25, -0.75], X).

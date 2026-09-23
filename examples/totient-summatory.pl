@@ -10,7 +10,7 @@
 % phi(N) is modeled directly as the count of integers K in 1..N with gcd(N,K)=1.
 % The summatory query reuses many gcd/totient subgoals, so memoization keeps the
 % example responsive while preserving the relational presentation.
-%% goal: totient_answer(X0, X1)
+%% ?- totient_answer(X0, X1).
 
 
 

@@ -7,13 +7,13 @@
 % stay scoped as one term instead of many unrelated global start/end facts.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% goal: start(X0, X1)
+%% ?- start(X0, X1).
 
-%% goal: end(X0, X1)
+%% ?- end(X0, X1).
 
-%% goal: duration(X0, X1)
+%% ?- duration(X0, X1).
 
-%% goal: statement(X0, X1, X2)
+%% ?- statement(X0, X1, X2).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

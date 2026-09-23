@@ -9,7 +9,7 @@
 % Intervals are ordered by finish time.  best_from(I,Best) compares the two
 % choices at position I: skip it, or take it and jump to the next compatible
 % interval.  chosen_from/2 then walks the cached decisions to report a schedule.
-%% goal: weighted_interval_answer(X0, X1)
+%% ?- weighted_interval_answer(X0, X1).
 
 
 

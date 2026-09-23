@@ -9,4 +9,4 @@ answer(qualified, S) :- setof(X, Y^member(X, [b,a,b]), S).
 answer(qualified_bag, S) :- bagof(X, Y^member(X, [b,a,b]), S).
 answer(nested, S) :- setof(X, Y^Z^member(X-Y-Z, [1-a-p, 2-b-q]), S).
 answer(witness_kept, S) :- setof(X-Y, Y^member(X-Y, [2-b, 1-a]), S).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).

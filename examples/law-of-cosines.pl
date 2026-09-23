@@ -6,11 +6,11 @@
 %
 % The 60-degree sample uses cos(C) = 0.5, so the proof shows each intermediate
 % numeric step rather than hiding the computation in one builtin.
-%% goal: sideCSquared(X0, X1)
+%% ?- sideCSquared(X0, X1).
 
-%% goal: sideC(X0, X1)
+%% ?- sideC(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
 
 % The triangle fact stores the two known sides and the cosine of the included

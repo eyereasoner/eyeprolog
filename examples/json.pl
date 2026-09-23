@@ -7,7 +7,7 @@
 :- use_module(library(json)).
 :- use_module(library(dcgs)).
 
-%% goal: json_example(Mode, Value)
+%% ?- json_example(Mode, Value).
 
 json_example(parsed, JSON) :-
     phrase(json_chars(JSON), "{\"name\":\"Ada\",\"active\":true,\"scores\":[3,5,8],\"emoji\":\"\\uD83D\\uDE00\"}").

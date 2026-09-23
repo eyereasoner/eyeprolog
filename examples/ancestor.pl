@@ -4,9 +4,9 @@
 % parent edge before continuing through the chain.  Both source and derived
 % relations are queried so the output shows the closure explicitly.
 
-%% goal: parent(X0, X1)
+%% ?- parent(X0, X1).
 
-%% goal: ancestor(X0, X1)
+%% ?- ancestor(X0, X1).
 
 
 % Direct parent facts form a simple chain.

@@ -1,4 +1,4 @@
-%% goal: trigger
+%% ?- trigger.
 
 trigger :-
     open('/tmp/eyeprolog-iso-closed.txt', write, Stream, []),

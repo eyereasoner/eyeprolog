@@ -3,5 +3,5 @@ color(red).
 color(blue).
 paint(X) :- color(X).
 answer(color, X) :- paint(X).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

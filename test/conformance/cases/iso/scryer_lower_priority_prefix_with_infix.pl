@@ -4,7 +4,7 @@
 :- op(7, fy, p).
 :- op(9, yfx, p).
 
-%% goal: lower_priority_prefix_with_infix(T)
+%% ?- lower_priority_prefix_with_infix(T).
 
 lower_priority_prefix_with_infix(T) :-
     T = (1 p p p 2),

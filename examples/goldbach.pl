@@ -50,4 +50,4 @@ case(N, G) :-
     between(2, 25, I),
     N is 2^I,
     goldbach(N, G).
-%% goal: case(_, _)
+%% ?- case(_, _).

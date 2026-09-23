@@ -3,4 +3,4 @@ candidate(a).
 candidate(b).
 candidate(c).
 answer(not_present, X) :- candidate(X), \+ member(X, [a, b]).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).

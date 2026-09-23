@@ -8,9 +8,9 @@
 % The example derives arithmetic identities, polar conversions, powers, roots,
 % exponential/trigonometric functions, and distance/normalization results from
 % a small complex-number toolkit.
-%% goal: complex_power(X0, X1, X2, X3)
+%% ?- complex_power(X0, X1, X2, X3).
 
-%% goal: complex_function(X0, X1, X2, X3)
+%% ?- complex_function(X0, X1, X2, X3).
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.

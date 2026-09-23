@@ -5,7 +5,7 @@
 % pow_mod(Base, Exp, Modulus, Result) uses the even/odd exponent split, giving
 % logarithmic-depth arithmetic.  Memoization matters when the same modular powers
 % are reused by Fermat-style congruence checks.
-%% goal: modular_answer(X0, X1)
+%% ?- modular_answer(X0, X1).
 
 
 

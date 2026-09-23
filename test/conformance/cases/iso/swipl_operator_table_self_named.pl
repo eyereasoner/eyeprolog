@@ -5,7 +5,7 @@
 :- op(100, yfx, yfx).
 :- op(100, yf, yf).
 
-%% goal: operator_table_self_named(X0, X1, X2, X3, X4, X5)
+%% ?- operator_table_self_named(X0, X1, X2, X3, X4, X5).
 
 operator_table_self_named(R1, R2, R3, R4, R5, R6) :-
     T1 = (fy fy 1), T1 == fy(fy(1)), R1 = T1,

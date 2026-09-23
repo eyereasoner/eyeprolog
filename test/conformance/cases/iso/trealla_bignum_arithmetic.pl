@@ -1,6 +1,6 @@
 % Adapted from Trealla Prolog tests/tests/test0079.pl.
 % See test/conformance/THIRD_PARTY.md.
-%% goal: bignum_ops(X0, X1, X2, X3, X4)
+%% ?- bignum_ops(X0, X1, X2, X3, X4).
 
 bignum_ops(N1, GcdA, GcdB, Mod, Div) :-
     N1 is -123456789012345678901234567890,
@@ -12,19 +12,19 @@ bignum_ops(N1, GcdA, GcdB, Mod, Div) :-
     Mod is 15241578753238836750495351562536198787501905199875019052100 mod 1234567890123456789123,
     Div is 15241578753238836750495351562536198787501905199875019052100 div 12345678901234567891234567.
 
-%% goal: bignum_float_conversion(X0)
+%% ?- bignum_float_conversion(X0).
 
 bignum_float_conversion(F) :-
     F is float(1881676372353657772546715999894626455109783106026821047606410765129148590562263).
 
-%% goal: bignum_mod_rem_agree_for_positive_operands(X0, X1)
+%% ?- bignum_mod_rem_agree_for_positive_operands(X0, X1).
 
 bignum_mod_rem_agree_for_positive_operands(Mod, Rem) :-
     Mod is 15241578753238836750495351562536198787501905199875019052100 mod 1234567890123456789123,
     Rem is 15241578753238836750495351562536198787501905199875019052100 rem 1234567890123456789123,
     Mod =:= Rem.
 
-%% goal: bignum_gcd_commutative(X0, X1)
+%% ?- bignum_gcd_commutative(X0, X1).
 
 bignum_gcd_commutative(A, B) :-
     A is gcd(987654321098765432109876543210, 42),

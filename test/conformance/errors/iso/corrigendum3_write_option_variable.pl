@@ -1,3 +1,3 @@
-%% goal: trigger
+%% ?- trigger.
 
 trigger :- write_term(a, [_]).

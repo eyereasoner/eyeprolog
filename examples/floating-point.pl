@@ -6,9 +6,9 @@
 %
 % The thermostat facts provide a concrete comparison setting, while standalone
 % value/2 reports exercise individual decimal operations.
-%% goal: value(X0, X1)
+%% ?- value(X0, X1).
 
-%% goal: than(X0, X1)
+%% ?- than(X0, X1).
 
 
 % Sample facts provide a small thermostat scenario used by the comparison

@@ -1,5 +1,5 @@
 % Reference 9.7 and 9.8: list ordering and length built-ins are deterministic on proper lists.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 answer(length_empty, X) :- length([], X).
 answer(length_nested, X) :- length([[a], [b, c], []], X).

@@ -1,7 +1,7 @@
 % Adapted from Trealla Prolog tests/tests/test059.pl, tests 6-9 and 13.
 % See test/conformance/THIRD_PARTY.md.
 
-%% goal: term_shapes(ok)
+%% ?- term_shapes(ok).
 
 term_shapes(ok) :-
     functor({a,b,c}, {}, 1),

@@ -3,4 +3,4 @@
 
 codes --> "ab".
 
-%% goal: phrase(codes, Tokens)
+%% ?- phrase(codes, Tokens).

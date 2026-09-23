@@ -4,7 +4,7 @@
 % EyeProlog case keeps the core operation visible: multiply two 2x2 matrices and
 % show that, in general, A*B is not the same matrix as B*A.
 
-%% goal: matrix_result(X0, X1)
+%% ?- matrix_result(X0, X1).
 
 
 matrix_a([[1, 2], [0, 1]]).

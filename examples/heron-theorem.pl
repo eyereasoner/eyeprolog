@@ -7,13 +7,13 @@
 % This is a compact example of theorem-shaped arithmetic: facts name a geometric
 % object, reusable relations compute intermediates, and wrapper predicates choose
 % the report vocabulary.
-%% goal: semiperimeter(X0, X1)
+%% ?- semiperimeter(X0, X1).
 
-%% goal: heronProduct(X0, X1)
+%% ?- heronProduct(X0, X1).
 
-%% goal: area(X0, X1)
+%% ?- area(X0, X1).
 
-%% goal: status(X0, X1)
+%% ?- status(X0, X1).
 
 
 % A single survey triangle is enough to demonstrate the formula; 13-14-15 has

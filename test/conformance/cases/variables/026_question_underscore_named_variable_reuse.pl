@@ -2,5 +2,5 @@
 pair(a, a).
 pair(a, b).
 answer(shared, _value) :- pair(_value, _value).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

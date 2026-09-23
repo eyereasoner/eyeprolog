@@ -1,5 +1,5 @@
 % Reference 9.1: term introspection/construction, term strings, and forall/2.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 item(1).
 item(2).

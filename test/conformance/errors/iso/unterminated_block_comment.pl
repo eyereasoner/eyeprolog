@@ -1,2 +1,2 @@
-%% goal: answer
+%% ?- answer.
 answer. /* never closed

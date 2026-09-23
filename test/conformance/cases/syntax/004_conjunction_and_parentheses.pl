@@ -2,5 +2,5 @@
 p(a).
 q(a).
 ok(X, yes) :- (p(X), q(X)).
-%% goal: ok(X0, X1)
+%% ?- ok(X0, X1).
 

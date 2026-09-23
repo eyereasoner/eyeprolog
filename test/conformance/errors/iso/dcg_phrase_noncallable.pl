@@ -1,1 +1,1 @@
-%% goal: phrase(42, [])
+%% ?- phrase(42, []).

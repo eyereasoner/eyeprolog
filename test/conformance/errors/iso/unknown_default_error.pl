@@ -1,2 +1,2 @@
-%% goal: missing_iso_procedure
+%% ?- missing_iso_procedure.
 

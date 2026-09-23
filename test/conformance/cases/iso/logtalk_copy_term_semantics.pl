@@ -1,6 +1,6 @@
 % Adapted from Logtalk iso_copy_term_2_01 through 08 and 10 through 11.
 % Modified for EyeProlog's conformance harness. See test/conformance/THIRD_PARTY.md.
-%% goal: copy_term_semantics
+%% ?- copy_term_semantics.
 
 
 copy_term_semantics :-

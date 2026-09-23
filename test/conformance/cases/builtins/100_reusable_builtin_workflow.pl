@@ -1,5 +1,5 @@
 % Reference 9: standard built-ins compose into a reusable data-processing workflow.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 row(' alice : 3,5,7 ').
 row(' bob : 2,4 ').

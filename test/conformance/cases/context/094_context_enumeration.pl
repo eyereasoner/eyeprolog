@@ -1,5 +1,5 @@
 % Reference 9.9: recursion and =../2 enumerate comma-context terms left to right.
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 
 context((kind(alert), severity(high), owner(alice))).
 context_member((Left, _right), Member) :- context_member(Left, Member).

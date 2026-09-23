@@ -9,7 +9,7 @@ rdf(iri('https://example.org/welcome'), iri('https://example.org/label'), litera
 rdf(iri('https://example.org/welcome'), iri('https://example.org/label'), literal('Welcome', lang('en', ltr)), default_graph).
 
 % Preserve RDF 1.2 base-direction metadata while deriving display labels.
-%% goal: result_rdf(_, _, _, _)
+%% ?- result_rdf(_, _, _, _).
 
 result_rdf(S, iri('https://example.org/displayLabel'), Label, G) :-
   rdf(S, iri('https://example.org/label'), Label, G).

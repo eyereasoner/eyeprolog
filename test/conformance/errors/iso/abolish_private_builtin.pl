@@ -1,4 +1,4 @@
-%% goal: answer
+%% ?- answer.
 
 answer :-
     abolish(atom/1).

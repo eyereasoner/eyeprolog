@@ -6,7 +6,7 @@
 % Keeping the selected inputs explicit avoids unbounded generation while still
 % testing the solver's recursive numeric workload.
 
-%% goal: ackermann(X0, X1)
+%% ?- ackermann(X0, X1).
 
 
 ackermann(X, Y, A) :-

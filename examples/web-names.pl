@@ -4,9 +4,9 @@
 % They are self-contained, require no prefix declarations, and can be joined
 % directly across rules just like any other atom.
 
-%% goal: affiliated_with(X0, X1)
+%% ?- affiliated_with(X0, X1).
 
-%% goal: project_contact(X0, X1, X2)
+%% ?- project_contact(X0, X1, X2).
 
 
 

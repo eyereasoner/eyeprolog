@@ -4,5 +4,5 @@ candidate(b).
 candidate(c).
 blocked(b).
 answer(open, X) :- candidate(X), \+ blocked(X).
-%% goal: answer(X0, X1)
+%% ?- answer(X0, X1).
 

@@ -11,7 +11,7 @@ q3(C) :- r(_,_,C,_,_).
 q4(D) :- r(_,_,_,D,_).
 q5(E) :- r(_,_,_,_,E).
 benchmark(Count) :- findall(A, q1(A), Answers), length(Answers, Count).
-%% goal: benchmark(Count)
+%% ?- benchmark(Count).
 
 p(a0).
 p(a1).
