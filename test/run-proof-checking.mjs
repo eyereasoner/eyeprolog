@@ -19,15 +19,21 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const examplesDir = path.join(root, 'examples');
 
 /// Proofs that do not check, and what each one exposes. An entry here is a
-/// gap in proof *generation*, not in the checker: these answers come from
-/// CLP(B) propagation, which the explanation replay cannot reproduce by
-/// resolution, so the writer records them as `unproven` and says so rather
-/// than leaving them out.
-const KNOWN_GAPS = new Map([
-  ['clpb-boolean-circuit.pl', 'a CLP(B) answer decided by propagation, not by resolution'],
-  ['clpb-cardinality.pl', 'a CLP(B) answer decided by propagation, not by resolution'],
-  ['clpb-feature-model.pl', 'a CLP(B) answer decided by propagation, not by resolution'],
-]);
+/// gap in proof *generation*, not in the checker: the explanation replay
+/// cannot reproduce the answer, so the writer records it as `unproven` and
+/// says so rather than leaving it out.
+///
+/// Explaining through the solver that produced the answer closed the three
+/// CLP(B) gaps that used to be here, so the list is empty: every packaged
+/// proof checks, and this test fails if one stops doing so.
+///
+/// The CLP(Z) examples are not in this corpus, and not because they fail:
+/// `clpz`'s goal expansion names the variables it introduces from a counter
+/// that advances across a run, so a `clause/3` record of an expanded body
+/// differs between runs and cannot be compared against a golden. Checked
+/// directly rather than through a golden, `clpz-factorial`, `clpz-n-queens`,
+/// `clpz-global-constraints` and `clpz-sudoku-9x9` all check.
+const KNOWN_GAPS = new Map([]);
 
 const totals = { steps: 0, verified: 0, trusted: 0 };
 

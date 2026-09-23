@@ -11,6 +11,9 @@ clause(2,
        feature_plan(features(cloud(var('Cloud')), edge(var('Edge')), audit(var('Audit')), encryption(var('Encryption')))),
        (feature_constraints(var('Cloud'), var('Edge'), var('Audit'), var('Encryption')),
         labeling([var('Cloud'), var('Edge'), var('Audit'), var('Encryption')]))).
+clause(3,
+       feature_plan_count(var('Count')),
+       sat_count((anonymous(1) # var('Edge')) * (var('Audit') =< anonymous(2)) * (var('Edge') =< var('Audit')), var('Count'))).
 
 step(feature_plan(features(cloud(0), edge(1), audit(1), encryption(1))),
      rule(2),
@@ -52,4 +55,8 @@ step(feature_constraints(1, 0, 1, 1),
      [sat((1 # 0) * (1 =< 1) * (0 =< 1))]).
 step(sat((1 # 0) * (1 =< 1) * (0 =< 1)), builtin, [], []).
 step(labeling([1, 0, 1, 1]), builtin, [], []).
-step(feature_plan_count(4), unproven, [], []).
+step(feature_plan_count(4),
+     rule(3),
+     ['Count' = 4],
+     [sat_count((_Cloud # Edge) * (Audit =< _Encryption) * (Edge =< Audit), 4)]).
+step(sat_count((_Cloud # Edge) * (Audit =< _Encryption) * (Edge =< Audit), 4), builtin, [], []).

@@ -1494,7 +1494,7 @@ output is valid EyeProlog input and can be kept and checked later:
 
 ```sh
 eyeprolog --proof examples/socrates.pl > socrates.why.pl
-eyeprolog --verify-proof socrates.why.pl examples/socrates.pl
+eyeprolog --check-proof socrates.why.pl examples/socrates.pl
 ```
 
 The second command re-performs every inference the document records against
@@ -9589,7 +9589,7 @@ explicit.
 | `-h`, `--help` | Show usage |
 | `-p`, `--proof` | Print `why/2` explanations |
 | `--proof-detail abstract|expanded` | Select library abstraction for proof output; implies `--proof` |
-| `--verify-proof File` | Verify saved `why/2` proof certificates against the input program without proof search |
+| `--check-proof File` | Verify saved `why/2` proof certificates against the input program without proof search |
 | `-q`, `--quads` | Run embedded quad tests and fail if any do not hold |
 | `--quiet` | Suppress resolved answer terms while preserving Prolog output and diagnostics |
 | `--iso-strict` | Restrict parsing and execution to ISO/IEC 13211-1:1995 + Corrigenda 1–3; reject EyeProlog language extensions (including `table` and `:+`) and disable bundled-library autoloading |
@@ -9636,7 +9636,7 @@ Work in a fixed sequence:
 1. predict the ground answers before running the program;
 2. run without observation flags and compare stdout with that prediction;
 3. add `--proof` when the support for an answer is the question; save the
-   output and use `--verify-proof` when the derivation itself must cross a
+   output and use `--check-proof` when the derivation itself must cross a
    process or review boundary;
 4. add `--warnings` when portability or negative dependencies are the
    question; use `--portable` when non-profile dependencies must fail CI;
@@ -9648,7 +9648,7 @@ For example:
 eyeprolog --goal 'ancestor(X, Y)' examples/ancestor.pl
 eyeprolog --proof --goal 'type(X, Y)' examples/socrates.pl
 eyeprolog --proof examples/socrates.pl > socrates.why.pl
-eyeprolog --verify-proof socrates.why.pl examples/socrates.pl
+eyeprolog --check-proof socrates.why.pl examples/socrates.pl
 eyeprolog --warnings --goal 'answer(X)' test/conformance/warnings/negation/unstratified_mutual.pl
 eyeprolog --portable --goal 'sudoku9(S)' examples/clpz-sudoku-9x9.pl
 eyeprolog --stats --goal 'path(a, X)' examples/path-discovery.pl > answers.pl 2> run.stats

@@ -4338,7 +4338,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       },
     },
     {
-      name: '--verify-proof re-performs a saved proof and rejects tampering',
+      name: '--check-proof re-performs a saved proof and rejects tampering',
       run: () => {
         const programFile = path.join(temp.dir, `proof-program-${++temp.counter}.pl`);
         const proofFile = path.join(temp.dir, `proof-certificate-${++temp.counter}.pl`);
@@ -4346,15 +4346,15 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         const generated = runCli(['--proof', programFile]);
         assertEqual(generated.status, 0, 'proof generation status');
         fs.writeFileSync(proofFile, generated.stdout);
-        const verified = runCli(['--verify-proof', proofFile, programFile]);
+        const verified = runCli(['--check-proof', proofFile, programFile]);
         assertEqual(verified.status, 0, 'verification status');
         assertEqual(verified.stdout, 'checked: 2 steps.\n', 'verification stdout');
-        const strictVerified = runCli(['--iso-strict', '--verify-proof', proofFile, programFile]);
+        const strictVerified = runCli(['--iso-strict', '--check-proof', proofFile, programFile]);
         assertEqual(strictVerified.status, 0, 'strict verification status');
         assertEqual(strictVerified.stdout, 'checked: 2 steps.\n', 'strict verification stdout');
         const tamperedFile = path.join(temp.dir, `proof-certificate-bad-${++temp.counter}.pl`);
         fs.writeFileSync(tamperedFile, generated.stdout.replace('step(p(a),', 'step(p(b),'));
-        const rejected = runCli(['--verify-proof', tamperedFile, programFile]);
+        const rejected = runCli(['--check-proof', tamperedFile, programFile]);
         assertEqual(rejected.status, 1, 'tampered verification status');
         assertIncludes(rejected.stderr, 'is not a valid proof for this program', 'tampered verification stderr');
       },

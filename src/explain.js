@@ -41,6 +41,19 @@ export function explainProof(program, goal, options = {}) {
   return whyProof(program, goal, options);
 }
 
+// The solver a replay evaluates through.
+//
+// A constraint library keeps state on the solver instance that running a
+// program's directives again does not rebuild -- CLP(B) answers its goals
+// only through the solver that posted the constraints. So when the engine is
+// explaining its own run, it explains through that solver; a caller with none
+// gets a fresh one, which is enough for everything that is pure resolution.
+let liveSolver = null;
+
+function hostSolver(program, registry) {
+  return liveSolver && liveSolver.program === program ? liveSolver : new Solver(program, { registry });
+}
+
 function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, detail) {
   if (depth > maxDepth) return;
 
@@ -90,7 +103,7 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
   // ordinary clauses, but explanations collapse its private helper expansion
   // behind an explicit library(Name, Arity) boundary.
   if (detail !== 'expanded' && group.module !== 'user' && program.modules.get(group.module)?.filename?.startsWith('src/lib/')) {
-    const solver = new Solver(program, { registry });
+    const solver = hostSolver(program, registry);
     for (const next of solver.solve([goal], env.clone(), 0)) {
       const proofEnv = next.clone ? next.clone() : next;
       yield {
@@ -199,7 +212,7 @@ function builtinDefinition(program, goal, env, registry) {
   const def = registry.get(goal.name, goal.arity);
   if (!def) return { handled: false, def: null, solver: null };
 
-  const solver = new Solver(program, { registry });
+  const solver = hostSolver(program, registry);
   if (!builtinIsUsedForGoal(def, solver, goal, env)) return { handled: false, def: null, solver: null };
   return { handled: true, def, solver };
 }
@@ -812,10 +825,18 @@ export function flattenProof(roots, program) {
 
 // The root of an answer's proof tree, for `flattenProof`.
 export function proofNodeFor(program, goal, options = {}) {
+  liveSolver = options.solver ?? null;
   const maxDepth = options.maxDepth ?? 256;
   const registry = options.registry ?? getEyePrologRegistry();
   const env = options.env ?? new Env();
   const detail = normalizeProofDetail(options.proofDetail ?? 'abstract');
-  for (const proof of proveGoalAll(program, goal, env, 0, maxDepth, registry, [], detail)) return proof.node;
+  try {
+    for (const proof of proveGoalAll(program, goal, env, 0, maxDepth, registry, [], detail)) return proof.node;
+  } catch {
+    // A replay that raises has not explained anything, and an answer the
+    // engine found should not be lost because explaining it failed. The
+    // caller records the answer as `unproven`, which says exactly that.
+    return null;
+  }
   return null;
 }

@@ -90,7 +90,7 @@ export function run(source, options = {}) {
         options.ioOptions?.errorWrite?.(line);
       },
     }));
-    if (includeWhy) output.push(proofBlocksFor(program, derived, runOptions.registry, options.proofDetail));
+    if (includeWhy) output.push(proofBlocksFor(program, derived, runOptions.registry, options.proofDetail, solver));
   } else {
     // A bare `?- Goal.` asks its question the same way a `%% ?-` comment
     // does; only the parser can find it, so it is picked up here.
@@ -103,7 +103,7 @@ export function run(source, options = {}) {
         claimed.push(resolved);
       },
     }));
-    if (includeWhy) output.push(proofBlocksFor(program, claimed, runOptions.registry, options.proofDetail));
+    if (includeWhy) output.push(proofBlocksFor(program, claimed, runOptions.registry, options.proofDetail, solver));
   }
   return { stdout: output.join(''), stats: solver.stats, haltCode };
 }
@@ -116,11 +116,11 @@ export function run(source, options = {}) {
 // a CLP(B) answer decided by propagation rather than by resolution -- is
 // recorded as `unproven` rather than quietly left without a step. A document
 // containing one is not a valid proof, and saying so is the point.
-function proofBlocksFor(program, claimed, registry, proofDetail = 'abstract') {
+function proofBlocksFor(program, claimed, registry, proofDetail = 'abstract', solver = null) {
   const roots = [];
   const unexplained = [];
   for (const fact of claimed) {
-    const node = proofNodeFor(program, fact, { registry, proofDetail });
+    const node = proofNodeFor(program, fact, { registry, proofDetail, solver });
     if (node) roots.push(node);
     else unexplained.push(fact);
   }

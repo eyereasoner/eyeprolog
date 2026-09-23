@@ -10,6 +10,7 @@ clause(1,
 clause(2,
        xor_row(row(var('X'), var('Y'), var('Z'))),
        (xor_circuit(var('X'), var('Y'), var('Z')), labeling([var('X'), var('Y'), var('Z')]))).
+clause(3, xor_circuit_verified(var('T')), taut(x # y =:= x * ~ y + ~ x * y, var('T'))).
 
 step(xor_row(row(0, 0, 0)),
      rule(2),
@@ -39,4 +40,5 @@ step(xor_row(row(1, 0, 1)),
 step(xor_circuit(1, 0, 1), rule(1), ['X' = 1, 'Y' = 0, 'Z' = 1], [sat(1 =:= 1 * ~ 0 + ~ 1 * 0)]).
 step(sat(1 =:= 1 * ~ 0 + ~ 1 * 0), builtin, [], []).
 step(labeling([1, 0, 1]), builtin, [], []).
-step(xor_circuit_verified(1), unproven, [], []).
+step(xor_circuit_verified(1), rule(3), ['T' = 1], [taut(x # y =:= x * ~ y + ~ x * y, 1)]).
+step(taut(x # y =:= x * ~ y + ~ x * y, 1), builtin, [], []).
