@@ -9,7 +9,6 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import publicDefaultApi from '../../index.js';
 import * as publicApi from '../../src/index.js';
-import { answerFacts } from '../test-support.mjs';
 import { Program, createDefaultRegistry, eyePrologLibraryIndicators, eyePrologNativeLibraryIndicators, run as runEyeProlog, standardLibrarySources } from '../../src/index.js';
 import { parseGoalText } from '../../src/parser.js';
 import { assertEqual, assertIncludes, assertNotIncludes } from '../test-style.mjs';
@@ -45,13 +44,7 @@ export function run(source, options = {}) {
   const goals = options.goals ?? (options.goal == null
     ? (programSource instanceof Program ? [] : goalsFromSource(text))
     : [options.goal]);
-  const result = runEyeProlog(programSource instanceof Program ? programSource : text, { ...options, goals });
-  // These assertions are about what a goal answers, not about how a result
-  // document is laid out, so they read a run's answers back as bare facts. A
-  // run asked for a proof keeps its document: there the layout is exactly
-  // what is under test.
-  if (options.proof || options.rawOutput) return result;
-  return { ...result, stdout: answerFacts(result.stdout) };
+  return runEyeProlog(programSource instanceof Program ? programSource : text, { ...options, goals });
 }
 
 export function sourceAtom(value) {
@@ -107,10 +100,9 @@ export function runWhy({ program, goalText, expected }) {
   assertEqual(result.stdout, expectedText, 'stdout');
 
   // A proof document is an ordinary Prolog program, and these are the parts
-  // that make it one: a claim, the clause it cites, and a flat step citing
-  // that clause by number.
+  // that make it one: the claim, the clause it cites, and a flat step
+  // citing that clause by number.
   Program.parse(result.stdout);
-  assertIncludes(result.stdout, '\nwhy(1, ', 'stdout');
   assertIncludes(result.stdout, '\nclause(1, ', 'stdout');
   assertIncludes(result.stdout, '\nstep(', 'stdout');
   assertNotIncludes(result.stdout, 'source(head(', 'stdout');
@@ -742,26 +734,14 @@ child.on('close', (status, signal) => {
   };
 }
 
-// A run whose answers these assertions read as bare facts, the way they did
-// before the result-document format. A run asked for a proof keeps its
-// document: there the layout is exactly what is under test.
-const PROOF_FLAGS = new Set(['--proof', '--proof-detail', '--verify-proof']);
-
-// `-p` also travels inside a combined short flag such as `-pw`.
-function asksForProof(args) {
-  return args.some((arg) => PROOF_FLAGS.has(arg) || /^-[a-zA-Z]*p[a-zA-Z]*$/.test(arg));
-}
-
 export function runCli(args, options = {}) {
-  const result = spawnSync(process.execPath, [bin, ...args], {
+  return spawnSync(process.execPath, [bin, ...args], {
     cwd: options.cwd ?? packageRoot,
     encoding: 'utf8',
     env: options.env ? { ...process.env, ...options.env } : process.env,
     input: options.input ?? undefined,
     timeout: options.timeout ?? undefined,
   });
-  if (options.rawOutput || asksForProof(args)) return result;
-  return { ...result, stdout: answerFacts(result.stdout ?? '') };
 }
 
 function arrayDiffMessages(actual, expected, label) {

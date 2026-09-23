@@ -1,35 +1,22 @@
-% Prolog result format 4
-query(1, ppvPlanetGivenDetection(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 4).
-answer(1, ['X0' = rare_wide_orbit, 'X1' = 0.09016393442622944]).
-answer(1, ['X0' = mstar_short_period, 'X1' = 0.9611650485436893]).
-answer(1, ['X0' = common_hot_neptune_good, 'X1' = 0.9134615384615384]).
-answer(1, ['X0' = common_hot_neptune_low_spec, 'X1' = 0.76]).
-query(2, confirmsInWorld(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 9).
-answer(2, ['X0' = mstar_short_period, 'X1' = w0]).
-answer(2, ['X0' = common_hot_neptune_good, 'X1' = w0]).
-answer(2, ['X0' = rare_wide_orbit, 'X1' = w1]).
-answer(2, ['X0' = mstar_short_period, 'X1' = w1]).
-answer(2, ['X0' = common_hot_neptune_good, 'X1' = w1]).
-answer(2, ['X0' = common_hot_neptune_low_spec, 'X1' = w1]).
-answer(2, ['X0' = mstar_short_period, 'X1' = w2]).
-answer(2, ['X0' = common_hot_neptune_good, 'X1' = w2]).
-answer(2, ['X0' = mstar_short_period, 'X1' = w3]).
-query(3, rejectsInWorld(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(3, complete, 7).
-answer(3, ['X0' = rare_wide_orbit, 'X1' = w0]).
-answer(3, ['X0' = common_hot_neptune_low_spec, 'X1' = w0]).
-answer(3, ['X0' = rare_wide_orbit, 'X1' = w2]).
-answer(3, ['X0' = common_hot_neptune_low_spec, 'X1' = w2]).
-answer(3, ['X0' = rare_wide_orbit, 'X1' = w3]).
-answer(3, ['X0' = common_hot_neptune_good, 'X1' = w3]).
-answer(3, ['X0' = common_hot_neptune_low_spec, 'X1' = w3]).
-query(4, status(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(4, complete, 1).
-answer(4, ['X0' = exoplanet_validation_worlds, 'X1' = expected_world_pattern]).
-query(5, reason(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(5, complete, 1).
-answer(5,
-       ['X0' = exoplanet_validation_worlds,
-        'X1' = "Bayesian worlds account for occurrence and false positives while the naive world trusts sensitivity alone"]).
+ppvPlanetGivenDetection(rare_wide_orbit, 0.09016393442622944).
+ppvPlanetGivenDetection(mstar_short_period, 0.9611650485436893).
+ppvPlanetGivenDetection(common_hot_neptune_good, 0.9134615384615384).
+ppvPlanetGivenDetection(common_hot_neptune_low_spec, 0.76).
+confirmsInWorld(mstar_short_period, w0).
+confirmsInWorld(common_hot_neptune_good, w0).
+confirmsInWorld(rare_wide_orbit, w1).
+confirmsInWorld(mstar_short_period, w1).
+confirmsInWorld(common_hot_neptune_good, w1).
+confirmsInWorld(common_hot_neptune_low_spec, w1).
+confirmsInWorld(mstar_short_period, w2).
+confirmsInWorld(common_hot_neptune_good, w2).
+confirmsInWorld(mstar_short_period, w3).
+rejectsInWorld(rare_wide_orbit, w0).
+rejectsInWorld(common_hot_neptune_low_spec, w0).
+rejectsInWorld(rare_wide_orbit, w2).
+rejectsInWorld(common_hot_neptune_low_spec, w2).
+rejectsInWorld(rare_wide_orbit, w3).
+rejectsInWorld(common_hot_neptune_good, w3).
+rejectsInWorld(common_hot_neptune_low_spec, w3).
+status(exoplanet_validation_worlds, expected_world_pattern).
+reason(exoplanet_validation_worlds, "Bayesian worlds account for occurrence and false positives while the naive world trusts sensitivity alone").

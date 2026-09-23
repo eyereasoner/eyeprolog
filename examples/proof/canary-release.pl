@@ -1,26 +1,8 @@
-% Prolog result format 4
-query(1, errorRate(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 1).
-answer(1, ['X0' = canary42, 'X1' = 0.015]).
-why(1, ['X0' = canary42, 'X1' = 0.015], [errorRate(canary42, 0.015)]).
-query(2, p95Latency_ms(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 1).
-answer(2, ['X0' = canary42, 'X1' = 180.0]).
-why(2, ['X0' = canary42, 'X1' = 180.0], [p95Latency_ms(canary42, 180.0)]).
-query(3, latencyCheck(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(3, complete, 1).
-answer(3, ['X0' = canary42, 'X1' = ok]).
-why(3, ['X0' = canary42, 'X1' = ok], [latencyCheck(canary42, ok)]).
-query(4, status(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(4, complete, 1).
-answer(4, ['X0' = canary42, 'X1' = rollback_recommended]).
-why(4, ['X0' = canary42, 'X1' = rollback_recommended], [status(canary42, rollback_recommended)]).
-query(5, reason(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(5, complete, 1).
-answer(5, ['X0' = canary42, 'X1' = "canary error rate exceeds the allowed budget"]).
-why(5,
-    ['X0' = canary42, 'X1' = "canary error rate exceeds the allowed budget"],
-    [reason(canary42, "canary error rate exceeds the allowed budget")]).
+errorRate(canary42, 0.015).
+p95Latency_ms(canary42, 180.0).
+latencyCheck(canary42, ok).
+status(canary42, rollback_recommended).
+reason(canary42, "canary error rate exceeds the allowed budget").
 
 clause(1, canary(canary42, 5000.0, 75.0, 180.0), true).
 clause(2, threshold(canary42, maximum_error_rate, 0.01), true).

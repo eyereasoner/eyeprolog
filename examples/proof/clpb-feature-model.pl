@@ -1,26 +1,8 @@
-% Prolog result format 4
-query(1, feature_plan(_0), ['X0' = _0]).
-result(1, complete, 4).
-answer(1, ['X0' = features(cloud(0), edge(1), audit(1), encryption(1))]).
-why(1,
-    ['X0' = features(cloud(0), edge(1), audit(1), encryption(1))],
-    [feature_plan(features(cloud(0), edge(1), audit(1), encryption(1)))]).
-answer(1, ['X0' = features(cloud(1), edge(0), audit(0), encryption(0))]).
-why(1,
-    ['X0' = features(cloud(1), edge(0), audit(0), encryption(0))],
-    [feature_plan(features(cloud(1), edge(0), audit(0), encryption(0)))]).
-answer(1, ['X0' = features(cloud(1), edge(0), audit(0), encryption(1))]).
-why(1,
-    ['X0' = features(cloud(1), edge(0), audit(0), encryption(1))],
-    [feature_plan(features(cloud(1), edge(0), audit(0), encryption(1)))]).
-answer(1, ['X0' = features(cloud(1), edge(0), audit(1), encryption(1))]).
-why(1,
-    ['X0' = features(cloud(1), edge(0), audit(1), encryption(1))],
-    [feature_plan(features(cloud(1), edge(0), audit(1), encryption(1)))]).
-query(2, feature_plan_count(_0), ['X0' = _0]).
-result(2, complete, 1).
-answer(2, ['X0' = 4]).
-why(2, ['X0' = 4], [feature_plan_count(4)]).
+feature_plan(features(cloud(0), edge(1), audit(1), encryption(1))).
+feature_plan(features(cloud(1), edge(0), audit(0), encryption(0))).
+feature_plan(features(cloud(1), edge(0), audit(0), encryption(1))).
+feature_plan(features(cloud(1), edge(0), audit(1), encryption(1))).
+feature_plan_count(4).
 
 clause(1,
        feature_constraints(var('Cloud'), var('Edge'), var('Audit'), var('Encryption')),
@@ -70,4 +52,3 @@ step(feature_constraints(1, 0, 1, 1),
      [sat((1 # 0) * (1 =< 1) * (0 =< 1))]).
 step(sat((1 # 0) * (1 =< 1) * (0 =< 1)), builtin, [], []).
 step(labeling([1, 0, 1, 1]), builtin, [], []).
-step(feature_plan_count(4), unproven, [], []).

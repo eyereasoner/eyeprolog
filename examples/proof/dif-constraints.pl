@@ -1,12 +1,5 @@
-% Prolog result format 4
-query(1, allowed_pair(_0, _1), ['X' = _0, 'Y' = _1]).
-result(1, complete, 1).
-answer(1, ['X' = left, 'Y' = right]).
-why(1, ['X' = left, 'Y' = right], [allowed_pair(left, right)]).
-query(2, specialization(_0, _1), ['X' = _0, 'Y' = _1]).
-result(2, complete, 1).
-answer(2, ['X' = 1, 'Y' = 1]).
-why(2, ['X' = 1, 'Y' = 1], [specialization(1, 1)]).
+allowed_pair(left, right).
+specialization(1, 1).
 
 clause(1,
        allowed_pair(var('X'), var('Y')),

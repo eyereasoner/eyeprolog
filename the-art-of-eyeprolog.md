@@ -66,19 +66,13 @@ node bin/eyeprolog.js examples/socrates.pl
 The EyeProlog command should print:
 
 ```text
-% Prolog result format 4
-query(1, type(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 1).
-answer(1, ['X0' = socrates, 'X1' = mortal]).
-query(2, holds_result(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 1).
-answer(2, ['X0' = test, 'X1' = true]).
+type(socrates, mortal).
+holds_result(test, true).
 ```
 
-A run answers in Prolog: `query/3` records the question that was asked,
-`result/3` how it finished and how many answers it had, and `answer/2` what
-each answer bound the question's variables to. The document is an ordinary
-program, so it can be saved, loaded and queried like any other.
+A run answers in Prolog: each goal a query proved, with that answer's
+bindings applied. The output is an ordinary program, so it can be saved,
+loaded and queried like any other.
 
 Then ask for the derivations:
 
@@ -1483,11 +1477,7 @@ eyeprolog --proof examples/socrates.pl
 ```
 
 ```eyeprolog
-% Prolog result format 4
-query(1, type(socrates, mortal), []).
-result(1, complete, 1).
-answer(1, []).
-why(1, [], [type(socrates, mortal)]).
+type(socrates, mortal).
 
 clause(1, type(socrates, man), true).
 clause(2, type(var('X'), mortal), type(var('X'), man)).
@@ -1496,10 +1486,11 @@ step(type(socrates, mortal), rule(2), ['X' = socrates], [type(socrates, man)]).
 step(type(socrates, man), fact(1), [], []).
 ```
 
-`why/3` links an answer to the goals it proved, `clause/3` reproduces each
-clause the proof cites, and one `step/4` fact explains each justified
-conclusion. Proof output is valid EyeProlog input and can be kept and checked
-later:
+A proof states what was concluded and then why: the claims first, then the
+`clause/3` records the derivations cite and one `step/4` fact per justified
+conclusion. That is the same division eyeron, eyeling and eyeleng make --
+there the claims are derived triples and the steps carry `pe:rule`. Proof
+output is valid EyeProlog input and can be kept and checked later:
 
 ```sh
 eyeprolog --proof examples/socrates.pl > socrates.why.pl

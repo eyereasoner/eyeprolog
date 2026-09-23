@@ -1,8 +1,4 @@
-% Prolog result format 4
-query(1, answer(_0), ['X0' = _0]).
-result(1, complete, 1).
-answer(1, ['X0' = b]).
-why(1, ['X0' = b], [answer(b)]).
+answer(b).
 
 clause(1, answer(var('X')), (member(var('X'), "ab"), var('X') = b)).
 

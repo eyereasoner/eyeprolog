@@ -17,7 +17,6 @@ import {
   Env, Program, Solver, parseGoalText, run,
 } from '../src/index.js';
 import { parseTermText } from '../src/parser.js';
-import { RESULT_FORMAT_HEADER } from '../src/result-format.js';
 import { variantTerms } from '../src/term.js';
 
 const testRoot = path.dirname(fileURLToPath(import.meta.url));
@@ -32,21 +31,11 @@ function runnerStage(index, maximum) {
 }
 
 function capturedStages(stdout) {
-  // A run ends by writing its result document, which echoes the goal it was
-  // given. These cases drive the runner with a goal made of `write/1` calls,
-  // so the markers this scans for appear in that echo too; only the
-  // program's own output counts.
-  stdout = programOutput(stdout);
   const complete = stdout.indexOf('<WG17-COMPLETE>');
   if (complete < 0) return null;
   const captured = stdout.slice(0, complete);
   return [...captured.matchAll(/<WG17-BEGIN-(\d+)>([\s\S]*?)<WG17-VARS>([\s\S]*?)<WG17-END>/g)]
     .map((match) => ({ output: match[2], variables: match[3] }));
-}
-
-function programOutput(stdout) {
-  const document = stdout.indexOf(RESULT_FORMAT_HEADER);
-  return document < 0 ? stdout : stdout.slice(0, document);
 }
 
 function executeFinite(item, isoStrict = true) {

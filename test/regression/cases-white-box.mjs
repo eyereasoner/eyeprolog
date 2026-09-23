@@ -242,16 +242,17 @@ export function whiteBoxCases() {
             'L3 = "abc"||(1 op 2)',
           ],
         }).stdout;
-        // `op` is declared by the program itself, so these answers are read
-        // as the result document writes them.
-        for (const expected of [
-          'query(1, "abc"||1 op 2 == "abc"||1 op 2, []).',
-          'query(2, "abc"||1 op 2 \\== "abc"||(1 op 2), []).',
-          `answer(3, ['L1' = "abc"||1 op 2]).`,
-          `answer(4, ['L3' = "abc"||(1 op 2)]).`,
-        ]) {
-          assertIncludes(stdout, expected, 'unabsorbed and parenthesized-tail terms are distinct and print disambiguated from each other');
-        }
+        assertEqual(
+          stdout,
+          [
+            '"abc"||1 op 2 == "abc"||1 op 2.',
+            '"abc"||1 op 2 \\== "abc"||(1 op 2).',
+            '"abc"||1 op 2 = "abc"||1 op 2.',
+            '"abc"||(1 op 2) = "abc"||(1 op 2).',
+            '',
+          ].join('\n'),
+          'unabsorbed and parenthesized-tail terms are distinct and print disambiguated from each other',
+        );
       },
     },
     {
@@ -983,8 +984,8 @@ path(X, Z) :- edge(X, Y), path(Y, Z).
         });
         assertEqual(result.status, 0, `exit status${result.stderr ? `\nstderr: ${result.stderr}` : ''}`);
         assertEqual(result.stderr, '', 'stderr');
-        assertIncludes(result.stdout, "'X1' = [1000, 500, 250, 125", 'stdout');
-        assertIncludes(result.stdout, "answer(1, ['X0' = 1, 'X1' = [1]]).\n", 'stdout');
+        assertIncludes(result.stdout, 'collatzTrajectory(1000, [1000, 500, 250, 125', 'stdout');
+        assertIncludes(result.stdout, 'collatzTrajectory(1, [1]).\n', 'stdout');
       },
     },
   ];

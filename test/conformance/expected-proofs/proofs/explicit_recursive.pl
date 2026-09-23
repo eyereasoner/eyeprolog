@@ -1,12 +1,6 @@
-% Prolog result format 4
-query(1, path(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 3).
-answer(1, ['X0' = a, 'X1' = b]).
-why(1, ['X0' = a, 'X1' = b], [path(a, b)]).
-answer(1, ['X0' = b, 'X1' = c]).
-why(1, ['X0' = b, 'X1' = c], [path(b, c)]).
-answer(1, ['X0' = a, 'X1' = c]).
-why(1, ['X0' = a, 'X1' = c], [path(a, c)]).
+path(a, b).
+path(b, c).
+path(a, c).
 
 clause(2, edge(a, b), true).
 clause(3, edge(b, c), true).

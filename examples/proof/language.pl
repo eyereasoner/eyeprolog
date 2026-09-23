@@ -1,30 +1,9 @@
-% Prolog result format 4
-query(1, path(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 6).
-answer(1, ['X0' = '<urn:example:a>', 'X1' = '<urn:example:b>']).
-why(1,
-    ['X0' = '<urn:example:a>', 'X1' = '<urn:example:b>'],
-    [path('<urn:example:a>', '<urn:example:b>')]).
-answer(1, ['X0' = '<urn:example:b>', 'X1' = '<urn:example:c>']).
-why(1,
-    ['X0' = '<urn:example:b>', 'X1' = '<urn:example:c>'],
-    [path('<urn:example:b>', '<urn:example:c>')]).
-answer(1, ['X0' = '<urn:example:c>', 'X1' = '<urn:example:d>']).
-why(1,
-    ['X0' = '<urn:example:c>', 'X1' = '<urn:example:d>'],
-    [path('<urn:example:c>', '<urn:example:d>')]).
-answer(1, ['X0' = '<urn:example:a>', 'X1' = '<urn:example:c>']).
-why(1,
-    ['X0' = '<urn:example:a>', 'X1' = '<urn:example:c>'],
-    [path('<urn:example:a>', '<urn:example:c>')]).
-answer(1, ['X0' = '<urn:example:a>', 'X1' = '<urn:example:d>']).
-why(1,
-    ['X0' = '<urn:example:a>', 'X1' = '<urn:example:d>'],
-    [path('<urn:example:a>', '<urn:example:d>')]).
-answer(1, ['X0' = '<urn:example:b>', 'X1' = '<urn:example:d>']).
-why(1,
-    ['X0' = '<urn:example:b>', 'X1' = '<urn:example:d>'],
-    [path('<urn:example:b>', '<urn:example:d>')]).
+path('<urn:example:a>', '<urn:example:b>').
+path('<urn:example:b>', '<urn:example:c>').
+path('<urn:example:c>', '<urn:example:d>').
+path('<urn:example:a>', '<urn:example:c>').
+path('<urn:example:a>', '<urn:example:d>').
+path('<urn:example:b>', '<urn:example:d>').
 
 clause(2, edge('<urn:example:a>', '<urn:example:b>'), true).
 clause(3, edge('<urn:example:b>', '<urn:example:c>'), true).

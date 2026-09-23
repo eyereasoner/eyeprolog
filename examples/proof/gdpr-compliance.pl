@@ -1,24 +1,9 @@
-% Prolog result format 4
-query(1, status(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 2).
-answer(1, ['X0' = case_alpha, 'X1' = gdpr_compliant]).
-why(1, ['X0' = case_alpha, 'X1' = gdpr_compliant], [status(case_alpha, gdpr_compliant)]).
-answer(1, ['X0' = case_beta, 'X1' = gdpr_noncompliant]).
-why(1, ['X0' = case_beta, 'X1' = gdpr_noncompliant], [status(case_beta, gdpr_noncompliant)]).
-query(2, reason(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 4).
-answer(2, ['X0' = case_beta, 'X1' = missing_legal_basis]).
-why(2, ['X0' = case_beta, 'X1' = missing_legal_basis], [reason(case_beta, missing_legal_basis)]).
-answer(2, ['X0' = case_beta, 'X1' = not_minimized]).
-why(2, ['X0' = case_beta, 'X1' = not_minimized], [reason(case_beta, not_minimized)]).
-answer(2, ['X0' = case_beta, 'X1' = missing_access_logging]).
-why(2,
-    ['X0' = case_beta, 'X1' = missing_access_logging],
-    [reason(case_beta, missing_access_logging)]).
-answer(2, ['X0' = case_beta, 'X1' = transfer_without_adequacy]).
-why(2,
-    ['X0' = case_beta, 'X1' = transfer_without_adequacy],
-    [reason(case_beta, transfer_without_adequacy)]).
+status(case_alpha, gdpr_compliant).
+status(case_beta, gdpr_noncompliant).
+reason(case_beta, missing_legal_basis).
+reason(case_beta, not_minimized).
+reason(case_beta, missing_access_logging).
+reason(case_beta, transfer_without_adequacy).
 
 clause(1, processing(case_alpha), true).
 clause(2, processing(case_beta), true).

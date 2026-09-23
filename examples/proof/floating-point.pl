@@ -1,26 +1,12 @@
-% Prolog result format 4
-query(1, value(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 8).
-answer(1, ['X0' = sum, 'X1' = 3.75]).
-why(1, ['X0' = sum, 'X1' = 3.75], [value(sum, 3.75)]).
-answer(1, ['X0' = difference, 'X1' = 6.875]).
-why(1, ['X0' = difference, 'X1' = 6.875], [value(difference, 6.875)]).
-answer(1, ['X0' = product, 'X1' = 10.0]).
-why(1, ['X0' = product, 'X1' = 10.0], [value(product, 10.0)]).
-answer(1, ['X0' = quotient, 'X1' = 3.75]).
-why(1, ['X0' = quotient, 'X1' = 3.75], [value(quotient, 3.75)]).
-answer(1, ['X0' = sqrtByPower, 'X1' = 3.0]).
-why(1, ['X0' = sqrtByPower, 'X1' = 3.0], [value(sqrtByPower, 3.0)]).
-answer(1, ['X0' = mathSum, 'X1' = 1.0]).
-why(1, ['X0' = mathSum, 'X1' = 1.0], [value(mathSum, 1.0)]).
-answer(1, ['X0' = mathProduct, 'X1' = 3.0]).
-why(1, ['X0' = mathProduct, 'X1' = 3.0], [value(mathProduct, 3.0)]).
-answer(1, ['X0' = comfortable, 'X1' = true]).
-why(1, ['X0' = comfortable, 'X1' = true], [value(comfortable, true)]).
-query(2, than(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 1).
-answer(2, ['X0' = warmer, 'X1' = targetC]).
-why(2, ['X0' = warmer, 'X1' = targetC], [than(warmer, targetC)]).
+value(sum, 3.75).
+value(difference, 6.875).
+value(product, 10.0).
+value(quotient, 3.75).
+value(sqrtByPower, 3.0).
+value(mathSum, 1.0).
+value(mathProduct, 3.0).
+value(comfortable, true).
+than(warmer, targetC).
 
 clause(1, sample(roomC, 21.5), true).
 clause(2, sample(targetC, 19.25), true).

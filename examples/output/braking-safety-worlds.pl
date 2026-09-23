@@ -1,29 +1,18 @@
-% Prolog result format 4
-query(1, safeInWorld(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 10).
-answer(1, ['X0' = city_dry, 'X1' = w0]).
-answer(1, ['X0' = city_dry, 'X1' = w1]).
-answer(1, ['X0' = city_dry, 'X1' = w2]).
-answer(1, ['X0' = city_dry, 'X1' = w3]).
-answer(1, ['X0' = highway_dry_short_gap, 'X1' = w1]).
-answer(1, ['X0' = highway_dry_short_gap, 'X1' = w2]).
-answer(1, ['X0' = city_wet, 'X1' = w0]).
-answer(1, ['X0' = city_wet, 'X1' = w1]).
-answer(1, ['X0' = city_wet, 'X1' = w2]).
-answer(1, ['X0' = city_ice, 'X1' = w2]).
-query(2, riskyInWorld(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 6).
-answer(2, ['X0' = highway_dry_short_gap, 'X1' = w0]).
-answer(2, ['X0' = highway_dry_short_gap, 'X1' = w3]).
-answer(2, ['X0' = city_wet, 'X1' = w3]).
-answer(2, ['X0' = city_ice, 'X1' = w0]).
-answer(2, ['X0' = city_ice, 'X1' = w1]).
-answer(2, ['X0' = city_ice, 'X1' = w3]).
-query(3, status(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(3, complete, 1).
-answer(3, ['X0' = braking_safety_worlds, 'X1' = expected_world_pattern]).
-query(4, reason(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(4, complete, 1).
-answer(4,
-       ['X0' = braking_safety_worlds,
-        'X1' = "simplified and naive worlds can be optimistic while the cautious world tightens the reference model"]).
+safeInWorld(city_dry, w0).
+safeInWorld(city_dry, w1).
+safeInWorld(city_dry, w2).
+safeInWorld(city_dry, w3).
+safeInWorld(highway_dry_short_gap, w1).
+safeInWorld(highway_dry_short_gap, w2).
+safeInWorld(city_wet, w0).
+safeInWorld(city_wet, w1).
+safeInWorld(city_wet, w2).
+safeInWorld(city_ice, w2).
+riskyInWorld(highway_dry_short_gap, w0).
+riskyInWorld(highway_dry_short_gap, w3).
+riskyInWorld(city_wet, w3).
+riskyInWorld(city_ice, w0).
+riskyInWorld(city_ice, w1).
+riskyInWorld(city_ice, w3).
+status(braking_safety_worlds, expected_world_pattern).
+reason(braking_safety_worlds, "simplified and naive worlds can be optimistic while the cautious world tightens the reference model").

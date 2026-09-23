@@ -1,8 +1,4 @@
-% Prolog result format 4
-query(1, mustHave(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 1).
-answer(1, ['X0' = alice, 'X1' = dogLicense]).
-why(1, ['X0' = alice, 'X1' = dogLicense], [mustHave(alice, dogLicense)]).
+mustHave(alice, dogLicense).
 
 clause(1, hasDog(alice, dog1), true).
 clause(8,

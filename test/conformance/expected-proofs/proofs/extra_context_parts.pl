@@ -1,10 +1,5 @@
-% Prolog result format 4
-query(1, answer(_0, _1, _2), ['X0' = _0, 'X1' = _1, 'X2' = _2]).
-result(1, complete, 2).
-answer(1, ['X0' = context_parts, 'X1' = alpha, 'X2' = []]).
-why(1, ['X0' = context_parts, 'X1' = alpha, 'X2' = []], [answer(context_parts, alpha, [])]).
-answer(1, ['X0' = context_parts, 'X1' = beta, 'X2' = [2]]).
-why(1, ['X0' = context_parts, 'X1' = beta, 'X2' = [2]], [answer(context_parts, beta, [2])]).
+answer(context_parts, alpha, []).
+answer(context_parts, beta, [2]).
 
 clause(1, context_statement(alpha), true).
 clause(2, context_statement(beta(2)), true).

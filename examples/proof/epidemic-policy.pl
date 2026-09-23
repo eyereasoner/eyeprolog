@@ -1,61 +1,17 @@
-% Prolog result format 4
-query(1, status(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 4).
-answer(1, ['X0' = no_mandate, 'X1' = insufficient_control]).
-why(1,
-    ['X0' = no_mandate, 'X1' = insufficient_control],
-    [status(no_mandate, insufficient_control)]).
-answer(1, ['X0' = vaccination_campaign, 'X1' = insufficient_control]).
-why(1,
-    ['X0' = vaccination_campaign, 'X1' = insufficient_control],
-    [status(vaccination_campaign, insufficient_control)]).
-answer(1, ['X0' = indoor_masks, 'X1' = insufficient_control]).
-why(1,
-    ['X0' = indoor_masks, 'X1' = insufficient_control],
-    [status(indoor_masks, insufficient_control)]).
-answer(1, ['X0' = vaccination_and_masks, 'X1' = acceptable_control]).
-why(1,
-    ['X0' = vaccination_and_masks, 'X1' = acceptable_control],
-    [status(vaccination_and_masks, acceptable_control)]).
-query(2, riskScore(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 4).
-answer(2, ['X0' = no_mandate, 'X1' = 1.4]).
-why(2, ['X0' = no_mandate, 'X1' = 1.4], [riskScore(no_mandate, 1.4)]).
-answer(2, ['X0' = vaccination_campaign, 'X1' = 0.77]).
-why(2, ['X0' = vaccination_campaign, 'X1' = 0.77], [riskScore(vaccination_campaign, 0.77)]).
-answer(2, ['X0' = indoor_masks, 'X1' = 0.9099999999999999]).
-why(2,
-    ['X0' = indoor_masks, 'X1' = 0.9099999999999999],
-    [riskScore(indoor_masks, 0.9099999999999999)]).
-answer(2, ['X0' = vaccination_and_masks, 'X1' = 0.5005000000000001]).
-why(2,
-    ['X0' = vaccination_and_masks, 'X1' = 0.5005000000000001],
-    [riskScore(vaccination_and_masks, 0.5005000000000001)]).
-query(3, cost(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(3, complete, 4).
-answer(3, ['X0' = no_mandate, 'X1' = 0]).
-why(3, ['X0' = no_mandate, 'X1' = 0], [cost(no_mandate, 0)]).
-answer(3, ['X0' = vaccination_campaign, 'X1' = 3]).
-why(3, ['X0' = vaccination_campaign, 'X1' = 3], [cost(vaccination_campaign, 3)]).
-answer(3, ['X0' = indoor_masks, 'X1' = 2]).
-why(3, ['X0' = indoor_masks, 'X1' = 2], [cost(indoor_masks, 2)]).
-answer(3, ['X0' = vaccination_and_masks, 'X1' = 5]).
-why(3, ['X0' = vaccination_and_masks, 'X1' = 5], [cost(vaccination_and_masks, 5)]).
-query(4, recommendedPolicy(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(4, complete, 1).
-answer(4, ['X0' = epidemic_policy, 'X1' = vaccination_and_masks]).
-why(4,
-    ['X0' = epidemic_policy, 'X1' = vaccination_and_masks],
-    [recommendedPolicy(epidemic_policy, vaccination_and_masks)]).
-query(5, reason(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(5, complete, 1).
-answer(5,
-       ['X0' = epidemic_policy,
-        'X1' = "combined vaccination and indoor masks are the only policy below the outbreak threshold"]).
-why(5,
-    ['X0' = epidemic_policy,
-     'X1' = "combined vaccination and indoor masks are the only policy below the outbreak threshold"],
-    [reason(epidemic_policy, "combined vaccination and indoor masks are the only policy below the outbreak threshold")]).
+status(no_mandate, insufficient_control).
+status(vaccination_campaign, insufficient_control).
+status(indoor_masks, insufficient_control).
+status(vaccination_and_masks, acceptable_control).
+riskScore(no_mandate, 1.4).
+riskScore(vaccination_campaign, 0.77).
+riskScore(indoor_masks, 0.9099999999999999).
+riskScore(vaccination_and_masks, 0.5005000000000001).
+cost(no_mandate, 0).
+cost(vaccination_campaign, 3).
+cost(indoor_masks, 2).
+cost(vaccination_and_masks, 5).
+recommendedPolicy(epidemic_policy, vaccination_and_masks).
+reason(epidemic_policy, "combined vaccination and indoor masks are the only policy below the outbreak threshold").
 
 clause(1, policy(no_mandate), true).
 clause(2, policy(vaccination_campaign), true).

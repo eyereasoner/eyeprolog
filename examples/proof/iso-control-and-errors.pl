@@ -1,16 +1,8 @@
-% Prolog result format 4
-query(1, report(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 5).
-answer(1, ['X0' = first_destination, 'X1' = ghent]).
-why(1, ['X0' = first_destination, 'X1' = ghent], [report(first_destination, ghent)]).
-answer(1, ['X0' = cut_destination, 'X1' = ghent]).
-why(1, ['X0' = cut_destination, 'X1' = ghent], [report(cut_destination, ghent)]).
-answer(1, ['X0' = existing_route, 'X1' = connected]).
-why(1, ['X0' = existing_route, 'X1' = connected], [report(existing_route, connected)]).
-answer(1, ['X0' = missing_route, 'X1' = disconnected]).
-why(1, ['X0' = missing_route, 'X1' = disconnected], [report(missing_route, disconnected)]).
-answer(1, ['X0' = recovered_exception, 'X1' = rejected]).
-why(1, ['X0' = recovered_exception, 'X1' = rejected], [report(recovered_exception, rejected)]).
+report(first_destination, ghent).
+report(cut_destination, ghent).
+report(existing_route, connected).
+report(missing_route, disconnected).
+report(recovered_exception, rejected).
 
 clause(1, route(antwerp, ghent), true).
 clause(3, first_destination(var('From'), var('To')), once(route(var('From'), var('To')))).

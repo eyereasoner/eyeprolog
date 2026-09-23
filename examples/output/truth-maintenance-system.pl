@@ -1,36 +1,25 @@
-% Prolog result format 4
-query(1, tmsSupport(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 11).
-answer(1, ['X0' = clear_only, 'X1' = clear_path]).
-answer(1, ['X0' = conflicting_sensors, 'X1' = clear_path]).
-answer(1, ['X0' = blocked_only, 'X1' = blocked_path]).
-answer(1, ['X0' = conflicting_sensors, 'X1' = blocked_path]).
-answer(1, ['X0' = override_blocked, 'X1' = blocked_path]).
-answer(1, ['X0' = clear_only, 'X1' = permit_go]).
-answer(1, ['X0' = conflicting_sensors, 'X1' = permit_go]).
-answer(1, ['X0' = blocked_only, 'X1' = forbid_go]).
-answer(1, ['X0' = conflicting_sensors, 'X1' = forbid_go]).
-answer(1, ['X0' = override_blocked, 'X1' = forbid_go]).
-answer(1, ['X0' = override_blocked, 'X1' = permit_go]).
-query(2, tmsJustification(_0, _1, _2), ['X0' = _0, 'X1' = _1, 'X2' = _2]).
-result(2, complete, 11).
-answer(2, ['X0' = clear_only, 'X1' = j_clear_path, 'X2' = clear_path]).
-answer(2, ['X0' = conflicting_sensors, 'X1' = j_clear_path, 'X2' = clear_path]).
-answer(2, ['X0' = blocked_only, 'X1' = j_blocked_path, 'X2' = blocked_path]).
-answer(2, ['X0' = conflicting_sensors, 'X1' = j_blocked_path, 'X2' = blocked_path]).
-answer(2, ['X0' = override_blocked, 'X1' = j_blocked_path, 'X2' = blocked_path]).
-answer(2, ['X0' = clear_only, 'X1' = j_permit_from_clear, 'X2' = permit_go]).
-answer(2, ['X0' = conflicting_sensors, 'X1' = j_permit_from_clear, 'X2' = permit_go]).
-answer(2, ['X0' = blocked_only, 'X1' = j_forbid_from_blocked, 'X2' = forbid_go]).
-answer(2, ['X0' = conflicting_sensors, 'X1' = j_forbid_from_blocked, 'X2' = forbid_go]).
-answer(2, ['X0' = override_blocked, 'X1' = j_forbid_from_blocked, 'X2' = forbid_go]).
-answer(2, ['X0' = override_blocked, 'X1' = j_override, 'X2' = permit_go]).
-query(3, tmsInconsistent(_0), ['X0' = _0]).
-result(3, complete, 2).
-answer(3, ['X0' = conflicting_sensors]).
-answer(3, ['X0' = override_blocked]).
-query(4, tmsConclusion(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(4, complete, 1).
-answer(4,
-       ['X0' = case,
-        'X1' = "truth maintenance separates support from consistency across assumption environments"]).
+tmsSupport(clear_only, clear_path).
+tmsSupport(conflicting_sensors, clear_path).
+tmsSupport(blocked_only, blocked_path).
+tmsSupport(conflicting_sensors, blocked_path).
+tmsSupport(override_blocked, blocked_path).
+tmsSupport(clear_only, permit_go).
+tmsSupport(conflicting_sensors, permit_go).
+tmsSupport(blocked_only, forbid_go).
+tmsSupport(conflicting_sensors, forbid_go).
+tmsSupport(override_blocked, forbid_go).
+tmsSupport(override_blocked, permit_go).
+tmsJustification(clear_only, j_clear_path, clear_path).
+tmsJustification(conflicting_sensors, j_clear_path, clear_path).
+tmsJustification(blocked_only, j_blocked_path, blocked_path).
+tmsJustification(conflicting_sensors, j_blocked_path, blocked_path).
+tmsJustification(override_blocked, j_blocked_path, blocked_path).
+tmsJustification(clear_only, j_permit_from_clear, permit_go).
+tmsJustification(conflicting_sensors, j_permit_from_clear, permit_go).
+tmsJustification(blocked_only, j_forbid_from_blocked, forbid_go).
+tmsJustification(conflicting_sensors, j_forbid_from_blocked, forbid_go).
+tmsJustification(override_blocked, j_forbid_from_blocked, forbid_go).
+tmsJustification(override_blocked, j_override, permit_go).
+tmsInconsistent(conflicting_sensors).
+tmsInconsistent(override_blocked).
+tmsConclusion(case, "truth maintenance separates support from consistency across assumption environments").

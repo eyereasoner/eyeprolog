@@ -1,52 +1,28 @@
-% Prolog result format 4
-query(1, captured_field(_0, _1, _2), ['X0' = _0, 'X1' = _1, 'X2' = _2]).
-result(1, complete, 24).
-answer(1, ['X0' = l1, 'X1' = ts, 'X2' = '2026-06-18T10:00:00Z']).
-answer(1, ['X0' = l1, 'X1' = level, 'X2' = warn]).
-answer(1, ['X0' = l1, 'X1' = event, 'X2' = login_failed]).
-answer(1, ['X0' = l1, 'X1' = user, 'X2' = alice]).
-answer(1, ['X0' = l1, 'X1' = ip, 'X2' = '203.0.113.9']).
-answer(1, ['X0' = l1, 'X1' = trace_id, 'X2' = '4bf92f3577b34da6a3ce929d0e0e4736']).
-answer(1, ['X0' = l1, 'X1' = span_id, 'X2' = '00f067aa0ba902b7']).
-answer(1, ['X0' = l1, 'X1' = flags, 'X2' = '01']).
-answer(1, ['X0' = l2, 'X1' = ts, 'X2' = '2026-06-18T10:00:03Z']).
-answer(1, ['X0' = l2, 'X1' = level, 'X2' = error]).
-answer(1, ['X0' = l2, 'X1' = event, 'X2' = payment_denied]).
-answer(1, ['X0' = l2, 'X1' = user, 'X2' = alice]).
-answer(1, ['X0' = l2, 'X1' = ip, 'X2' = '203.0.113.9']).
-answer(1, ['X0' = l2, 'X1' = trace_id, 'X2' = '4bf92f3577b34da6a3ce929d0e0e4736']).
-answer(1, ['X0' = l2, 'X1' = span_id, 'X2' = aaf067aa0ba90000]).
-answer(1, ['X0' = l2, 'X1' = flags, 'X2' = '01']).
-answer(1, ['X0' = l3, 'X1' = ts, 'X2' = '2026-06-18T10:01:12Z']).
-answer(1, ['X0' = l3, 'X1' = level, 'X2' = info]).
-answer(1, ['X0' = l3, 'X1' = event, 'X2' = login_success]).
-answer(1, ['X0' = l3, 'X1' = user, 'X2' = bob]).
-answer(1, ['X0' = l3, 'X1' = ip, 'X2' = '198.51.100.4']).
-answer(1, ['X0' = l3, 'X1' = trace_id, 'X2' = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]).
-answer(1, ['X0' = l3, 'X1' = span_id, 'X2' = bbbbbbbbbbbbbbbb]).
-answer(1, ['X0' = l3, 'X1' = flags, 'X2' = '01']).
-query(2,
-      parsed_event(_0, _1, _2, _3, _4),
-      ['X0' = _0, 'X1' = _1, 'X2' = _2, 'X3' = _3, 'X4' = _4]).
-result(2, complete, 3).
-answer(2,
-       ['X0' = l1,
-        'X1' = login_failed,
-        'X2' = alice,
-        'X3' = '203.0.113.9',
-        'X4' = '4bf92f3577b34da6a3ce929d0e0e4736']).
-answer(2,
-       ['X0' = l2,
-        'X1' = payment_denied,
-        'X2' = alice,
-        'X3' = '203.0.113.9',
-        'X4' = '4bf92f3577b34da6a3ce929d0e0e4736']).
-answer(2,
-       ['X0' = l3,
-        'X1' = login_success,
-        'X2' = bob,
-        'X3' = '198.51.100.4',
-        'X4' = aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]).
-query(3, trace_alert(_0, _1, _2), ['X0' = _0, 'X1' = _1, 'X2' = _2]).
-result(3, complete, 1).
-answer(3, ['X0' = alice, 'X1' = '4bf92f3577b34da6a3ce929d0e0e4736', 'X2' = '203.0.113.9']).
+captured_field(l1, ts, '2026-06-18T10:00:00Z').
+captured_field(l1, level, warn).
+captured_field(l1, event, login_failed).
+captured_field(l1, user, alice).
+captured_field(l1, ip, '203.0.113.9').
+captured_field(l1, trace_id, '4bf92f3577b34da6a3ce929d0e0e4736').
+captured_field(l1, span_id, '00f067aa0ba902b7').
+captured_field(l1, flags, '01').
+captured_field(l2, ts, '2026-06-18T10:00:03Z').
+captured_field(l2, level, error).
+captured_field(l2, event, payment_denied).
+captured_field(l2, user, alice).
+captured_field(l2, ip, '203.0.113.9').
+captured_field(l2, trace_id, '4bf92f3577b34da6a3ce929d0e0e4736').
+captured_field(l2, span_id, aaf067aa0ba90000).
+captured_field(l2, flags, '01').
+captured_field(l3, ts, '2026-06-18T10:01:12Z').
+captured_field(l3, level, info).
+captured_field(l3, event, login_success).
+captured_field(l3, user, bob).
+captured_field(l3, ip, '198.51.100.4').
+captured_field(l3, trace_id, aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa).
+captured_field(l3, span_id, bbbbbbbbbbbbbbbb).
+captured_field(l3, flags, '01').
+parsed_event(l1, login_failed, alice, '203.0.113.9', '4bf92f3577b34da6a3ce929d0e0e4736').
+parsed_event(l2, payment_denied, alice, '203.0.113.9', '4bf92f3577b34da6a3ce929d0e0e4736').
+parsed_event(l3, login_success, bob, '198.51.100.4', aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa).
+trace_alert(alice, '4bf92f3577b34da6a3ce929d0e0e4736', '203.0.113.9').

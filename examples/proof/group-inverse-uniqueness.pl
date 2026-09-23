@@ -1,10 +1,5 @@
-% Prolog result format 4
-query(1, sameInverse(_0, _1, _2), ['X0' = _0, 'X1' = _1, 'X2' = _2]).
-result(1, complete, 2).
-answer(1, ['X0' = x, 'X1' = i, 'X2' = j]).
-why(1, ['X0' = x, 'X1' = i, 'X2' = j], [sameInverse(x, i, j)]).
-answer(1, ['X0' = x, 'X1' = j, 'X2' = i]).
-why(1, ['X0' = x, 'X1' = j, 'X2' = i], [sameInverse(x, j, i)]).
+sameInverse(x, i, j).
+sameInverse(x, j, i).
 
 clause(7, group_op(i, x, e), true).
 clause(8, group_op(x, j, e), true).

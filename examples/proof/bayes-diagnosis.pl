@@ -1,74 +1,20 @@
-% Prolog result format 4
-query(1, scores(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 0).
-query(2, evidenceTotal(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 1).
-answer(2, ['X0' = case, 'X1' = 0.0016436300000000003]).
-why(2,
-    ['X0' = case, 'X1' = 0.0016436300000000003],
-    [evidenceTotal(case, 0.0016436300000000003)]).
-query(3, result(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(3, complete, 4).
-answer(3, ['X0' = case, 'X1' = result(covid19)]).
-why(3, ['X0' = case, 'X1' = result(covid19)], [result(case, result(covid19))]).
-answer(3, ['X0' = case, 'X1' = result(influenza)]).
-why(3, ['X0' = case, 'X1' = result(influenza)], [result(case, result(influenza))]).
-answer(3, ['X0' = case, 'X1' = result(allergicRhinitis)]).
-why(3, ['X0' = case, 'X1' = result(allergicRhinitis)], [result(case, result(allergicRhinitis))]).
-answer(3, ['X0' = case, 'X1' = result(bacterialPneumonia)]).
-why(3,
-    ['X0' = case, 'X1' = result(bacterialPneumonia)],
-    [result(case, result(bacterialPneumonia))]).
-query(4, disease(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(4, complete, 4).
-answer(4, ['X0' = result(covid19), 'X1' = covid19]).
-why(4, ['X0' = result(covid19), 'X1' = covid19], [disease(result(covid19), covid19)]).
-answer(4, ['X0' = result(influenza), 'X1' = influenza]).
-why(4, ['X0' = result(influenza), 'X1' = influenza], [disease(result(influenza), influenza)]).
-answer(4, ['X0' = result(allergicRhinitis), 'X1' = allergicRhinitis]).
-why(4,
-    ['X0' = result(allergicRhinitis), 'X1' = allergicRhinitis],
-    [disease(result(allergicRhinitis), allergicRhinitis)]).
-answer(4, ['X0' = result(bacterialPneumonia), 'X1' = bacterialPneumonia]).
-why(4,
-    ['X0' = result(bacterialPneumonia), 'X1' = bacterialPneumonia],
-    [disease(result(bacterialPneumonia), bacterialPneumonia)]).
-query(5, unnormalized(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(5, complete, 4).
-answer(5, ['X0' = result(covid19), 'X1' = 0.0015470000000000002]).
-why(5,
-    ['X0' = result(covid19), 'X1' = 0.0015470000000000002],
-    [unnormalized(result(covid19), 0.0015470000000000002)]).
-answer(5, ['X0' = result(influenza), 'X1' = 0.000048000000000000015]).
-why(5,
-    ['X0' = result(influenza), 'X1' = 0.000048000000000000015],
-    [unnormalized(result(influenza), 0.000048000000000000015)]).
-answer(5, ['X0' = result(allergicRhinitis), 'X1' = 7.499999999999999e-7]).
-why(5,
-    ['X0' = result(allergicRhinitis), 'X1' = 7.499999999999999e-7],
-    [unnormalized(result(allergicRhinitis), 7.499999999999999e-7)]).
-answer(5, ['X0' = result(bacterialPneumonia), 'X1' = 0.000047879999999999996]).
-why(5,
-    ['X0' = result(bacterialPneumonia), 'X1' = 0.000047879999999999996],
-    [unnormalized(result(bacterialPneumonia), 0.000047879999999999996)]).
-query(6, posterior(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(6, complete, 4).
-answer(6, ['X0' = result(covid19), 'X1' = 0.9412093962753174]).
-why(6,
-    ['X0' = result(covid19), 'X1' = 0.9412093962753174],
-    [posterior(result(covid19), 0.9412093962753174)]).
-answer(6, ['X0' = result(influenza), 'X1' = 0.029203652890249024]).
-why(6,
-    ['X0' = result(influenza), 'X1' = 0.029203652890249024],
-    [posterior(result(influenza), 0.029203652890249024)]).
-answer(6, ['X0' = result(allergicRhinitis), 'X1' = 0.00045630707641014084]).
-why(6,
-    ['X0' = result(allergicRhinitis), 'X1' = 0.00045630707641014084],
-    [posterior(result(allergicRhinitis), 0.00045630707641014084)]).
-answer(6, ['X0' = result(bacterialPneumonia), 'X1' = 0.029130643758023392]).
-why(6,
-    ['X0' = result(bacterialPneumonia), 'X1' = 0.029130643758023392],
-    [posterior(result(bacterialPneumonia), 0.029130643758023392)]).
+evidenceTotal(case, 0.0016436300000000003).
+result(case, result(covid19)).
+result(case, result(influenza)).
+result(case, result(allergicRhinitis)).
+result(case, result(bacterialPneumonia)).
+disease(result(covid19), covid19).
+disease(result(influenza), influenza).
+disease(result(allergicRhinitis), allergicRhinitis).
+disease(result(bacterialPneumonia), bacterialPneumonia).
+unnormalized(result(covid19), 0.0015470000000000002).
+unnormalized(result(influenza), 0.000048000000000000015).
+unnormalized(result(allergicRhinitis), 7.499999999999999e-7).
+unnormalized(result(bacterialPneumonia), 0.000047879999999999996).
+posterior(result(covid19), 0.9412093962753174).
+posterior(result(influenza), 0.029203652890249024).
+posterior(result(allergicRhinitis), 0.00045630707641014084).
+posterior(result(bacterialPneumonia), 0.029130643758023392).
 
 clause(1, disease(covid19), true).
 clause(2, disease(influenza), true).

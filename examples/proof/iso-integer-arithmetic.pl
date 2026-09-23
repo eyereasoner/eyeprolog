@@ -1,20 +1,8 @@
-% Prolog result format 4
-query(1, report(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 5).
-answer(1, ['X0' = div_mod, 'X1' = quotient_remainder(-3, 2)]).
-why(1,
-    ['X0' = div_mod, 'X1' = quotient_remainder(-3, 2)],
-    [report(div_mod, quotient_remainder(-3, 2))]).
-answer(1, ['X0' = quotient_rem, 'X1' = quotient_remainder(-2, -1)]).
-why(1,
-    ['X0' = quotient_rem, 'X1' = quotient_remainder(-2, -1)],
-    [report(quotient_rem, quotient_remainder(-2, -1))]).
-answer(1, ['X0' = bit_mask, 'X1' = 4]).
-why(1, ['X0' = bit_mask, 'X1' = 4], [report(bit_mask, 4)]).
-answer(1, ['X0' = bit_union, 'X1' = 11]).
-why(1, ['X0' = bit_union, 'X1' = 11], [report(bit_union, 11)]).
-answer(1, ['X0' = left_shift, 'X1' = 12]).
-why(1, ['X0' = left_shift, 'X1' = 12], [report(left_shift, 12)]).
+report(div_mod, quotient_remainder(-3, 2)).
+report(quotient_rem, quotient_remainder(-2, -1)).
+report(bit_mask, 4).
+report(bit_union, 11).
+report(left_shift, 12).
 
 clause(1,
        report(div_mod, quotient_remainder(var('Q'), var('R'))),

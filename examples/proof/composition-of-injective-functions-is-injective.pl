@@ -1,10 +1,5 @@
-% Prolog result format 4
-query(1, sameInputByCompositeInjectivity(_0, _1, _2), ['X0' = _0, 'X1' = _1, 'X2' = _2]).
-result(1, complete, 2).
-answer(1, ['X0' = h, 'X1' = a, 'X2' = b]).
-why(1, ['X0' = h, 'X1' = a, 'X2' = b], [sameInputByCompositeInjectivity(h, a, b)]).
-answer(1, ['X0' = h, 'X1' = b, 'X2' = a]).
-why(1, ['X0' = h, 'X1' = b, 'X2' = a], [sameInputByCompositeInjectivity(h, b, a)]).
+sameInputByCompositeInjectivity(h, a, b).
+sameInputByCompositeInjectivity(h, b, a).
 
 clause(7, inZ(e), true).
 clause(10, sameTerm(var('X'), var('X')), inZ(var('X'))).

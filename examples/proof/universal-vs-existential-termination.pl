@@ -1,10 +1,4 @@
-% Prolog result format 4
-query(1, answer(_0, _1, _2), ['X0' = _0, 'X1' = _1, 'X2' = _2]).
-result(1, complete, 1).
-answer(1, ['X0' = [[] - "abc", "a" - "bc", "ab" - "c", "abc" - []], 'X1' = 4, 'X2' = true]).
-why(1,
-    ['X0' = [[] - "abc", "a" - "bc", "ab" - "c", "abc" - []], 'X1' = 4, 'X2' = true],
-    [answer([[] - "abc", "a" - "bc", "ab" - "c", "abc" - []], 4, true)]).
+answer([[] - "abc", "a" - "bc", "ab" - "c", "abc" - []], 4, true).
 
 clause(1,
        answer(var('AllSplitsOfBoundList'), var('SplitCount'), var('FoundFirstSplitOfUnboundList')),

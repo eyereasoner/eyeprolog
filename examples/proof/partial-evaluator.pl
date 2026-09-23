@@ -1,26 +1,7 @@
-% Prolog result format 4
-query(1, partialEvalAnswer(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 4).
-answer(1, ['X0' = residual(poly_y), 'X1' = add(mul(const(10), var(y)), const(13))]).
-why(1,
-    ['X0' = residual(poly_y), 'X1' = add(mul(const(10), var(y)), const(13))],
-    [partialEvalAnswer(residual(poly_y), add(mul(const(10), var(y)), const(13)))]).
-answer(1, ['X0' = residual(static_branch), 'X1' = const(11)]).
-why(1,
-    ['X0' = residual(static_branch), 'X1' = const(11)],
-    [partialEvalAnswer(residual(static_branch), const(11))]).
-answer(1,
-       ['X0' = residual(dynamic_branch), 'X1' = if(var(flag), const(11), mul(var(y), const(2)))]).
-why(1,
-    ['X0' = residual(dynamic_branch), 'X1' = if(var(flag), const(11), mul(var(y), const(2)))],
-    [partialEvalAnswer(residual(dynamic_branch), if(var(flag), const(11), mul(var(y), const(2))))]).
-answer(1,
-       ['X0' = note,
-        'X1' = "static inputs are folded while dynamic variables remain as residual code"]).
-why(1,
-    ['X0' = note,
-     'X1' = "static inputs are folded while dynamic variables remain as residual code"],
-    [partialEvalAnswer(note, "static inputs are folded while dynamic variables remain as residual code")]).
+partialEvalAnswer(residual(poly_y), add(mul(const(10), var(y)), const(13))).
+partialEvalAnswer(residual(static_branch), const(11)).
+partialEvalAnswer(residual(dynamic_branch), if(var(flag), const(11), mul(var(y), const(2)))).
+partialEvalAnswer(note, "static inputs are folded while dynamic variables remain as residual code").
 
 clause(1,
        program(poly_y, add(mul(var(x), var(y)), add(var(x), const(3))), [bind(x, const(10))]),

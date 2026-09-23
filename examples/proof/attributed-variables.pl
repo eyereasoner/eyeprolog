@@ -1,12 +1,5 @@
-% Prolog result format 4
-query(1, accepts_required_value(ok), []).
-result(1, complete, 1).
-answer(1, []).
-why(1, [], [accepts_required_value(ok)]).
-query(2, alias_preserves_attribute(ok), []).
-result(2, complete, 1).
-answer(2, []).
-why(2, [], [alias_preserves_attribute(ok)]).
+accepts_required_value(ok).
+alias_preserves_attribute(ok).
 
 clause(1,
        attach_required(var('Variable'), var('Value')),

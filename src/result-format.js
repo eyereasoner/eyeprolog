@@ -1,11 +1,9 @@
-// Prolog result format 4.
+// Proof serialization.
 //
-// An evaluated run is itself a small Prolog program: one `query/3` fact per
-// goal, a `result/3` fact saying how it finished and how many answers it
-// had, and an `answer/2` fact per answer. With `--proof` the document gains
-// a `why/3` fact linking each answer to the goals it proved, the `clause/3`
-// records of the clauses the proof cites, and one `step/4` fact per
-// justified conclusion.
+// A run states what it concluded and then why: each goal its queries proved
+// is written as a fact, and with `--proof` the document gains the `clause/3`
+// records its derivations cite and one `step/4` fact per justified
+// conclusion.
 //
 // A step is a conclusion, the single term saying why it holds, the bindings
 // that justification used, and the conclusions it used -- deliberately the
@@ -15,12 +13,11 @@
 // downward from the claim, and what lets a checker resolve it.
 //
 // Because the document is ordinary Prolog, it can be saved, loaded and
-// queried by another run: loading it records the question as data rather
-// than running it again.
+// queried by another run, which records the answers as data rather than
+// running the query again.
 import { COMPOUND, Env, VAR, atom, compound, listFromItems, numberTerm, variable } from './term.js';
 import { formatTermForWrite } from './write.js';
 
-export const RESULT_FORMAT_HEADER = '% Prolog result format 4';
 
 // How wide one fact may be before it is broken across lines.
 const WIDTH = 96;
@@ -91,6 +88,8 @@ function conjuncts(term) {
   return [term];
 }
 
+
+
 // A variable binding, written the way the standard's `variable_names` read
 // option writes one: `'Name' = Value`.
 function bindingTerm(name, value) {
@@ -133,28 +132,6 @@ function stepTerm(step) {
   return compound('step', [step.conclusion, step.by, bindingsTerm(step.bindings), listFromItems(step.uses)]);
 }
 
-// `queries` is one entry per goal: the goal as written, its variables, and
-// its answers. An answer carries the bindings of those variables and, with
-// `--proof`, the goals its `why/3` points at.
-export function formatResultDocument(queries, { proof = false, clauses = [], steps = [], writeOptions = {} } = {}) {
-  const lines = [RESULT_FORMAT_HEADER];
-  const emit = (term) => lines.push(formatFact(term, writeOptions));
-
-  queries.forEach((query, index) => {
-    const id = numberTerm(BigInt(index + 1));
-    emit(compound('query', [id, query.goal, listFromItems(query.variables.map((v) => bindingTerm(v.name, variable(v.rendered))))]));
-    emit(compound('result', [id, atom('complete'), numberTerm(BigInt(query.answers.length))]));
-    for (const answer of query.answers) {
-      const values = bindingsTerm(answer.bindings);
-      emit(compound('answer', [id, values]));
-      if (proof) emit(compound('why', [id, values, listFromItems(answer.goals ?? [])]));
-    }
-  });
-
-  if (proof) lines.push(...blockLines(clauses, steps, writeOptions));
-
-  return `${lines.join('\n')}\n`;
-}
 
 function blockLines(clauses, steps, writeOptions) {
   const lines = [];
@@ -166,43 +143,11 @@ function blockLines(clauses, steps, writeOptions) {
   return lines;
 }
 
-// The `clause/3` and `step/4` blocks on their own, for a run that has no
-// query to attach them to.
+// The `clause/3` and `step/4` blocks explaining what a run claimed. They
+// follow the claims, separated from them by a blank line, the way an N3
+// proof's steps follow the triples they explain.
 export function proofBlocks(program, clauses, steps) {
   const lines = blockLines(clauses, steps, resultWriteOptions(program));
-  return lines.length ? `${lines.join('\n').replace(/^\n/, '')}\n` : '';
+  return lines.length ? `${lines.join('\n')}\n` : '';
 }
 
-// The whole run, as a result document. With `proof`, every answer's
-// derivation is walked once across the run rather than once per answer, so
-// a conclusion several answers rest on is explained once.
-//
-// `explain` is the proof module, passed in rather than imported: the CLI
-// loads it only when a proof was asked for, and this module is on the path
-// of every run.
-export function resultDocument(program, queries, { proof = false, registry, proofDetail = 'abstract', explain = null } = {}) {
-  const writeOptions = resultWriteOptions(program);
-  if (!proof || !explain) return formatResultDocument(queries, { writeOptions });
-
-  const roots = [];
-  const unexplained = [];
-  for (const query of queries) {
-    for (const answer of query.answers) {
-      answer.goals = [answer.resolved];
-      const node = explain.proofNodeFor(program, answer.resolved, { registry, proofDetail });
-      if (node) roots.push(node);
-      else unexplained.push(answer.resolved);
-    }
-  }
-  const { clauses, steps } = explain.flattenProof(roots, program);
-  // An answer the solver found but the explanation replay cannot reproduce
-  // -- a constraint solved by propagation rather than by resolution, say --
-  // is recorded as `unproven` rather than quietly left out. A document
-  // containing one is not a valid proof, and saying so is the point.
-  const concluded = new Set(steps.map((step) => formatTermForWrite(step.conclusion, new Env(), writeOptions)));
-  for (const goal of unexplained) {
-    if (concluded.has(formatTermForWrite(goal, new Env(), writeOptions))) continue;
-    steps.push({ conclusion: goal, by: atom('unproven'), bindings: [], uses: [] });
-  }
-  return formatResultDocument(queries, { proof: true, clauses, steps, writeOptions });
-}

@@ -1,4 +1,1 @@
-% Prolog result format 4
-query(1, clause_results(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 1).
-answer(1, ['X0' = insect(ant), 'X1' = [ant - true, bee - true]]).
+clause_results(insect(ant), [ant - true, bee - true]).

@@ -298,16 +298,22 @@ async function runDefault(engine, program, options) {
   program = solver.program;
   const goals = engine.normalizeGoals(options.goals, solver);
   try {
-    const { haltCode, queries } = engine.executeGoals(program, solver, goals);
-    // A result document states how many answers each query had, so it is
-    // written once the run is over rather than streamed answer by answer.
-    if (!options.quiet) {
-      process.stdout.write(engine.resultDocument(program, queries, {
-        proof: options.proof,
-        registry,
-        proofDetail: options?.proofDetail ?? 'abstract',
-        explain: options.proof ? await loadExplanation() : null,
-      }));
+    // A run states what it concluded and then why: the claims stream as
+    // they are found, and the blocks explaining them follow at the end.
+    const claimed = [];
+    const { haltCode } = engine.executeGoals(program, solver, goals, {
+      onAnswer: (line, resolved) => {
+        if (!options.quiet) process.stdout.write(line);
+        claimed.push(resolved);
+      },
+    });
+    if (options.proof && !options.quiet) {
+      const explanation = await loadExplanation();
+      const roots = claimed
+        .map((fact) => explanation.proofNodeFor(program, fact, { registry, proofDetail: options?.proofDetail ?? 'abstract' }))
+        .filter(Boolean);
+      const { clauses, steps } = explanation.flattenProof(roots, program);
+      process.stdout.write(engine.proofBlocks(program, clauses, steps));
     }
     if (haltCode != null) process.exitCode = haltCode;
   } finally {

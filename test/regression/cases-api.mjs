@@ -3,20 +3,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { BuiltinRegistry, Env, Program, Solver, atom, compound, createDefaultRegistry, eyePrologInteropAutoload, eyePrologInteropLibraryIndicators, eyePrologInteropLibraryModules, eyePrologLibraryAutoload, eyePrologLibraryAutoloadModules, eyePrologLibraryIndicators, eyePrologNativeLibraryIndicators, eyePrologPortableLibraryIndicators, getEyePrologRegistry, listFromItems, makeProgram, proofCertificate, proofCertificatesFromText, run as runEyePrologProgram, standardLibrarySources, termToString, unify, variable, variantTerms, verifyProof } from '../../src/index.js';
+import { BuiltinRegistry, Env, Program, Solver, atom, compound, createDefaultRegistry, eyePrologInteropAutoload, eyePrologInteropLibraryIndicators, eyePrologInteropLibraryModules, eyePrologLibraryAutoload, eyePrologLibraryAutoloadModules, eyePrologLibraryIndicators, eyePrologNativeLibraryIndicators, eyePrologPortableLibraryIndicators, getEyePrologRegistry, listFromItems, makeProgram, proofCertificate, proofCertificatesFromText, run as runEyeProlog, standardLibrarySources, termToString, unify, variable, variantTerms, verifyProof } from '../../src/index.js';
 import { parseGoalText } from '../../src/parser.js';
 import { PrologError, formalErrorTerm } from '../../src/iso.js';
 import { assertEqual, assertIncludes } from '../test-style.mjs';
-import { answerFacts } from '../test-support.mjs';
-
-// These assertions are about what a goal answers, not about how a result
-// document is laid out, so they read a run's answers back as bare facts. A
-// run asked for a proof keeps its document: there the layout is under test.
-function runEyeProlog(source, options = {}) {
-  const result = runEyePrologProgram(source, options);
-  if (options.proof) return result;
-  return { ...result, stdout: answerFacts(result.stdout) };
-}
 import { goalsFromSource } from '../goal-metadata.mjs';
 import {
   assertArrayEqual,
@@ -71,9 +61,7 @@ export function apiCases() {
           '%% goal: answer(X)',
           'answer(X) :- saved(ready), X = (a joins b joins c).',
         ].join('\n'));
-        // `joins` is declared by `op/3`, so the answer is read here as the
-        // result document writes it.
-        assertIncludes(result.stdout, "answer(1, ['X' = a joins b joins c]).", 'stdout');
+        assertEqual(result.stdout, 'answer(a joins b joins c).\n', 'stdout');
       },
     },
     {
@@ -247,7 +235,7 @@ true :+ ready.
       name: 'run query can enable proof explanations',
       run: () => {
         const result = run('%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n', { proof: true });
-        assertIncludes(result.stdout, "why(1, ['X' = a, 'Y' = b], [q(a, b)]).", 'claim');
+        assertIncludes(result.stdout, 'q(a, b).\n', 'claim');
         assertIncludes(result.stdout, "step(q(a, b), rule(2), ['X' = a, 'Y' = b], [p(a, b)]).", 'step');
       },
     },
@@ -606,11 +594,8 @@ answer(R1,R2,Old,Partial,Tail,DifGoals,ClpGoals) :-
   Y #> 3, copy_term(Y,D,ClpGoals), D=5.
 `;
         const result = run(source, { goal: 'answer(R1,R2,Old,Partial,Tail,DifGoals,ClpGoals)' });
-        // `in` and `..` come from library(clpz), so the answer is read here
-        // as the result document writes it.
-        assertIncludes(result.stdout.replace(/\s+/g, ' '),
-          "answer(1, ['R1' = true, 'R2' = inference_limit_exceeded, 'Old' = old, 'Partial' = \"abz\", "
-          + "'Tail' = \"z\", 'DifGoals' = [dif(b, a)], 'ClpGoals' = [clpz:(5 in 4..sup)]]).",
+        assertEqual(result.stdout,
+          'answer(true, inference_limit_exceeded, old, "abz", "z", [dif(b, a)], [clpz:(5 in 4..sup)]).\n',
           'iso_ext Scryer semantics');
         const negative = run(`:- use_module(library(iso_ext)).\nnegative :- catch(call_with_inference_limit(true,-1,_),error(domain_error(not_less_than_zero,-1),_),true).\n`, {
           goal: 'negative',
@@ -1647,14 +1632,8 @@ hall(Domain) :- [X, Y] ins 1..2, Z in 1..3, all_distinct([X, Y, Z]), fd_dom(Z, D
 repeated(X) :- X in 1..3, all_distinct([X, X]).
 `);
         assertEqual(program.findGroup('labeling', 2)?.module, 'clpz', 'labeling/2 module');
-        // `..` and `\\/` come from library(clpz), so these answers are read
-        // as the result document writes them.
-        const constrained = run(program, { goals: ['answer(X, Y, B)', 'contradiction', 'pruned(Domain)', 'hall(Domain)', 'repeated(X)'] }).stdout;
-        for (const expected of ["answer(1, ['X' = 1, 'Y' = 4, 'B' = 1]).", "answer(1, ['X' = 2, 'Y' = 3, 'B' = 0]).",
-          "answer(3, ['Domain' = 1 \\/ 3]).", "answer(4, ['Domain' = 3..3]).",
-          'result(2, complete, 0).', 'result(5, complete, 0).']) {
-          assertIncludes(constrained, expected, 'CLP(Z) constrained answers');
-        }
+        assertEqual(run(program, { goals: ['answer(X, Y, B)', 'contradiction', 'pruned(Domain)', 'hall(Domain)', 'repeated(X)'] }).stdout,
+          'answer(1, 4, 1).\nanswer(2, 3, 0).\npruned(1 \\/ 3).\nhall(3..3).\n', 'CLP(Z) constrained answers');
       },
     },
     {
@@ -1685,7 +1664,7 @@ answer(A, B, C) :-
         assertEqual(program.findGroup('global_cardinality', 3)?.module, 'clpz', 'global_cardinality/3 module');
         assertEqual(program.findGroup('circuit', 1)?.module, 'clpz', 'circuit/1 module');
         const expected = fs.readFileSync(path.join(packageRoot, 'examples', 'output', 'clpz-global-constraints.pl'), 'utf8');
-        assertEqual(run(program, { goal: 'advanced_clpz(X0, X1)', rawOutput: true }).stdout, expected, 'global constraint answers');
+        assertEqual(run(program, { goal: 'advanced_clpz(X0, X1)' }).stdout, expected, 'global constraint answers');
       },
     },
     {

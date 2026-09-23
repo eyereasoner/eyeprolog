@@ -1,18 +1,7 @@
-% Prolog result format 4
-query(1, dcg_example(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 4).
-answer(1, ['X0' = parsed, 'X1' = set(light(kitchen), on)]).
-why(1,
-    ['X0' = parsed, 'X1' = set(light(kitchen), on)],
-    [dcg_example(parsed, set(light(kitchen), on))]).
-answer(1, ['X0' = generated, 'X1' = [set, hall, light, to, off]]).
-why(1,
-    ['X0' = generated, 'X1' = [set, hall, light, to, off]],
-    [dcg_example(generated, [set, hall, light, to, off])]).
-answer(1, ['X0' = remainder, 'X1' = [then, wait]]).
-why(1, ['X0' = remainder, 'X1' = [then, wait]], [dcg_example(remainder, [then, wait])]).
-answer(1, ['X0' = rejected, 'X1' = invalid_command]).
-why(1, ['X0' = rejected, 'X1' = invalid_command], [dcg_example(rejected, invalid_command)]).
+dcg_example(parsed, set(light(kitchen), on)).
+dcg_example(generated, [set, hall, light, to, off]).
+dcg_example(remainder, [then, wait]).
+dcg_example(rejected, invalid_command).
 
 clause(6,
        dcg_example(parsed, var('Command')),

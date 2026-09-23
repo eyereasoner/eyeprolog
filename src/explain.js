@@ -672,7 +672,7 @@ function resolvedSubstitutions(substitutions, env) {
 }
 
 // ===========================================================================
-// Prolog result format 4: the flat proof
+// The flat proof
 // ===========================================================================
 //
 // A resolution proof is a tree, but a proof *document* is a flat set of

@@ -4,20 +4,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import * as publicApi from '../../src/index.js';
-import { BuiltinRegistry, Env, Program, Solver, atom, compactVariableList, compound, copyResolved, createDefaultRegistry, eyePrologAmbiguousLibraryAutoload, eyePrologLibraryAutoload, eyePrologLibraryAutoloadModules, getEyePrologRegistry, getStrictIsoRegistry, listFromItems, numberTerm, numberTextFromDouble, parseProgramText, run as runEyePrologProgram, standardLibrarySources, termToString, unify, variable } from '../../src/index.js';
+import { BuiltinRegistry, Env, Program, Solver, atom, compactVariableList, compound, copyResolved, createDefaultRegistry, eyePrologAmbiguousLibraryAutoload, eyePrologLibraryAutoload, eyePrologLibraryAutoloadModules, getEyePrologRegistry, getStrictIsoRegistry, listFromItems, numberTerm, numberTextFromDouble, parseProgramText, run as runEyeProlog, standardLibrarySources, termToString, unify, variable } from '../../src/index.js';
 import { ISO_OPERATOR_DEFINITIONS, parseGoalText, parseNumberTokenText, tryParseClausesFastInto } from '../../src/parser.js';
 import { defaultsToStdin } from '../../src/cli.js';
 import { formatTermForWrite } from '../../src/write.js';
 import { assertEqual, assertIncludes, assertNotIncludes } from '../test-style.mjs';
-import { answerFacts } from '../test-support.mjs';
-
-// These assertions are about what a goal answers, not about how a result
-// document is laid out, so they read a run's answers back as bare facts.
-function runEyeProlog(source, options = {}) {
-  const result = runEyePrologProgram(source, options);
-  if (options.proof) return result;
-  return { ...result, stdout: answerFacts(result.stdout) };
-}
 import {
   DCG_HANDOFF_TEST_TIMEOUT_MS,
   bin,
@@ -180,7 +171,7 @@ export function regressionCases() {
         const script = `
           import {run} from './src/index.js';
           const result=run('answer(ok) :- length(P,8192),append(P,[1],L1),append(P,[2],L2),compare(R,L1,L2),compare_si(S,L1,L2),R==(<),S==(<).', {goals:['answer(X)']});
-          if (!result.stdout.includes("'X' = ok")) throw new Error(result.stdout+'\\n'+result.stderr);
+          if (!result.stdout.includes('answer(ok)')) throw new Error(result.stdout+'\\n'+result.stderr);
           console.log('ok');
         `;
         const result = spawnSync(process.execPath, ['--max-old-space-size=128', '--stack-size=256', '--input-type=module', '--eval', script], {
@@ -832,11 +823,7 @@ probe :- empty_assoc(A), copy_term_nat(A, _), bb_b_put(current, ok), bb_get(curr
       run: () => runWhy({
         program: 'type(socrates, man).\ntype(X, mortal) :- type(X, man).\n',
         goalText: 'type(socrates, mortal)',
-        expected: `% Prolog result format 4
-query(1, type(socrates, mortal), []).
-result(1, complete, 1).
-answer(1, []).
-why(1, [], [type(socrates, mortal)]).
+        expected: `type(socrates, mortal).
 
 clause(1, type(socrates, man), true).
 clause(2, type(var('X'), mortal), type(var('X'), man)).
@@ -851,11 +838,7 @@ step(type(socrates, man), fact(1), [], []).
       run: () => runWhy({
         program: 'p(X) :- between(536, 536, X).\n',
         goalText: 'p(536)',
-        expected: `% Prolog result format 4
-query(1, p(536), []).
-result(1, complete, 1).
-answer(1, []).
-why(1, [], [p(536)]).
+        expected: `p(536).
 
 clause(1, p(var('X')), between(536, 536, var('X'))).
 
@@ -869,11 +852,7 @@ step(between(536, 536, 536), builtin, [], []).
       run: () => runWhy({
         program: 'p(X) :- member(X, [a]).\n',
         goalText: 'p(a)',
-        expected: `% Prolog result format 4
-query(1, p(a), []).
-result(1, complete, 1).
-answer(1, []).
-why(1, [], [p(a)]).
+        expected: `p(a).
 
 clause(1, p(var('X')), member(var('X'), "a")).
 
@@ -3245,9 +3224,8 @@ c4 ?- call((!;1)).
             goal: ${JSON.stringify('length(_,E), E>12, N is 2^E, \\+ \\+ (length(L,N), time(phrase(a,L)))')},
             solutionLimit: 1,
           });
-          const written = result.stdout.slice(0, result.stdout.indexOf('% Prolog result format 4'));
-          if (!written.startsWith('% Time elapsed ') || !written.endsWith('s\\n')) {
-            throw new Error('unexpected time/1 output: ' + JSON.stringify(written));
+          if (!result.stdout.startsWith('% Time elapsed ') || !result.stdout.endsWith('s\\n')) {
+            throw new Error('unexpected time/1 output: ' + JSON.stringify(result.stdout));
           }
           process.stdout.write('ok');
         `;
@@ -4299,7 +4277,8 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       run: () => {
         const result = runCli(['--proof', '-'], { input: '%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
         assertEqual(result.status, 0, 'exit status');
-        assertIncludes(result.stdout, "why(1, ['X' = a, 'Y' = b], [q(a, b)]).", 'stdout');
+        assertIncludes(result.stdout, 'q(a, b).\n', 'claim');
+        assertIncludes(result.stdout, "step(q(a, b), rule(2), ['X' = a, 'Y' = b], [p(a, b)]).", 'step');
         assertEqual(result.stderr, '', 'stderr');
       },
     },
@@ -4308,7 +4287,8 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
       run: () => {
         const result = runCli(['-p', '-'], { input: '%% goal: q(X, Y)\np(a, b).\nq(X, Y) :- p(X, Y).\n' });
         assertEqual(result.status, 0, 'exit status');
-        assertIncludes(result.stdout, "why(1, ['X' = a, 'Y' = b], [q(a, b)]).", 'stdout');
+        assertIncludes(result.stdout, 'q(a, b).\n', 'claim');
+        assertIncludes(result.stdout, "step(q(a, b), rule(2), ['X' = a, 'Y' = b], [p(a, b)]).", 'step');
         assertEqual(result.stderr, '', 'stderr');
       },
     },
@@ -4362,7 +4342,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         ].join('\n');
         const result = runCli(['-pw', '-'], { input });
         assertEqual(result.status, 0, 'exit status');
-        assertIncludes(result.stdout, 'why(1, [], [answer(ok)]).', 'stdout');
+        assertIncludes(result.stdout, 'answer(ok).\n', 'claim');
         assertIncludes(result.stderr, 'eyeprolog warning: unstratified negation\n', 'stderr');
       },
     },
@@ -5080,7 +5060,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
           input: ':- use_module(library(clpz)).\nanswer(Domain) :- X in 2..4 \\/ 7, fd_dom(X, Domain).\n',
         });
         assertEqual(result.status, 0, 'operator answer status');
-        assertIncludes(result.stdout, "answer(1, ['Domain' = 2..4 \\/ 7]).", 'operator answer stdout');
+        assertEqual(result.stdout, 'answer(2..4 \\/ 7).\n', 'operator answer stdout');
         assertEqual(result.stderr, '', 'operator answer stderr');
       },
     },
@@ -5689,9 +5669,7 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
           '',
         ].join('\n');
         assertEqual(run(source, { goal: 'read_univ(T)' }).stdout, 'read_univ(foo =.. [bar]).\n', 'univ term');
-        // `likes` is declared by `op/3` while the program runs, so the
-        // answer is read here as the document writes it.
-        assertIncludes(run(source, { goal: 'read_custom(T)' }).stdout, "answer(1, ['T' = alice likes bob]).", 'custom operator term');
+        assertEqual(run(source, { goal: 'read_custom(T)' }).stdout, 'read_custom(alice likes bob).\n', 'custom operator term');
         assertEqual(run(source, { goal: 'read_invalid(ok)' }).stdout, 'read_invalid(ok).\n', 'invalid dotted term');
         assertEqual(run(source, { goal: 'read_codes(ok)' }).stdout, 'read_codes(ok).\n', 'double_quotes read flag');
       },
@@ -5756,11 +5734,9 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
           "emit :- write_term(pair(A,B), []), write(' / '), write_term(user_output,B,[]), write(' / '), writeq(A), write(' / '), write_canonical(B), nl.",
           "again :- write_canonical(B+B), nl.",
         ].join('\n'), { goals: ['emit', 'again'] });
-        // A result document is written once the run is over, so everything
-        // the program itself wrote comes first.
         assertEqual(
           result.stdout,
-          'pair(_A,_B) / _B / _A / _B\n+(_A,_A)\nemit.\nagain.\n',
+          'pair(_A,_B) / _B / _A / _B\nemit.\n+(_A,_A)\nagain.\n',
           'stable names across calls and reset at the next top-level query',
         );
       },

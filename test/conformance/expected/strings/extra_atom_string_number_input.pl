@@ -1,4 +1,1 @@
-% Prolog result format 4
-query(1, answer(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 1).
-answer(1, ['X0' = atom_string_number_input, 'X1' = '42']).
+answer(atom_string_number_input, '42').

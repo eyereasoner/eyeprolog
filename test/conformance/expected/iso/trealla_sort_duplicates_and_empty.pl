@@ -1,4 +1,1 @@
-% Prolog result format 4
-query(1, sort_duplicates_and_empty(_0, _1, _2), ['X0' = _0, 'X1' = _1, 'X2' = _2]).
-result(1, complete, 1).
-answer(1, ['X0' = [], 'X1' = " abc", 'X2' = " abc"]).
+sort_duplicates_and_empty([], " abc", " abc").

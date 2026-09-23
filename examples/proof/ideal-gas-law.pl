@@ -1,18 +1,6 @@
-% Prolog result format 4
-query(1, pressure_Pa(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 1).
-answer(1, ['X0' = cell1, 'X1' = 100000.0]).
-why(1, ['X0' = cell1, 'X1' = 100000.0], [pressure_Pa(cell1, 100000.0)]).
-query(2, status(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 1).
-answer(2, ['X0' = cell1, 'X1' = near_atmospheric]).
-why(2, ['X0' = cell1, 'X1' = near_atmospheric], [status(cell1, near_atmospheric)]).
-query(3, reason(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(3, complete, 1).
-answer(3, ['X0' = cell1, 'X1' = "pressure is inside the one-atmosphere tolerance band"]).
-why(3,
-    ['X0' = cell1, 'X1' = "pressure is inside the one-atmosphere tolerance band"],
-    [reason(cell1, "pressure is inside the one-atmosphere tolerance band")]).
+pressure_Pa(cell1, 100000.0).
+status(cell1, near_atmospheric).
+reason(cell1, "pressure is inside the one-atmosphere tolerance band").
 
 clause(1, gas_cell(cell1, 1.0, 8.0, 300.0, 0.024), true).
 clause(2, pressure_limit(cell1, low_Pa, 95000.0), true).

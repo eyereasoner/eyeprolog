@@ -1,36 +1,12 @@
-% Prolog result format 4
-query(1, type(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 1).
-answer(1, ['X0' = p001, 'X1' = trial_candidate]).
-why(1, ['X0' = p001, 'X1' = trial_candidate], [type(p001, trial_candidate)]).
-query(2, status(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 4).
-answer(2, ['X0' = p001, 'X1' = eligible]).
-why(2, ['X0' = p001, 'X1' = eligible], [status(p001, eligible)]).
-answer(2, ['X0' = p002, 'X1' = screen_fail]).
-why(2, ['X0' = p002, 'X1' = screen_fail], [status(p002, screen_fail)]).
-answer(2, ['X0' = p003, 'X1' = screen_fail]).
-why(2, ['X0' = p003, 'X1' = screen_fail], [status(p003, screen_fail)]).
-answer(2, ['X0' = p004, 'X1' = screen_fail]).
-why(2, ['X0' = p004, 'X1' = screen_fail], [status(p004, screen_fail)]).
-query(3, reason(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(3, complete, 4).
-answer(3, ['X0' = p001, 'X1' = "meets inclusion criteria and no listed exclusion"]).
-why(3,
-    ['X0' = p001, 'X1' = "meets inclusion criteria and no listed exclusion"],
-    [reason(p001, "meets inclusion criteria and no listed exclusion")]).
-answer(3, ['X0' = p002, 'X1' = "eGFR below renal safety threshold"]).
-why(3,
-    ['X0' = p002, 'X1' = "eGFR below renal safety threshold"],
-    [reason(p002, "eGFR below renal safety threshold")]).
-answer(3, ['X0' = p003, 'X1' = "pregnancy exclusion applies"]).
-why(3,
-    ['X0' = p003, 'X1' = "pregnancy exclusion applies"],
-    [reason(p003, "pregnancy exclusion applies")]).
-answer(3, ['X0' = p004, 'X1' = "HbA1c is outside protocol range"]).
-why(3,
-    ['X0' = p004, 'X1' = "HbA1c is outside protocol range"],
-    [reason(p004, "HbA1c is outside protocol range")]).
+type(p001, trial_candidate).
+status(p001, eligible).
+status(p002, screen_fail).
+status(p003, screen_fail).
+status(p004, screen_fail).
+reason(p001, "meets inclusion criteria and no listed exclusion").
+reason(p002, "eGFR below renal safety threshold").
+reason(p003, "pregnancy exclusion applies").
+reason(p004, "HbA1c is outside protocol range").
 
 clause(1, patient(p001), true).
 clause(4, patient(p004), true).

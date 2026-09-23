@@ -1,20 +1,9 @@
-% Prolog result format 4
-query(1, parent(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 0).
-query(2, ancestor(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 6).
-answer(2, ['X0' = pat, 'X1' = jan]).
-why(2, ['X0' = pat, 'X1' = jan], [ancestor(pat, jan)]).
-answer(2, ['X0' = jan, 'X1' = lies]).
-why(2, ['X0' = jan, 'X1' = lies], [ancestor(jan, lies)]).
-answer(2, ['X0' = lies, 'X1' = emma]).
-why(2, ['X0' = lies, 'X1' = emma], [ancestor(lies, emma)]).
-answer(2, ['X0' = pat, 'X1' = lies]).
-why(2, ['X0' = pat, 'X1' = lies], [ancestor(pat, lies)]).
-answer(2, ['X0' = pat, 'X1' = emma]).
-why(2, ['X0' = pat, 'X1' = emma], [ancestor(pat, emma)]).
-answer(2, ['X0' = jan, 'X1' = emma]).
-why(2, ['X0' = jan, 'X1' = emma], [ancestor(jan, emma)]).
+ancestor(pat, jan).
+ancestor(jan, lies).
+ancestor(lies, emma).
+ancestor(pat, lies).
+ancestor(pat, emma).
+ancestor(jan, emma).
 
 clause(1, parent(pat, jan), true).
 clause(2, parent(jan, lies), true).

@@ -38,7 +38,7 @@ function isCompound(term, name, arity) {
   return term?.type === COMPOUND && term.name === name && term.arity === arity;
 }
 
-// The document, read as the abstract model: the claims its `why/3` facts
+// The document, read as the abstract model: the claims its plain facts
 // make, and the steps its `step/4` facts record.
 export function readProofDocument(text, program) {
   // The document is read with the program's own operators: a rule set that
@@ -48,17 +48,20 @@ export function readProofDocument(text, program) {
     operatorDefinitions: [...(program?.operators?.values() ?? [])],
     sourceMetadata: false,
   });
+  // A proof document states what it concluded and then why: the claims are
+  // its plain facts, and `clause/3` and `step/4` are the proof vocabulary
+  // explaining them. That is the same division the N3 and SPARQL-RL
+  // documents make.
   const claims = [];
   const steps = [];
   for (const clause of clauses) {
     if (!clause?.head || clause.body?.length !== 0) continue;
     const head = clause.head;
-    if (isCompound(head, 'why', 3)) {
-      const goals = properListItems(head.args[2], new Env());
-      if (goals) claims.push(...goals);
+    if (isCompound(head, 'clause', 3)) continue;
+    if (!isCompound(head, 'step', 4)) {
+      claims.push(head);
       continue;
     }
-    if (!isCompound(head, 'step', 4)) continue;
     const bindings = properListItems(head.args[2], new Env());
     const uses = properListItems(head.args[3], new Env());
     if (bindings == null || uses == null) continue;

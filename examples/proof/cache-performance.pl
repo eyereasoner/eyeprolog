@@ -1,23 +1,7 @@
-% Prolog result format 4
-query(1, hitRate(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(1, complete, 1).
-answer(1, ['X0' = api_cache, 'X1' = 0.86]).
-why(1, ['X0' = api_cache, 'X1' = 0.86], [hitRate(api_cache, 0.86)]).
-query(2, averageLatency_ms(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(2, complete, 1).
-answer(2, ['X0' = api_cache, 'X1' = 15.5]).
-why(2, ['X0' = api_cache, 'X1' = 15.5], [averageLatency_ms(api_cache, 15.5)]).
-query(3, status(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(3, complete, 1).
-answer(3, ['X0' = api_cache, 'X1' = cache_effective]).
-why(3, ['X0' = api_cache, 'X1' = cache_effective], [status(api_cache, cache_effective)]).
-query(4, reason(_0, _1), ['X0' = _0, 'X1' = _1]).
-result(4, complete, 1).
-answer(4,
-       ['X0' = api_cache, 'X1' = "hit rate is above target and average latency is below limit"]).
-why(4,
-    ['X0' = api_cache, 'X1' = "hit rate is above target and average latency is below limit"],
-    [reason(api_cache, "hit rate is above target and average latency is below limit")]).
+hitRate(api_cache, 0.86).
+averageLatency_ms(api_cache, 15.5).
+status(api_cache, cache_effective).
+reason(api_cache, "hit rate is above target and average latency is below limit").
 
 clause(1, cache_sample(api_cache, 8600.0, 1400.0, 5.0, 80.0), true).
 clause(2, threshold(api_cache, minimum_hit_rate, 0.8), true).

@@ -1,5 +1,1 @@
-% Prolog result format 4
-query(1, pipeline_audit(_0), ['X0' = _0]).
-result(1, complete, 1).
-answer(1,
-       ['X0' = report(stages(5), transitions(4), summaries([stage(0, receive, outgoing(1)), stage(1, parse, outgoing(1)), stage(2, validate, outgoing(1)), stage(3, reason, outgoing(1)), stage(4, publish, outgoing(0))]), trace([step(0, receive, parse), step(1, parse, validate), step(2, validate, reason), step(3, reason, publish), complete]), invariant(true), schema_variant(true))]).
+pipeline_audit(report(stages(5), transitions(4), summaries([stage(0, receive, outgoing(1)), stage(1, parse, outgoing(1)), stage(2, validate, outgoing(1)), stage(3, reason, outgoing(1)), stage(4, publish, outgoing(0))]), trace([step(0, receive, parse), step(1, parse, validate), step(2, validate, reason), step(3, reason, publish), complete]), invariant(true), schema_variant(true))).
