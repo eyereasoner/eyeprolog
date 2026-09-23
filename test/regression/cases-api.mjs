@@ -1080,11 +1080,12 @@ answer(ok) :-
       },
     },
     {
-      name: 'host Map/Set capacity errors become resource_error(memory)',
+      name: 'host capacity and stack errors become Prolog resource errors',
       run: () => {
-        for (const [predicate, message] of [
-          ['exhaust_map', 'Map maximum size exceeded'],
-          ['exhaust_set', 'Set maximum size exceeded'],
+        for (const [predicate, message, resource] of [
+          ['exhaust_map', 'Map maximum size exceeded', 'memory'],
+          ['exhaust_set', 'Set maximum size exceeded', 'memory'],
+          ['exhaust_stack', 'Maximum call stack size exceeded', 'stack'],
         ]) {
           const registry = new BuiltinRegistry();
           registry.add(predicate, 0, function* () {
@@ -1099,8 +1100,53 @@ answer(ok) :-
             caught = error;
           }
           assertEqual(caught?.name, 'PrologError', `${predicate} normalized error type`);
-          assertEqual(caught?.formal, 'resource_error(memory)', `${predicate} normalized resource error`);
+          assertEqual(caught?.formal, `resource_error(${resource})`, `${predicate} normalized resource error`);
         }
+      },
+    },
+    {
+      name: 'unrelated host RangeErrors retain their identity',
+      run: () => {
+        const original = new RangeError('unrelated host failure');
+        const registry = new BuiltinRegistry();
+        registry.add('host_failure', 0, function* () { throw original; });
+        const solver = new Solver(Program.parse(''), { registry });
+        let caught;
+        try {
+          [...solver.solve([parseGoalText('host_failure')], new Env(), 0)];
+        } catch (error) {
+          caught = error;
+        }
+        assertEqual(caught, original, 'unrecognized host error');
+      },
+    },
+    {
+      name: 'nested catch succeeds on cold and warm runs with a small host stack (issue #117)',
+      run: () => {
+        const engineUrl = new URL('../src/index.js', testDirUrl).href;
+        const script = `
+          import { Program, Solver, Env, parseGoalText, getEyePrologRegistry } from ${JSON.stringify(engineUrl)};
+          const program = Program.parse('deep(0,G) :- !, G. deep(N,G) :- M is N-1, catch(deep(M,G),-,true).');
+          const solver = new Solver(program, { registry: getEyePrologRegistry() });
+          const solve = (text) => [...solver.solve([parseGoalText(text)], new Env(), 0)];
+          for (let attempt = 0; attempt < 3; attempt++) {
+            for (const depth of [550, 1500]) {
+              if (solve('deep(' + depth + ',true)').length !== 1) {
+                throw new Error('nested catch failed');
+              }
+              if (solve('catch(deep(' + depth + ',throw(ball)),ball,true)').length !== 1) {
+                throw new Error('nested catch did not unwind to the matching handler');
+              }
+            }
+          }
+          process.stdout.write('passed');
+        `;
+        const result = spawnSync(process.execPath, [
+          '--stack-size=256', '--input-type=module', '--eval', script,
+        ], { cwd: packageRoot, encoding: 'utf8', timeout: 10000 });
+        if (result.error) throw result.error;
+        assertEqual(result.status, 0, `issue #117 child status; stderr=${result.stderr}`);
+        assertEqual(result.stdout, 'passed', 'issue #117 repeated deep catch execution');
       },
     },
     {

@@ -163,6 +163,13 @@ function closeSearchStack(stack, suppressErrors) {
   closeFrames(removed, suppressErrors);
 }
 
+// A caught exception discards only the protected goal's alternatives. Cleanup
+// must run before recovery, without replacing the exception being unwound.
+export function unwindSearchStack(stack, start) {
+  const removed = Array.prototype.splice.call(stack, start, stack.length - start);
+  closeFrames(removed, true);
+}
+
 function closeFrames(frames, suppressErrors) {
   let firstError = null;
   for (let index = frames.length - 1; index >= 0; index--) {

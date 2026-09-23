@@ -7,6 +7,7 @@ import {
 } from './term.js';
 import { numberValueKey, sameNumberValue } from './number-value.js';
 import { attachBuiltinErrorContext } from './errors.js';
+import { unwindSearchStack } from './cleanup.js';
 import { PrologError, getStrictIsoRegistry } from './iso.js';
 import { getEyePrologRegistry } from './standard-library.js';
 import { selectClauseCandidates, selectClauseCandidatesForValues, selectGroundClauseCandidates } from './program-indexing.js';
@@ -462,7 +463,11 @@ export class Solver {
       const stack = [{ kind: 'goals', goals, env, depth, active: savedActive.slice() }];
       registeredStack = stack;
       this.solveStacks.push(stack);
+      let active = savedActive;
       while (stack.length) {
+      const frame = stack.pop();
+      active = frame.active ?? active;
+      try {
       this.inferences++;
       this.inferenceObservation.value++;
       this.checkMemoryLimit();
@@ -470,7 +475,6 @@ export class Solver {
         this.inferenceLimitExceeded = true;
         break;
       }
-      const frame = stack.pop();
       this.syncProgramRevision();
       if (frame.kind === 'resumeBuiltin') {
         if (this.solutionsSeen >= this.solutionLimit) continue;
@@ -623,7 +627,7 @@ export class Solver {
       env.setOccursCheckHandler(this.occursCheckHandler);
       env.setAttributeHookRunner(this.attributeHookRunner);
       depth = frame.depth;
-      let active = frame.active;
+      active = frame.active;
 
       while (true) {
         this.inferences++;
@@ -673,6 +677,12 @@ export class Solver {
         }
 
         const first = goals[0];
+        if (first?.kind === 'exitCatch') {
+          active = first.active;
+          depth = first.depth;
+          goals = first.goals;
+          continue;
+        }
         if (first?.kind === 'continueGoals') {
           if (first.releaseActive) active = active.slice(0, -1);
           depth = first.depth;
@@ -749,6 +759,27 @@ export class Solver {
         const def = callable ? this.lookupBuiltin(goal.name, goal.arity) : null;
         this.active = active;
         const builtinReady = def && builtinIsReadyOrAuthoritative(def, this, goal, env);
+        if (builtinReady && def.catchControl != null) {
+          // Backtracking frames retain this handler in their active path;
+          // exitCatch removes it before executing the caller's continuation.
+          // Nesting protected goals therefore needs no recursive solve() call.
+          const handler = {
+            goal, env: env.clone(), definition: def,
+            parentActive: active, goals: rest, depth,
+            searchStack: stack, stackDepth: stack.length,
+          };
+          active = [...active, handler];
+          let invoked;
+          try {
+            invoked = def.catchControl.prepare({ goal, env });
+          } catch (error) {
+            throw attachBuiltinErrorContext(error, def, goal);
+          }
+          goals = [invoked, { kind: 'exitCatch', active: handler.parentActive, goals: rest, depth }];
+          env = env.clone();
+          depth++;
+          continue;
+        }
         if (builtinReady && typeof def.expandGoal === 'function') {
           // Meta-calls execute in this continuation instead of hiding their
           // search behind a host-generator frame. Their real clause, control,
@@ -968,20 +999,43 @@ export class Solver {
         pushUserGoalUncachedFrames(stack, this, group, goal, rest, env, depth, active);
         break;
       }
+      } catch (caught) {
+        let error = normalizeSolverResourceError(this, caught);
+        let recovered = false;
+        for (let index = active.length - 1; index >= 0; index--) {
+          const handler = active[index];
+          // Reentrant control builtins inherit active cut markers, but must
+          // propagate exceptions back to the solve() that owns the handler.
+          if (handler.searchStack !== stack) continue;
+          unwindSearchStack(stack, handler.stackDepth);
+          active = handler.parentActive;
+          let recovery;
+          try {
+            recovery = handler.definition.catchControl.recover({ ...handler, error });
+          } catch (replacement) {
+            error = attachBuiltinErrorContext(replacement, handler.definition, handler.goal);
+            index = active.length;
+            continue;
+          }
+          if (recovery == null) {
+            index = active.length;
+            continue;
+          }
+          // Recovery is outside this handler and has its own opaque cut scope.
+          const invocation = { goal: recovery.goal, env: recovery.env._snapshotForSolverRead() };
+          stack.push({
+            kind: 'goals',
+            goals: [recovery.goal, { kind: 'exitCatch', active, goals: handler.goals, depth: handler.depth }],
+            env: recovery.env, depth: handler.depth + 1, active: [...active, invocation],
+          });
+          recovered = true;
+          break;
+        }
+        if (!recovered) throw error;
+      }
       }
     } catch (error) {
-      const normalized = normalizeHostResourceError(error);
-      if (normalized instanceof PrologError && normalized.formal === 'resource_error(memory)') {
-        // Unwinding makes query-local terms unreachable, but hosts are free to
-        // postpone collection. Give the shared solver family bounded breathing
-        // room on its next query so a GC can observe those released references.
-        if (!this.memoryRecovery.active) {
-          this.memoryRecovery.active = true;
-          this.memoryRecovery.reservationBytes = 1024 * 1024;
-          this.memoryRecovery.checks = 16;
-        }
-      }
-      throw normalized;
+      throw normalizeSolverResourceError(this, error);
     } finally {
       const stackIndex = this.solveStacks.indexOf(registeredStack);
       if (stackIndex >= 0) this.solveStacks.splice(stackIndex, 1);
@@ -1152,6 +1206,20 @@ export class Solver {
 
 }
 
+function normalizeSolverResourceError(solver, error) {
+  const normalized = normalizeHostResourceError(error);
+  if (normalized instanceof PrologError && normalized.formal === 'resource_error(memory)') {
+    // Leave bounded breathing room for recovery after abandoned query terms
+    // become garbage, including when a handler in this search catches the error.
+    if (!solver.memoryRecovery.active) {
+      solver.memoryRecovery.active = true;
+      solver.memoryRecovery.reservationBytes = 1024 * 1024;
+      solver.memoryRecovery.checks = 16;
+    }
+  }
+  return normalized;
+}
+
 function normalizeHostResourceError(error) {
   if (error?.name !== 'RangeError') return error;
   const message = String(error?.message ?? '');
@@ -1160,8 +1228,13 @@ function normalizeHostResourceError(error) {
   // with the resource atom implementation dependent.  A finite host capacity
   // ceiling is reported as `memory`; reserve `finite_memory` for the separate
   // convention where no finite amount of memory can complete the computation.
-  if (/^(?:Map|Set) maximum size exceeded$/.test(message)) {
+  // Do not run a regular expression here: V8 can overflow while compiling it
+  // on an already exhausted stack, masking the original error (issue #117).
+  if (message === 'Map maximum size exceeded' || message === 'Set maximum size exceeded') {
     return new PrologError('resource_error(memory)');
+  }
+  if (message === 'Maximum call stack size exceeded') {
+    return new PrologError('resource_error(stack)');
   }
   return error;
 }

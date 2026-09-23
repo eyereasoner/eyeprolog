@@ -38,6 +38,19 @@ import {
 export function regressionCases() {
   return [
     {
+      name: 'REPL repeated nested catch succeeds from the first query (issue #117)',
+      run: () => {
+        const file = path.join(temp.dir, 'deep-catch-117.pl');
+        fs.writeFileSync(file, 'deep(0,G) :- !, G.\ndeep(N,G) :- M is N-1, catch(deep(M,G),-,true).\n');
+        const result = runCli([], { input:
+          `[${sourceAtom(file)}].\ndeep(550,true).\ndeep(550,true).\ndeep(550,true).\nhalt.\n`,
+        });
+        assertEqual(result.status, 0, result.stderr);
+        assertNotIncludes(result.stdout + result.stderr, 'error(', 'all repeated queries succeed');
+        assertEqual((result.stdout.match(/\btrue\./g) ?? []).length, 4, 'consult and three successful queries');
+      },
+    },
+    {
       name: 'close/1 accepts a $stream/1 term rebuilt via functor/3 and arg/3 that is structurally == to the real handle (issue #109)',
       run: () => {
         const file = sourceAtom(path.join(temp.dir, `stream-109-${++temp.counter}.txt`));

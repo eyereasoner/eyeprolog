@@ -141,7 +141,7 @@ const isoBuiltins = {
     for (let arity = 2; arity <= 8; arity++) {
       registry.add('call', arity, callClosureBuiltin, { expandGoal: expandCallClosureGoal });
     }
-    registry.add('catch', 3, catchBuiltin);
+    registry.add('catch', 3, catchBuiltin, { catchControl });
     registry.add('throw', 1, throwBuiltin, { deterministic: true });
     registry.add('\\+', 1, negationBuiltin, { deterministic: true });
     registry.add('once', 1, onceBuiltin, { deterministic: true });
@@ -3106,6 +3106,21 @@ function prologErrorBall(error) {
 }
 const catchBuiltin = pendingBuiltin(catchSolutions, true);
 
+// The solver runs protected goals on its explicit search stack. Keep ball
+// conversion and callable validation here, shared with the builtin semantics.
+const catchControl = {
+  prepare: ({ goal, env }) => callable(goal.args[0], env),
+  recover({ goal, env, error }) {
+    const ball = error instanceof ThrownTerm
+      ? error.term
+      : error instanceof PrologError ? prologErrorBall(error) : null;
+    if (ball == null) return null;
+    const recovered = env.clone();
+    if (!unify(goal.args[1], ball, recovered)) return null;
+    return { goal: callable(goal.args[2], recovered), env: recovered };
+  },
+};
+
 function* catchSolutions({ solver, goal, env }, state) {
   let child = null;
   try {
@@ -3297,6 +3312,7 @@ export class BuiltinRegistry {
       deterministic: options.deterministic ?? false,
       deterministicWhen: options.deterministicWhen ?? null,
       expandGoal: options.expandGoal ?? null,
+      catchControl: options.catchControl ?? null,
       ready: options.ready ?? null,
       fallbackWhenNotReady: options.fallbackWhenNotReady ?? false,
       shouldUse: options.shouldUse ?? null,
