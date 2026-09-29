@@ -96,6 +96,7 @@ node test/run-conformance-all.mjs --offline  # same local layers, no network
 node test/run-neumerkel.mjs            # the eight live upstream suites only
 node test/run-neumerkel.mjs --cached     # exact last fetched bytes; reproduction only
 node test/run-neumerkel.mjs --cached --verify-report # verify tracked report against last successful live snapshot
+npm run neumerkel                        # fetch live and fail if the tracked report is stale
 node test/run-iso-strict.mjs                  # Part 1 + Corrigenda strict-core processor gate
 node test/run-iso-part2-amendment.mjs  # 2013 Part 2 amendment module requirements
 ```

@@ -13,6 +13,7 @@ node test/run-conformance-all.mjs   # conformance layers; accepts --offline
 node test/run-iso-strict.mjs        # strict ISO core
 node test/run-iso-part2-amendment.mjs
 node test/run-neumerkel.mjs         # live upstream; --cached reproduces last fetch
+                                    # --verify-report fails on a stale tracked report
 node test/run-neumerkel-tests.mjs   # upstream-fetch harness
 node test/run-examples.mjs
 node test/run-playground.mjs
@@ -23,8 +24,11 @@ node test/run-http-json.mjs
 node test/run-interop.mjs           # requires the comparison engines
 ```
 
-These runners retain their existing options; there is no separate npm alias for
-each one. Focused checks do not replace the full release gate.
+These runners retain their existing options. The single alias is
+`npm run neumerkel`, for `node test/run-neumerkel.mjs --verify-report`: the
+release gate only warns when the tracked upstream report has gone stale, and
+that alias makes it an error instead. Every other runner is invoked directly.
+Focused checks do not replace the full release gate.
 
 `run-properties.mjs` is different in kind from the rest of the suite: instead
 of hand-picked inputs, it generates many random ground terms from a seeded
