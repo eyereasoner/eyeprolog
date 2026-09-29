@@ -96,6 +96,7 @@ npm test
 The npm command list is deliberately small:
 
 - `npm test` (or `npm run test`): run the release gate, including live upstream conformity checks (WG17 syntax among them).
+- `npm run neumerkel`: re-fetch the upstream Neumerkel conformity sources and fail if the tracked report no longer matches them. The release gate reports that drift as a warning; this command makes it an error, so it answers "are we still current?" on its own.
 
 Use `npm test -- --offline` for a network-free local pass (this also skips the live-discovered WG17 syntax check, since it has no offline snapshot). Focused checks remain available directly, for example `node test/run-regression.mjs docs`; see [test runners](test/README.md). The automatic version hooks rebuild generated library and book files, run the release gate, refresh and stage conformance reports, and push the release. Detailed upstream report maintenance is documented in the [conformance guide](test/conformance/README.md).
 
