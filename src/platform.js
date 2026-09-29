@@ -43,6 +43,12 @@ export function usedHeapSize() {
       const oldGeneration = oldGenerationUsedSize();
       if (oldGeneration != null) return oldGeneration;
     }
+    // v8.getHeapStatistics().used_heap_size reports the same quantity as
+    // process.memoryUsage().heapUsed, but memoryUsage() additionally computes
+    // RSS, which costs a syscall, and allocates a result object. The solver
+    // polls this on a fixed inference interval, so the cheaper reading is
+    // worth preferring; memoryUsage stays as the fallback.
+    if (typeof v8?.getHeapStatistics === 'function') return v8.getHeapStatistics().used_heap_size;
     return process.memoryUsage().heapUsed;
   }
   const memory = globalThis.performance?.memory;
