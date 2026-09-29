@@ -34,23 +34,45 @@ const examplesDir = path.join(root, 'examples');
 const KNOWN_GAPS = new Map([
   ['clpb-weighted-planning.pl', 'an answer reached by optimising, which the replay would have to run again'],
   ['clpz-resource-allocation.pl', 'an answer reached by labeling, which the replay would have to run again'],
+  ['bulk-stream-write.pl', 'an answer produced by writing a stream, which the replay does not re-perform'],
+  ['pi.pl', 'an answer reached by numeric iteration the replay would have to run again'],
+  ['portable-library-overlap.pl', 'an answer about which library supplied a predicate, which the replay cannot restate'],
 ]);
 
-const totals = { steps: 0, verified: 0, trusted: 0 };
+// Programs with no packaged proof, and why. Coverage is otherwise complete:
+// every other example under examples/ has a checked explanation.
+//
+//   iso-reflective-terms.pl  copy_term/2 mints fresh variable names from a
+//   iso-term-io.pl           counter that is global to the process, so two
+//                            runs in one process already disagree. A golden
+//                            that cannot be reproduced is not evidence.
+//   sbom-vulnerability-response.pl
+//                            its proof records a directive as clause/3, and
+//                            reading `(:- use_module(...))` back as an
+//                            argument hits a parser limit: a parenthesised
+//                            1200-priority prefix term is rejected where
+//                            SWI, Scryer and GNU Prolog accept it.
+//   takeuchi.pl              proof generation does not finish in a minute.
+
+const totals = { steps: 0, verified: 0, redecided: 0, trusted: 0 };
 
 export function runProofChecking(reporter = new TestReporter()) {
   reporter.section('Proof checking');
   totals.steps = 0;
   totals.verified = 0;
+  totals.redecided = 0;
   totals.trusted = 0;
   for (const name of [...proofExamples].sort()) {
     reporter.test(name, () => checkPackagedProof(name));
   }
   reporter.sectionTotal('proof checking');
-  // What the corpus establishes, in the terms the specification uses: a
-  // verified step was re-performed, a trusted one was recorded because
-  // re-deciding it would mean running the program.
-  reporter.section(`${totals.steps} steps, ${totals.verified} verified, ${totals.trusted} trusted`);
+  // What the corpus establishes, in the terms the conditions use: a verified
+  // step was re-performed against its source clause, a recomputed one was run
+  // again independently and agreed, and a trusted one is what the check still
+  // rests on rather than establishes.
+  reporter.section(
+    `${totals.steps} steps, ${totals.verified} verified, ${totals.redecided} recomputed, ${totals.trusted} trusted`,
+  );
 }
 
 function checkPackagedProof(name) {
@@ -60,6 +82,7 @@ function checkPackagedProof(name) {
   const report = checkProofDocument(program, proof);
   totals.steps += report.steps;
   totals.verified += report.verified;
+  totals.redecided += report.redecided;
   totals.trusted += report.trusted.length;
   const gap = KNOWN_GAPS.get(name);
   if (gap) {

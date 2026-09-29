@@ -7,6 +7,7 @@ import * as publicApi from '../../src/index.js';
 import { Env, Program, atom, compound, copyResolved, flattenConjunction, listFromItems, numberTerm, parseProgramText, properListItems, stringTerm, termIsGround, termToString, unify, variable, variantTerms } from '../../src/index.js';
 import { ISO_OPERATOR_DEFINITIONS, parseGoalText, parseNumberTokenText } from '../../src/parser.js';
 import { compareTerms } from '../../src/term.js';
+import { checkProofDocument, verdict } from '../../src/check-proof.js';
 import { formatTermForWrite } from '../../src/write.js';
 import { selectClauseCandidates } from '../../src/program.js';
 import { assertEqual, assertIncludes, assertNotIncludes } from '../test-style.mjs';
@@ -20,6 +21,43 @@ import {
 
 export function whiteBoxCases() {
   return [
+    {
+      // The point of C5. A proof can be internally flawless -- every step an
+      // instance of the clause it cites, every use accounted for, no cycles --
+      // and still record a computed value that is simply false. Conditions
+      // C1-C4 read the document; only C5 recomputes what it asserts, so only
+      // C5 can disagree with it. If this case ever passes the checker, the
+      // strongest thing proof checking claims has quietly stopped being true.
+      name: 'proof checking rejects an internally consistent document with a false computed value',
+      run: () => {
+        const source = [
+          'birth(ada, 1815).',
+          'age(P, A) :- birth(P, Y), A is 2026 - Y.',
+          '%% ?- age(ada, A).',
+        ].join('\n');
+        const program = Program.parseSources([{ text: source, filename: 'age-check.pl' }], { sourceMetadata: true });
+        const honest = [
+          'age(ada, 211).',
+          'step(age(ada, 211), rule(2), [\'P\' = ada, \'A\' = 211, \'Y\' = 1815], [birth(ada, 1815), 211 is 2026 - 1815]).',
+          'step(birth(ada, 1815), fact(1), [], []).',
+          'step(211 is 2026 - 1815, builtin, [], []).',
+        ].join('\n');
+        const honestReport = checkProofDocument(program, honest);
+        assertEqual(honestReport.valid, true, `honest proof checks: ${verdict(honestReport)}`);
+        assertEqual(honestReport.redecided, 1, 'the arithmetic step is recomputed, not trusted');
+
+        // The same document with 211 replaced by 999 everywhere. It stays
+        // internally consistent, so nothing but recomputation can catch it.
+        const lie = honest.replaceAll('211', '999');
+        const lieReport = checkProofDocument(program, lie);
+        assertEqual(lieReport.valid, false, 'a false computed value is rejected');
+        assertEqual(
+          [...new Set(lieReport.failures.map((failure) => failure.condition))].join(','),
+          'C5',
+          'only recomputation objects, so C1-C4 alone would have accepted it',
+        );
+      },
+    },
     {
       name: 'unification binds variables in Env',
       run: () => {

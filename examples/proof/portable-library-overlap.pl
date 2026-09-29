@@ -1,0 +1,6 @@
+overlap_example(overlap(booleans([1, 0]), union("abc"), reachable("abc"), filtered("aa"), awakened(yes), generated(shared1), uppercase("A"), transposed([[1, 4], [2, 5], [3, 6]]), tabled_paths("bc"))).
+
+step(overlap_example(overlap(booleans([1, 0]), union("abc"), reachable("abc"), filtered("aa"), awakened(yes), generated(shared1), uppercase("A"), transposed([[1, 4], [2, 5], [3, 6]]), tabled_paths("bc"))),
+     unproven,
+     [],
+     []).

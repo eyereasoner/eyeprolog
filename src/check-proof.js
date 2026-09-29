@@ -15,20 +15,86 @@
 //   C3 Justification  -- every step carries exactly one known justification.
 //   C4 Coverage       -- every claim has a step, and every use resolves to
 //                        a step or to a statement the program gives.
+//   C5 Re-decision    -- a step the document only asserts, rather than
+//                        deriving, is computed again here and must agree.
 //
-// `builtin`, `absent` and `collected` steps are *trusted*, not checked:
-// re-deciding them would mean running the program, which is what a checker
-// must not do. They are reported so a reader knows what the check rests on.
+// C5 is what keeps this a check rather than a reading. A condition that
+// cannot fail is not much of a check, so a step whose justification is
+// `builtin` -- the largest class in a typical proof -- is not taken on the
+// document's word. Its goal is run again against a program holding the
+// bundled libraries and nothing else: no clause of the theory under proof is
+// present, so the re-decision cannot be talked into agreeing by the very
+// rules it is meant to audit. Disagreement is a C5 failure.
+//
+// This does not make the checker reason. It still never searches for a
+// derivation the document failed to record; it only recomputes primitives
+// the document asserts without one.
+//
+// `absent`, `collected` and `asserted` stay trusted, and deliberately.
+// `absent` is negation as failure over the theory, so re-deciding it would
+// mean searching exactly the clauses C5 excludes -- and doing it in the
+// library-only program would make every such step pass for the wrong reason,
+// which is weaker than admitting it was trusted. They are reported so a
+// reader knows what the check still rests on.
 import { ATOM, COMPOUND, Env, compareTerms, copyResolved, freshTerm, properListItems, termToString, unify } from './term.js';
 import { parseProgramText } from './parser.js';
 import { clauseNumbering } from './explain.js';
+import { Program, autoloadProgramGoals } from './program.js';
+import { Solver } from './solver.js';
 
 const CHECKED = new Set(['rule', 'fact']);
-// Recorded rather than re-derived: deciding one again would mean running
-// the program, which is what a checker must not do. `asserted` is
-// eyeprolog's own: a clause `assert/1` created at run time is in no source
-// file, so there is nothing to check it against.
-const TRUSTED = new Set(['builtin', 'absent', 'collected', 'asserted']);
+// Recomputed independently by C5 rather than taken on the document's word.
+const REDECIDED = new Set(['builtin']);
+
+// Goals that state a fact about the run rather than compute a value, and so
+// cannot be recomputed by a program that deliberately holds neither the
+// theory nor the run's accumulated state. Re-running one of these against
+// C5's library-only program would decide it on the wrong evidence, which is
+// weaker than admitting it was trusted -- so they are named here, by the two
+// reasons they are outside C5's reach, and reported as obligations.
+//
+// Reflective: the goal reads the theory's own database or syntax, which is
+// exactly what C5 excludes in order to stay independent of it.
+// Stateful: the goal's answer depends on constraint or attribute state that
+// the original run built up and a fresh solver has no way to reconstruct.
+const NOT_REDECIDABLE = new Map([
+  ['clause/2', 'reflective'],
+  ['current_predicate/1', 'reflective'],
+  ['current_op/3', 'reflective'],
+  ['get_atts/2', 'stateful'],
+  ['put_atts/2', 'stateful'],
+  // Stream operations name a handle the original run opened, and re-running
+  // one would not merely fail -- it would perform I/O of its own. A checker
+  // must not have side effects, so these are never recomputed.
+  ['open/3', 'stateful'],
+  ['open/4', 'stateful'],
+  ['close/1', 'stateful'],
+  ['close/2', 'stateful'],
+  ['read/2', 'stateful'],
+  ['read_term/3', 'stateful'],
+  ['write/2', 'stateful'],
+  ['write_term/3', 'stateful'],
+  ['nl/1', 'stateful'],
+  ['set_output/1', 'stateful'],
+  ['set_input/1', 'stateful'],
+  ['current_output/1', 'stateful'],
+  ['current_input/1', 'stateful'],
+  ['at_end_of_stream/1', 'stateful'],
+  ['stream_property/2', 'stateful'],
+  ['sat/1', 'stateful'],
+  ['taut/2', 'stateful'],
+  ['sat_count/2', 'stateful'],
+]);
+
+function notRedecidableReason(goal) {
+  if (goal?.type !== COMPOUND && goal?.type !== ATOM) return null;
+  return NOT_REDECIDABLE.get(`${goal.name}/${goal.arity ?? 0}`) ?? null;
+}
+// Recorded rather than re-derived. `absent` and `collected` range over the
+// theory under proof, which C5's program deliberately excludes. `asserted`
+// is eyeprolog's own: a clause `assert/1` created at run time is in no
+// source file, so there is nothing to check it against.
+const TRUSTED = new Set(['absent', 'collected', 'asserted']);
 
 function key(term) {
   return termToString(term, new Env(), true);
@@ -79,6 +145,7 @@ export function readProofDocument(text, program) {
 // clause it cites. A step that carries none, or more than one, fails C3.
 function justificationOf(step) {
   const by = step.by;
+  if (by?.type === ATOM && REDECIDED.has(by.name)) return { kind: by.name, clause: null };
   if (by?.type === ATOM && TRUSTED.has(by.name)) return { kind: by.name, clause: null };
   if (by?.type === COMPOUND && CHECKED.has(by.name) && by.arity === 1) {
     const number = Number(by.args[0]?.name);
@@ -149,6 +216,59 @@ function checkWellFounded(byConclusion, failures) {
   }
 }
 
+// C5's independent route. One program is built per document and reused: it
+// holds the bundled libraries the recorded goals need and no clause of the
+// theory under proof, so a goal that only the theory could satisfy raises an
+// existence error here rather than quietly succeeding.
+//
+// A step is only re-decided when this program can actually run its goal.
+// When it cannot -- the predicate is not one the libraries define -- the step
+// is reported as not re-decidable instead of being failed: the checker has
+// learned nothing about it, and saying so is honest where failing it would
+// not be.
+function makeRedecider(program, steps) {
+  const goals = [];
+  for (const step of steps) {
+    const justification = justificationOf(step);
+    if (justification && REDECIDED.has(justification.kind)) goals.push(step.conclusion);
+  }
+  if (goals.length === 0) return () => ({ status: 'unavailable' });
+
+  let primitives = null;
+  try {
+    primitives = Program.parseSources([{ text: '', filename: '<check>' }], {
+      sourceMetadata: false,
+      isoStrict: program?.strictIso === true,
+    });
+    primitives = autoloadProgramGoals(primitives, goals, { autoload: true });
+  } catch (_) {
+    // No library program could be prepared, so nothing can be re-decided.
+    return () => ({ status: 'unavailable' });
+  }
+
+  return (goal) => {
+    let solver;
+    try {
+      solver = new Solver(primitives, { solutionLimit: 1 });
+    } catch (_) {
+      return { status: 'unavailable' };
+    }
+    try {
+      const result = solver.runOneAnswer(goal, new Env());
+      return result.done ? { status: 'disagrees' } : { status: 'agrees' };
+    } catch (error) {
+      // An existence error means the libraries do not define this predicate,
+      // so the step names something outside what C5 can recompute. Any other
+      // error is the goal genuinely going wrong, which is a disagreement.
+      const formal = error?.formal ?? '';
+      if (typeof formal === 'string' && formal.startsWith('existence_error(procedure')) {
+        return { status: 'unavailable' };
+      }
+      return { status: 'disagrees', detail: error?.message ?? String(error) };
+    }
+  };
+}
+
 let checkFreshCounter = 0;
 
 export function checkProofDocument(program, text) {
@@ -157,6 +277,8 @@ export function checkProofDocument(program, text) {
   const failures = [];
   const trusted = [];
   let verified = 0;
+  let redecided = 0;
+  const redecide = makeRedecider(program, steps);
 
   const byConclusion = new Map();
   for (const step of steps) {
@@ -180,6 +302,29 @@ export function checkProofDocument(program, text) {
     }
     if (!justification) {
       failures.push({ condition: 'C3', conclusion: key(step.conclusion), detail: `unknown justification ${key(step.by)}` });
+      continue;
+    }
+    if (REDECIDED.has(justification.kind)) {
+      const reason = notRedecidableReason(step.conclusion);
+      if (reason) {
+        trusted.push({ kind: justification.kind, conclusion: key(step.conclusion), reason });
+        continue;
+      }
+      const outcome = redecide(step.conclusion);
+      if (outcome.status === 'agrees') {
+        redecided++;
+      } else if (outcome.status === 'disagrees') {
+        failures.push({
+          condition: 'C5',
+          conclusion: key(step.conclusion),
+          detail: outcome.detail
+            ? `recomputing this ${justification.kind} step went wrong: ${outcome.detail}`
+            : `recomputing this ${justification.kind} step does not give it`,
+        });
+      } else {
+        // Nothing was learned about this step, so it is still an obligation.
+        trusted.push({ kind: justification.kind, conclusion: key(step.conclusion) });
+      }
       continue;
     }
     if (TRUSTED.has(justification.kind)) {
@@ -215,7 +360,7 @@ export function checkProofDocument(program, text) {
 
   checkWellFounded(byConclusion, failures);
 
-  return { valid: failures.length === 0, steps: steps.length, verified, trusted, failures, claims: claims.length };
+  return { valid: failures.length === 0, steps: steps.length, verified, redecided, trusted, failures, claims: claims.length };
 }
 
 // The program's clauses, numbered from 1 in load order -- the numbering
@@ -229,6 +374,9 @@ function programClauses(program) {
 
 export function verdict(report) {
   if (!report.valid) return `${report.failures.length} failure(s)`;
-  if (report.trusted.length) return `checked with obligations: ${report.steps} steps, ${report.trusted.length} trusted`;
-  return `checked: ${report.steps} steps`;
+  const recomputed = report.redecided ? `, ${report.redecided} recomputed` : '';
+  if (report.trusted.length) {
+    return `checked with obligations: ${report.steps} steps${recomputed}, ${report.trusted.length} trusted`;
+  }
+  return `checked: ${report.steps} steps${recomputed}`;
 }
