@@ -2,71 +2,28 @@
 // response shaping, and server-side HTTP parsing; this host adapter performs the
 // asynchronous client exchange and exposes each response body as a lazy stream.
 
-import { isNode } from './platform.js';
 import { PrologError } from './errors.js';
 import {
   ATOM, COMPOUND, NUMBER, STRING, VAR, atom, compound, copyResolved, deref,
   listFromItems, numberTerm, properListItems, unify,
 } from './term.js';
 import { characterListText, chars } from './host-utils.js';
-
-let WorkerCtor = null;
-if (isNode) ({ Worker: WorkerCtor } = await import('node:worker_threads'));
+import { workerBridgeAccessor } from './worker-bridge.js';
 
 const RPC_BYTES = 8 * 1024 * 1024;
 const HTTP_READ_BYTES = 64 * 1024;
-const HEADER_WORDS = 4;
-let bridge = null;
 
-class HttpBridge {
-  constructor() {
-    this.shared = new SharedArrayBuffer(HEADER_WORDS * Int32Array.BYTES_PER_ELEMENT + RPC_BYTES);
-    this.header = new Int32Array(this.shared, 0, HEADER_WORDS);
-    this.bytes = new Uint8Array(this.shared, HEADER_WORDS * Int32Array.BYTES_PER_ELEMENT);
-    this.encoder = new TextEncoder();
-    this.decoder = new TextDecoder();
-    this.worker = new WorkerCtor(new URL('./http-worker.js', import.meta.url), {
-      type: 'module', workerData: { shared: this.shared },
-      execArgv: typeof process !== 'undefined' ? process.execArgv.filter((arg) => !arg.startsWith('--input-type')) : [],
-    });
-    this.worker.unref();
-    const ready = Atomics.wait(this.header, 0, 0, 5000);
-    if (ready === 'timed-out' || Atomics.load(this.header, 0) !== -1) {
-      this.worker.terminate();
-      throw new PrologError('resource_error(http)');
+const httpBridge = workerBridgeAccessor(new URL('./http-worker.js', import.meta.url), RPC_BYTES, {
+  unavailable: () => new PrologError('resource_error(http)'),
+  oversized: () => new PrologError('resource_error(http_message)'),
+  failed: (error) => {
+    if (error?.code === 'EPROTONOSUPPORT') return new PrologError('domain_error(http_url_scheme)');
+    if (['ENOTFOUND', 'ECONNREFUSED', 'EHOSTUNREACH', 'ENETUNREACH'].includes(error?.code)) {
+      return new PrologError('existence_error(source_sink)');
     }
-    Atomics.store(this.header, 0, 0);
-  }
-  rpc(request) {
-    const encoded = this.encoder.encode(JSON.stringify(request));
-    if (encoded.length > this.bytes.length) throw new PrologError('resource_error(http_message)');
-    this.bytes.set(encoded, 0);
-    Atomics.store(this.header, 1, encoded.length);
-    Atomics.store(this.header, 2, 0);
-    Atomics.store(this.header, 0, 1);
-    this.worker.postMessage(1);
-    Atomics.wait(this.header, 0, 1);
-    const responseLength = Atomics.load(this.header, 2);
-    const response = JSON.parse(this.decoder.decode(this.bytes.subarray(0, responseLength)));
-    Atomics.store(this.header, 0, 0);
-    if (!response.ok) {
-      if (response.error?.code === 'EPROTONOSUPPORT') throw new PrologError('domain_error(http_url_scheme)');
-      if (['ENOTFOUND', 'ECONNREFUSED', 'EHOSTUNREACH', 'ENETUNREACH'].includes(response.error?.code)) {
-        throw new PrologError('existence_error(source_sink)');
-      }
-      throw new PrologError('resource_error(http)');
-    }
-    return response.result;
-  }
-}
-
-function httpBridge() {
-  if (!isNode || WorkerCtor == null || typeof SharedArrayBuffer === 'undefined' || typeof Atomics?.wait !== 'function') {
-    throw new PrologError('resource_error(http)');
-  }
-  bridge ??= new HttpBridge();
-  return bridge;
-}
+    return new PrologError('resource_error(http)');
+  },
+});
 
 function textValue(term, env, { allowNumber = false } = {}) {
   const value = deref(term, env);

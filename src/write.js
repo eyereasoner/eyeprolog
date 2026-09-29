@@ -158,6 +158,8 @@ function writeString(value) {
   return out + '"';
 }
 
+// Kept in step with the copy in term.js by hand; see the note there for why
+// the two cannot share one implementation.
 function quotedListCharacter(item, doubleQuotes) {
   if (doubleQuotes === 'chars') {
     if (item.type !== ATOM || Array.from(item.name).length !== 1) return null;

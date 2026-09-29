@@ -243,6 +243,47 @@ function indexFallback(index, group) {
   return index.sawScalar ? index.fallback : group.clauses;
 }
 
+// Records one clause already appended to `group.clauses` at `clausePosition`
+// into that group's argument indexes, and updates the group-wide properties
+// the solver's fast paths consult (`scalarFactsOnly`, `hasCut`).
+//
+// Program preparation calls this as it appends each clause, and
+// rebuildGroupIndexes replays it over an existing group. Keeping one
+// implementation is what makes those two paths agree: a clause added during
+// loading and the same clause after a rebuild must end up with identical
+// `groundHead`/`scalarHead` flags and identical index buckets, or clause
+// selection silently diverges depending on how the group was built.
+//
+// A caller that already holds the head term passes it as `head`; otherwise it
+// is read from the clause, but only on the branch that needs it. A compact
+// binary clause stores its head arguments inline and materializes `.head`
+// lazily on first access, so this must never be a default parameter value --
+// that would force every compact clause's term during indexing and undo the
+// representation's whole point.
+//
+// `indexGround` defaults to the group's own dynamic flag, which is what every
+// load-time caller wants; assertz/1 passes it explicitly because it indexes
+// ground arguments for the clause it is appending whether or not the group was
+// declared dynamic first.
+export function indexGroupClause(group, clause, clausePosition, head = null, indexGround = group.dynamic === true) {
+  if (isCompactBinaryClause(clause)) {
+    clause.groundHead = clause.head0Type !== VAR && clause.head1Type !== VAR;
+    clause.scalarHead = clause.groundHead;
+    if (clause.bodyName != null || !clause.scalarHead) group.scalarFactsOnly = false;
+    indexCompactOne(group.argIndexes[0], clause.head0Type, clause.head0Name, clause, group.clauses, clausePosition);
+    indexCompactOne(group.argIndexes[1], clause.head1Type, clause.head1Name, clause, group.clauses, clausePosition);
+    return;
+  }
+  const headTerm = head ?? clause.head;
+  clause.groundHead = termHasNoVariables(headTerm);
+  clause.scalarHead = headTerm.type === COMPOUND && headTerm.args.every(isScalar);
+  if (clauseHasCut(clause)) group.hasCut = true;
+  if (clause.body.length !== 0 || !clause.scalarHead) group.scalarFactsOnly = false;
+  for (let i = 0; i < headTerm.arity; i++) {
+    indexOne(group.argIndexes[i], headTerm.args[i], clause, group.clauses, clausePosition, indexGround);
+  }
+}
+
 export function rebuildGroupIndexes(group) {
   group.argIndexes = Array.from({ length: group.arity }, makeArgumentIndex);
   group.demandIndexes.clear();
@@ -250,22 +291,7 @@ export function rebuildGroupIndexes(group) {
   group.scalarFactsOnly = true;
   group.hasCut = false;
   for (let clausePosition = 0; clausePosition < group.clauses.length; clausePosition++) {
-    const clause = group.clauses[clausePosition];
-    if (isCompactBinaryClause(clause)) {
-      clause.groundHead = clause.head0Type !== VAR && clause.head1Type !== VAR;
-      clause.scalarHead = clause.groundHead;
-      if (clause.bodyName != null || !clause.scalarHead) group.scalarFactsOnly = false;
-      indexCompactOne(group.argIndexes[0], clause.head0Type, clause.head0Name, clause, group.clauses, clausePosition);
-      indexCompactOne(group.argIndexes[1], clause.head1Type, clause.head1Name, clause, group.clauses, clausePosition);
-      continue;
-    }
-    clause.groundHead = termHasNoVariables(clause.head);
-    clause.scalarHead = clause.head.type === COMPOUND && clause.head.args.every(isScalar);
-    if (clauseHasCut(clause)) group.hasCut = true;
-    if (clause.body.length !== 0 || !clause.scalarHead) group.scalarFactsOnly = false;
-    for (let i = 0; i < group.arity; i++) {
-      indexOne(group.argIndexes[i], clause.head.args[i], clause, group.clauses, clausePosition, group.dynamic === true);
-    }
+    indexGroupClause(group, group.clauses[clausePosition], clausePosition);
   }
 }
 

@@ -298,6 +298,13 @@ function digitPatternForRadix(radix) {
 // number-literal escape parsing (ISO 6.4.2.1 / normal-mode numeric escapes).
 const ESCAPE_CONTROL_CHARACTERS = { a: '\x07', b: '\b', r: '\r', f: '\f', t: '\t', n: '\n', v: '\v' };
 
+// ISO 6.4.2.1 numeric escapes name a character, so a value outside Unicode --
+// or inside the UTF-16 surrogate range, which names no character on its own --
+// is a syntax error rather than a representable code point.
+function isCodePointOutOfRange(code) {
+  return code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff);
+}
+
 class Parser {
   constructor(source, options = {}) {
     this.source = String(source ?? '');
@@ -543,9 +550,7 @@ class Parser {
       while (RE_HEX_DIGIT.test(peekChar())) digits += takeChar();
       if (!digits || takeChar() !== '\\') throw new Error(`parse line ${line}: bad hexadecimal escape`);
       const code = Number.parseInt(digits, 16);
-      if (code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff)) {
-        throw new Error(`parse line ${line}: character escape out of range`);
-      }
+      if (isCodePointOutOfRange(code)) throw new Error(`parse line ${line}: character escape out of range`);
       if (this.strictIso && !isStrictIsoPcsCodePoint(code)) throw new CharacterRepresentationError();
       return String.fromCodePoint(code);
     }
@@ -554,9 +559,7 @@ class Parser {
       while (RE_OCTAL_DIGIT.test(peekChar())) digits += takeChar();
       if (takeChar() !== '\\') throw new Error(`parse line ${line}: bad octal escape`);
       const code = Number.parseInt(digits, 8);
-      if (code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff)) {
-        throw new Error(`parse line ${line}: character escape out of range`);
-      }
+      if (isCodePointOutOfRange(code)) throw new Error(`parse line ${line}: character escape out of range`);
       if (this.strictIso && !isStrictIsoPcsCodePoint(code)) throw new CharacterRepresentationError();
       return String.fromCodePoint(code);
     }

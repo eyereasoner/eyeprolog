@@ -1,6 +1,6 @@
 // Program representation and clause indexing.
 // Indexes are deliberately conservative: they speed up common scalar arguments but never replace unification as the final check.
-import { ATOM, COMPOUND, NUMBER, STRING, VAR, Env, atom, compound, deref, flattenConjunction, isScalar, numberTerm, properListItems, termToString, variable } from './term.js';
+import { ATOM, COMPOUND, NUMBER, STRING, VAR, Env, atom, compound, deref, flattenConjunction, numberTerm, properListItems, termToString, variable } from './term.js';
 import { formatTermForWrite } from './write.js';
 import {
   ISO_OPERATOR_DEFINITIONS,
@@ -26,8 +26,8 @@ import {
 import { expandDcgRuleClause } from './dcg.js';
 import { expandClauseGoals, expandSourceClause } from './source-expansion.js';
 import {
-  CompactBinaryClause, clauseBodyLength, clauseHasCut, compactHeadArgName, compactHeadArgType, modulePredicateKey,
-  indexCompactOne, indexOne, isCompactBinaryClause, makeArgumentIndex, rebuildGroupIndexes, termContainsCut, termHasNoVariables,
+  CompactBinaryClause, clauseBodyLength, compactHeadArgName, compactHeadArgType, modulePredicateKey,
+  indexGroupClause, isCompactBinaryClause, makeArgumentIndex, rebuildGroupIndexes, termContainsCut,
 } from './program-indexing.js';
 export { selectClauseCandidates, selectClauseCandidatesForValues, selectGroundClauseCandidates } from './program-indexing.js';
 import {
@@ -287,21 +287,15 @@ export class Program {
       group = this.makeGroup(head.name, head.arity, module);
       this.groups.set(key, group);
     }
-    clause.groundHead = termHasNoVariables(head);
-    clause.scalarHead = head.type === COMPOUND && head.args.every(isScalar);
-    if (clause.body.length !== 0 || !clause.scalarHead) group.scalarFactsOnly = false;
     // Keep already-used groups correct when embedders append clauses through
     // the public indexClause method.
     if (!initialBuild) {
       group.demandIndexes.clear();
       group.rejectedDemandIndexes.clear();
     }
+    const clausePosition = group.clauses.length;
     group.clauses.push(clause);
-    if (clauseHasCut(clause)) group.hasCut = true;
-    const clausePosition = group.clauses.length - 1;
-    for (let i = 0; i < head.arity; i++) {
-      indexOne(group.argIndexes[i], head.args[i], clause, group.clauses, clausePosition, group.dynamic === true);
-    }
+    indexGroupClause(group, clause, clausePosition, head);
   }
   findGroup(name, arity, module = 'user') {
     const indicator = `${name}/${arity}`;
@@ -385,10 +379,10 @@ export class Program {
     clause.module ??= clause.head.module ?? 'user';
     const group = this.ensureDynamicGroup(clause.head.name, clause.head.arity, clause.module);
     clause.index = this.clauses.length;
-    clause.groundHead = termHasNoVariables(clause.head);
-    clause.scalarHead = clause.head.type === COMPOUND && clause.head.args.every(isScalar);
     this.clauses.push(clause);
     if (atStart) {
+      // asserta/1 shifts every later clause's position, so the whole group is
+      // reindexed; that replay derives this clause's head flags as well.
       group.clauses.unshift(clause);
       rebuildGroupIndexes(group);
     } else {
@@ -400,11 +394,7 @@ export class Program {
       // This changes repeated ground bookkeeping from quadratic to linear.
       group.demandIndexes.clear();
       group.rejectedDemandIndexes.clear();
-      if (clause.body.length !== 0 || !clause.scalarHead) group.scalarFactsOnly = false;
-      if (clauseHasCut(clause)) group.hasCut = true;
-      for (let i = 0; i < clause.head.arity; i++) {
-        indexOne(group.argIndexes[i], clause.head.args[i], clause, group.clauses, clausePosition, true);
-      }
+      indexGroupClause(group, clause, clausePosition, clause.head, true);
     }
     this.noteMutation(clause.body.length > 0);
   }
@@ -828,11 +818,7 @@ class ProgramBuilder {
         lastGroup = group;
         const clausePosition = group.clauses.length;
         group.clauses.push(clause);
-        clause.groundHead = clause.head0Type !== VAR && clause.head1Type !== VAR;
-        clause.scalarHead = clause.groundHead;
-        if (clause.bodyName != null || !clause.scalarHead) group.scalarFactsOnly = false;
-        indexCompactOne(group.argIndexes[0], clause.head0Type, clause.head0Name, clause, group.clauses, clausePosition);
-        indexCompactOne(group.argIndexes[1], clause.head1Type, clause.head1Name, clause, group.clauses, clausePosition);
+        indexGroupClause(group, clause, clausePosition);
         continue;
       }
 
@@ -867,13 +853,7 @@ class ProgramBuilder {
         lastGroup = group;
         const clausePosition = group.clauses.length;
         group.clauses.push(clause);
-        clause.groundHead = termHasNoVariables(head);
-        clause.scalarHead = head.type === COMPOUND && head.args.every(isScalar);
-        if (clauseHasCut(clause)) group.hasCut = true;
-        if (clause.body.length !== 0 || !clause.scalarHead) group.scalarFactsOnly = false;
-        for (let i = 0; i < head.arity; i++) {
-          indexOne(group.argIndexes[i], head.args[i], clause, group.clauses, clausePosition, group.dynamic === true);
-        }
+        indexGroupClause(group, clause, clausePosition, head);
         continue;
       }
 

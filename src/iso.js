@@ -2235,6 +2235,18 @@ function listToAtomInput(list, env, kind, solver = null) {
   return items.map((item) => String.fromCodePoint(Number(item.name))).join('');
 }
 
+// A char list and a code list report a rejected element differently, and a
+// code list distinguishes "not an integer at all" from an integer that names
+// no character. Both atom_chars/atom_codes-style conversions and the
+// number_chars/number_codes family diagnose them identically.
+function invalidCharacterListItemError(invalid, kind) {
+  if (kind === 'chars') return new PrologError('type_error(character)', invalid);
+  if (invalid.type !== NUMBER || !isDecimalInteger(invalid.name)) {
+    return new PrologError('type_error(integer)', invalid);
+  }
+  return new PrologError('representation_error(character_code)');
+}
+
 function atomListBuiltin(kind) {
   return function* ({ solver, goal, env }) {
     const value = deref(goal.args[0], env);
@@ -2250,13 +2262,7 @@ function atomListBuiltin(kind) {
       const invalid = supplied.find((item) => item.type !== VAR &&
         (kind === 'chars' ? !oneChar(item) :
           item.type !== NUMBER || !isDecimalInteger(item.name) || !validCharacterCode(item, solver)));
-      if (invalid) {
-        if (kind === 'chars') throw new PrologError('type_error(character)', invalid);
-        if (invalid.type !== NUMBER || !isDecimalInteger(invalid.name)) {
-          throw new PrologError('type_error(integer)', invalid);
-        }
-        throw new PrologError('representation_error(character_code)');
-      }
+      if (invalid) throw invalidCharacterListItemError(invalid, kind);
       if (solver.isoStrict && characters(value.name).some((ch) => !isStrictIsoPcsCharacter(ch))) {
         throw new PrologError('representation_error(character)', value);
       }
@@ -2425,13 +2431,7 @@ function numberListText(list, env, kind, valueIsBound, solver = null) {
 
   const invalid = items.find((item) => item.type !== VAR &&
     (kind === 'chars' ? !oneChar(item) : !validCharacterCode(item, solver)));
-  if (invalid) {
-    if (kind === 'chars') throw new PrologError('type_error(character)', invalid);
-    if (invalid.type !== NUMBER || !isDecimalInteger(invalid.name)) {
-      throw new PrologError('type_error(integer)', invalid);
-    }
-    throw new PrologError('representation_error(character_code)');
-  }
+  if (invalid) throw invalidCharacterListItemError(invalid, kind);
 
   const hasVariable = tail.type === VAR || items.some((item) => item.type === VAR);
   if (hasVariable) return null;

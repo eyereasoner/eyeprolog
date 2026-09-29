@@ -10,8 +10,18 @@ higher-level frontends.
 2. **Program preparation** — `program.js`, `source-expansion.js`, plus
    `program-analysis.js` and `program-indexing.js`. Static recursion/Datalog/WFS classification lives in
    `program-analysis.js`; compact clauses and candidate indexes live in
-   `program-indexing.js`.
+   `program-indexing.js`. Recording one clause into its group's indexes is
+   `program-indexing.js`'s `indexGroupClause`, and every path that adds a
+   clause -- source loading, the public `indexClause`, `assertz/1`, and a full
+   `rebuildGroupIndexes` replay -- goes through it, so a group built by loading
+   and the same group after a rebuild cannot disagree. It must not touch
+   `clause.head` on the compact-binary path, whose head term is materialized
+   lazily.
 3. **Execution** — `solver.js`, `cleanup.js`, `io.js`, `datalog.js`, `wfs.js`.
+   `datalog-common.js` owns what the two Datalog evaluators share: scalar row
+   keying and the per-argument candidate-bucket narrowing both index their
+   relations with. Their fixpoint algorithms and relation storage stay in their
+   own modules.
    `cleanup.js` owns lifecycle-aware disposal of protected builtin
    iterators and registers the normal-profile cleanup controls without making
    `solver.js` depend back on the language registry.
@@ -75,7 +85,12 @@ service without depending on `Solver`.
 The JavaScript runtime stays flat directly under `src/`; `src/lib/` contains the
 public Prolog library sources. Runtime-dependent library primitives follow a
 one-module/one-host convention: a private `eyeprolog__*` adapter referenced by
-`src/lib/foo.pl` must be registered from `src/foo-host.js`. Pure Prolog modules,
+`src/lib/foo.pl` must be registered from `src/foo-host.js`.
+`worker-bridge.js` holds the one piece those hosts share rather than own: the
+synchronous SharedArrayBuffer/Atomics transport that lets `http-host.js` and
+`sockets-host.js` drive Node's asynchronous I/O from inside the synchronous
+solver. Each host still supplies its own request vocabulary and its own error
+translation, so the transport carries no library-specific semantics. Pure Prolog modules,
 such as `library(freeze)`, intentionally have no host file. `standard-library.js`
 registers these module hosts without owning their semantics. The architecture
 test rejects JavaScript import cycles, verifies private adapter ownership, freezes

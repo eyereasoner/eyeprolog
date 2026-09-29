@@ -6,31 +6,16 @@
 // This avoids replaying the whole recursive program on every table round.
 
 import { VAR } from './term.js';
-import { numberValueKey } from './number-value.js';
 import {
   EMPTY_ARRAY,
   dependencyCone,
   directLiteral,
   estimateLiteral,
   predicateKey,
-  resolvePatternTerm,
+  sameScalar,
+  scalarKey,
+  selectCandidateIndexes,
 } from './datalog-common.js';
-
-const scalarKeyCache = new WeakMap();
-
-function scalarKey(term) {
-  const cached = scalarKeyCache.get(term);
-  if (cached != null) return cached;
-  const key = term.type === 'number'
-    ? `number\u0000${numberValueKey(term.name)}`
-    : `${term.type}\u0000${term.name}`;
-  scalarKeyCache.set(term, key);
-  return key;
-}
-
-function sameScalar(left, right) {
-  return scalarKey(left) === scalarKey(right);
-}
 
 class DatalogRelation {
   constructor(arity) {
@@ -102,15 +87,7 @@ class DatalogRelation {
   }
 
   candidateIndexes(args, bindings) {
-    let selected = null;
-    for (let i = 0; i < args.length; i++) {
-      const value = resolvePatternTerm(args[i], bindings);
-      if (value == null) continue;
-      const bucket = this.indexes[i].get(scalarKey(value)) ?? EMPTY_ARRAY;
-      if (selected == null || bucket.length < selected.length) selected = bucket;
-      if (selected.length === 0) break;
-    }
-    return selected;
+    return selectCandidateIndexes(this.indexes, args, bindings);
   }
 }
 

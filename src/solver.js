@@ -2623,20 +2623,7 @@ function tryPushScalarFactRunFrames(stack, solver, goals, env, depth, active) {
       continue;
     }
 
-    const goal = runGoals[state.index];
-    solver.stats.solve_one_goal_calls++;
-    const candidates = selectScalarFactCandidates(groups[state.index], goal, env, state.names, state.values);
-    const nextStates = [];
-    for (const pass of [candidates.primary, candidates.fallback]) {
-      for (let candidateIndex = 0; candidateIndex < clauseCandidateLength(pass); candidateIndex++) {
-        const clause = clauseCandidateAt(pass, candidateIndex);
-        const match = matchScalarFactLocal(goal, clause.head, env, state.names, state.values);
-        if (!match) continue;
-        solver.stats.unify_calls++;
-        nextStates.push({ index: state.index + 1, names: match.names, values: match.values, depth: state.depth + 1 });
-      }
-    }
-    for (let i = nextStates.length - 1; i >= 0; i--) localStack.push(nextStates[i]);
+    pushScalarFactSuccessors(solver, groups[state.index], runGoals[state.index], env, state, localStack);
     if (solver.solutionsSeen >= solver.solutionLimit) break;
   }
 
@@ -2666,10 +2653,10 @@ function scalarFactRunSolutions(solver, goals, groups, env, depth, active) {
 }
 
 function* scalarFactRunGenerator(solver, goals, groups, env, depth, active, pendingState) {
-  const localStack = [{ index: 0, names: [], values: [] }];
+  const localStack = [{ index: 0, names: [], values: [], depth }];
   while (localStack.length) {
     const state = localStack.pop();
-    solver.stats.max_depth = Math.max(solver.stats.max_depth, depth + state.index);
+    solver.stats.max_depth = Math.max(solver.stats.max_depth, state.depth);
     if (state.index === goals.length) {
       const next = env.clone();
       for (let i = 0; i < state.names.length; i++) next.bind(state.names[i], state.values[i]);
@@ -2679,25 +2666,33 @@ function* scalarFactRunGenerator(solver, goals, groups, env, depth, active, pend
       continue;
     }
 
-    const goal = goals[state.index];
-    solver.stats.solve_one_goal_calls++;
-    const candidates = selectScalarFactCandidates(groups[state.index], goal, env, state.names, state.values);
-    const nextStates = [];
-    for (const pass of [candidates.primary, candidates.fallback]) {
-      for (let candidateIndex = 0; candidateIndex < clauseCandidateLength(pass); candidateIndex++) {
-        const clause = clauseCandidateAt(pass, candidateIndex);
-        const match = matchScalarFactLocal(goal, clause.head, env, state.names, state.values);
-        if (!match) continue;
-        solver.stats.unify_calls++;
-        nextStates.push({ index: state.index + 1, names: match.names, values: match.values });
-      }
-    }
-    for (let i = nextStates.length - 1; i >= 0; i--) localStack.push(nextStates[i]);
+    pushScalarFactSuccessors(solver, groups[state.index], goals[state.index], env, state, localStack);
     if (solver.solutionsSeen >= solver.solutionLimit) return;
   }
   pendingState.pending = false;
 }
 
+// Expands one goal of a scalar-fact run into the successor states its matching
+// clauses produce. Both the eager short-join and the streaming wide-join
+// variants above explore the same search tree and differ only in what they do
+// with a completed state, so the per-goal step is shared. Successors are pushed
+// in reverse so the leftmost candidate is popped first and clause order is
+// preserved.
+function pushScalarFactSuccessors(solver, group, goal, env, state, localStack) {
+  solver.stats.solve_one_goal_calls++;
+  const candidates = selectScalarFactCandidates(group, goal, env, state.names, state.values);
+  const nextStates = [];
+  for (const pass of [candidates.primary, candidates.fallback]) {
+    for (let candidateIndex = 0; candidateIndex < clauseCandidateLength(pass); candidateIndex++) {
+      const clause = clauseCandidateAt(pass, candidateIndex);
+      const match = matchScalarFactLocal(goal, clause.head, env, state.names, state.values);
+      if (!match) continue;
+      solver.stats.unify_calls++;
+      nextStates.push({ index: state.index + 1, names: match.names, values: match.values, depth: state.depth + 1 });
+    }
+  }
+  for (let i = nextStates.length - 1; i >= 0; i--) localStack.push(nextStates[i]);
+}
 
 function selectScalarFactCandidates(group, goal, env, names, values) {
   const positions = [];

@@ -18,21 +18,50 @@ export function defaultsToStdin(fileCount, stdinIsTty) {
   return fileCount === 0 && !stdinIsTty;
 }
 
-export async function main(argv) {
-  if (argv.length === 0) {
-    const engine = await loadEngine();
-    const { runRepl } = await import('./repl.js');
-    const exitCode = await runRepl(engine, {
-      input: process.stdin,
-      output: process.stdout,
-      errorOutput: process.stderr,
-    });
-    if (exitCode !== 0) process.exitCode = exitCode;
-    return;
-  }
+// Flags that only set a field. Each short alias is listed with its long
+// spelling so the combined short form (-pqs) below stays derived from this one
+// table rather than from a second hand-maintained list of letters.
+const BOOLEAN_OPTIONS = new Map([
+  ['--help', 'help'], ['-h', 'help'],
+  ['--proof', 'proof'], ['-p', 'proof'],
+  ['--quads', 'quads'], ['-q', 'quads'],
+  ['--quiet', 'quiet'],
+  ['--stats', 'stats'], ['-s', 'stats'],
+  ['--iso-strict', 'isoStrict'],
+  ['--portable', 'portable'],
+  ['--version', 'version'], ['-v', 'version'],
+  ['--warnings', 'warnings'], ['-w', 'warnings'],
+]);
 
+const SHORT_BOOLEAN_FLAGS = new Map(
+  [...BOOLEAN_OPTIONS]
+    .filter(([spelling]) => !spelling.startsWith('--'))
+    .map(([spelling, field]) => [spelling.slice(1), field]),
+);
+
+// Options that consume the following argument. Each reads one argv element and
+// reports its own missing-value error.
+const VALUE_OPTIONS = new Map([
+  ['--proof-detail', (options, value) => {
+    if (value !== 'abstract' && value !== 'expanded') throw new Error('--proof-detail requires abstract or expanded');
+    options.proof = true;
+    options.proofDetail = value;
+  }],
+  ['--check-proof', (options, value) => {
+    if (value == null) throw new Error('--check-proof requires a file');
+    options.checkProof = value;
+  }],
+  ['--goal', (options, value, arg) => {
+    if (value == null) throw new Error(`option ${arg} requires a goal`);
+    options.goals.push(value);
+  }],
+]);
+VALUE_OPTIONS.set('-g', VALUE_OPTIONS.get('--goal'));
+
+export function parseOptions(argv) {
   const options = {
     files: [],
+    help: false,
     proof: false,
     proofDetail: 'abstract',
     checkProof: null,
@@ -52,61 +81,77 @@ export async function main(argv) {
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
 
-    if (!endOptions && arg === '--') {
+    // A bare '-' names stdin rather than an option, and everything after '--'
+    // is a file even when it looks like one.
+    if (endOptions || arg === '-' || !arg.startsWith('-')) {
+      options.files.push(arg);
+      continue;
+    }
+    if (arg === '--') {
       endOptions = true;
-    } else if (!endOptions && (arg === '--help' || arg === '-h')) {
-      await usage(process.stdout);
-      return;
-    } else if (!endOptions && (arg === '--proof' || arg === '-p')) {
-      options.proof = true;
-    } else if (!endOptions && arg === '--proof-detail') {
-      const detail = argv[++i];
-      if (detail !== 'abstract' && detail !== 'expanded') throw new Error('--proof-detail requires abstract or expanded');
-      options.proof = true;
-      options.proofDetail = detail;
-    } else if (!endOptions && arg === '--check-proof') {
-      const file = argv[++i];
-      if (file == null) throw new Error('--check-proof requires a file');
-      options.checkProof = file;
-    } else if (!endOptions && (arg === '--quads' || arg === '-q')) {
-      options.quads = true;
-    } else if (!endOptions && arg === '--quiet') {
-      options.quiet = true;
-    } else if (!endOptions && (arg === '--stats' || arg === '-s')) {
-      options.stats = true;
-    } else if (!endOptions && arg === '--iso-strict') {
-      options.isoStrict = true;
-    } else if (!endOptions && arg === '--portable') {
-      options.portable = true;
-    } else if (!endOptions && arg === '--no-autoload') {
+      continue;
+    }
+
+    const field = BOOLEAN_OPTIONS.get(arg);
+    if (field != null) {
+      options[field] = true;
+      // Usage is answered before any later argument is examined, so
+      // `--help --goal` prints usage instead of reporting a missing goal.
+      if (field === 'help') return options;
+      continue;
+    }
+
+    const takeValue = VALUE_OPTIONS.get(arg);
+    if (takeValue != null) {
+      takeValue(options, argv[++i], arg);
+      continue;
+    }
+
+    if (arg === '--no-autoload') {
       options.autoload = false;
-    } else if (!endOptions && (arg === '--version' || arg === '-v')) {
-      options.version = true;
-    } else if (!endOptions && (arg === '--warnings' || arg === '-w')) {
-      options.warnings = true;
-    } else if (!endOptions && (arg === '--goal' || arg === '-g')) {
-      const goal = argv[++i];
-      if (goal == null) throw new Error(`option ${arg} requires a goal`);
-      options.goals.push(goal);
-    } else if (!endOptions && arg.startsWith('-') && !arg.startsWith('--') && arg.length > 2) {
+      continue;
+    }
+
+    // A single-dash run of short boolean flags, such as -pqs.  Every letter is
+    // validated before any of them is applied.
+    if (!arg.startsWith('--') && arg.length > 2) {
       const flags = arg.slice(1);
       for (const flag of flags) {
-        if (!'hpqsvw'.includes(flag)) throw new Error(`unknown option: ${arg}`);
+        if (!SHORT_BOOLEAN_FLAGS.has(flag)) throw new Error(`unknown option: ${arg}`);
       }
-      if (flags.includes('h')) {
-        await usage(process.stdout);
-        return;
-      }
-      if (flags.includes('p')) options.proof = true;
-      if (flags.includes('q')) options.quads = true;
-      if (flags.includes('s')) options.stats = true;
-      if (flags.includes('v')) options.version = true;
-      if (flags.includes('w')) options.warnings = true;
-    } else if (!endOptions && arg.startsWith('-') && arg !== '-') {
-      throw new Error(`unknown option: ${arg}`);
-    } else {
-      options.files.push(arg);
+      for (const flag of flags) options[SHORT_BOOLEAN_FLAGS.get(flag)] = true;
+      if (options.help) return options;
+      continue;
     }
+
+    throw new Error(`unknown option: ${arg}`);
+  }
+
+  return options;
+}
+
+async function startRepl(options = {}) {
+  const engine = await loadEngine();
+  const { runRepl } = await import('./repl.js');
+  const exitCode = await runRepl(engine, {
+    input: process.stdin,
+    output: process.stdout,
+    errorOutput: process.stderr,
+    ...options,
+  });
+  if (exitCode !== 0) process.exitCode = exitCode;
+}
+
+export async function main(argv) {
+  if (argv.length === 0) {
+    await startRepl();
+    return;
+  }
+
+  const options = parseOptions(argv);
+  if (options.help) {
+    await usage(process.stdout);
+    return;
   }
 
   if (options.version) {
@@ -129,15 +174,7 @@ export async function main(argv) {
 
   if (options.isoStrict && options.files.length === 0 && options.goals.length === 0 &&
       options.checkProof == null && !options.proof && !options.quiet && !options.stats && !options.warnings) {
-    const engine = await loadEngine();
-    const { runRepl } = await import('./repl.js');
-    const exitCode = await runRepl(engine, {
-      input: process.stdin,
-      output: process.stdout,
-      errorOutput: process.stderr,
-      isoStrict: true,
-    });
-    if (exitCode !== 0) process.exitCode = exitCode;
+    await startRepl({ isoStrict: true });
     return;
   }
 

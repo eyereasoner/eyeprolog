@@ -1361,6 +1361,28 @@ function writeString(value, quoteStrings) {
   return escapeQuoted(value, '"', '\\"', STRING_ESCAPE_TABLE);
 }
 
+// Reads a list back as the double-quoted text it would have been written
+// from, or null when it is not such a list.  A partial list yields the text of
+// its fixed prefix together with the tail, which the double-bar notation can
+// then write as "abc"||T.
+//
+// write.js carries a second copy of this, deliberately.  The two cannot be
+// merged: term.js is star-exported as the public API surface, so exporting
+// this internal helper would publish it (test/regression/cases-api.mjs checks
+// the surface against index.d.ts), and a shared module below both would have
+// to import term.js while term.js imports it, which the architecture test's
+// acyclic-import rule rejects.  Keep the two in step by hand.
+function quotedListCharacter(item, doubleQuotes) {
+  if (doubleQuotes === 'chars') {
+    if (item.type !== ATOM || Array.from(item.name).length !== 1) return null;
+    return item.name;
+  }
+  if (item.type !== NUMBER || !RE_DIGIT_STR.test(item.name)) return null;
+  const code = BigInt(item.name);
+  if (code < 0n || code > 0x10ffffn || (code >= 0xd800n && code <= 0xdfffn)) return null;
+  return String.fromCodePoint(Number(code));
+}
+
 function quotedListSplice(term, env, doubleQuotes) {
   if (doubleQuotes !== 'chars' && doubleQuotes !== 'codes') return null;
   const characters = [];
@@ -1373,16 +1395,9 @@ function quotedListSplice(term, env, doubleQuotes) {
     if (!isCons(cursor)) {
       return characters.length === 0 ? null : { text: characters.join(''), tail: cursor };
     }
-    const item = deref(cursor.args[0], env);
-    if (doubleQuotes === 'chars') {
-      if (item.type !== ATOM || Array.from(item.name).length !== 1) return null;
-      characters.push(item.name);
-    } else {
-      if (item.type !== NUMBER || !RE_DIGIT_STR.test(item.name)) return null;
-      const code = BigInt(item.name);
-      if (code < 0n || code > 0x10ffffn || (code >= 0xd800n && code <= 0xdfffn)) return null;
-      characters.push(String.fromCodePoint(Number(code)));
-    }
+    const character = quotedListCharacter(deref(cursor.args[0], env), doubleQuotes);
+    if (character == null) return null;
+    characters.push(character);
     cursor = cursor.args[1];
   }
 }
