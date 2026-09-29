@@ -141,6 +141,12 @@ const INFIX_OPERATORS = new Map([
   ['^', { precedence: 1001, associativity: 'right' }],
 ]);
 const PREFIX_OPERATORS = new Map([
+  // ISO Table 7 declares `:-` both as xfx 1200 and as fx 1200, exactly like
+  // `?-` below it. The prefix reading only becomes reachable where priority
+  // 1200 is, which at term level means inside parentheses or braces: program
+  // directives never reach here, because parseProgram consumes their `:-`
+  // itself before parsing the term.
+  [':-', { precedence: 1, strict: true }],
   ['?-', { precedence: 1, strict: true }],
   ['\\+', { precedence: 301, strict: false }],
   ['+', { precedence: 1001, strict: false }],
@@ -932,10 +938,18 @@ class Parser {
   }
   parsePrefixTerm(minPrecedence = 0, allowBar = true, allowOperatorAtom = false) {
     // `:-` is tokenized specially so the program grammar can recognize clause
-    // and directive markers. In term argument position, however, ISO 6.3.3.1
-    // permits an operator atom directly as an `arg`; a leading `:-` cannot be
-    // prefix operator notation at argument priority, so it denotes the atom.
-    if (this.token.type === TOK.IF) {
+    // and directive markers. In term argument position ISO 6.3.3.1 permits an
+    // operator atom directly as an `arg`, and a leading `:-` cannot be prefix
+    // operator notation at argument priority 999, so there it denotes the atom.
+    //
+    // Where priority 1200 is actually in reach, though, it can: ISO 6.3.4.1
+    // gives a parenthesized term the full priority, so `x((:- a))` is the
+    // compound `x(:-(a))` -- as SWI, Scryer and GNU Prolog all read it. Only
+    // decide the atom here when the prefix reading is genuinely unavailable;
+    // otherwise fall through to the ordinary prefix-operator path below, which
+    // already applies exactly this precedence test and still yields the bare
+    // atom when no operand follows, as in `(:-)`.
+    if (this.token.type === TOK.IF && !(this.prefixOperators.get(':-')?.precedence >= minPrecedence)) {
       if (!allowOperatorAtom) {
         throw new Error(`parse line ${this.token.line}: operator atom :- requires argument context or parentheses`);
       }

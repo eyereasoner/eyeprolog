@@ -15,7 +15,7 @@
 // Because the document is ordinary Prolog, it can be saved, loaded and
 // queried by another run, which records the answers as data rather than
 // running the query again.
-import { COMPOUND, Env, VAR, atom, compound, listFromItems, numberTerm, variable } from './term.js';
+import { COMPOUND, Env, NUMBER, VAR, atom, compound, listFromItems, numberTerm, variable } from './term.js';
 import { formatTermForWrite } from './write.js';
 
 
@@ -111,10 +111,35 @@ function bindingsTerm(bindings) {
 // number, so the number is reassigned here from the clause's own order. Two
 // distinct variables stay distinct; the record stops depending on how much
 // work preceded it.
+// The shapes the engine mints a variable name in. Each embeds a counter that
+// advances across the whole run: `Var#821735` from the solver, `__copy3_0`
+// from copy_term/2, and the internal `\0read:8:1` from read_term/3, which is
+// written out as `_read_8_1`. Two runs of the same program therefore recorded
+// different names for the same identity.
+//
+// Returns the part of the name that identifies which minting produced it,
+// together with a way to rebuild the name around a new number. Variables
+// minted by one operation share a group and so keep sharing a number, while
+// the slot that tells them apart is preserved; a solver variable is its own
+// group, because there each name is one variable. A name a programmer wrote,
+// such as `_Y` or `_A`, matches nothing here and is left alone.
+function mintedParts(name) {
+  const hash = name.indexOf('#');
+  if (hash >= 0) {
+    const stem = name.slice(0, hash);
+    return { group: name, rebuild: (number) => `${stem}#${number}` };
+  }
+  const copied = /^(__copy)(\d+)_(\d+)$/.exec(name);
+  if (copied) return { group: `${copied[1]}${copied[2]}`, rebuild: (number) => `${copied[1]}${number}_${copied[3]}` };
+  const read = /^(\u0000read):(\d+):(\d+)$/.exec(name);
+  if (read) return { group: `${read[1]}:${read[2]}`, rebuild: (number) => `${read[1]}:${number}:${read[3]}` };
+  return null;
+}
+
 function mintedName(name, minted) {
-  const stem = name.slice(0, name.indexOf('#'));
-  if (!minted.has(name)) minted.set(name, minted.size + 1);
-  return `${stem}#${minted.get(name)}`;
+  const parts = mintedParts(name);
+  if (!minted.has(parts.group)) minted.set(parts.group, minted.size + 1);
+  return parts.rebuild(minted.get(parts.group));
 }
 
 // The same renaming for a term a step records, which is an ordinary term
@@ -123,15 +148,27 @@ function mintedName(name, minted) {
 // record gives it.
 function renameMinted(value, minted) {
   if (value == null) return value;
-  if (value.type === VAR) return value.name.includes('#') ? variable(mintedName(value.name, minted)) : value;
-  if (value.type === COMPOUND) return compound(value.name, value.args.map((arg) => renameMinted(arg, minted)));
+  if (value.type === VAR) return mintedParts(value.name) != null ? variable(mintedName(value.name, minted)) : value;
+  if (value.type === COMPOUND) {
+    // A stream handle is minted the same way and for the same reason: its
+    // number counts streams opened across the whole run, so the same program
+    // recorded `'$stream'(6)` in one run and `'$stream'(8)` in the next.
+    // Only which handle is which matters, so it is renumbered from the
+    // document's own order alongside the minted variables.
+    if (value.name === '$stream' && value.arity === 1 && value.args[0]?.type === NUMBER) {
+      const key = `$stream(${value.args[0].name})`;
+      if (!minted.has(key)) minted.set(key, minted.size + 1);
+      return compound('$stream', [numberTerm(BigInt(minted.get(key)))]);
+    }
+    return compound(value.name, value.args.map((arg) => renameMinted(arg, minted)));
+  }
   return value;
 }
 
 function templateTerm(value, anonymous, minted) {
   if (value.type === VAR) {
     if (value.name !== '_' && !value.name.startsWith('_')) {
-      const name = value.name.includes('#') ? mintedName(value.name, minted) : value.name;
+      const name = mintedParts(value.name) != null ? mintedName(value.name, minted) : value.name;
       return compound('var', [atom(name)]);
     }
     if (!anonymous.has(value.name)) anonymous.set(value.name, anonymous.size + 1);

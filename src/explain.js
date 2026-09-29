@@ -705,6 +705,20 @@ function resolvedSubstitutions(substitutions, env) {
 // same thing to a reader holding only the source. A program assembled from
 // several files lays their spans end to end, in the order the files first
 // contribute a clause.
+// A module-loading declaration describes the compilation unit rather than an
+// executable clause, so the parser deliberately does not advance the proof
+// clause number for it -- which leaves it carrying the number of the clause
+// before it. It must therefore not be entered under that number here, or it
+// would displace the real clause and every step citing it would stop
+// resolving. Such a declaration is never what a rule(N) or fact(N) cites.
+function isUnnumberedDeclaration(clause) {
+  const head = clause?.head;
+  if (head?.type !== COMPOUND || head.name !== ':-' || head.arity !== 1) return false;
+  const directive = head.args[0];
+  if (directive?.type !== COMPOUND && directive?.type !== ATOM) return false;
+  return ['module', 'use_module', 'meta_predicate', 'attribute'].includes(directive.name);
+}
+
 export function clauseNumbering(program) {
   const spans = new Map();
   for (const clause of program.clauses ?? []) {
@@ -722,7 +736,7 @@ export function clauseNumbering(program) {
   const bySource = new Map();
   const byNumber = new Map();
   for (const clause of program.clauses ?? []) {
-    if (!isProgramClause(clause)) continue;
+    if (!isProgramClause(clause) || isUnnumberedDeclaration(clause)) continue;
     const number = (offsets.get(clause.source.filename) ?? 0) + clause.source.clause;
     bySource.set(`${clause.source.filename}\u0000${clause.source.clause}`, number);
     byNumber.set(number, { head: clause.head, body: clause.body ?? [] });

@@ -39,20 +39,9 @@ const KNOWN_GAPS = new Map([
   ['portable-library-overlap.pl', 'an answer about which library supplied a predicate, which the replay cannot restate'],
 ]);
 
-// Programs with no packaged proof, and why. Coverage is otherwise complete:
-// every other example under examples/ has a checked explanation.
-//
-//   iso-reflective-terms.pl  copy_term/2 mints fresh variable names from a
-//   iso-term-io.pl           counter that is global to the process, so two
-//                            runs in one process already disagree. A golden
-//                            that cannot be reproduced is not evidence.
-//   sbom-vulnerability-response.pl
-//                            its proof records a directive as clause/3, and
-//                            reading `(:- use_module(...))` back as an
-//                            argument hits a parser limit: a parenthesised
-//                            1200-priority prefix term is rejected where
-//                            SWI, Scryer and GNU Prolog accept it.
-//   takeuchi.pl              proof generation does not finish in a minute.
+// Every example under examples/ has a packaged proof, and every one of them is
+// checked here. The list is read from the directory rather than written out,
+// so a proof cannot be added without being checked.
 
 const totals = { steps: 0, verified: 0, redecided: 0, trusted: 0 };
 

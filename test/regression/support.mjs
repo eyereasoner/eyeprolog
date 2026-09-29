@@ -170,7 +170,7 @@ export function proofCorpusSyncIssues() {
   const checks = [
     {
       file: path.join(packageRoot, 'the-art-of-eyeprolog.md'),
-      pattern: /\*\*(\d+) selected programs\*\* have a checked/,
+      pattern: /\*\*(\d+) programs\*\* have a checked/,
     },
   ];
   for (const check of checks) {

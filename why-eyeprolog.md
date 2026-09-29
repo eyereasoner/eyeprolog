@@ -195,23 +195,87 @@ remain, or unwind through an exception. Normal-mode `call_cleanup/2` and
 behavior tied to the actual search lifecycle also preserves demand-driven
 interaction at the top level.
 
-## Answers that can explain themselves
+## Output, proof, and check
 
-An answer says that a goal succeeded. A proof records one successful route
-through the supplied clauses and built-ins. That difference matters when rules
-make decisions, combine data from several sources, or need to be reviewed by
-someone who did not write them.
+Giving an answer is good. Giving the reason for it is better. Giving a reason
+that has been checked is better still — and the step from the second to the
+third is longer than it looks.
 
-Proofs make successful reasoning easier to inspect, test, teach, and discuss.
-A proof document is ordinary Prolog data: one `step/4` fact per justified
-conclusion, each naming the clause it used, the bindings that use made, and the
-conclusions it rested on. It can be saved, transmitted, and checked later
-against the program without repeating the search that found the answer.
-Checking re-performs each step against the clause it cites and resolves every
-use; built-ins, a completed `\+`, a completed `findall/3` and a clause
-asserted at run time are trusted rather than checked, because deciding them
-again would mean running the program. The result says how many steps rested on
-trust rather than folding them into an undifferentiated success.
+A run can produce all three, and keeping them apart is the point.
+
+The **output** is the answer: the goal succeeded, with these bindings. It is
+what a program is usually asked for, and on its own it is a claim that has to
+be taken on trust. Nothing about it says how it was reached, so nothing about
+it can be disputed except by running something else and comparing.
+
+The **proof** is why. It records one successful route through the supplied
+clauses and built-ins as ordinary Prolog data — one `step/4` fact per justified
+conclusion, naming the clause it used, the bindings that use made, and the
+conclusions it rested on. Because it is data rather than a log, it can be
+saved, sent to someone else, and read back later without the program that
+produced it being present. A reader can now follow the reasoning instead of
+trusting it, which is a real gain — but following it is still their work, and
+a long derivation is not something a person checks by reading.
+
+The **check** is whether that reason holds, decided mechanically. This is not
+the same question as whether the proof is well written, and it is deliberately
+not answered by the engine that produced the answer. A proof can be internally
+flawless and still be wrong, which is exactly why the third step is worth more
+than the second: it is the one that can come back and say no.
+
+That last distinction is why checking is stronger than replaying. An
+explanation is not verification: a convincing explanation can be produced for a
+wrong result, so a check is only worth something if it is capable of
+*disagreeing* with the answer it checks. A condition that cannot fail is not
+much of a check.
+
+`--check-proof` therefore tests five conditions, four of which read the
+document and one of which does not:
+
+- **C1 Resolution** — every checked step really is an instance of the clause it
+  cites. The clause is taken from the program, not from the document, so a
+  proof cannot be made valid by restating the rule it used.
+- **C2 Well-founded** — following what a step used never leads back to it. A
+  proof that rested on itself would prove anything.
+- **C3 Justification** — every step carries exactly one known justification.
+- **C4 Coverage** — every claim has a step, and every use resolves either to a
+  step or to a statement the program gives.
+- **C5 Re-decision** — a step the document only *asserts*, rather than derives,
+  is computed again and must agree.
+
+C5 is what makes the rest worth having. The largest class of steps in a typical
+proof is the primitive: arithmetic, comparison, string and date operations that
+no clause derives. Reading a document cannot tell whether those are true, so
+they are run again — against a program holding the bundled libraries and
+nothing else. No clause of the theory under proof is present, which means the
+recomputation cannot be talked into agreeing by the very rules it is meant to
+audit. When it disagrees, the proof fails.
+
+The difference is not theoretical. A document can pass C1 through C4 completely
+— every step a proper instance of its clause, every use accounted for, no
+cycles — and still record a computed value that is simply false, so long as it
+tells the same lie consistently throughout. Only recomputation catches that
+one.
+
+Some steps still cannot be recomputed, and the check says so rather than
+quietly passing them. A **reflective** goal reads the theory's own database or
+syntax, which is exactly what C5 excludes in order to stay independent of it. A
+**stateful** goal — an attributed variable, a constraint store, an open stream —
+depends on state the original run accumulated and a fresh solver has no way to
+reconstruct; re-running stream operations would also perform I/O of its own,
+and a checker must not have side effects. Deciding these in the library-only
+program would pass them on the wrong evidence, which is weaker than admitting
+they were trusted. They are named individually in the checker, counted
+separately in the result, and reported as what the check still rests on rather
+than what it establishes.
+
+The packaged corpus makes the proportion visible. Every one of the 235
+examples carries a proof: 36423 steps, of which 20746 are verified against
+their source clause, 14720 are recomputed independently, and 952 — 2.6% —
+remain obligations. `npm test` re-checks all of them on every run, and the
+proof directory is read from disk rather than from a list, so a document cannot
+be added without being checked. An unverified proof is worse than none, because
+it still looks like evidence.
 
 Verification and discovery therefore have different jobs: solving searches for
 a derivation, while checking verifies a supplied one. A proof does not
@@ -298,5 +362,7 @@ and an ordinary JavaScript API can remain both practical and understandable.
 - [ISO/IEC 13211-2:2000 — Prolog, Part 2: Modules](https://www.iso.org/standard/20775.html)
 - [ISO/IEC TS 13211-3:2025 — Prolog, Part 3: Definite clause grammar rules](https://www.iso.org/standard/83635.html)
 - [RDF 1.2 Concepts and Abstract Syntax](https://www.w3.org/TR/rdf12-concepts/)
+- [ARC — answer, reason, check](https://josd.github.io/arc/), on why a check
+  has to be able to disagree with the answer it checks
 - [The Art of EyeProlog](the-art-of-eyeprolog.md)
 - [EyeProlog README](README.md)

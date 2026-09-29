@@ -397,7 +397,7 @@ Options:
   -h, --help            Show this help text and exit.
   -p, --proof           Enable proof explanations.
   --proof-detail mode   Use abstract or expanded proof detail (implies --proof).
-  --check-proof file   Check a saved proof document against the input program.
+  --check-proof file    Check a saved proof document against the input program.
   -q, --quads           Run embedded quad tests and fail if any do not hold.
                         Note: -q is quads, not quiet; --quiet has no short form.
   --quiet               Suppress answer terms while preserving Prolog output.
