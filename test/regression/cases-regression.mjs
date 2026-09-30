@@ -3832,7 +3832,12 @@ c4 ?- call((!;1)).
         assertEqual(result.status, 0, 'exit status');
         assertIncludes(result.stdout, 'X = foo, Y = bar.', 'conjunction reads');
         assertIncludes(result.stdout, 'Z = end_of_file.', 'Ctrl-D read result');
-        assertIncludes(result.stdout, '?- true.', 'top level resumes after Ctrl-D');
+        // On a terminal readline owns the prompt, so it redraws the line with
+        // cursor-positioning escapes between the prompt and the echoed query.
+        // This assertion is about the top level resuming, not about which
+        // control sequences the line editor uses to place the cursor.
+        const plain = result.stdout.replaceAll(/\u001b\[[0-9;]*[A-Za-z]/g, '');
+        assertIncludes(plain, '?- true.', 'top level resumes after Ctrl-D');
         assertIncludes(result.stdout, '   true.', 'post-EOF query executes');
       },
     },
@@ -3892,7 +3897,13 @@ c4 ?- call((!;1)).
         ]);
         assertEqual(result.error?.code, undefined, 'terminal interrupt timeout');
         assertEqual(result.status, 130, 'SIGINT exit status');
-        assertIncludes(result.stdout, '?- put_code(82), put_code(69), put_code(65), put_code(68), put_code(89), repeat, fail.', 'terminal query echo');
+        // Readline owns the prompt on a terminal and places the cursor with
+        // escapes; the echo is what matters here, not how it was drawn.
+        assertIncludes(
+          result.stdout.replaceAll(/\u001b\[[0-9;]*[A-Za-z]/g, ''),
+          '?- put_code(82), put_code(69), put_code(65), put_code(68), put_code(89), repeat, fail.',
+          'terminal query echo',
+        );
         assertIncludes(result.stdout, 'READY', 'query entered computation');
       },
     },

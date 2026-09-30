@@ -146,7 +146,18 @@ class LineReader {
   async read(prompt) {
     this.currentPrompt = prompt;
     this.readline.setPrompt(prompt);
-    this.output.write(prompt);
+    // On a terminal, let readline render the prompt rather than writing it
+    // here. setPrompt tells readline how wide the prompt is, but only
+    // prompt() makes readline the thing that drew it; writing the same
+    // characters directly leaves readline redrawing the line from a column it
+    // does not believe the prompt occupies. The cursor can then travel back
+    // over the prompt, and a refresh can paint the line where the prompt
+    // already is.
+    //
+    // Without a terminal there is no line editor to own the prompt, and it
+    // still has to reach the transcript, so there it is written directly.
+    if (this.terminal) this.readline.prompt();
+    else this.output.write(prompt);
     const result = await this.nextLine();
     return result.done ? null : result.value;
   }
