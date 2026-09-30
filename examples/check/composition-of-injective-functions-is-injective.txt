@@ -1,0 +1,6 @@
+  C1 Resolution    ok             16 step(s) re-performed against the source clause they cite
+  C2 Well-founded  ok             19 step(s) checked for a conclusion resting on its own derivation
+  C3 Justification ok             19 step(s) carrying exactly one known justification
+  C4 Coverage      ok             2 claim(s) and 31 use(s) resolved to a step or to a statement the program gives
+  C5 Re-decision   ok             3 step(s) recomputed against a program holding no clause of the theory
+checked: 19 steps, 3 recomputed.

@@ -424,6 +424,19 @@ function programClauses(program) {
   return clauseNumbering(program).byNumber;
 }
 
+// The whole check as text: what each condition covered, anything that failed,
+// and the verdict. One formatter so the command line, the packaged
+// examples/check reports, and anything embedding the checker all say the same
+// thing about the same document.
+export function checkReportText(report) {
+  const lines = conditionReport(report);
+  for (const failure of report.failures) {
+    lines.push(`  [${failure.condition}] ${failure.conclusion} -- ${failure.detail}`);
+  }
+  lines.push(`${verdict(report)}.`);
+  return `${lines.join('\n')}\n`;
+}
+
 export function verdict(report) {
   if (!report.valid) return `${report.failures.length} failure(s)`;
   const recomputed = report.redecided ? `, ${report.redecided} recomputed` : '';

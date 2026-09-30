@@ -11,7 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { Program } from '../src/index.js';
-import { checkProofDocument, verdict } from '../src/check-proof.js';
+import { checkProofDocument, checkReportText, verdict } from '../src/check-proof.js';
 import { TestReporter, assertEqual, isMainModule, runStandalone } from './test-style.mjs';
 import { proofExamples } from './run-examples.mjs';
 
@@ -69,6 +69,19 @@ function checkPackagedProof(name) {
   const proof = fs.readFileSync(path.join(examplesDir, 'proof', name), 'utf8');
   const program = Program.parseSources([{ text: source, filename: name }], { sourceMetadata: true });
   const report = checkProofDocument(program, proof);
+
+  // The packaged report says, in the terms of the five conditions, what
+  // checking this document established and what it left as an obligation.
+  // Comparing it here keeps those numbers honest: a change that quietly moved
+  // a step from recomputed to trusted would alter the corpus and show up as a
+  // diff rather than passing unnoticed.
+  const reportFile = path.join(examplesDir, 'check', `${name.replace(/\.pl$/, '')}.txt`);
+  if (!fs.existsSync(reportFile)) throw new Error(`missing packaged check report: ${path.relative(root, reportFile)}`);
+  const expected = fs.readFileSync(reportFile, 'utf8');
+  const actual = checkReportText(report);
+  if (expected !== actual) {
+    throw new Error(`check report mismatch for ${name}\nexpected:\n${expected}\nactual:\n${actual}`);
+  }
   totals.steps += report.steps;
   totals.verified += report.verified;
   totals.redecided += report.redecided;

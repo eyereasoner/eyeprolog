@@ -178,16 +178,34 @@ export async function main(argv) {
     return;
   }
 
-  if (defaultsToStdin(options.files.length, process.stdin.isTTY)) {
+  // `--check-proof -` reads the proof document from standard input, which is
+  // what makes `eyeprolog --proof p.pl | eyeprolog --check-proof - p.pl` work:
+  // the proof arrives on the pipe and the program is named on the command
+  // line. Stdin is then already spoken for, so it can neither be defaulted
+  // into the file list nor named again as `-`.
+  const proofOnStdin = options.checkProof === '-';
+  let proofText = null;
+  if (proofOnStdin) {
+    if (options.files.length === 0) {
+      throw new Error("--check-proof - reads the proof from stdin, so the program must be named as a file");
+    }
+    proofText = await readStdin();
+  }
+
+  if (!proofOnStdin && defaultsToStdin(options.files.length, process.stdin.isTTY)) {
     options.files.push('-');
   }
 
   const sourceParts = [];
-  let usedStdin = false;
+  let usedStdin = proofOnStdin;
 
   for (const file of options.files) {
     if (file === '-') {
-      if (usedStdin) throw new Error("stdin input '-' can only be used once");
+      if (usedStdin) {
+        throw new Error(proofOnStdin
+          ? "stdin is already read as the proof document by --check-proof -"
+          : "stdin input '-' can only be used once");
+      }
       usedStdin = true;
       sourceParts.push({ text: await readStdin(), filename: '<stdin>' });
     } else if (/^https?:\/\//.test(file)) {
@@ -252,9 +270,9 @@ export async function main(argv) {
   }
 
   if (options.checkProof != null) {
-    const { checkProofDocument, conditionReport, verdict } = await import('./check-proof.js');
-    const proofText = await fs.readFile(options.checkProof, 'utf8');
-    const report = checkProofDocument(program, proofText);
+    const { checkProofDocument, checkReportText, conditionReport, verdict } = await import('./check-proof.js');
+    const text = proofText ?? await fs.readFile(options.checkProof, 'utf8');
+    const report = checkProofDocument(program, text);
     if (report.steps === 0) throw new Error(`no step/4 proof step found in ${options.checkProof}`);
     if (!report.valid) {
       // The conditions go to stderr alongside the failures, so a failing run
@@ -263,10 +281,10 @@ export async function main(argv) {
       for (const failure of report.failures.slice(0, 5)) {
         process.stderr.write(`  [${failure.condition}] ${failure.conclusion} -- ${failure.detail}\n`);
       }
-      throw new Error(`${options.checkProof} is not a valid proof for this program: ${report.failures.length} failure(s)`);
+      const source = proofOnStdin ? 'the proof read from stdin' : options.checkProof;
+      throw new Error(`${source} is not a valid proof for this program: ${report.failures.length} failure(s)`);
     }
-    if (!options.quiet) for (const line of conditionReport(report)) process.stdout.write(`${line}\n`);
-    process.stdout.write(`${verdict(report)}.\n`);
+    process.stdout.write(options.quiet ? `${verdict(report)}.\n` : checkReportText(report));
     return;
   }
 
@@ -404,7 +422,9 @@ Options:
                         it as one builtin step; expanded explains through it,
                         as ordinary source steps. Only differs for a program
                         that calls a library. (implies --proof)
-  --check-proof file    Check a saved proof document against the input program.
+  --check-proof file    Check a saved proof document against the input program,
+                        condition by condition. Use - to read the proof from
+                        stdin: eyeprolog --proof p.pl | eyeprolog --check-proof - p.pl
   -q, --quads           Run embedded quad tests and fail if any do not hold.
                         Note: -q is quads, not quiet; --quiet has no short form.
   --quiet               Suppress answer terms while preserving Prolog output.

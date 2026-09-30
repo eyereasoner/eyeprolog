@@ -16,6 +16,16 @@ import module from 'node:module';
 // unwanted cache directory simply leaves startup as it was.
 module.enableCompileCache?.();
 
+// Writing into a pipe whose reader has already gone is a normal way for a
+// command line to end -- `eyeprolog --proof p.pl | head`, or a checker that
+// rejects a proof and exits before the producer finishes. Node reports it as
+// an unhandled error event on stdout, which would otherwise turn an ordinary
+// early exit into a crash dump.
+process.stdout.on('error', (error) => {
+  if (error?.code === 'EPIPE') process.exit(0);
+  throw error;
+});
+
 const { main } = await import('../src/cli.js');
 
 await main(process.argv.slice(2)).catch((error) => {

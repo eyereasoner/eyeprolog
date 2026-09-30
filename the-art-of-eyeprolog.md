@@ -9593,7 +9593,7 @@ explicit.
 | `-h`, `--help` | Show usage |
 | `-p`, `--proof` | Print `why/2` explanations |
 | `--proof-detail abstract|expanded` | Select library abstraction for proof output; implies `--proof` |
-| `--check-proof File` | Verify saved `why/2` proof certificates against the input program without proof search |
+| `--check-proof File` | Check a saved proof document against the input program, condition by condition, without proof search; `-` reads the proof from stdin |
 | `-q`, `--quads` | Run embedded quad tests and fail if any do not hold |
 | `--quiet` | Suppress resolved answer terms while preserving Prolog output and diagnostics |
 | `--iso-strict` | Restrict parsing and execution to ISO/IEC 13211-1:1995 + Corrigenda 1–3; reject EyeProlog language extensions (including `table` and `:+`) and disable bundled-library autoloading |
@@ -9974,7 +9974,9 @@ The [examples directory](https://github.com/eyereasoner/eyeprolog/tree/main/exam
 top-level directory contains **235 self-contained runnable programs**. Every
 source program has an exact answer file under
 [examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **235 programs** have a checked
-explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/). Every one of those explanations is re-checked by `npm test`, which
+explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/) together with the report of that
+check under [examples/check](https://github.com/eyereasoner/eyeprolog/tree/main/examples/check/), which says condition by condition what
+the check established and what it left as an obligation. Every one of those explanations is re-checked by `npm test`, which
 re-performs each recorded inference against its source clause and recomputes
 each primitive the document asserts. The thematic lists link every top-level program and open the program
 itself rather than merely naming it.

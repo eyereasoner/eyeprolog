@@ -4361,6 +4361,17 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         const strictVerified = runCli(['--iso-strict', '--check-proof', proofFile, programFile]);
         assertEqual(strictVerified.status, 0, 'strict verification status');
         assertEqual(strictVerified.stdout.trimEnd().split('\n').pop(), 'checked: 2 steps.', 'strict verification verdict');
+        // The pipeline form: the proof arrives on stdin and the program is
+        // named on the command line, so a proof never has to touch the disk.
+        const piped = runCli(['--check-proof', '-', programFile], { input: generated.stdout });
+        assertEqual(piped.status, 0, 'piped verification status');
+        assertEqual(piped.stdout, verified.stdout, 'piped verification matches the file form');
+        const pipedNoProgram = runCli(['--check-proof', '-'], { input: generated.stdout });
+        assertEqual(pipedNoProgram.status, 1, 'piped verification needs a program');
+        assertIncludes(pipedNoProgram.stderr, 'the program must be named as a file', 'piped verification diagnostic');
+        const pipedTwice = runCli(['--check-proof', '-', '-'], { input: generated.stdout });
+        assertEqual(pipedTwice.status, 1, 'stdin cannot also be the program');
+
         const tamperedFile = path.join(temp.dir, `proof-certificate-bad-${++temp.counter}.pl`);
         fs.writeFileSync(tamperedFile, generated.stdout.replace('step(p(a),', 'step(p(b),'));
         const rejected = runCli(['--check-proof', tamperedFile, programFile]);
