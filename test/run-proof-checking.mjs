@@ -11,7 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { Program } from '../src/index.js';
-import { checkProofDocument, checkReportText, verdict } from '../src/check-proof.js';
+import { checkProofDocument, checkReportTerms, verdict } from '../src/check-proof.js';
 import { TestReporter, assertEqual, isMainModule, runStandalone } from './test-style.mjs';
 import { proofExamples } from './run-examples.mjs';
 
@@ -70,15 +70,16 @@ function checkPackagedProof(name) {
   const program = Program.parseSources([{ text: source, filename: name }], { sourceMetadata: true });
   const report = checkProofDocument(program, proof);
 
-  // The packaged report says, in the terms of the five conditions, what
-  // checking this document established and what it left as an obligation.
+  // The packaged report says, as ordinary Prolog facts, what checking this
+  // document established and what it left as an obligation -- the same kind of
+  // artifact as the proof it checked, so a later program can reason over it.
   // Comparing it here keeps those numbers honest: a change that quietly moved
   // a step from recomputed to trusted would alter the corpus and show up as a
   // diff rather than passing unnoticed.
-  const reportFile = path.join(examplesDir, 'check', `${name.replace(/\.pl$/, '')}.txt`);
+  const reportFile = path.join(examplesDir, 'check', name);
   if (!fs.existsSync(reportFile)) throw new Error(`missing packaged check report: ${path.relative(root, reportFile)}`);
   const expected = fs.readFileSync(reportFile, 'utf8');
-  const actual = checkReportText(report);
+  const actual = checkReportTerms(report);
   if (expected !== actual) {
     throw new Error(`check report mismatch for ${name}\nexpected:\n${expected}\nactual:\n${actual}`);
   }

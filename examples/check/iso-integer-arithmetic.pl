@@ -1,0 +1,11 @@
+condition('C1', resolution, ok, 5).
+condition('C2', well_founded, ok, 12).
+condition('C3', justification, ok, 12).
+condition('C4', coverage, ok, 12).
+condition('C5', re_decision, ok, 7).
+steps(12).
+verified(5).
+recomputed(7).
+trusted(0).
+claims(5).
+verdict(checked).

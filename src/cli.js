@@ -270,21 +270,19 @@ export async function main(argv) {
   }
 
   if (options.checkProof != null) {
-    const { checkProofDocument, checkReportText, conditionReport, verdict } = await import('./check-proof.js');
+    const { checkProofDocument, checkReportTerms, verdictTermText } = await import('./check-proof.js');
     const text = proofText ?? await fs.readFile(options.checkProof, 'utf8');
     const report = checkProofDocument(program, text);
     if (report.steps === 0) throw new Error(`no step/4 proof step found in ${options.checkProof}`);
+    // The check document goes to stdout whether or not the proof holds: a
+    // failing check is a result to be read and reasoned over, not the absence
+    // of one. The exit status and the stderr line carry the verdict to a shell.
+    if (!options.quiet) process.stdout.write(checkReportTerms(report));
     if (!report.valid) {
-      // The conditions go to stderr alongside the failures, so a failing run
-      // still says which of the five objected and which held.
-      for (const line of conditionReport(report)) process.stderr.write(`${line}\n`);
-      for (const failure of report.failures.slice(0, 5)) {
-        process.stderr.write(`  [${failure.condition}] ${failure.conclusion} -- ${failure.detail}\n`);
-      }
       const source = proofOnStdin ? 'the proof read from stdin' : options.checkProof;
       throw new Error(`${source} is not a valid proof for this program: ${report.failures.length} failure(s)`);
     }
-    process.stdout.write(options.quiet ? `${verdict(report)}.\n` : checkReportText(report));
+    if (options.quiet) process.stdout.write(verdictTermText(report));
     return;
   }
 
@@ -422,9 +420,11 @@ Options:
                         it as one builtin step; expanded explains through it,
                         as ordinary source steps. Only differs for a program
                         that calls a library. (implies --proof)
-  --check-proof file    Check a saved proof document against the input program,
-                        condition by condition. Use - to read the proof from
-                        stdin: eyeprolog --proof p.pl | eyeprolog --check-proof - p.pl
+  --check-proof file    Check a saved proof document against the input program
+                        and write the result as Prolog facts: condition/4 per
+                        condition, failure/3, obligation/3, and verdict/1.
+                        Use - to read the proof from stdin, for example
+                        eyeprolog --proof p.pl | eyeprolog --check-proof - p.pl
   -q, --quads           Run embedded quad tests and fail if any do not hold.
                         Note: -q is quads, not quiet; --quiet has no short form.
   --quiet               Suppress answer terms while preserving Prolog output.

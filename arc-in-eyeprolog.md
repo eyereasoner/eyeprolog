@@ -60,8 +60,14 @@ eyeprolog examples/age.pl --check-proof examples/proof/age.pl   # Check
 
 ```text
 ageAbove(patH, 'P80Y').
-checked: 7 steps, 2 recomputed.
+condition('C5', re_decision, ok, 2).
+verdict(checked).
 ```
+
+All three outputs are Prolog. The answer is a term, the proof is a set of
+`step/4` facts, and the check result is a set of `condition/4`, `failure/3`,
+`obligation/3` and `verdict/1` facts — so each stage can be read by the next
+one rather than only by a person.
 
 The question is part of the specification, not a prompt. `%% ?- ageAbove(X0, X1).`
 is precise enough to distinguish a right answer, a wrong answer, and a right

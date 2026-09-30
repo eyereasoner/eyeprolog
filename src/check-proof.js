@@ -205,7 +205,7 @@ function checkWellFounded(byConclusion, failures) {
       const next = frame.uses[frame.index++];
       if (!byConclusion.has(next)) continue;
       if (state.get(next) === OPEN) {
-        failures.push({ condition: 'C2', conclusion: next, detail: 'this conclusion is used, directly or not, by its own derivation' });
+        failures.push({ condition: 'C2', conclusion: next, term: byConclusion.get(next)?.conclusion ?? null, detail: 'this conclusion is used, directly or not, by its own derivation' });
         state.set(next, DONE);
         continue;
       }
@@ -297,11 +297,11 @@ export function checkProofDocument(program, text) {
     if (step.by?.type === ATOM && step.by.name === 'unproven') {
       // Not an unknown justification but an admission: the writer could not
       // explain this conclusion, and says so.
-      failures.push({ condition: 'C3', conclusion: key(step.conclusion), detail: 'recorded as unproven' });
+      failures.push({ condition: 'C3', conclusion: key(step.conclusion), term: step.conclusion, detail: 'recorded as unproven' });
       continue;
     }
     if (!justification) {
-      failures.push({ condition: 'C3', conclusion: key(step.conclusion), detail: `unknown justification ${key(step.by)}` });
+      failures.push({ condition: 'C3', conclusion: key(step.conclusion), term: step.conclusion, detail: `unknown justification ${key(step.by)}` });
       continue;
     }
     if (REDECIDED.has(justification.kind)) {
@@ -317,6 +317,7 @@ export function checkProofDocument(program, text) {
         failures.push({
           condition: 'C5',
           conclusion: key(step.conclusion),
+          term: step.conclusion,
           detail: outcome.detail
             ? `recomputing this ${justification.kind} step went wrong: ${outcome.detail}`
             : `recomputing this ${justification.kind} step does not give it`,
@@ -334,21 +335,21 @@ export function checkProofDocument(program, text) {
 
     const clause = numbering.get(justification.clause);
     if (!clause) {
-      failures.push({ condition: 'C1', conclusion: key(step.conclusion), detail: `the program has no clause ${justification.clause}` });
+      failures.push({ condition: 'C1', conclusion: key(step.conclusion), term: step.conclusion, detail: `the program has no clause ${justification.clause}` });
       continue;
     }
     if (justification.kind === 'fact' && (clause.body ?? []).length !== 0) {
-      failures.push({ condition: 'C1', conclusion: key(step.conclusion), detail: `clause ${justification.clause} has a body, so it is not a fact` });
+      failures.push({ condition: 'C1', conclusion: key(step.conclusion), term: step.conclusion, detail: `clause ${justification.clause} has a body, so it is not a fact` });
       continue;
     }
     const detail = checkResolution({ ...step, clause: justification.clause }, clause, `check${++checkFreshCounter}`);
-    if (detail) failures.push({ condition: 'C1', conclusion: key(step.conclusion), detail });
+    if (detail) failures.push({ condition: 'C1', conclusion: key(step.conclusion), term: step.conclusion, detail });
     else verified++;
   }
 
   for (const claim of claims) {
     if (!byConclusion.has(key(claim))) {
-      failures.push({ condition: 'C4', conclusion: key(claim), detail: 'claimed, but no step concludes it' });
+      failures.push({ condition: 'C4', conclusion: key(claim), term: claim, detail: 'claimed, but no step concludes it' });
     }
   }
   let uses = 0;
@@ -356,7 +357,7 @@ export function checkProofDocument(program, text) {
     for (const use of step.uses) {
       uses++;
       if (byConclusion.has(key(use)) || given.has(key(use))) continue;
-      failures.push({ condition: 'C4', conclusion: key(step.conclusion), detail: `uses ${key(use)}, which nothing concludes and the program does not give` });
+      failures.push({ condition: 'C4', conclusion: key(step.conclusion), term: step.conclusion, detail: `uses ${key(use)}, which nothing concludes and the program does not give` });
     }
   }
 
@@ -366,17 +367,13 @@ export function checkProofDocument(program, text) {
   // What each condition covered, so a reader can see the shape of the check
   // rather than only its verdict. A condition that examined nothing says so:
   // "0 steps" is information, not a pass.
+  // Names are Prolog atoms, because that is what the report is written as.
   const conditions = [
-    { id: 'C1', name: 'Resolution', covered: verified, failed: failed('C1'),
-      summary: `${verified} step(s) re-performed against the source clause they cite` },
-    { id: 'C2', name: 'Well-founded', covered: steps.length, failed: failed('C2'),
-      summary: `${steps.length} step(s) checked for a conclusion resting on its own derivation` },
-    { id: 'C3', name: 'Justification', covered: steps.length, failed: failed('C3'),
-      summary: `${steps.length} step(s) carrying exactly one known justification` },
-    { id: 'C4', name: 'Coverage', covered: claims.length + uses, failed: failed('C4'),
-      summary: `${claims.length} claim(s) and ${uses} use(s) resolved to a step or to a statement the program gives` },
-    { id: 'C5', name: 'Re-decision', covered: redecided, failed: failed('C5'),
-      summary: `${redecided} step(s) recomputed against a program holding no clause of the theory` },
+    { id: 'C1', name: 'resolution', covered: verified, failed: failed('C1') },
+    { id: 'C2', name: 'well_founded', covered: steps.length, failed: failed('C2') },
+    { id: 'C3', name: 'justification', covered: steps.length, failed: failed('C3') },
+    { id: 'C4', name: 'coverage', covered: claims.length + uses, failed: failed('C4') },
+    { id: 'C5', name: 're_decision', covered: redecided, failed: failed('C5') },
   ];
 
   return {
@@ -392,27 +389,61 @@ export function checkProofDocument(program, text) {
   };
 }
 
-// The condition-by-condition account, as lines. The obligations are listed
-// under C5 because that is the condition they escaped: a step recorded as
-// `builtin` that recomputation could not decide, or one whose justification
-// puts it outside recomputation altogether.
-export function conditionReport(report) {
-  const lines = [];
+// The whole check as ordinary Prolog facts, so a check result is the same kind
+// of thing as the proof it checked and the program that produced it: something
+// a later program can load and reason over rather than a report a person has
+// to read. One formatter backs the command line, the packaged
+// examples/check documents, and anything embedding the checker.
+//
+//   condition(Id, Name, Outcome, Covered)   one per condition, in order
+//   failure(Id, Conclusion, Detail)         Conclusion is the term itself
+//   obligation(Kind, Reason, Count)         what the check rests on
+//   steps/1 verified/1 recomputed/1 trusted/1 claims/1
+//   verdict(checked | checked_with_obligations | failed(N))
+export function checkReportTerms(report) {
+  const options = { quoted: true };
+  const out = [];
+  const say = (line) => out.push(line);
+
   for (const condition of report.conditions ?? []) {
-    const mark = condition.failed > 0 ? `${condition.failed} failure(s)` : 'ok';
-    lines.push(`  ${condition.id} ${condition.name.padEnd(13)} ${mark.padEnd(14)} ${condition.summary}`);
+    const outcome = condition.failed > 0 ? `failed(${condition.failed})` : 'ok';
+    say(`condition('${condition.id}', ${condition.name}, ${outcome}, ${condition.covered}).`);
   }
-  const obligations = report.trusted ?? [];
-  if (obligations.length > 0) {
-    const byReason = new Map();
-    for (const item of obligations) {
-      const reason = item.reason ?? item.kind;
-      byReason.set(reason, (byReason.get(reason) ?? 0) + 1);
-    }
-    const parts = [...byReason].map(([reason, count]) => `${count} ${reason}`).join(', ');
-    lines.push(`  -- ${obligations.length} obligation(s) the check rests on rather than establishes: ${parts}`);
+
+  for (const failure of report.failures ?? []) {
+    const conclusion = failure.term != null
+      ? termToString(failure.term, new Env(), true, options)
+      : quotedAtom(failure.conclusion);
+    say(`failure('${failure.condition}', ${conclusion}, ${quotedAtom(failure.detail)}).`);
   }
-  return lines;
+
+  const groups = new Map();
+  for (const item of report.trusted ?? []) {
+    const reason = item.reason ?? 'theory_scoped';
+    const groupKey = `${item.kind}\u0000${reason}`;
+    groups.set(groupKey, (groups.get(groupKey) ?? 0) + 1);
+  }
+  for (const [groupKey, count] of groups) {
+    const [kind, reason] = groupKey.split('\u0000');
+    say(`obligation(${kind}, ${reason}, ${count}).`);
+  }
+
+  say(`steps(${report.steps}).`);
+  say(`verified(${report.verified}).`);
+  say(`recomputed(${report.redecided}).`);
+  say(`trusted(${(report.trusted ?? []).length}).`);
+  say(`claims(${report.claims}).`);
+  say(`verdict(${verdictTerm(report)}).`);
+  return `${out.join('\n')}\n`;
+}
+
+function verdictTerm(report) {
+  if (!report.valid) return `failed(${report.failures.length})`;
+  return (report.trusted ?? []).length > 0 ? 'checked_with_obligations' : 'checked';
+}
+
+function quotedAtom(text) {
+  return `'${String(text).replaceAll('\\', '\\\\').replaceAll("'", "''")}'`;
 }
 
 // The program's clauses, numbered from 1 in load order -- the numbering
@@ -424,17 +455,9 @@ function programClauses(program) {
   return clauseNumbering(program).byNumber;
 }
 
-// The whole check as text: what each condition covered, anything that failed,
-// and the verdict. One formatter so the command line, the packaged
-// examples/check reports, and anything embedding the checker all say the same
-// thing about the same document.
-export function checkReportText(report) {
-  const lines = conditionReport(report);
-  for (const failure of report.failures) {
-    lines.push(`  [${failure.condition}] ${failure.conclusion} -- ${failure.detail}`);
-  }
-  lines.push(`${verdict(report)}.`);
-  return `${lines.join('\n')}\n`;
+// The verdict alone, as the one fact a script usually wants.
+export function verdictTermText(report) {
+  return `verdict(${verdictTerm(report)}).\n`;
 }
 
 export function verdict(report) {

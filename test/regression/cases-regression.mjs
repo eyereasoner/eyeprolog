@@ -4348,19 +4348,20 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         fs.writeFileSync(proofFile, generated.stdout);
         const verified = runCli(['--check-proof', proofFile, programFile]);
         assertEqual(verified.status, 0, 'verification status');
-        // The run accounts for all five conditions and then gives its verdict,
-        // so a reader sees which conditions the result rests on rather than
-        // only that it passed.
-        for (const condition of ['C1 Resolution', 'C2 Well-founded', 'C3 Justification', 'C4 Coverage', 'C5 Re-decision']) {
-          assertIncludes(verified.stdout, condition, `verification reports ${condition}`);
+        // The check result is itself ordinary Prolog: one condition/4 fact per
+        // condition, the totals, and a verdict. It parses, so a later program
+        // can load and reason over it rather than scrape a report.
+        for (const condition of ['resolution', 'well_founded', 'justification', 'coverage', 're_decision']) {
+          assertIncludes(verified.stdout, `, ${condition}, `, `verification reports ${condition}`);
         }
-        assertEqual(verified.stdout.trimEnd().split('\n').pop(), 'checked: 2 steps.', 'verification verdict');
-        assertEqual(verified.stdout.includes('obligation'), false, 'nothing was left trusted');
+        assertEqual(verified.stdout.trimEnd().split('\n').pop(), 'verdict(checked).', 'verification verdict');
+        assertEqual(verified.stdout.includes('obligation('), false, 'nothing was left trusted');
+        assertEqual(parseProgramText(verified.stdout, {}).length, 11, 'the check document is readable Prolog');
         const quiet = runCli(['--quiet', '--check-proof', proofFile, programFile]);
-        assertEqual(quiet.stdout, 'checked: 2 steps.\n', 'quiet verification stdout is the verdict alone');
+        assertEqual(quiet.stdout, 'verdict(checked).\n', 'quiet verification stdout is the verdict alone');
         const strictVerified = runCli(['--iso-strict', '--check-proof', proofFile, programFile]);
         assertEqual(strictVerified.status, 0, 'strict verification status');
-        assertEqual(strictVerified.stdout.trimEnd().split('\n').pop(), 'checked: 2 steps.', 'strict verification verdict');
+        assertEqual(strictVerified.stdout.trimEnd().split('\n').pop(), 'verdict(checked).', 'strict verification verdict');
         // The pipeline form: the proof arrives on stdin and the program is
         // named on the command line, so a proof never has to touch the disk.
         const piped = runCli(['--check-proof', '-', programFile], { input: generated.stdout });
@@ -4379,8 +4380,9 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         assertIncludes(rejected.stderr, 'is not a valid proof for this program', 'tampered verification stderr');
         // A failing run still accounts for every condition, so the report says
         // which one objected rather than only that something did.
-        assertIncludes(rejected.stderr, 'C1 Resolution', 'tampered run still reports the conditions');
-        assertIncludes(rejected.stderr, 'failure(s)', 'tampered run marks the objecting condition');
+        assertIncludes(rejected.stdout, 'condition(', 'tampered run still reports every condition');
+        assertIncludes(rejected.stdout, 'failure(', 'tampered run records what objected, as a fact');
+        assertIncludes(rejected.stdout, 'verdict(failed(', 'tampered run records a failing verdict');
       },
     },
     {
