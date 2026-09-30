@@ -3,7 +3,7 @@ condition('C2', well_founded, ok, 3).
 condition('C3', justification, ok, 3).
 condition('C4', coverage, ok, 3).
 condition('C5', re_decision, ok, 0).
-obligation(absent, theory_scoped, 1).
+obligation(absent, theory_scoped, \+ hates(alice, bob)).
 steps(3).
 verified(2).
 recomputed(0).

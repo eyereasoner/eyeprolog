@@ -3,7 +3,9 @@ condition('C2', well_founded, ok, 32).
 condition('C3', justification, ok, 32).
 condition('C4', coverage, ok, 38).
 condition('C5', re_decision, ok, 4).
-obligation(absent, theory_scoped, 3).
+obligation(absent, theory_scoped, \+ exclusion_renal(p001)).
+obligation(absent, theory_scoped, \+ exclusion_pregnancy(p001)).
+obligation(absent, theory_scoped, \+ inclusion_hba1c(p004)).
 steps(32).
 verified(25).
 recomputed(4).

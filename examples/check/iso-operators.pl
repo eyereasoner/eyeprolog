@@ -3,7 +3,7 @@ condition('C2', well_founded, ok, 9).
 condition('C3', justification, ok, 9).
 condition('C4', coverage, ok, 9).
 condition('C5', re_decision, ok, 2).
-obligation(builtin, reflective, 1).
+obligation(builtin, reflective, current_op(600, xfx, reports)).
 steps(9).
 verified(6).
 recomputed(2).

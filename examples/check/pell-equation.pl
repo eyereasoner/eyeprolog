@@ -3,7 +3,7 @@ condition('C2', well_founded, ok, 83).
 condition('C3', justification, ok, 83).
 condition('C4', coverage, ok, 85).
 condition('C5', re_decision, ok, 68).
-obligation(builtin, theory_scoped, 1).
+obligation(builtin, theory_scoped, sumall(Expression, (between(1, 8, N), pell(N, _x, Expression)), 568344)).
 steps(83).
 verified(14).
 recomputed(68).

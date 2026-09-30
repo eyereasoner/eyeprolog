@@ -3,7 +3,10 @@ condition('C2', well_founded, ok, 40).
 condition('C3', justification, ok, 40).
 condition('C4', coverage, ok, 57).
 condition('C5', re_decision, ok, 2).
-obligation(absent, theory_scoped, 4).
+obligation(absent, theory_scoped, \+ trivial_zero(z1)).
+obligation(absent, theory_scoped, \+ counterexample_found(yes)).
+obligation(absent, theory_scoped, \+ trivial_zero(z2)).
+obligation(absent, theory_scoped, \+ trivial_zero(z3)).
 steps(40).
 verified(34).
 recomputed(2).

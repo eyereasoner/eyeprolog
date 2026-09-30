@@ -3,8 +3,10 @@ condition('C2', well_founded, ok, 8).
 condition('C3', justification, ok, 8).
 condition('C4', coverage, ok, 8).
 condition('C5', re_decision, ok, 0).
-obligation(builtin, theory_scoped, 3).
-obligation(absent, theory_scoped, 1).
+obligation(builtin, theory_scoped, phrase(command(set(light(kitchen), on)), [set, kitchen, light, to, on])).
+obligation(builtin, theory_scoped, phrase(command(set(light(hall), off)), [set, hall, light, to, off])).
+obligation(builtin, theory_scoped, phrase(command(set(light(kitchen), on)), [set, kitchen, light, to, on, then, wait], [then, wait])).
+obligation(absent, theory_scoped, \+ phrase(command(__anon0), [set, garage, light, to, blinking])).
 steps(8).
 verified(4).
 recomputed(0).

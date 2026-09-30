@@ -9971,15 +9971,15 @@ Review questions:
 </figure>
 
 The [examples directory](https://github.com/eyereasoner/eyeprolog/tree/main/examples/) is the book's executable companion. The
-top-level directory contains **235 self-contained runnable programs**. Every
+top-level directory contains **236 self-contained runnable programs**. Every
 source program has an exact answer file under
-[examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **235 programs** have a checked
+[examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **236 programs** have a checked
 explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/) together with the result of that
 check under [examples/check](https://github.com/eyereasoner/eyeprolog/tree/main/examples/check/). A check result is itself ordinary Prolog
 — `condition/4` for each of the five conditions, `failure/3` for anything that
-did not hold, `obligation/3` for what the check rests on rather than
-establishes, counts including `composed/1` for conclusions carried by the goals
-they wrap, and `verdict/1` — so the same reasoning that produced an answer
+did not hold, one `obligation/3` naming each conclusion the check rests on
+rather than establishes, counts including `composed/1` for conclusions carried
+by the goals they wrap, and `verdict/1` — so the same reasoning that produced an answer
 can be turned on the question of whether that answer was checked. Every one of those explanations is re-checked by `npm test`, which
 re-performs each recorded inference against its source clause and recomputes
 each primitive the document asserts. The thematic lists link every top-level program and open the program
@@ -10284,6 +10284,7 @@ decisions, reasons, integrity conditions, and proof.
 | [Data negotiation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/data-negotiation.pl) | Offered and required data conditions derive an agreement or mismatch. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/data-negotiation.pl) · [proof](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/data-negotiation.pl) |
 | [Defeasible reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/defeasible-reasoning.pl) | A reimbursement policy overrides defaults by specificity, then compares three ways to handle one unresolved conflict between two independent defaults: an unstratified `\+/1` cycle, `tnot/1` with WFS's `undefined`, and this codebase's usual explicit conflict predicate. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/defeasible-reasoning.pl) |
 | [Deontic Logic](https://github.com/eyereasoner/eyeprolog/blob/main/examples/deontic-logic.pl) | Deontic logic: obligations, prohibitions, compensations, and violations. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/deontic-logic.pl) · [proof](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/deontic-logic.pl) |
+| [Evidence demand authority](https://github.com/eyereasoner/eyeprolog/blob/main/examples/evidence-demand-authority.pl) | A withdrawn demand for evidence: whether the missed deadline is a ground, and whether what was already handed over may be used. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/evidence-demand-authority.pl) · [proof](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/evidence-demand-authority.pl) |
 | [GDPR compliance](https://github.com/eyereasoner/eyeprolog/blob/main/examples/gdpr-compliance.pl) | Purpose, basis, and processing facts support compliance conclusions. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/gdpr-compliance.pl) · [proof](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/gdpr-compliance.pl) |
 | [Illegitimate Reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/illegitimate-reasoning.pl) | Illegitimate reasoning detector. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/illegitimate-reasoning.pl) |
 | [Integrity check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/integrity-check.pl) | An explicit invalid-state relation reports contradictory input and a diagnostic status. | [answers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/integrity-check.pl) · [proof](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/integrity-check.pl) |

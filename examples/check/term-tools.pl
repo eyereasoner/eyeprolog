@@ -3,7 +3,7 @@ condition('C2', well_founded, ok, 12).
 condition('C3', justification, ok, 12).
 condition('C4', coverage, ok, 12).
 condition('C5', re_decision, ok, 5).
-obligation(absent, theory_scoped, 1).
+obligation(absent, theory_scoped, \+ nonpositive_edge).
 steps(12).
 verified(6).
 recomputed(5).

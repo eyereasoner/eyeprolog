@@ -39,6 +39,7 @@
 import { ATOM, COMPOUND, Env, compareTerms, copyResolved, freshTerm, properListItems, termToString, unify } from './term.js';
 import { parseProgramText } from './parser.js';
 import { clauseNumbering } from './explain.js';
+import { formatTermForWrite } from './write.js';
 import { Program, autoloadProgramGoals } from './program.js';
 import { Solver } from './solver.js';
 
@@ -345,7 +346,7 @@ export function checkProofDocument(program, text) {
     if (REDECIDED.has(justification.kind)) {
       const reason = notRedecidableReason(step.conclusion);
       if (reason) {
-        trusted.push({ kind: justification.kind, conclusion: key(step.conclusion), reason });
+        trusted.push({ kind: justification.kind, conclusion: key(step.conclusion), term: step.conclusion, reason });
         continue;
       }
       const outcome = redecide(step.conclusion);
@@ -376,12 +377,12 @@ export function checkProofDocument(program, text) {
           continue;
         }
         // Nothing was learned about this step, so it is still an obligation.
-        trusted.push({ kind: justification.kind, conclusion: key(step.conclusion), reason: 'theory_scoped' });
+        trusted.push({ kind: justification.kind, conclusion: key(step.conclusion), term: step.conclusion, reason: 'theory_scoped' });
       }
       continue;
     }
     if (TRUSTED.has(justification.kind)) {
-      trusted.push({ kind: justification.kind, conclusion: key(step.conclusion) });
+      trusted.push({ kind: justification.kind, conclusion: key(step.conclusion), term: step.conclusion });
       continue;
     }
 
@@ -429,6 +430,8 @@ export function checkProofDocument(program, text) {
   ];
 
   return {
+    writeOptions: { doubleQuotes: program?.doubleQuotes ?? 'chars', doubleBar: true, quoted: true,
+      operators: [...(program?.operators?.values() ?? [])] },
     valid: failures.length === 0,
     steps: steps.length,
     verified,
@@ -454,7 +457,9 @@ export function checkProofDocument(program, text) {
 //   steps/1 verified/1 recomputed/1 trusted/1 claims/1
 //   verdict(checked | checked_with_obligations | failed(N))
 export function checkReportTerms(report) {
-  const options = { quoted: true };
+  // Write terms the way the proof under check writes them, so `\\+ G` is not
+  // spelled `'\\\\+'(G)` here and the two documents stay comparable by eye.
+  const options = report.writeOptions ?? { quoted: true };
   const out = [];
   const say = (line) => out.push(line);
 
@@ -465,20 +470,20 @@ export function checkReportTerms(report) {
 
   for (const failure of report.failures ?? []) {
     const conclusion = failure.term != null
-      ? termToString(failure.term, new Env(), true, options)
+      ? formatTermForWrite(failure.term, new Env(), options)
       : quotedAtom(failure.conclusion);
     say(`failure('${failure.condition}', ${conclusion}, ${quotedAtom(failure.detail)}).`);
   }
 
-  const groups = new Map();
+  // One fact per obligation, naming the conclusion itself. A count would say
+  // how much the check rests on without saying what, and what it rests on is
+  // the part a reader -- or a later program -- has to weigh. The total is in
+  // trusted/1 below.
   for (const item of report.trusted ?? []) {
-    const reason = item.reason ?? 'theory_scoped';
-    const groupKey = `${item.kind}\u0000${reason}`;
-    groups.set(groupKey, (groups.get(groupKey) ?? 0) + 1);
-  }
-  for (const [groupKey, count] of groups) {
-    const [kind, reason] = groupKey.split('\u0000');
-    say(`obligation(${kind}, ${reason}, ${count}).`);
+    const conclusion = item.term != null
+      ? formatTermForWrite(item.term, new Env(), options)
+      : quotedAtom(item.conclusion);
+    say(`obligation(${item.kind}, ${item.reason ?? 'theory_scoped'}, ${conclusion}).`);
   }
 
   say(`steps(${report.steps}).`);

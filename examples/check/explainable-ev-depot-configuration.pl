@@ -3,7 +3,7 @@ condition('C2', well_founded, ok, 54).
 condition('C3', justification, ok, 54).
 condition('C4', coverage, ok, 64).
 condition('C5', re_decision, ok, 11).
-obligation(absent, theory_scoped, 1).
+obligation(absent, theory_scoped, \+ blocker(depot_a, fleet22, __anon0)).
 steps(54).
 verified(42).
 recomputed(11).

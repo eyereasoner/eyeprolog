@@ -422,7 +422,9 @@ Options:
                         that calls a library. (implies --proof)
   --check-proof file    Check a saved proof document against the input program
                         and write the result as Prolog facts: condition/4 per
-                        condition, failure/3, obligation/3, and verdict/1.
+                        condition, failure/3 for what did not hold, one
+                        obligation/3 naming each conclusion the check rests on,
+                        and verdict/1.
                         Use - to read the proof from stdin, for example
                         eyeprolog --proof p.pl | eyeprolog --check-proof - p.pl
   -q, --quads           Run embedded quad tests and fail if any do not hold.
