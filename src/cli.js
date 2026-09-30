@@ -252,16 +252,20 @@ export async function main(argv) {
   }
 
   if (options.checkProof != null) {
-    const { checkProofDocument, verdict } = await import('./check-proof.js');
+    const { checkProofDocument, conditionReport, verdict } = await import('./check-proof.js');
     const proofText = await fs.readFile(options.checkProof, 'utf8');
     const report = checkProofDocument(program, proofText);
     if (report.steps === 0) throw new Error(`no step/4 proof step found in ${options.checkProof}`);
     if (!report.valid) {
+      // The conditions go to stderr alongside the failures, so a failing run
+      // still says which of the five objected and which held.
+      for (const line of conditionReport(report)) process.stderr.write(`${line}\n`);
       for (const failure of report.failures.slice(0, 5)) {
         process.stderr.write(`  [${failure.condition}] ${failure.conclusion} -- ${failure.detail}\n`);
       }
       throw new Error(`${options.checkProof} is not a valid proof for this program: ${report.failures.length} failure(s)`);
     }
+    if (!options.quiet) for (const line of conditionReport(report)) process.stdout.write(`${line}\n`);
     process.stdout.write(`${verdict(report)}.\n`);
     return;
   }
@@ -396,7 +400,10 @@ Input:
 Options:
   -h, --help            Show this help text and exit.
   -p, --proof           Enable proof explanations.
-  --proof-detail mode   Use abstract or expanded proof detail (implies --proof).
+  --proof-detail mode   abstract stops at a bundled library predicate and records
+                        it as one builtin step; expanded explains through it,
+                        as ordinary source steps. Only differs for a program
+                        that calls a library. (implies --proof)
   --check-proof file    Check a saved proof document against the input program.
   -q, --quads           Run embedded quad tests and fail if any do not hold.
                         Note: -q is quads, not quiet; --quiet has no short form.

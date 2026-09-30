@@ -1538,10 +1538,14 @@ Checking re-performs each step against the clause it cites: the clause must
 exist, its variables bound as the step recorded them must yield exactly this
 conclusion from exactly these uses, every claim must have a step, every use
 must resolve to a step or to a statement the program gives, and no conclusion
-may rest on itself. `builtin`, `absent`, `collected` and `asserted` steps are
-trusted rather than checked — deciding them again would mean running the
-program, which is what a checker must not do — and the report says how many
-there were rather than folding them into an undifferentiated success. An
+may rest on itself. A `builtin` step derives from no clause, so reading the
+document cannot decide it; it is computed again instead, against a program
+holding the bundled libraries and no clause of the theory under proof, and
+must agree. `absent`, `collected` and `asserted` steps stay trusted: the first
+two range over the theory that recomputation deliberately excludes, and a
+clause asserted at run time is in no source file to check against. The report
+counts what was verified, what was recomputed, and what remains an obligation
+rather than folding them into an undifferentiated success. An
 answer the solver found but the explanation cannot reproduce is recorded as
 `unproven`, which makes the document fail its check, because that is the
 truth about it.

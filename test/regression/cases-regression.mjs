@@ -4348,15 +4348,28 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         fs.writeFileSync(proofFile, generated.stdout);
         const verified = runCli(['--check-proof', proofFile, programFile]);
         assertEqual(verified.status, 0, 'verification status');
-        assertEqual(verified.stdout, 'checked: 2 steps.\n', 'verification stdout');
+        // The run accounts for all five conditions and then gives its verdict,
+        // so a reader sees which conditions the result rests on rather than
+        // only that it passed.
+        for (const condition of ['C1 Resolution', 'C2 Well-founded', 'C3 Justification', 'C4 Coverage', 'C5 Re-decision']) {
+          assertIncludes(verified.stdout, condition, `verification reports ${condition}`);
+        }
+        assertEqual(verified.stdout.trimEnd().split('\n').pop(), 'checked: 2 steps.', 'verification verdict');
+        assertEqual(verified.stdout.includes('obligation'), false, 'nothing was left trusted');
+        const quiet = runCli(['--quiet', '--check-proof', proofFile, programFile]);
+        assertEqual(quiet.stdout, 'checked: 2 steps.\n', 'quiet verification stdout is the verdict alone');
         const strictVerified = runCli(['--iso-strict', '--check-proof', proofFile, programFile]);
         assertEqual(strictVerified.status, 0, 'strict verification status');
-        assertEqual(strictVerified.stdout, 'checked: 2 steps.\n', 'strict verification stdout');
+        assertEqual(strictVerified.stdout.trimEnd().split('\n').pop(), 'checked: 2 steps.', 'strict verification verdict');
         const tamperedFile = path.join(temp.dir, `proof-certificate-bad-${++temp.counter}.pl`);
         fs.writeFileSync(tamperedFile, generated.stdout.replace('step(p(a),', 'step(p(b),'));
         const rejected = runCli(['--check-proof', tamperedFile, programFile]);
         assertEqual(rejected.status, 1, 'tampered verification status');
         assertIncludes(rejected.stderr, 'is not a valid proof for this program', 'tampered verification stderr');
+        // A failing run still accounts for every condition, so the report says
+        // which one objected rather than only that something did.
+        assertIncludes(rejected.stderr, 'C1 Resolution', 'tampered run still reports the conditions');
+        assertIncludes(rejected.stderr, 'failure(s)', 'tampered run marks the objecting condition');
       },
     },
     {

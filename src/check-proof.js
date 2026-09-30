@@ -351,8 +351,10 @@ export function checkProofDocument(program, text) {
       failures.push({ condition: 'C4', conclusion: key(claim), detail: 'claimed, but no step concludes it' });
     }
   }
+  let uses = 0;
   for (const step of steps) {
     for (const use of step.uses) {
+      uses++;
       if (byConclusion.has(key(use)) || given.has(key(use))) continue;
       failures.push({ condition: 'C4', conclusion: key(step.conclusion), detail: `uses ${key(use)}, which nothing concludes and the program does not give` });
     }
@@ -360,7 +362,57 @@ export function checkProofDocument(program, text) {
 
   checkWellFounded(byConclusion, failures);
 
-  return { valid: failures.length === 0, steps: steps.length, verified, redecided, trusted, failures, claims: claims.length };
+  const failed = (condition) => failures.filter((failure) => failure.condition === condition).length;
+  // What each condition covered, so a reader can see the shape of the check
+  // rather than only its verdict. A condition that examined nothing says so:
+  // "0 steps" is information, not a pass.
+  const conditions = [
+    { id: 'C1', name: 'Resolution', covered: verified, failed: failed('C1'),
+      summary: `${verified} step(s) re-performed against the source clause they cite` },
+    { id: 'C2', name: 'Well-founded', covered: steps.length, failed: failed('C2'),
+      summary: `${steps.length} step(s) checked for a conclusion resting on its own derivation` },
+    { id: 'C3', name: 'Justification', covered: steps.length, failed: failed('C3'),
+      summary: `${steps.length} step(s) carrying exactly one known justification` },
+    { id: 'C4', name: 'Coverage', covered: claims.length + uses, failed: failed('C4'),
+      summary: `${claims.length} claim(s) and ${uses} use(s) resolved to a step or to a statement the program gives` },
+    { id: 'C5', name: 'Re-decision', covered: redecided, failed: failed('C5'),
+      summary: `${redecided} step(s) recomputed against a program holding no clause of the theory` },
+  ];
+
+  return {
+    valid: failures.length === 0,
+    steps: steps.length,
+    verified,
+    redecided,
+    uses,
+    trusted,
+    failures,
+    claims: claims.length,
+    conditions,
+  };
+}
+
+// The condition-by-condition account, as lines. The obligations are listed
+// under C5 because that is the condition they escaped: a step recorded as
+// `builtin` that recomputation could not decide, or one whose justification
+// puts it outside recomputation altogether.
+export function conditionReport(report) {
+  const lines = [];
+  for (const condition of report.conditions ?? []) {
+    const mark = condition.failed > 0 ? `${condition.failed} failure(s)` : 'ok';
+    lines.push(`  ${condition.id} ${condition.name.padEnd(13)} ${mark.padEnd(14)} ${condition.summary}`);
+  }
+  const obligations = report.trusted ?? [];
+  if (obligations.length > 0) {
+    const byReason = new Map();
+    for (const item of obligations) {
+      const reason = item.reason ?? item.kind;
+      byReason.set(reason, (byReason.get(reason) ?? 0) + 1);
+    }
+    const parts = [...byReason].map(([reason, count]) => `${count} ${reason}`).join(', ');
+    lines.push(`  -- ${obligations.length} obligation(s) the check rests on rather than establishes: ${parts}`);
+  }
+  return lines;
 }
 
 // The program's clauses, numbered from 1 in load order -- the numbering
