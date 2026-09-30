@@ -114,6 +114,13 @@ with C5 as the only objecting condition.
 
 A condition that cannot fail is not much of a check.
 
+Not every step needs recomputing to be established. A control construct such as
+`once(G)` records the goal it wraps among its uses, and that goal is itself a
+step which C1 and C4 already check, so the conclusion is carried rather than
+trusted — and the checker verifies that entailment actually holds instead of
+assuming it. Constructs that claim something about the *absence* of further
+solutions are excluded, because no recorded use can establish an absence.
+
 ## 04 — Composition: a checked answer is data
 
 An arc need not stay isolated. Its output is the same kind of thing as its
@@ -200,18 +207,24 @@ the program themselves, with a different copy of the checker if they like.
 
 ## 08 — Catalogue: the corpus
 
-The pattern is not aspirational here. Every one of the **235 examples** ships
-with its answer and a checked proof, and `npm test` re-checks all of them on
-every run:
+The pattern is not aspirational here. Every one of the **236 examples** ships
+with its answer, the proof of that answer, and the result of checking the
+proof, and `npm test` re-checks all of them on every run:
 
 | | |
 | --- | ---: |
-| examples | 235 |
-| packaged proofs | 235 |
-| recorded steps | 36423 |
-| verified against a source clause | 20746 |
+| examples | 236 |
+| packaged proofs | 236 |
+| packaged check results | 236 |
+| recorded steps | 36432 |
+| verified against a source clause | 20753 |
 | recomputed independently | 14720 |
-| remaining obligations | 952 (2.6%) |
+| carried by the goal they wrap | 76 |
+| remaining obligations | 878 (2.4%) |
+
+Each obligation names the conclusion it stands for, so the residue can be read
+rather than only counted. Two thirds of it is one thing: a `\+` step claims a
+goal has no proof, and no recorded use can establish an absence.
 
 The proof directory is read from disk rather than from a list, so a document
 cannot be added without being checked. An unverified proof is worse than none,

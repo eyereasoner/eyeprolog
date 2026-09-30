@@ -3,7 +3,7 @@
   <desc id="desc">A rule in the center points left to its logical meaning and right to its operational reading.</desc>
   <defs>
     <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
-      <path d="M0,0 L0,6 L9,3 z" fill="#405E70"/>
+      <path d="M0,0 L0,6 L9,3 z" class="f-405E70"/>
     </marker>
     <style>
       .paper{fill:#FFFDF8;stroke:#17324D;stroke-width:2}
@@ -12,9 +12,30 @@
       .label{fill:#C8A100;font:bold 18px Georgia,serif}
       .code{fill:#102A3A;font:17px ui-monospace,SFMono-Regular,Consolas,monospace}
       .line{stroke:#405E70;stroke-width:2;fill:none;marker-end:url(#arrow)}
+    
+      .f-2C657A{fill:#2C657A}
+      .f-405E70{fill:#405E70}
+      .f-C8A100{fill:#C8A100}
+      .f-FFF9E8{fill:#FFF9E8}
+      .s-2C657A{stroke:#2C657A}
+      .s-C8A100{stroke:#C8A100}
+      @media (prefers-color-scheme: dark) {
+        .paper{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .ink{fill:#DCEAF2;font:18px Georgia,serif}
+        .small{fill:#CDDBE3;font:15px Georgia,serif}
+        .label{fill:#E7E0C1;font:bold 18px Georgia,serif}
+        .code{fill:#DCEAF2;font:17px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .line{stroke:#87A7BA;stroke-width:2;fill:none;marker-end:url(#arrow)}
+        .f-2C657A{fill:#2C4852}
+        .f-405E70{fill:#2D424F}
+        .f-C8A100{fill:#4D472A}
+        .f-FFF9E8{fill:#242014}
+        .s-2C657A{stroke:#77B6CE}
+        .s-C8A100{stroke:#D3BD66}
+      }
     </style>
   </defs>
-  <rect width="900" height="430" fill="#FFF9E8"/>
+  <rect width="900" height="430" class="f-FFF9E8"/>
   <rect class="paper" x="318" y="120" width="264" height="180" rx="8"/>
   <text class="label" x="450" y="155" text-anchor="middle">PROGRAM</text>
   <text class="code" x="338" y="200">path(X,Y) :-</text>
@@ -24,10 +45,10 @@
   <rect class="paper" x="35" y="55" width="235" height="305" rx="8"/>
   <text class="label" x="152" y="92" text-anchor="middle">LOGIC</text>
   <text class="ink" x="58" y="130">What is true?</text>
-  <path d="M65 172 C95 142,125 202,155 172 S215 202,245 172" fill="none" stroke="#2C657A" stroke-width="4"/>
-  <circle cx="65" cy="172" r="7" fill="#2C657A"/>
-  <circle cx="155" cy="172" r="7" fill="#2C657A"/>
-  <circle cx="245" cy="172" r="7" fill="#2C657A"/>
+  <path d="M65 172 C95 142,125 202,155 172 S215 202,245 172" fill="none" stroke-width="4" class="s-2C657A"/>
+  <circle cx="65" cy="172" r="7" class="f-2C657A"/>
+  <circle cx="155" cy="172" r="7" class="f-2C657A"/>
+  <circle cx="245" cy="172" r="7" class="f-2C657A"/>
   <text class="small" x="58" y="225">An edge followed by a</text>
   <text class="small" x="58" y="248">path is itself a path.</text>
   <text class="small" x="58" y="292">Ground consequences form</text>
@@ -36,10 +57,10 @@
   <rect class="paper" x="630" y="55" width="235" height="305" rx="8"/>
   <text class="label" x="747" y="92" text-anchor="middle">CONTROL</text>
   <text class="ink" x="653" y="130">How is it found?</text>
-  <circle cx="680" cy="170" r="8" fill="#C8A100"/>
-  <circle cx="735" cy="215" r="8" fill="#C8A100"/>
-  <circle cx="790" cy="260" r="8" fill="#C8A100"/>
-  <path d="M686 176 L728 209 M741 221 L783 254" stroke="#C8A100" stroke-width="3"/>
+  <circle cx="680" cy="170" r="8" class="f-C8A100"/>
+  <circle cx="735" cy="215" r="8" class="f-C8A100"/>
+  <circle cx="790" cy="260" r="8" class="f-C8A100"/>
+  <path d="M686 176 L728 209 M741 221 L783 254" stroke-width="3" class="s-C8A100"/>
   <text class="small" x="653" y="300">Choose an edge first;</text>
   <text class="small" x="653" y="323">then solve a smaller or</text>
   <text class="small" x="653" y="346">reused path question.</text>

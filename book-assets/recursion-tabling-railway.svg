@@ -5,7 +5,19 @@
     .map{fill:#EAF8FA}.land{fill:#FFF0D6}.rail{fill:none;stroke:#2C657A;stroke-width:8}.tie{fill:none;stroke:#FFFDF8;stroke-width:2;stroke-dasharray:4 8}
     .station{fill:#FFFDF8;stroke:#17324D;stroke-width:3}.known{fill:#DDF7FB;stroke:#008EAA;stroke-width:4}
     .text{fill:#17324D;font:16px ui-monospace,monospace}.ledger{fill:#FFFDF8;stroke:#17324D;stroke-width:2}.check{fill:#008EAA}
-  </style>
+  
+      @media (prefers-color-scheme: dark) {
+        .map{fill:#142325}
+        .land{fill:#272015}
+        .rail{fill:none;stroke:#77B6CE;stroke-width:8}
+        .tie{fill:none;stroke:#A0802E;stroke-width:2;stroke-dasharray:4 8}
+        .station{fill:#221E12;stroke:#82AEDA;stroke-width:3}
+        .known{fill:#152427;stroke:#6EC4D5;stroke-width:4}
+        .text{fill:#D7E3F0;font:16px ui-monospace,monospace}
+        .ledger{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .check{fill:#2C4C52}
+      }
+    </style>
   <rect width="900" height="380" class="map"/><path class="land" d="M0 270 Q170 210 330 280 T650 245 T900 275 V380 H0Z"/>
   <circle class="known" cx="48" cy="42" r="10"/><text class="text" x="68" y="48">answer already tabled</text>
   <path class="rail" d="M75 250 C180 130 290 115 390 190 S580 300 700 190 S800 105 845 145"/>

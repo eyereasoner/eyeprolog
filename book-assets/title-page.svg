@@ -50,10 +50,39 @@
         font-size: 28px;
         letter-spacing: 3px;
       }
+    
+      .f-FFFDF8{fill:#FFFDF8}
+      @media (prefers-color-scheme: dark) {
+        .title-small{
+        fill: #D7E3F0;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 52px;
+        letter-spacing: 8px;
+      }
+        .title-main{
+        fill: #D7E3F0;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 108px;
+        font-weight: 600;
+        letter-spacing: -3px;
+      }
+        .subtitle{
+        fill: #CDDDE3;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 30px;
+      }
+        .author{
+        fill: #D7E3F0;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 28px;
+        letter-spacing: 3px;
+      }
+        .f-FFFDF8{fill:#221E12}
+      }
     </style>
   </defs>
 
-  <rect width="1000" height="1450" fill="#fffdf8"/>
+  <rect width="1000" height="1450" class="f-FFFDF8"/>
 
   <!-- Native SVG rendering of the original EYE rainbow mark. -->
   <svg x="340" y="180" width="320" height="320" viewBox="0 0 68 68"

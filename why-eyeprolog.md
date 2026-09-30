@@ -270,9 +270,9 @@ separately in the result, and reported as what the check still rests on rather
 than what it establishes.
 
 The packaged corpus makes the proportion visible. Every one of the 235
-examples carries a proof: 36423 steps, of which 20746 are verified against
-their source clause, 14720 are recomputed independently, and 952 — 2.6% —
-remain obligations. `npm test` re-checks all of them on every run, and the
+examples carries a proof: 36432 steps, of which 20753 are verified against
+their source clause, 14720 are recomputed independently, 76 are carried by the
+goals they wrap, and 878 — 2.4% — remain obligations, each one named. `npm test` re-checks all of them on every run, and the
 proof directory is read from disk rather than from a list, so a document cannot
 be added without being checked. An unverified proof is worse than none, because
 it still looks like evidence.

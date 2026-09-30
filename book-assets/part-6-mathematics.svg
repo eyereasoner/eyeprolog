@@ -7,8 +7,33 @@
       .arch{fill:#E2BA22;stroke:#9D8200;stroke-width:3}.water{fill:#BFEAF1}.ink{fill:none;stroke:#17324D;stroke-width:2.5;stroke-linecap:round}
       .green{stroke:#008EAA}.red{stroke:#C8A100}.gold{stroke:#E2BA22}.title{fill:#9D8200;font:bold 24px Georgia,serif}
       .label{fill:#17324D;font:18px Georgia,serif}.code{fill:#102A3A;font:15px ui-monospace,SFMono-Regular,Consolas,monospace}
+    
+      .f-008EAA{fill:#008EAA}
+      .f-EAF8FA{fill:#EAF8FA}
+      .f-FFF9E8{fill:#FFF9E8}
+      .s-008EAA{stroke:#008EAA}
+      .s-17324D{stroke:#17324D}
+      @media (prefers-color-scheme: dark) {
+        .sky{fill:#142325}
+        .ground{fill:#2A2717}
+        .stone{fill:#242014;stroke:#82AEDA;stroke-width:2}
+        .arch{fill:#453E25;stroke:#D6C572;stroke-width:3}
+        .water{fill:#18292C}
+        .ink{fill:none;stroke:#82AEDA;stroke-width:2.5;stroke-linecap:round}
+        .green{stroke:#6EC4D5}
+        .red{stroke:#D3BD66}
+        .gold{stroke:#CEB556}
+        .title{fill:#EBE5CA;font:bold 24px Georgia,serif}
+        .label{fill:#D7E3F0;font:18px Georgia,serif}
+        .code{fill:#DCEAF2;font:15px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .f-008EAA{fill:#2C4C52}
+        .f-EAF8FA{fill:#142325}
+        .f-FFF9E8{fill:#242014}
+        .s-008EAA{stroke:#6EC4D5}
+        .s-17324D{stroke:#82AEDA}
+      }
     </style>
-    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#008EAA"/></marker>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" class="f-008EAA"/></marker>
   </defs>
   <rect width="900" height="470" class="sky"/><path class="water" d="M0 360Q120 335 240 360T480 360T720 360T960 360V470H0Z"/>
   <path class="ground" d="M0 300H170L230 340H670L730 300H900V470H0Z" opacity=".55"/>
@@ -31,23 +56,23 @@
 
   <rect class="stone" x="660" y="80" width="205" height="190" rx="10"/>
   <text class="label" x="762" y="110" text-anchor="middle">COMPUTATION</text>
-  <circle cx="710" cy="155" r="20" fill="#EAF8FA" stroke="#008EAA" stroke-width="2"/>
+  <circle cx="710" cy="155" r="20" stroke-width="2" class="f-EAF8FA s-008EAA"/>
   <text class="code" x="710" y="160" text-anchor="middle">?</text>
   <path class="ink green" marker-end="url(#arr)" d="M732 155H797"/>
-  <rect x="797" y="137" width="45" height="36" rx="6" fill="#EAF8FA" stroke="#008EAA" stroke-width="2"/>
+  <rect x="797" y="137" width="45" height="36" rx="6" stroke-width="2" class="f-EAF8FA s-008EAA"/>
   <text class="code" x="819" y="160" text-anchor="middle">X</text>
   <text class="code" x="682" y="207">witness</text>
   <text class="code" x="682" y="235">proof</text>
   <text class="code" x="682" y="260">or counterexample</text>
 
   <g transform="translate(300 335)">
-    <circle cx="0" cy="0" r="27" fill="#FFF9E8" stroke="#17324D" stroke-width="2"/>
+    <circle cx="0" cy="0" r="27" stroke-width="2" class="f-FFF9E8 s-17324D"/>
     <text class="code" x="0" y="5" text-anchor="middle">axiom</text>
     <path class="ink green" d="M27 0H103"/>
-    <circle cx="130" cy="0" r="27" fill="#FFF9E8" stroke="#17324D" stroke-width="2"/>
+    <circle cx="130" cy="0" r="27" stroke-width="2" class="f-FFF9E8 s-17324D"/>
     <text class="code" x="130" y="5" text-anchor="middle">rule</text>
     <path class="ink green" d="M157 0H233"/>
-    <circle cx="260" cy="0" r="27" fill="#EAF8FA" stroke="#008EAA" stroke-width="2"/>
+    <circle cx="260" cy="0" r="27" stroke-width="2" class="f-EAF8FA s-008EAA"/>
     <text class="code" x="260" y="5" text-anchor="middle">answer</text>
   </g>
   <text class="label" x="450" y="420" text-anchor="middle">certainty whose boundary is visible</text>

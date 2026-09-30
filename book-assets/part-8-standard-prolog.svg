@@ -12,15 +12,45 @@
       .screen-code{fill:#DDF7FB;font:12px ui-monospace,SFMono-Regular,Consolas,monospace}
       .small-label{fill:#17324D;font:bold 14px Georgia,serif}.small-ink{fill:#17324D;font:14px Georgia,serif}
       .line{fill:none;stroke:#537487;stroke-width:2.5;stroke-linecap:round}.wire{fill:none;stroke:#C8A100;stroke-width:3}
+    
+      .f-537487{fill:#537487}
+      .f-C8A100{fill:#C8A100}
+      .f-DDF7FB{fill:#DDF7FB}
+      .f-FFFDF8{fill:#FFFDF8}
+      .s-17324D{stroke:#17324D}
+      @media (prefers-color-scheme: dark) {
+        .wall{fill:#142325}
+        .floor{fill:#272015}
+        .bench{fill:#36301D;stroke:#D6C572;stroke-width:3}
+        .paper{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .screen{fill:#334F5F;stroke:#82AEDA;stroke-width:3}
+        .green{fill:#152427;stroke:#6EC4D5;stroke-width:2}
+        .gold{fill:#2A2717;stroke:#CEB556;stroke-width:2}
+        .red{fill:#272015;stroke:#D3BD66;stroke-width:2}
+        .blue{fill:#152427;stroke:#81A0B1;stroke-width:2}
+        .ink{fill:#D7E3F0;font:16px Georgia,serif}
+        .label{fill:#D7E3F0;font:bold 15px Georgia,serif}
+        .code{fill:#152427;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .screen-code{fill:#E1F1F4;font:12px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .small-label{fill:#D7E3F0;font:bold 14px Georgia,serif}
+        .small-ink{fill:#D7E3F0;font:14px Georgia,serif}
+        .line{fill:none;stroke:#81A0B1;stroke-width:2.5;stroke-linecap:round}
+        .wire{fill:none;stroke:#D3BD66;stroke-width:3}
+        .f-537487{fill:#2C3D47}
+        .f-C8A100{fill:#4D472A}
+        .f-DDF7FB{fill:#152427}
+        .f-FFFDF8{fill:#221E12}
+        .s-17324D{stroke:#82AEDA}
+      }
     </style>
-    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#C8A100"/></marker>
+    <marker id="arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" class="f-C8A100"/></marker>
   </defs>
   <rect width="900" height="300" class="wall"/><rect y="300" width="900" height="140" class="floor"/>
   <rect class="bench" x="55" y="270" width="790" height="42" rx="5"/><rect class="bench" x="100" y="310" width="24" height="110"/><rect class="bench" x="776" y="310" width="24" height="110"/>
 
   <g transform="translate(82 68)">
     <path class="paper" d="M0 20Q60 0 120 20V170Q60 150 0 170Z"/><path class="paper" d="M120 20Q180 0 240 20V170Q180 150 120 170Z"/>
-    <line x1="120" y1="20" x2="120" y2="170" stroke="#17324D" stroke-width="2"/>
+    <line x1="120" y1="20" x2="120" y2="170" stroke-width="2" class="s-17324D"/>
     <text class="label" x="120" y="48" text-anchor="middle">ISO PROLOG</text>
     <text class="ink" x="120" y="76" text-anchor="middle">control · terms</text><text class="ink" x="120" y="100" text-anchor="middle">state · operators</text><text class="ink" x="120" y="124" text-anchor="middle">streams · errors</text>
   </g>
@@ -32,7 +62,7 @@
     <text class="screen-code" x="24" y="102">assertz(task(verify)).</text>
     <text class="screen-code" x="24" y="134">read_term(Stream, Term, Options).</text>
     <text class="screen-code" x="24" y="166">Result = standard_practice.</text>
-    <path d="M105 185L90 215H210L195 185Z" fill="#537487" stroke="#17324D" stroke-width="2"/>
+    <path d="M105 185L90 215H210L195 185Z" stroke-width="2" class="f-537487 s-17324D"/>
   </g>
 
   <g transform="translate(690 62)">
@@ -45,8 +75,8 @@
   <path class="wire" marker-end="url(#arrow)" d="M665 150C675 150 678 150 686 150"/>
 
   <g transform="translate(270 325)">
-    <circle cx="0" cy="-28" r="18" fill="#FFFDF8" stroke="#17324D" stroke-width="2"/>
-    <path d="M-28 0Q0-25 28 0L22 72H-22Z" fill="#DDF7FB" stroke="#17324D" stroke-width="2"/>
+    <circle cx="0" cy="-28" r="18" stroke-width="2" class="f-FFFDF8 s-17324D"/>
+    <path d="M-28 0Q0-25 28 0L22 72H-22Z" stroke-width="2" class="f-DDF7FB s-17324D"/>
     <path class="line" d="M-12 72L-15 105M12 72L15 105"/>
   </g>
   <rect class="blue" x="350" y="337" width="400" height="66" rx="10"/>

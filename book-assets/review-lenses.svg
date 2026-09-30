@@ -5,6 +5,24 @@
     <style>
       .bg{fill:#FFF9E8}.artifact{fill:#17324D;stroke:#102A3A;stroke-width:3}.lens{stroke-width:2}.meaning{fill:#DDF7FB;stroke:#008EAA}.logic{fill:#BFEAF1;stroke:#2C657A}.control{fill:#FFF4BF;stroke:#E2BA22}.evidence{fill:#FFF0D6;stroke:#C8A100}.boundary{fill:#DDF7FB;stroke:#2C657A}
       .line{fill:none;stroke:#537487;stroke-width:2.5}.cycle{fill:none;stroke:#9D8200;stroke-width:3;stroke-linecap:round}.arrow{fill:#9D8200}.title{fill:#9D8200;font:bold 24px Georgia,serif}.label{fill:#102A3A;font:bold 17px Georgia,serif}.small{fill:#405E70;font:15px Georgia,serif}.code{fill:#FFFDF8;font:17px ui-monospace,SFMono-Regular,Consolas,monospace}.verb{fill:#9D8200;font:bold 15px Georgia,serif}
+    
+      @media (prefers-color-scheme: dark) {
+        .bg{fill:#242014}
+        .artifact{fill:#31475C;stroke:#88BCDC;stroke-width:3}
+        .meaning{fill:#152427;stroke:#6EC4D5}
+        .logic{fill:#18292C;stroke:#77B6CE}
+        .control{fill:#2A2717;stroke:#CEB556}
+        .evidence{fill:#272015;stroke:#D3BD66}
+        .boundary{fill:#152427;stroke:#77B6CE}
+        .line{fill:none;stroke:#81A0B1;stroke-width:2.5}
+        .cycle{fill:none;stroke:#D6C572;stroke-width:3;stroke-linecap:round}
+        .arrow{fill:#544D2D}
+        .title{fill:#EBE5CA;font:bold 24px Georgia,serif}
+        .label{fill:#DCEAF2;font:bold 17px Georgia,serif}
+        .small{fill:#CDDBE3;font:15px Georgia,serif}
+        .code{fill:#F4EFE1;font:17px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .verb{fill:#EBE5CA;font:bold 15px Georgia,serif}
+      }
     </style>
   </defs>
   <rect width="900" height="470" class="bg"/>

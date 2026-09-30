@@ -4,7 +4,23 @@
   <defs><style>
     .bg{fill:#FFF9E8}.partial{fill:#DDF7FB;stroke:#008EAA;stroke-width:2}.complete{fill:#DDF7FB;stroke:#537487;stroke-width:2}.term{fill:#FFF4BF;stroke:#E2BA22;stroke-width:2}.contract{fill:#FFFDF8;stroke:#C8A100;stroke-width:2.5}
     .title{fill:#C8A100;font:bold 24px Georgia,serif}.label{fill:#17324D;font:bold 17px Georgia,serif}.prose{fill:#405E70;font:15px Georgia,serif}.code{fill:#102A3A;font:14px ui-monospace,monospace}.center{fill:#9D8200;font:bold 17px Georgia,serif}.line{fill:none;stroke:#537487;stroke-width:3}
-  </style><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#537487"/></marker></defs>
+  
+      .f-537487{fill:#537487}
+      @media (prefers-color-scheme: dark) {
+        .bg{fill:#242014}
+        .partial{fill:#152427;stroke:#6EC4D5;stroke-width:2}
+        .complete{fill:#152427;stroke:#81A0B1;stroke-width:2}
+        .term{fill:#2A2717;stroke:#CEB556;stroke-width:2}
+        .contract{fill:#221E12;stroke:#D3BD66;stroke-width:2.5}
+        .title{fill:#E7E0C1;font:bold 24px Georgia,serif}
+        .label{fill:#D7E3F0;font:bold 17px Georgia,serif}
+        .prose{fill:#CDDBE3;font:15px Georgia,serif}
+        .code{fill:#DCEAF2;font:14px ui-monospace,monospace}
+        .center{fill:#EBE5CA;font:bold 17px Georgia,serif}
+        .line{fill:none;stroke:#81A0B1;stroke-width:3}
+        .f-537487{fill:#2C3D47}
+      }
+    </style><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" class="f-537487"/></marker></defs>
   <rect class="bg" width="900" height="430"/><text class="title" x="450" y="38" text-anchor="middle">THREE PROMISES, THREE PROOF OBLIGATIONS</text>
   <rect class="partial" x="35" y="85" width="250" height="155" rx="12"/><text class="label" x="160" y="120" text-anchor="middle">PARTIAL CORRECTNESS</text><text class="prose" x="160" y="157" text-anchor="middle">Every returned answer</text><text class="prose" x="160" y="181" text-anchor="middle">is justified.</text><text class="code" x="160" y="216" text-anchor="middle">no false answers</text>
   <rect class="complete" x="325" y="85" width="250" height="155" rx="12"/><text class="label" x="450" y="120" text-anchor="middle">COMPLETENESS</text><text class="prose" x="450" y="157" text-anchor="middle">Every intended answer</text><text class="prose" x="450" y="181" text-anchor="middle">can be found.</text><text class="code" x="450" y="216" text-anchor="middle">none silently lost</text>

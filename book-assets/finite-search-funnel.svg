@@ -8,15 +8,40 @@
       .title{fill:#C8A100;font:bold 24px Georgia,serif}.label{fill:#17324D;font:bold 17px Georgia,serif}
       .prose{fill:#405E70;font:16px Georgia,serif}.code{fill:#102A3A;font:15px ui-monospace,SFMono-Regular,Consolas,monospace}
       .line{fill:none;stroke:#537487;stroke-width:2.5}.cut{fill:none;stroke:#C8A100;stroke-width:2}
+    
+      .f-537487{fill:#537487}
+      .f-DDF7FB{fill:#DDF7FB}
+      .f-FFF0D6{fill:#FFF0D6}
+      .f-FFF9E8{fill:#FFF9E8}
+      .f-FFFDF8{fill:#FFFDF8}
+      .s-17324D{stroke:#17324D}
+      @media (prefers-color-scheme: dark) {
+        .paper{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .green{fill:#152427;stroke:#6EC4D5;stroke-width:2}
+        .gold{fill:#2A2717;stroke:#CEB556;stroke-width:2}
+        .rose{fill:#272015;stroke:#D3BD66;stroke-width:2}
+        .title{fill:#E7E0C1;font:bold 24px Georgia,serif}
+        .label{fill:#D7E3F0;font:bold 17px Georgia,serif}
+        .prose{fill:#CDDBE3;font:16px Georgia,serif}
+        .code{fill:#DCEAF2;font:15px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .line{fill:none;stroke:#81A0B1;stroke-width:2.5}
+        .cut{fill:none;stroke:#D3BD66;stroke-width:2}
+        .f-537487{fill:#2C3D47}
+        .f-DDF7FB{fill:#152427}
+        .f-FFF0D6{fill:#272015}
+        .f-FFF9E8{fill:#242014}
+        .f-FFFDF8{fill:#221E12}
+        .s-17324D{stroke:#82AEDA}
+      }
     </style>
-    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#537487"/></marker>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" class="f-537487"/></marker>
   </defs>
-  <rect width="900" height="500" fill="#FFF9E8"/>
+  <rect width="900" height="500" class="f-FFF9E8"/>
   <text class="title" x="450" y="35" text-anchor="middle">DESIGN THE SEARCH BEFORE RUNNING IT</text>
-  <path d="M80 85H820L690 360H210Z" fill="#FFFDF8" stroke="#17324D" stroke-width="2"/>
-  <path d="M80 85H820L780 170H120Z" fill="#DDF7FB"/>
-  <path d="M120 170H780L740 255H160Z" fill="#FFF0D6"/>
-  <path d="M160 255H740L700 340H200Z" fill="#DDF7FB"/>
+  <path d="M80 85H820L690 360H210Z" stroke-width="2" class="f-FFFDF8 s-17324D"/>
+  <path d="M80 85H820L780 170H120Z" class="f-DDF7FB"/>
+  <path d="M120 170H780L740 255H160Z" class="f-FFF0D6"/>
+  <path d="M160 255H740L700 340H200Z" class="f-DDF7FB"/>
   <text class="label" x="450" y="113" text-anchor="middle">1 · GENERATE A FINITE DOMAIN</text>
   <text class="code" x="450" y="142" text-anchor="middle">workers × tasks = 3 × 2 = 6 candidates</text>
   <text class="label" x="450" y="199" text-anchor="middle">2 · APPLY THE EARLIEST READY CONSTRAINTS</text>

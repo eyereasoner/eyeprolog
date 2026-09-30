@@ -8,8 +8,23 @@
       .title{fill:#C8A100;font:bold 23px Georgia,serif}.label{fill:#17324D;font:bold 16px Georgia,serif}
       .code{fill:#102A3A;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}.prose{fill:#405E70;font:15px Georgia,serif}
       .ray{fill:none;stroke:#537487;stroke-width:2.2}
+    
+      .f-537487{fill:#537487}
+      @media (prefers-color-scheme: dark) {
+        .bg{fill:#242014}
+        .term{fill:#152427;stroke:#6EC4D5;stroke-width:2}
+        .card{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .blue{fill:#152427;stroke:#81A0B1;stroke-width:2}
+        .gold{fill:#2A2717;stroke:#CEB556;stroke-width:2}
+        .title{fill:#E7E0C1;font:bold 23px Georgia,serif}
+        .label{fill:#D7E3F0;font:bold 16px Georgia,serif}
+        .code{fill:#DCEAF2;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .prose{fill:#CDDBE3;font:15px Georgia,serif}
+        .ray{fill:none;stroke:#81A0B1;stroke-width:2.2}
+        .f-537487{fill:#2C3D47}
+      }
     </style>
-    <marker id="a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#537487"/></marker>
+    <marker id="a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" class="f-537487"/></marker>
   </defs>
   <rect width="900" height="400" class="bg"/><text class="title" x="450" y="34" text-anchor="middle">ONE TERM, SEVERAL STANDARD VIEWS</text>
   <polygon class="term" points="350,95 500,75 555,200 455,285 325,220"/><text class="label" x="440" y="145" text-anchor="middle">TERM</text>

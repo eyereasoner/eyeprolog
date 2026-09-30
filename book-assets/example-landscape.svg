@@ -7,27 +7,54 @@
       .path{fill:none;stroke:#FFFDF8;stroke-width:5;stroke-linecap:round;opacity:.9}.link{fill:none;stroke:#537487;stroke-width:2.5;stroke-dasharray:6 5}
       .title{fill:#9D8200;font:bold 24px Georgia,serif}.label{fill:#102A3A;font:bold 17px Georgia,serif}
       .small{fill:#405E70;font:16px Georgia,serif}.output{fill:#405E70;font:14px Georgia,serif}.code{fill:#DDF7FB;font:16px ui-monospace,SFMono-Regular,Consolas,monospace}
+    
+      .f-BFEAF1{fill:#BFEAF1}
+      .f-DDF7FB{fill:#DDF7FB}
+      .f-F6D978{fill:#F6D978}
+      .f-FFF0D6{fill:#FFF0D6}
+      .f-FFFDF8{fill:#FFFDF8}
+      .s-008EAA{stroke:#008EAA}
+      .s-E2BA22{stroke:#E2BA22}
+      @media (prefers-color-scheme: dark) {
+        .bg{fill:#242014}
+        .region{stroke:#82AEDA;stroke-width:2}
+        .core{fill:#31475C;stroke:#88BCDC;stroke-width:3}
+        .path{fill:none;stroke:#A0802E;stroke-width:5;stroke-linecap:round;opacity:.9}
+        .link{fill:none;stroke:#81A0B1;stroke-width:2.5;stroke-dasharray:6 5}
+        .title{fill:#EBE5CA;font:bold 24px Georgia,serif}
+        .label{fill:#DCEAF2;font:bold 17px Georgia,serif}
+        .small{fill:#CDDBE3;font:16px Georgia,serif}
+        .output{fill:#CDDBE3;font:14px Georgia,serif}
+        .code{fill:#E1F1F4;font:16px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .f-BFEAF1{fill:#18292C}
+        .f-DDF7FB{fill:#152427}
+        .f-F6D978{fill:#36301D}
+        .f-FFF0D6{fill:#272015}
+        .f-FFFDF8{fill:#221E12}
+        .s-008EAA{stroke:#6EC4D5}
+        .s-E2BA22{stroke:#CEB556}
+      }
     </style>
   </defs>
   <rect width="900" height="500" class="bg"/>
   <text class="title" x="450" y="34" text-anchor="middle">THE EXAMPLES ARE A CONNECTED LANDSCAPE</text>
 
-  <path class="region" fill="#DDF7FB" d="M35 65H270L300 155L245 220H45Z"/>
+  <path class="region f-DDF7FB" d="M35 65H270L300 155L245 220H45Z"/>
   <text class="label" x="145" y="103" text-anchor="middle">MATHEMATICS</text>
   <text class="small" x="145" y="130" text-anchor="middle">induction · algebra · number</text>
   <text class="small" x="145" y="151" text-anchor="middle">theory · counterexamples</text>
 
-  <path class="region" fill="#F6D978" d="M630 65H865V220H655L600 155Z"/>
+  <path class="region f-F6D978" d="M630 65H865V220H655L600 155Z"/>
   <text class="label" x="755" y="103" text-anchor="middle">SEARCH &amp; PLANNING</text>
   <text class="small" x="755" y="130" text-anchor="middle">puzzles · routes · schedules</text>
   <text class="small" x="755" y="151" text-anchor="middle">states · optimization</text>
 
-  <path class="region" fill="#FFF0D6" d="M35 280H245L300 345L270 440H35Z"/>
+  <path class="region f-FFF0D6" d="M35 280H245L300 345L270 440H35Z"/>
   <text class="label" x="145" y="326" text-anchor="middle">POLICY &amp; TRUST</text>
   <text class="small" x="145" y="353" text-anchor="middle">decisions · provenance</text>
   <text class="small" x="145" y="374" text-anchor="middle">integrity · audit</text>
 
-  <path class="region" fill="#BFEAF1" d="M655 280H865V440H630L600 345Z"/>
+  <path class="region f-BFEAF1" d="M655 280H865V440H630L600 345Z"/>
   <text class="label" x="755" y="326" text-anchor="middle">SCIENCE &amp; MODELS</text>
   <text class="small" x="755" y="353" text-anchor="middle">models · measurements</text>
   <text class="small" x="755" y="374" text-anchor="middle">equations · evidence</text>
@@ -39,9 +66,9 @@
   <text class="code" x="450" y="268" text-anchor="middle" style="font-size:12px">eyeprolog --goal Q file.pl</text>
   <text class="code" x="450" y="300" text-anchor="middle">rule :- evidence.</text>
 
-  <rect x="305" y="385" width="140" height="55" rx="10" fill="#FFFDF8" stroke="#008EAA" stroke-width="2"/>
+  <rect x="305" y="385" width="140" height="55" rx="10" stroke-width="2" class="f-FFFDF8 s-008EAA"/>
   <text class="label" x="375" y="408" text-anchor="middle">ANSWERS</text><text class="output" x="375" y="428" text-anchor="middle">ground results</text>
-  <rect x="455" y="385" width="140" height="55" rx="10" fill="#FFFDF8" stroke="#E2BA22" stroke-width="2"/>
+  <rect x="455" y="385" width="140" height="55" rx="10" stroke-width="2" class="f-FFFDF8 s-E2BA22"/>
   <text class="label" x="525" y="408" text-anchor="middle">PROOFS</text><text class="output" x="525" y="428" text-anchor="middle">supporting steps</text>
   <path class="link" d="M410 325L382 385M490 325L518 385"/>
   <text class="small" x="450" y="474" text-anchor="middle">predict → run → compare → inspect → revise</text>

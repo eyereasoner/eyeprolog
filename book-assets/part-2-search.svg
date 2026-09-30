@@ -7,13 +7,34 @@
     .chosen{fill:none;stroke:#008EAA;stroke-width:9;stroke-linecap:round}
     .dead{stroke:#C8A100;stroke-width:5}.sign{fill:#FFFDF8;stroke:#17324D;stroke-width:2}
     .ink{fill:none;stroke:#17324D;stroke-width:3;stroke-linecap:round}.coat{fill:#E2BA22;stroke:#17324D;stroke-width:2}
-  </style>
+  
+      .f-E2BA22{fill:#E2BA22}
+      .f-E8DFCC{fill:#E8DFCC}
+      .f-F6D978{fill:#F6D978}
+      .s-17324D{stroke:#17324D}
+      @media (prefers-color-scheme: dark) {
+        .sky{fill:#142325}
+        .hill1{fill:#18292C}
+        .hill2{fill:#21373D}
+        .snow{fill:#221E12}
+        .path{fill:none;stroke:#D6C572;stroke-width:7;stroke-linecap:round;stroke-dasharray:9 7}
+        .chosen{fill:none;stroke:#6EC4D5;stroke-width:9;stroke-linecap:round}
+        .dead{stroke:#D3BD66;stroke-width:5}
+        .sign{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .ink{fill:none;stroke:#82AEDA;stroke-width:3;stroke-linecap:round}
+        .coat{fill:#453E25;stroke:#82AEDA;stroke-width:2}
+        .f-E2BA22{fill:#453E25}
+        .f-E8DFCC{fill:#2C2518}
+        .f-F6D978{fill:#36301D}
+        .s-17324D{stroke:#82AEDA}
+      }
+    </style>
   <rect width="900" height="420" class="sky"/>
-  <circle cx="735" cy="85" r="43" fill="#F6D978"/>
+  <circle cx="735" cy="85" r="43" class="f-F6D978"/>
   <polygon class="hill2" points="0,330 165,95 345,330"/><polygon class="snow" points="117,163 165,95 220,172 183,158 160,180 140,155"/>
   <polygon class="hill1" points="160,350 410,70 680,350"/><polygon class="snow" points="345,143 410,70 482,151 438,135 408,165 382,137"/>
   <polygon class="hill2" points="520,345 700,125 900,345"/><polygon class="snow" points="654,181 700,125 750,185 720,176 700,198 680,175"/>
-  <path d="M0 320 Q220 275 420 330 T900 305 V420 H0Z" fill="#E8DFCC"/>
+  <path d="M0 320 Q220 275 420 330 T900 305 V420 H0Z" class="f-E8DFCC"/>
   <path class="path" d="M95 360 C180 290 240 310 290 230 S395 170 480 235"/>
   <path class="path" d="M290 230 C345 265 335 325 395 342"/>
   <path class="path" d="M480 235 C565 175 590 100 660 145"/>
@@ -22,6 +43,6 @@
   <line class="dead" x1="380" y1="327" x2="410" y2="357"/><line class="dead" x1="410" y1="327" x2="380" y2="357"/>
   <line class="dead" x1="647" y1="132" x2="675" y2="158"/><line class="dead" x1="675" y1="132" x2="647" y2="158"/>
   <g transform="translate(75 315)"><circle cx="0" cy="-35" r="14" class="sign"/><path class="coat" d="M-22-13 Q0-28 22-13 L18 37 H-18Z"/><path class="ink" d="M-8 37 L-12 66 M8 37 L13 66 M18-2 L35 10"/></g>
-  <g transform="translate(760 205)"><rect class="sign" x="0" y="28" width="92" height="62"/><polygon points="-12,30 46,-10 104,30" fill="#E2BA22" stroke="#17324D" stroke-width="2"/><rect x="37" y="58" width="22" height="32" fill="#E2BA22" stroke="#17324D" stroke-width="2"/><path d="M72 0 Q65-25 76-43" class="ink"/></g>
+  <g transform="translate(760 205)"><rect class="sign" x="0" y="28" width="92" height="62"/><polygon points="-12,30 46,-10 104,30" stroke-width="2" class="f-E2BA22 s-17324D"/><rect x="37" y="58" width="22" height="32" stroke-width="2" class="f-E2BA22 s-17324D"/><path d="M72 0 Q65-25 76-43" class="ink"/></g>
   <g transform="translate(220 292)"><path class="ink" d="M0 38 V0"/><path class="sign" d="M0 3 L62 3 L52-17 L0-17Z"/><path class="sign" d="M0 28 L-55 28 L-45 8 L0 8Z"/></g>
 </svg>

@@ -11,15 +11,43 @@
     .detail{fill:none;stroke:#17324D;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
     .bike-frame{fill:none;stroke:#008EAA;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
     .bike-part{fill:none;stroke:#17324D;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
-  </style>
+  
+      .f-17324D{fill:#17324D}
+      .f-BFEAF1{fill:#BFEAF1}
+      .f-E2BA22{fill:#E2BA22}
+      .f-FFFDF8{fill:#FFFDF8}
+      .s-17324D{stroke:#17324D}
+      @media (prefers-color-scheme: dark) {
+        .sky{fill:#142325}
+        .ground{fill:#272015}
+        .road{fill:#2D271C}
+        .building{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .roof{fill:#453E25;stroke:#82AEDA;stroke-width:2}
+        .tree{fill:#21373D;stroke:#6EC4D5;stroke-width:2}
+        .trunk{stroke:#D6C572;stroke-width:8}
+        .person{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .shirt{fill:#152427;stroke:#82AEDA;stroke-width:2}
+        .relation{fill:none;stroke:#D3BD66;stroke-width:2.5;stroke-dasharray:7 5}
+        .label{fill:#221E12;stroke:#D3BD66;stroke-width:1.5}
+        .text{fill:#EBE5CA;font:14px ui-monospace,monospace}
+        .detail{fill:none;stroke:#82AEDA;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+        .bike-frame{fill:none;stroke:#6EC4D5;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+        .bike-part{fill:none;stroke:#82AEDA;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+        .f-17324D{fill:#D7E3F0}
+        .f-BFEAF1{fill:#18292C}
+        .f-E2BA22{fill:#453E25}
+        .f-FFFDF8{fill:#221E12}
+        .s-17324D{stroke:#82AEDA}
+      }
+    </style>
   <rect width="900" height="265" class="sky"/><rect y="265" width="900" height="155" class="ground"/>
   <path class="road" d="M0 355 C220 305 390 385 565 335 S770 300 900 325 L900 420 L0 420Z"/>
   <rect class="building" x="65" y="155" width="190" height="140"/><polygon class="roof" points="45,160 160,75 275,160"/>
-  <rect x="93" y="202" width="45" height="93" fill="#E2BA22" stroke="#17324D" stroke-width="2"/>
-  <rect x="178" y="195" width="47" height="48" fill="#BFEAF1" stroke="#17324D" stroke-width="2"/>
+  <rect x="93" y="202" width="45" height="93" stroke-width="2" class="f-E2BA22 s-17324D"/>
+  <rect x="178" y="195" width="47" height="48" stroke-width="2" class="f-BFEAF1 s-17324D"/>
   <rect class="building" x="650" y="120" width="180" height="155"/><polygon class="roof" points="625,125 740,48 855,125"/>
-  <rect x="716" y="194" width="50" height="81" fill="#E2BA22" stroke="#17324D" stroke-width="2"/>
-  <text x="740" y="163" text-anchor="middle" fill="#17324D" font-family="Georgia,serif" font-size="18">SCHOOL</text>
+  <rect x="716" y="194" width="50" height="81" stroke-width="2" class="f-E2BA22 s-17324D"/>
+  <text x="740" y="163" text-anchor="middle" font-family="Georgia,serif" font-size="18" class="f-17324D">SCHOOL</text>
   <line class="trunk" x1="570" y1="165" x2="570" y2="282"/><circle class="tree" cx="570" cy="125" r="55"/>
   <g transform="translate(340 230)"><circle class="person" cx="0" cy="-42" r="19"/><path class="shirt" d="M-30 -15 Q0-35 30-15 L24 48 H-24Z"/><path class="detail" d="M-12 48 L-15 85 M12 48 L16 85"/></g>
   <g transform="translate(455 245) scale(.82)"><circle class="person" cx="0" cy="-42" r="19"/><path class="shirt" d="M-30 -15 Q0-35 30-15 L24 48 H-24Z"/><path class="detail" d="M-12 48 L-15 85 M12 48 L16 85"/></g>
@@ -28,7 +56,7 @@
     <circle class="bike-part" cx="38" cy="24" r="25"/>
     <!-- A recognizable diamond frame: rear hub, crank, seat tube, and head tube. -->
     <path class="bike-frame" d="M-34 24L-9-10L8 24L-34 24L-9-10L27-8L38 24L8 24Z"/>
-    <circle cx="8" cy="24" r="5" fill="#FFFDF8" stroke="#17324D" stroke-width="2"/>
+    <circle cx="8" cy="24" r="5" stroke-width="2" class="f-FFFDF8 s-17324D"/>
     <path class="bike-part" d="M-15-13H-2M-9-10L-13-25M-20-25H-6M27-8L23-24L34-29M30-29H40"/>
     <path class="bike-part" d="M8 24L18 34M8 24L-1 15"/>
   </g>

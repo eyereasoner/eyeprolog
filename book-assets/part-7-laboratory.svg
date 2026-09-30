@@ -9,8 +9,25 @@
       .line{fill:none;stroke:#537487;stroke-width:2.5}.title{fill:#9D8200;font:bold 24px Georgia,serif}
       .label{fill:#17324D;font:17px Georgia,serif}.code{fill:#DDF7FB;font:15px ui-monospace,SFMono-Regular,Consolas,monospace}
       .darkcode{fill:#17324D;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}
+    
+      .f-537487{fill:#537487}
+      @media (prefers-color-scheme: dark) {
+        .bg{fill:#272015}
+        .bench{fill:#36301D}
+        .paper{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .screen{fill:#31475C;stroke:#88BCDC;stroke-width:4}
+        .green{fill:#152427;stroke:#6EC4D5;stroke-width:2}
+        .gold{fill:#2A2717;stroke:#CEB556;stroke-width:2}
+        .red{fill:#272015;stroke:#D3BD66;stroke-width:2}
+        .line{fill:none;stroke:#81A0B1;stroke-width:2.5}
+        .title{fill:#EBE5CA;font:bold 24px Georgia,serif}
+        .label{fill:#D7E3F0;font:17px Georgia,serif}
+        .code{fill:#E1F1F4;font:15px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .darkcode{fill:#D7E3F0;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .f-537487{fill:#2C3D47}
+      }
     </style>
-    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#537487"/></marker>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" class="f-537487"/></marker>
   </defs>
   <rect width="900" height="470" class="bg"/><rect y="350" width="900" height="120" class="bench"/>
   <text class="title" x="450" y="35" text-anchor="middle">THE REASONING LABORATORY</text>
@@ -18,7 +35,7 @@
   <text class="code" x="340" y="108">theory.pl</text>
   <text class="code" x="340" y="143">answer(X) :-</text><text class="code" x="365" y="166">evidence(X),</text><text class="code" x="365" y="189">within_limit(X).</text>
   <text class="code" x="340" y="225">eyeprolog --goal 'answer(X)' program.pl</text>
-  <path d="M415 262L450 300L485 262Z" fill="#537487"/><rect x="380" y="298" width="140" height="12" rx="6" fill="#537487"/>
+  <path d="M415 262L450 300L485 262Z" class="f-537487"/><rect x="380" y="298" width="140" height="12" rx="6" class="f-537487"/>
 
   <rect class="paper" x="38" y="75" width="210" height="110" rx="8"/>
   <text class="label" x="143" y="103" text-anchor="middle">1 · PREDICT</text>

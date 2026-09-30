@@ -9,10 +9,29 @@
       .title{fill:#C8A100;font:bold 24px Georgia,serif}.label{fill:#17324D;font:bold 17px Georgia,serif}
       .prose{fill:#405E70;font:15px Georgia,serif}.code{fill:#102A3A;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}
       .light{fill:#DDF7FB;font:15px ui-monospace,SFMono-Regular,Consolas,monospace}.line{fill:none;stroke:#537487;stroke-width:2.5}
+    
+      .f-537487{fill:#537487}
+      .f-FFF9E8{fill:#FFF9E8}
+      @media (prefers-color-scheme: dark) {
+        .paper{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .source{fill:#31475C;stroke:#88BCDC;stroke-width:3}
+        .green{fill:#152427;stroke:#6EC4D5;stroke-width:2}
+        .gold{fill:#2A2717;stroke:#CEB556;stroke-width:2}
+        .rose{fill:#272015;stroke:#D3BD66;stroke-width:2}
+        .blue{fill:#152427;stroke:#81A0B1;stroke-width:2}
+        .title{fill:#E7E0C1;font:bold 24px Georgia,serif}
+        .label{fill:#D7E3F0;font:bold 17px Georgia,serif}
+        .prose{fill:#CDDBE3;font:15px Georgia,serif}
+        .code{fill:#DCEAF2;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .light{fill:#E1F1F4;font:15px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .line{fill:none;stroke:#81A0B1;stroke-width:2.5}
+        .f-537487{fill:#2C3D47}
+        .f-FFF9E8{fill:#242014}
+      }
     </style>
-    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#537487"/></marker>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" class="f-537487"/></marker>
   </defs>
-  <rect width="900" height="500" fill="#FFF9E8"/>
+  <rect width="900" height="500" class="f-FFF9E8"/>
   <text class="title" x="450" y="35" text-anchor="middle">THE TRANSFORMATION WORKBENCH</text>
   <rect class="source" x="315" y="75" width="270" height="115" rx="12"/>
   <text class="light" x="450" y="108" text-anchor="middle">original relation</text>

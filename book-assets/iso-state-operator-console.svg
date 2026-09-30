@@ -8,9 +8,28 @@
       .title{fill:#C8A100;font:bold 23px Georgia,serif}.label{fill:#17324D;font:bold 16px Georgia,serif}
       .code{fill:#102A3A;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}.prose{fill:#405E70;font:15px Georgia,serif}
       .line{fill:none;stroke:#537487;stroke-width:2.5}.redline{fill:none;stroke:#C8A100;stroke-width:2.5}
+    
+      .f-537487{fill:#537487}
+      .f-C8A100{fill:#C8A100}
+      @media (prefers-color-scheme: dark) {
+        .bg{fill:#142325}
+        .panel{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .slot{fill:#152427;stroke:#6EC4D5;stroke-width:2}
+        .first{fill:#272015;stroke:#D3BD66;stroke-width:2}
+        .last{fill:#2A2717;stroke:#CEB556;stroke-width:2}
+        .blue{fill:#152427;stroke:#81A0B1;stroke-width:2}
+        .title{fill:#E7E0C1;font:bold 23px Georgia,serif}
+        .label{fill:#D7E3F0;font:bold 16px Georgia,serif}
+        .code{fill:#DCEAF2;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .prose{fill:#CDDBE3;font:15px Georgia,serif}
+        .line{fill:none;stroke:#81A0B1;stroke-width:2.5}
+        .redline{fill:none;stroke:#D3BD66;stroke-width:2.5}
+        .f-537487{fill:#2C3D47}
+        .f-C8A100{fill:#4D472A}
+      }
     </style>
-    <marker id="a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#537487"/></marker>
-    <marker id="r" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" fill="#C8A100"/></marker>
+    <marker id="a" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" class="f-537487"/></marker>
+    <marker id="r" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M0 0L7 3.5L0 7Z" class="f-C8A100"/></marker>
   </defs>
   <rect width="900" height="410" class="bg"/><text class="title" x="450" y="34" text-anchor="middle">SOLVER-LOCAL STATE AND READABLE SYNTAX</text>
 

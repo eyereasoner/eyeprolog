@@ -130,9 +130,10 @@ Code displays serve three different purposes:
 - a `sh` or `js` block is a host command or embedding example.
 
 Top-level programs under [`examples/`](https://github.com/eyereasoner/eyeprolog/tree/main/examples/) are the complete runnable
-cases. Their exact outputs live under `examples/output/`; selected proof
-outputs live under `examples/proof/`. Use `examples/book/` to copy a particular
-display and the top-level corpus for end-to-end experiments.
+cases. Their exact outputs live under `examples/output/`, the proof of each
+under `examples/proof/`, and the result of checking that proof under
+`examples/check/`. Use `examples/book/` to copy a particular display and the
+top-level corpus for end-to-end experiments.
 
 ### The promise of this book
 
@@ -10424,7 +10425,7 @@ hand.
 
 #### Running and extending the corpus
 
-Run all 235 normal answer goldens and the 103 selected proof goldens with:
+Run all 236 answer goldens and all 236 proof goldens with:
 
 ```sh
 node test/run-examples.mjs

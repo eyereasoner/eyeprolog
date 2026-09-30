@@ -8,8 +8,25 @@
       .node{fill:#FFFDF8;stroke:#17324D;stroke-width:2}.ok{fill:#EAF8FA;stroke:#008EAA;stroke-width:2}
       .title{fill:#9D8200;font:bold 24px Georgia,serif}.label{fill:#17324D;font:17px Georgia,serif}
       .code{fill:#17324D;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}
+    
+      .f-537487{fill:#537487}
+      @media (prefers-color-scheme: dark) {
+        .bg{fill:#272015}
+        .panel{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .hub{fill:#152427;stroke:#6EC4D5;stroke-width:3}
+        .ink{fill:none;stroke:#81A0B1;stroke-width:2.5;stroke-linecap:round}
+        .green{stroke:#6EC4D5}
+        .red{stroke:#D3BD66}
+        .gold{stroke:#CEB556}
+        .node{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .ok{fill:#142325;stroke:#6EC4D5;stroke-width:2}
+        .title{fill:#EBE5CA;font:bold 24px Georgia,serif}
+        .label{fill:#D7E3F0;font:17px Georgia,serif}
+        .code{fill:#D7E3F0;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .f-537487{fill:#2C3D47}
+      }
     </style>
-    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#537487"/></marker>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" class="f-537487"/></marker>
   </defs>
   <rect width="900" height="460" class="bg"/>
   <text class="title" x="450" y="35" text-anchor="middle">KEEP THE RELATION VISIBLE</text>

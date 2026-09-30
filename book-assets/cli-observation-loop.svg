@@ -5,6 +5,23 @@
     <style>
       .bg{fill:#FFF9E8}.source{fill:#FFF4BF;stroke:#E2BA22;stroke-width:2}.engine{fill:#17324D;stroke:#102A3A;stroke-width:3}.out{fill:#DDF7FB;stroke:#008EAA;stroke-width:2}.diag{fill:#BFEAF1;stroke:#2C657A;stroke-width:2}.status{fill:#FFF0D6;stroke:#C8A100;stroke-width:2}.compare{fill:#FFFDF8;stroke:#537487;stroke-width:2}
       .line{fill:none;stroke:#537487;stroke-width:3;stroke-linecap:round}.arrow{fill:#537487}.title{fill:#9D8200;font:bold 24px Georgia,serif}.label{fill:#102A3A;font:bold 17px Georgia,serif}.small{fill:#405E70;font:15px Georgia,serif}.code{fill:#FFFDF8;font:17px ui-monospace,SFMono-Regular,Consolas,monospace}.loop{fill:#9D8200;font:bold 16px Georgia,serif}
+    
+      @media (prefers-color-scheme: dark) {
+        .bg{fill:#242014}
+        .source{fill:#2A2717;stroke:#CEB556;stroke-width:2}
+        .engine{fill:#31475C;stroke:#88BCDC;stroke-width:3}
+        .out{fill:#152427;stroke:#6EC4D5;stroke-width:2}
+        .diag{fill:#18292C;stroke:#77B6CE;stroke-width:2}
+        .status{fill:#272015;stroke:#D3BD66;stroke-width:2}
+        .compare{fill:#221E12;stroke:#81A0B1;stroke-width:2}
+        .line{fill:none;stroke:#81A0B1;stroke-width:3;stroke-linecap:round}
+        .arrow{fill:#2C3D47}
+        .title{fill:#EBE5CA;font:bold 24px Georgia,serif}
+        .label{fill:#DCEAF2;font:bold 17px Georgia,serif}
+        .small{fill:#CDDBE3;font:15px Georgia,serif}
+        .code{fill:#F4EFE1;font:17px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .loop{fill:#EBE5CA;font:bold 16px Georgia,serif}
+      }
     </style>
   </defs>
   <rect width="900" height="470" class="bg"/>

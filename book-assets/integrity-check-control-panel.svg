@@ -5,11 +5,26 @@
     .wall{fill:#EAF8FA}.panel{fill:#2C657A;stroke:#17324D;stroke-width:4}.screen{fill:#FFFDF8;stroke:#17324D;stroke-width:2}
     .text{fill:#17324D;font:17px ui-monospace,monospace}.light{fill:#C8A100;stroke:#9D8200;stroke-width:3}.safe{fill:#008EAA}
     .wire{fill:none;stroke:#C8A100;stroke-width:5}.lever{fill:#DDF7FB;stroke:#17324D;stroke-width:3}
-  </style>
+  
+      .f-C8A100{fill:#C8A100}
+      .f-FFFDF8{fill:#FFFDF8}
+      @media (prefers-color-scheme: dark) {
+        .wall{fill:#142325}
+        .panel{fill:#2C4852;stroke:#82AEDA;stroke-width:4}
+        .screen{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .text{fill:#D7E3F0;font:17px ui-monospace,monospace}
+        .light{fill:#4D472A;stroke:#D6C572;stroke-width:3}
+        .safe{fill:#2C4C52}
+        .wire{fill:none;stroke:#D3BD66;stroke-width:5}
+        .lever{fill:#152427;stroke:#82AEDA;stroke-width:3}
+        .f-C8A100{fill:#E7E0C1}
+        .f-FFFDF8{fill:#F4EFE1}
+      }
+    </style>
   <rect width="900" height="380" class="wall"/><rect class="panel" x="55" y="40" width="790" height="300" rx="15"/>
   <rect class="screen" x="95" y="80" width="230" height="120" rx="7"/><text class="text" x="210" y="110" text-anchor="middle">LOWER LIMIT</text><text class="text" x="210" y="165" text-anchor="middle" font-size="30">80</text>
   <rect class="screen" x="575" y="80" width="230" height="120" rx="7"/><text class="text" x="690" y="110" text-anchor="middle">UPPER LIMIT</text><text class="text" x="690" y="165" text-anchor="middle" font-size="30">60</text>
-  <path class="wire" d="M325 140 H390 M510 140 H575"/><circle class="light" cx="450" cy="140" r="48"/><text x="450" y="132" text-anchor="middle" fill="#FFFDF8" font-family="Georgia,serif" font-weight="bold" font-size="18">INVALID</text><text x="450" y="157" text-anchor="middle" fill="#FFFDF8" font-family="ui-monospace,monospace" font-size="14">FOUND</text>
-  <rect class="screen" x="300" y="230" width="300" height="65" rx="8"/><text class="text" x="450" y="256" text-anchor="middle">invalid_limits(Low, High).</text><text x="450" y="280" text-anchor="middle" fill="#C8A100" font-family="ui-monospace,monospace" font-size="16">reported to the host</text>
+  <path class="wire" d="M325 140 H390 M510 140 H575"/><circle class="light" cx="450" cy="140" r="48"/><text x="450" y="132" text-anchor="middle" font-family="Georgia,serif" font-weight="bold" font-size="18" class="f-FFFDF8">INVALID</text><text x="450" y="157" text-anchor="middle" font-family="ui-monospace,monospace" font-size="14" class="f-FFFDF8">FOUND</text>
+  <rect class="screen" x="300" y="230" width="300" height="65" rx="8"/><text class="text" x="450" y="256" text-anchor="middle">invalid_limits(Low, High).</text><text x="450" y="280" text-anchor="middle" font-family="ui-monospace,monospace" font-size="16" class="f-C8A100">reported to the host</text>
   <circle cx="140" cy="265" r="16" class="safe"/><circle cx="760" cy="265" r="16" class="light"/>
 </svg>

@@ -11,9 +11,22 @@
       .text{fill:#102A3A;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}
       .prose{fill:#405E70;font:17px Georgia,serif}
       .line{stroke:#537487;stroke-width:2}
+    
+      .f-FFF9E8{fill:#FFF9E8}
+      @media (prefers-color-scheme: dark) {
+        .paper{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .goal{fill:#142325;stroke:#6EC4D5;stroke-width:2}
+        .fail{fill:#272015;stroke:#D3BD66;stroke-width:2}
+        .repeat{fill:#2A2717;stroke:#CEB556;stroke-width:2}
+        .title{fill:#E7E0C1;font:bold 23px Georgia,serif}
+        .text{fill:#DCEAF2;font:14px ui-monospace,SFMono-Regular,Consolas,monospace}
+        .prose{fill:#CDDBE3;font:17px Georgia,serif}
+        .line{stroke:#81A0B1;stroke-width:2}
+        .f-FFF9E8{fill:#242014}
+      }
     </style>
   </defs>
-  <rect width="900" height="500" fill="#FFF9E8"/>
+  <rect width="900" height="500" class="f-FFF9E8"/>
   <rect class="paper" x="25" y="40" width="390" height="410" rx="10"/>
   <text class="title" x="220" y="78" text-anchor="middle">PROOF TREE</text>
   <text class="prose" x="220" y="103" text-anchor="middle">only the successful support for one answer</text>

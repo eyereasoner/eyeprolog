@@ -4,7 +4,22 @@
   <defs><style>
     .bg{fill:#FFF9E8}.core{fill:#2C657A;stroke:#17324D;stroke-width:3}.box{fill:#FFFDF8;stroke:#17324D;stroke-width:2}.green{fill:#DDF7FB;stroke:#008EAA;stroke-width:2}.gold{fill:#FFF4BF;stroke:#E2BA22;stroke-width:2}.rose{fill:#FFF0D6;stroke:#C8A100;stroke-width:2}.blue{fill:#DDF7FB;stroke:#537487;stroke-width:2}
     .title{fill:#C8A100;font:bold 24px Georgia,serif}.label{fill:#17324D;font:bold 13px Georgia,serif}.light{fill:#FFFDF8;font:bold 16px Georgia,serif}.prose{fill:#405E70;font:13px Georgia,serif}.line{fill:none;stroke:#537487;stroke-width:2.5}
-  </style></defs>
+  
+      @media (prefers-color-scheme: dark) {
+        .bg{fill:#242014}
+        .core{fill:#2C4852;stroke:#82AEDA;stroke-width:3}
+        .box{fill:#221E12;stroke:#82AEDA;stroke-width:2}
+        .green{fill:#152427;stroke:#6EC4D5;stroke-width:2}
+        .gold{fill:#2A2717;stroke:#CEB556;stroke-width:2}
+        .rose{fill:#272015;stroke:#D3BD66;stroke-width:2}
+        .blue{fill:#152427;stroke:#81A0B1;stroke-width:2}
+        .title{fill:#E7E0C1;font:bold 24px Georgia,serif}
+        .label{fill:#D7E3F0;font:bold 13px Georgia,serif}
+        .light{fill:#F4EFE1;font:bold 16px Georgia,serif}
+        .prose{fill:#CDDBE3;font:13px Georgia,serif}
+        .line{fill:none;stroke:#81A0B1;stroke-width:2.5}
+      }
+    </style></defs>
   <rect class="bg" width="900" height="460"/><text class="title" x="450" y="38" text-anchor="middle">A PATTERN STARTS WITH A NAMED DESIGN PROBLEM</text>
   <rect class="core" x="335" y="175" width="230" height="100" rx="18"/><text class="light" x="450" y="211" text-anchor="middle">WHAT IS GOING WRONG?</text><text class="light" x="450" y="243" text-anchor="middle">choose by consequence</text>
   <path class="line" d="M335 195L245 130M450 175V120M565 195L655 130M335 255L245 335M450 275V345M565 255L655 335"/>
