@@ -86,6 +86,43 @@ const NOT_REDECIDABLE = new Map([
   ['sat_count/2', 'stateful'],
 ]);
 
+// A control construct succeeds when one of the goals it wraps succeeds, and
+// the step records that goal among its uses. C4 already resolves each use to a
+// step, and C1 already checks that step, so such a conclusion is not taken on
+// trust: it is entailed by material the other conditions establish. What is
+// checked here is that the entailment actually holds -- that the wrapped goal
+// really is among the uses -- so a step claiming `once(G)` while resting on
+// something other than G fails rather than passing as an obligation.
+//
+// Only constructs whose success follows from *one* of their goals belong here.
+// findall/3, setof/3, forall/2, the aggregations and \+ all assert something
+// about the absence of further solutions, which no recorded use can establish;
+// they stay obligations.
+const ENTAILED_BY_USE = new Map([
+  ['once/1', (goal) => [goal.args[0]]],
+  ['call/1', (goal) => [goal.args[0]]],
+  ['catch/3', (goal) => [goal.args[0]]],
+  [';/2', (goal) => [goal.args[0], goal.args[1]]],
+  ['->/2', (goal) => [goal.args[1]]],
+  ['*->/2', (goal) => [goal.args[1]]],
+]);
+
+// Returns null when the conclusion is entailed by one of the step's uses, and
+// a reason when it is not.
+function entailedByUse(step) {
+  const goal = step.conclusion;
+  if (goal?.type !== COMPOUND) return 'not a control construct';
+  const candidates = ENTAILED_BY_USE.get(`${goal.name}/${goal.arity}`);
+  if (candidates == null) return 'not a control construct';
+  const wanted = candidates(goal);
+  for (const use of step.uses) {
+    for (const option of wanted) {
+      if (option != null && compareTerms(use, option) === 0) return null;
+    }
+  }
+  return `none of its uses is the goal ${goal.name}/${goal.arity} wraps`;
+}
+
 function notRedecidableReason(goal) {
   if (goal?.type !== COMPOUND && goal?.type !== ATOM) return null;
   return NOT_REDECIDABLE.get(`${goal.name}/${goal.arity ?? 0}`) ?? null;
@@ -278,6 +315,7 @@ export function checkProofDocument(program, text) {
   const trusted = [];
   let verified = 0;
   let redecided = 0;
+  let composed = 0;
   const redecide = makeRedecider(program, steps);
 
   const byConclusion = new Map();
@@ -322,9 +360,23 @@ export function checkProofDocument(program, text) {
             ? `recomputing this ${justification.kind} step went wrong: ${outcome.detail}`
             : `recomputing this ${justification.kind} step does not give it`,
         });
+      } else if (step.uses.length > 0 && entailedByUse(step) === null) {
+        // A control construct resting on the goal it wraps. The wrapped goal
+        // is itself a step, so C1 and C4 carry it; nothing is taken on trust.
+        composed++;
       } else {
+        const notEntailed = step.uses.length > 0 ? entailedByUse(step) : null;
+        if (notEntailed != null && ENTAILED_BY_USE.has(`${step.conclusion?.name}/${step.conclusion?.arity}`)) {
+          failures.push({
+            condition: 'C5',
+            conclusion: key(step.conclusion),
+            term: step.conclusion,
+            detail: notEntailed,
+          });
+          continue;
+        }
         // Nothing was learned about this step, so it is still an obligation.
-        trusted.push({ kind: justification.kind, conclusion: key(step.conclusion) });
+        trusted.push({ kind: justification.kind, conclusion: key(step.conclusion), reason: 'theory_scoped' });
       }
       continue;
     }
@@ -373,7 +425,7 @@ export function checkProofDocument(program, text) {
     { id: 'C2', name: 'well_founded', covered: steps.length, failed: failed('C2') },
     { id: 'C3', name: 'justification', covered: steps.length, failed: failed('C3') },
     { id: 'C4', name: 'coverage', covered: claims.length + uses, failed: failed('C4') },
-    { id: 'C5', name: 're_decision', covered: redecided, failed: failed('C5') },
+    { id: 'C5', name: 're_decision', covered: redecided + composed, failed: failed('C5') },
   ];
 
   return {
@@ -381,6 +433,7 @@ export function checkProofDocument(program, text) {
     steps: steps.length,
     verified,
     redecided,
+    composed,
     uses,
     trusted,
     failures,
@@ -431,6 +484,7 @@ export function checkReportTerms(report) {
   say(`steps(${report.steps}).`);
   say(`verified(${report.verified}).`);
   say(`recomputed(${report.redecided}).`);
+  say(`composed(${report.composed ?? 0}).`);
   say(`trusted(${(report.trusted ?? []).length}).`);
   say(`claims(${report.claims}).`);
   say(`verdict(${verdictTerm(report)}).`);

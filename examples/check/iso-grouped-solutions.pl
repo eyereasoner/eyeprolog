@@ -9,6 +9,7 @@ obligation(builtin, reflective, 1).
 steps(21).
 verified(12).
 recomputed(4).
+composed(0).
 trusted(5).
 claims(5).
 verdict(checked_with_obligations).

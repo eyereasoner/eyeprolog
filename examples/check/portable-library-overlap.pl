@@ -7,6 +7,7 @@ failure('C3', overlap_example(overlap(booleans([1, 0]), union("abc"), reachable(
 steps(1).
 verified(0).
 recomputed(0).
+composed(0).
 trusted(0).
 claims(1).
 verdict(failed(1)).

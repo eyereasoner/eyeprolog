@@ -8,6 +8,7 @@ obligation(builtin, theory_scoped, 2).
 steps(52).
 verified(47).
 recomputed(0).
+composed(0).
 trusted(5).
 claims(7).
 verdict(checked_with_obligations).

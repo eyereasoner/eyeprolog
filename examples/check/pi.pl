@@ -7,6 +7,7 @@ failure('C3', pi(100000, 3.141592653589792), 'recorded as unproven').
 steps(1).
 verified(0).
 recomputed(0).
+composed(0).
 trusted(0).
 claims(1).
 verdict(failed(1)).

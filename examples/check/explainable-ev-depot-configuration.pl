@@ -7,6 +7,7 @@ obligation(absent, theory_scoped, 1).
 steps(54).
 verified(42).
 recomputed(11).
+composed(0).
 trusted(1).
 claims(8).
 verdict(checked_with_obligations).

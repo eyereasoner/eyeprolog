@@ -6,6 +6,7 @@ condition('C5', re_decision, ok, 5).
 steps(18).
 verified(13).
 recomputed(5).
+composed(0).
 trusted(0).
 claims(5).
 verdict(checked).

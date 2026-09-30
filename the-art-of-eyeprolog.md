@@ -9978,7 +9978,8 @@ explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree
 check under [examples/check](https://github.com/eyereasoner/eyeprolog/tree/main/examples/check/). A check result is itself ordinary Prolog
 — `condition/4` for each of the five conditions, `failure/3` for anything that
 did not hold, `obligation/3` for what the check rests on rather than
-establishes, and `verdict/1` — so the same reasoning that produced an answer
+establishes, counts including `composed/1` for conclusions carried by the goals
+they wrap, and `verdict/1` — so the same reasoning that produced an answer
 can be turned on the question of whether that answer was checked. Every one of those explanations is re-checked by `npm test`, which
 re-performs each recorded inference against its source clause and recomputes
 each primitive the document asserts. The thematic lists link every top-level program and open the program

@@ -7,6 +7,7 @@ failure('C3', bulk_write_result(5000, 5000), 'recorded as unproven').
 steps(1).
 verified(0).
 recomputed(0).
+composed(0).
 trusted(0).
 claims(1).
 verdict(failed(1)).

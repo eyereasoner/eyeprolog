@@ -4356,7 +4356,7 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         }
         assertEqual(verified.stdout.trimEnd().split('\n').pop(), 'verdict(checked).', 'verification verdict');
         assertEqual(verified.stdout.includes('obligation('), false, 'nothing was left trusted');
-        assertEqual(parseProgramText(verified.stdout, {}).length, 11, 'the check document is readable Prolog');
+        assertEqual(parseProgramText(verified.stdout, {}).length, 12, 'the check document is readable Prolog');
         const quiet = runCli(['--quiet', '--check-proof', proofFile, programFile]);
         assertEqual(quiet.stdout, 'verdict(checked).\n', 'quiet verification stdout is the verdict alone');
         const strictVerified = runCli(['--iso-strict', '--check-proof', proofFile, programFile]);

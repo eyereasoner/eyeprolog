@@ -7,6 +7,7 @@ failure('C3', clpz_example(domain, domain(2, 7, 4, \/('..'(2, 4), 7))), 'recorde
 steps(25).
 verified(2).
 recomputed(22).
+composed(0).
 trusted(0).
 claims(3).
 verdict(failed(1)).
