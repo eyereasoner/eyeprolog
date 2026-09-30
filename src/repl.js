@@ -171,26 +171,35 @@ class LineReader {
     this.input.setRawMode(true);
     this.input.resume();
 
-    const control = await new Promise((resolve, reject) => {
-      const cleanup = () => {
-        this.input.off('data', onData);
-        this.input.off('error', onError);
-      };
-      const onData = (data) => {
-        cleanup();
-        const text = String(data);
-        resolve(text === '\x04' ? null : text[0] ?? null);
-      };
-      const onError = (error) => {
-        cleanup();
-        reject(error);
-      };
-      this.input.once('data', onData);
-      this.input.once('error', onError);
-    });
-
-    this.input.setRawMode(false);
-    this.open();
+    // Raw mode has to be given back even when the wait below fails. In raw
+    // mode the terminal does no echo, performs no newline translation, and
+    // delivers Ctrl-C as a byte rather than a signal, so a session that
+    // escapes this block still in raw mode looks frozen while in fact still
+    // reading: nothing echoes, Enter returns the carriage without feeding a
+    // line, and there is no interrupt left to break out with.
+    let control;
+    try {
+      control = await new Promise((resolve, reject) => {
+        const cleanup = () => {
+          this.input.off('data', onData);
+          this.input.off('error', onError);
+        };
+        const onData = (data) => {
+          cleanup();
+          const text = String(data);
+          resolve(text === '\x04' ? null : text[0] ?? null);
+        };
+        const onError = (error) => {
+          cleanup();
+          reject(error);
+        };
+        this.input.once('data', onData);
+        this.input.once('error', onError);
+      });
+    } finally {
+      if (this.input.isRaw) this.input.setRawMode(false);
+      if (!this.readline) this.open();
+    }
     return control;
   }
 
