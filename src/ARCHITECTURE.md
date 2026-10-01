@@ -21,7 +21,10 @@ higher-level frontends.
    `datalog-common.js` owns what the two Datalog evaluators share: scalar row
    keying and the per-argument candidate-bucket narrowing both index their
    relations with. Their fixpoint algorithms and relation storage stay in their
-   own modules.
+   own modules. Positive Datalog compiles clause variables to numeric slots
+   and joins through array bindings; WFS retains its persistent Map bindings.
+   Candidate selection has a direct entry point for each binding representation
+   so their inner loops do not dispatch through a binding-store abstraction.
    `cleanup.js` owns lifecycle-aware disposal of protected builtin
    iterators and registers the normal-profile cleanup controls without making
    `solver.js` depend back on the language registry.

@@ -10,6 +10,7 @@ import { compareTerms } from '../../src/term.js';
 import { checkProofDocument, verdict } from '../../src/check-proof.js';
 import { formatTermForWrite } from '../../src/write.js';
 import { selectClauseCandidates } from '../../src/program.js';
+import { evaluatePositiveDatalog, relationForDatalogGroup } from '../../src/datalog.js';
 import { assertEqual, assertIncludes, assertNotIncludes } from '../test-style.mjs';
 import { goalsFromSource } from '../goal-metadata.mjs';
 import {
@@ -768,6 +769,44 @@ export function whiteBoxCases() {
         const ground = run(program, { goal: 'path(n0,n130)' });
         assertEqual(ground.stdout, 'path(n0, n130).\n', 'ground chain still succeeds');
         assertEqual(ground.stats.datalog_evaluations, 0, 'ground query keeps the ordinary indexed chain path');
+      },
+    },
+    {
+      name: 'Datalog joins preserve clause-local variables and repeated arguments',
+      run: () => {
+        const program = Program.parse(`
+link(a,b,red).
+link(b,c,red).
+link(c,d,red).
+link(x,x,red).
+link(a,b,blue).
+link(c,c,blue).
+link(a,c,blue).
+reach(X,Y,C) :- link(X,Y,C).
+reach(X,Y,C) :- link(X,Z,C), reach(Z,Y,C).
+back(Y,X) :- reach(X,Y,red).
+back(X,Y) :- reach(X,Y,blue).
+diagonal(X) :- reach(X,X,C).
+marked(tag,X) :- reach(X,X,red).
+wide(X,marker,Y) :- reach(X,Y,red).
+ready :- diagonal(x).
+summary :- ready, back(X,Y), marked(tag,Z), wide(X,marker,Y).
+`);
+        const model = evaluatePositiveDatalog(program, program.findGroup('summary', 0));
+        const checkRows = (name, arity, expected) => {
+          const relation = relationForDatalogGroup(model, program.findGroup(name, arity));
+          const actual = relation.rows.map((row) => row.map((value) => value.name).join(':')).sort();
+          assertEqual(actual.join('|'), expected.sort().join('|'), `${name}/${arity} rows`);
+        };
+        checkRows('back', 2, ['b:a', 'c:b', 'd:c', 'x:x', 'c:a', 'd:a', 'd:b', 'a:b', 'c:c', 'a:c']);
+        checkRows('diagonal', 1, ['c', 'x']);
+        checkRows('marked', 2, ['tag:x']);
+        checkRows('wide', 3, [
+          'a:marker:b', 'b:marker:c', 'c:marker:d', 'x:marker:x',
+          'a:marker:c', 'a:marker:d', 'b:marker:d',
+        ]);
+        checkRows('ready', 0, ['']);
+        checkRows('summary', 0, ['']);
       },
     },
     {

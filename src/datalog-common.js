@@ -91,3 +91,17 @@ export function selectCandidateIndexes(indexes, args, bindings) {
   }
   return selected;
 }
+
+// Positive Datalog compiles clause variables to numeric slots. Keep its hot
+// path direct rather than introducing a binding-store dispatch in each lookup.
+export function selectCandidateIndexesForSlots(indexes, args, bindings) {
+  let selected = null;
+  for (let i = 0; i < args.length; i++) {
+    const value = args[i].type === VAR ? bindings[args[i].slot] : args[i];
+    if (value == null) continue;
+    const bucket = indexes[i].get(scalarKey(value)) ?? EMPTY_ARRAY;
+    if (selected == null || bucket.length < selected.length) selected = bucket;
+    if (selected.length === 0) break;
+  }
+  return selected;
+}

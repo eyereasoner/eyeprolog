@@ -14,7 +14,7 @@ import {
   predicateKey,
   sameScalar,
   scalarKey,
-  selectCandidateIndexes,
+  selectCandidateIndexesForSlots,
 } from './datalog-common.js';
 
 class DatalogRelation {
@@ -61,7 +61,7 @@ class DatalogRelation {
     const tuple = new Array(args.length);
     const parts = new Array(args.length);
     for (let i = 0; i < args.length; i++) {
-      const value = args[i].type === VAR ? bindings.get(args[i].name) : args[i];
+      const value = args[i].type === VAR ? bindings[args[i].slot] : args[i];
       if (value == null || value.type === VAR) return null;
       tuple[i] = value;
       parts[i] = scalarKey(value);
@@ -87,7 +87,7 @@ class DatalogRelation {
   }
 
   candidateIndexes(args, bindings) {
-    return selectCandidateIndexes(this.indexes, args, bindings);
+    return selectCandidateIndexesForSlots(this.indexes, args, bindings);
   }
 }
 
@@ -106,11 +106,21 @@ function compileProgram(program, rootGroup) {
   for (const group of groups) {
     const headKey = predicateKey(group.module, group.name, group.arity);
     for (const clause of group.clauses) {
-      const headArgs = clause.head.args ?? EMPTY_ARRAY;
       if (clause.body.length === 0) continue;
       const body = clause.body.map((goal) => directLiteral(goal, group.module));
       if (body.some((literal) => literal == null)) continue;
-      const rule = { headKey, headArgs, body };
+      // Variable names matter only within this source clause. Compile them to
+      // array slots once so each join can bind and undo without Map lookups.
+      const variables = new Map();
+      const compileArgument = (arg) => {
+        if (arg.type !== VAR) return arg;
+        let slot = variables.get(arg.name);
+        if (slot == null) variables.set(arg.name, slot = variables.size);
+        return { type: VAR, slot };
+      };
+      const headArgs = (clause.head.args ?? EMPTY_ARRAY).map(compileArgument);
+      for (const literal of body) literal.args = literal.args.map(compileArgument);
+      const rule = { headKey, headArgs, body, variableCount: variables.size };
       rules.push(rule);
       for (let index = 0; index < body.length; index++) {
         const key = body[index].key;
@@ -130,20 +140,20 @@ function matchTupleMutable(args, tuple, bindings) {
   for (let i = 0; i < args.length; i++) {
     const pattern = args[i];
     if (pattern.type === VAR) {
-      const current = bindings.get(pattern.name);
+      const current = bindings[pattern.slot];
       if (current != null) {
         if (!sameScalar(current, tuple[i])) {
-          for (let j = added.length - 1; j >= 0; j--) bindings.delete(added[j]);
+          undoBindings(bindings, added);
           return null;
         }
       } else {
-        bindings.set(pattern.name, tuple[i]);
-        added.push(pattern.name);
+        bindings[pattern.slot] = tuple[i];
+        added.push(pattern.slot);
       }
       continue;
     }
     if (!sameScalar(pattern, tuple[i])) {
-      for (let j = added.length - 1; j >= 0; j--) bindings.delete(added[j]);
+      undoBindings(bindings, added);
       return null;
     }
   }
@@ -151,7 +161,7 @@ function matchTupleMutable(args, tuple, bindings) {
 }
 
 function undoBindings(bindings, added) {
-  for (let i = added.length - 1; i >= 0; i--) bindings.delete(added[i]);
+  for (let i = added.length - 1; i >= 0; i--) bindings[added[i]] = undefined;
 }
 
 
@@ -234,7 +244,7 @@ export function evaluatePositiveDatalog(program, rootGroup) {
     const triggerEntries = compiled.triggers.get(event.key) ?? EMPTY_ARRAY;
     for (const { rule, literalIndex } of triggerEntries) {
       const fixed = rule.body[literalIndex];
-      const bindings = new Map();
+      const bindings = new Array(rule.variableCount);
       if (!matchTupleMutable(fixed.args, event.tuple, bindings)) continue;
       const remaining = [];
       for (let i = 0; i < rule.body.length; i++) if (i !== literalIndex) remaining.push(i);
