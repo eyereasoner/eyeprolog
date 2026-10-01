@@ -647,7 +647,18 @@ function originalVariableName(name) {
 function resolveForProof(term, env) {
   const resolved = deref(term, env);
   if (resolved.type === VAR) return new Term(VAR, originalVariableName(resolved.name), []);
-  return new Term(resolved.type, resolved.name, resolved.args.map((arg) => resolveForProof(arg, env)));
+  // Runtime terms are immutable. A ground subtree already is a proof snapshot,
+  // so copy only the ancestors of arguments changed by variable resolution.
+  // Allocate the argument array on the first changed child, keeping ground
+  // lists allocation-free even when many proof steps share their suffixes.
+  let args = null;
+  for (let index = 0; index < resolved.args.length; index++) {
+    const child = resolveForProof(resolved.args[index], env);
+    if (args == null && child !== resolved.args[index]) args = resolved.args.slice();
+    if (args != null) args[index] = child;
+  }
+  if (args == null && resolved.module == null) return resolved;
+  return new Term(resolved.type, resolved.name, args ?? resolved.args.slice());
 }
 
 function collectClauseSubstitutions(clause, freshHead, freshBody) {
