@@ -2,13 +2,13 @@
 // Example-output test runner.
 // It compares examples byte-for-byte against golden output so answer and proof changes cannot silently alter results.
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
+import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { Program, run } from '../src/index.js';
 import { fileURLToPath } from 'node:url';
 import { TestReporter, isMainModule, runStandalone } from './test-style.mjs';
+import { runTasksInParallel, serveTasks } from './parallel-tasks.mjs';
 import { goalsInProgramOrder } from './goal-metadata.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
@@ -31,107 +31,39 @@ export async function runExamples(reporter = new TestReporter()) {
     .sort();
 
   reporter.section('Examples');
-  await runExampleTasks(files, (name, result) => reporter.testResult(name, result), 3);
+  await runExampleTasks(files, 'output', reporter);
   reporter.sectionTotal('examples');
 
+  // Proving an example costs several times what running it does, so this is
+  // the longer of the two passes over the same corpus. It is the same work per
+  // program and the same isolation, so it goes through the same worker pool.
   reporter.section('Proof examples');
-  for (const name of proofExamples) reporter.test(name, () => runProofExample(name));
+  await runExampleTasks(proofExamples, 'proof', reporter);
   reporter.sectionTotal('proof examples');
 }
 
+// What a worker is asked to do with one example. Results are compared inside
+// the worker, so only a name, an elapsed time, and a failure cross the thread.
+const exampleTaskKinds = {
+  output: runExample,
+  proof: runProofExample,
+};
 
-async function runExampleTasks(tasks, onResult, maxWorkers) {
-  if (tasks.length === 0) return;
-  const parallelism = os.availableParallelism?.() ?? os.cpus().length;
-  const workerCount = Math.min(tasks.length, Math.max(1, Math.min(maxWorkers, parallelism - 1)));
-  if (workerCount === 1) {
-    for (const name of tasks) {
-      const startedAt = performance.now();
-      try {
-        runExample(name);
-        onResult(name, { ms: Math.round(performance.now() - startedAt) });
-      } catch (error) {
-        onResult(name, { ms: Math.round(performance.now() - startedAt), error });
-      }
-    }
-    return;
-  }
 
-  const completedResults = new Map();
-  let nextTask = 0;
-  let nextReport = 0;
-  let completed = 0;
-  let settled = false;
-
-  await new Promise((resolve, reject) => {
-    const workers = Array.from({ length: workerCount }, () => new Worker(new URL(import.meta.url), {
-      workerData: { exampleWorker: true },
-    }));
-
-    const stopWorkers = () => Promise.all(workers.map((worker) => worker.terminate()));
-
-    const fail = (error) => {
-      if (settled) return;
-      settled = true;
-      stopWorkers().finally(() => reject(error));
-    };
-
-    const finish = () => {
-      if (settled || completed !== tasks.length || nextReport !== tasks.length) return;
-      settled = true;
-      stopWorkers().then(() => resolve(), reject);
-    };
-
-    const reportReady = () => {
-      try {
-        while (completedResults.has(nextReport)) {
-          const result = completedResults.get(nextReport);
-          completedResults.delete(nextReport);
-          onResult(tasks[nextReport], result);
-          nextReport++;
-        }
-      } catch (error) {
-        fail(error);
-      }
-    };
-
-    const assign = (worker) => {
-      if (nextTask >= tasks.length || settled) return;
-      worker.postMessage({ id: nextTask, name: tasks[nextTask++] });
-    };
-
-    for (const worker of workers) {
-      worker.on('message', ({ id, ms, error }) => {
-        if (settled) return;
-        completedResults.set(id, {
-          ms,
-          error: error == null ? null : Object.assign(new Error(error.message), { stack: error.stack }),
-        });
-        completed++;
-        reportReady();
-        assign(worker);
-        finish();
-      });
-      worker.on('error', fail);
-      assign(worker);
-    }
+function runExampleTasks(names, kind, reporter) {
+  return runTasksInParallel({
+    names,
+    workerUrl: new URL(import.meta.url),
+    workerData: { exampleWorker: true },
+    message: { kind },
+    maxWorkers: 3,
+    runLocally: (name) => exampleTaskKinds[kind](name),
+    onResult: (name, result) => reporter.testResult(name, result),
   });
 }
 
 function runExampleWorker() {
-  parentPort.on('message', ({ id, name }) => {
-    const startedAt = performance.now();
-    try {
-      runExample(name);
-      parentPort.postMessage({ id, ms: Math.round(performance.now() - startedAt), error: null });
-    } catch (error) {
-      parentPort.postMessage({
-        id,
-        ms: Math.round(performance.now() - startedAt),
-        error: { message: error?.message ?? String(error), stack: error?.stack ?? String(error) },
-      });
-    }
-  });
+  serveTasks(parentPort, ({ kind, name }) => exampleTaskKinds[kind](name));
 }
 
 

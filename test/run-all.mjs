@@ -35,6 +35,6 @@ await runStandalone(async (reporter) => {
   await runRegression(reporter);
   await runPlayground(reporter);
   await runExamples(reporter);
-  runProofChecking(reporter);
+  await runProofChecking(reporter);
   runBookExamples(reporter);
 });

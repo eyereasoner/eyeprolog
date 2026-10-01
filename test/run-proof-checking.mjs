@@ -9,11 +9,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import { Program } from '../src/index.js';
 import { checkProofDocument, checkReportTerms, verdict } from '../src/check-proof.js';
 import { TestReporter, assertEqual, isMainModule, runStandalone } from './test-style.mjs';
 import { proofExamples } from './run-examples.mjs';
+import { runTasksInParallel, serveTasks } from './parallel-tasks.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const examplesDir = path.join(root, 'examples');
@@ -43,17 +45,24 @@ const KNOWN_GAPS = new Map([
 // checked here. The list is read from the directory rather than written out,
 // so a proof cannot be added without being checked.
 
-const totals = { steps: 0, verified: 0, redecided: 0, trusted: 0 };
-
-export function runProofChecking(reporter = new TestReporter()) {
+export async function runProofChecking(reporter = new TestReporter()) {
   reporter.section('Proof checking');
-  totals.steps = 0;
-  totals.verified = 0;
-  totals.redecided = 0;
-  totals.trusted = 0;
-  for (const name of [...proofExamples].sort()) {
-    reporter.test(name, () => checkPackagedProof(name));
-  }
+  // Each document is checked on its own against its own program, so the corpus
+  // is checked in parallel and the counts it establishes are summed as the
+  // results come back, in task order, rather than accumulated in a shared
+  // tally a worker could not reach.
+  const totals = { steps: 0, verified: 0, redecided: 0, trusted: 0 };
+  await runTasksInParallel({
+    names: [...proofExamples].sort(),
+    workerUrl: new URL(import.meta.url),
+    workerData: { proofCheckingWorker: true },
+    maxWorkers: 3,
+    runLocally: (name) => checkPackagedProof(name),
+    onResult: (name, result) => {
+      for (const field of Object.keys(totals)) totals[field] += result.value?.[field] ?? 0;
+      reporter.testResult(name, result);
+    },
+  });
   reporter.sectionTotal('proof checking');
   // What the corpus establishes, in the terms the conditions use: a verified
   // step was re-performed against its source clause, a recomputed one was run
@@ -83,19 +92,27 @@ function checkPackagedProof(name) {
   if (expected !== actual) {
     throw new Error(`check report mismatch for ${name}\nexpected:\n${expected}\nactual:\n${actual}`);
   }
-  totals.steps += report.steps;
-  totals.verified += report.verified;
-  totals.redecided += report.redecided;
-  totals.trusted += report.trusted.length;
+  // What this document contributes to the corpus totals, returned rather than
+  // added to a module-level tally so the same function is correct whether it
+  // runs here or in a worker.
+  const contribution = {
+    steps: report.steps,
+    verified: report.verified,
+    redecided: report.redecided,
+    trusted: report.trusted.length,
+  };
   const gap = KNOWN_GAPS.get(name);
   if (gap) {
     assertEqual(report.valid, false, `${name} now checks; remove it from KNOWN_GAPS (${gap})`);
-    return;
+    return contribution;
   }
   const detail = report.failures.slice(0, 3).map((failure) => `[${failure.condition}] ${failure.conclusion} -- ${failure.detail}`).join('; ');
   assertEqual(report.valid, true, `${name}: ${verdict(report)}${detail ? ` -- ${detail}` : ''}`);
+  return contribution;
 }
 
-if (isMainModule(import.meta.url)) {
+if (!isMainThread && workerData?.proofCheckingWorker) {
+  serveTasks(parentPort, ({ name }) => checkPackagedProof(name));
+} else if (isMainModule(import.meta.url)) {
   await runStandalone(runProofChecking);
 }
