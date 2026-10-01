@@ -3302,10 +3302,15 @@ import { isBuiltin, arithmeticComparison } from './iso-arithmetic.js';
 export class BuiltinRegistry {
   constructor() {
     this.defs = new Map();
+    // `defs` stays keyed by the printable predicate indicator because callers
+    // enumerate the catalog from it. Lookups, though, happen at least once per
+    // goal on the solver's hot path, so they go through a name/arity index
+    // rather than formatting -- and allocating -- an indicator string each time.
+    this.byName = new Map();
   }
 
   add(name, arity, handler, options = {}) {
-    this.defs.set(`${name}/${arity}`, {
+    const def = {
       name,
       arity,
       handler,
@@ -3317,16 +3322,25 @@ export class BuiltinRegistry {
       fallbackWhenNotReady: options.fallbackWhenNotReady ?? false,
       shouldUse: options.shouldUse ?? null,
       eyePrologLibrary: options.eyePrologLibrary ?? false,
-    });
+    };
+    this.defs.set(`${name}/${arity}`, def);
+    let byArity = this.byName.get(name);
+    if (byArity == null) this.byName.set(name, byArity = new Map());
+    byArity.set(arity, def);
     return this;
   }
 
   get(name, arity) {
-    return this.defs.get(`${name}/${arity}`) ?? null;
+    return this.byName.get(name)?.get(arity) ?? null;
   }
 
   remove(name, arity) {
     this.defs.delete(`${name}/${arity}`);
+    const byArity = this.byName.get(name);
+    if (byArity != null) {
+      byArity.delete(arity);
+      if (byArity.size === 0) this.byName.delete(name);
+    }
     return this;
   }
 }

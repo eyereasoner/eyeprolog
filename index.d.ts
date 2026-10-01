@@ -214,6 +214,7 @@ export type BuiltinHandler =
 export class BuiltinRegistry {
   constructor();
   defs: Map<string, BuiltinDefinition>;
+  byName: Map<string, Map<number, BuiltinDefinition>>;
   eyePrologLibrary?: boolean;
   add(name: string, arity: number, handler: BuiltinHandler, options?: Partial<BuiltinDefinition>): this;
   get(name: string, arity: number): BuiltinDefinition | null;

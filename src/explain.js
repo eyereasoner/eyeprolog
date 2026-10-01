@@ -131,12 +131,15 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
       const id = nextFreshId();
       const freshVariables = new Map();
       const freshHead = freshTerm(clause.head, id, freshVariables);
-      const freshBody = clause.body.map((term) => freshTerm(term, id, freshVariables));
       const next = env.clone();
       if (!unify(goal, freshHead, next)) continue;
 
+      // Rename the body only once the head has matched. The shared variable
+      // map carries the head's renamings, so a body renamed now is the same
+      // body renaming as before -- a clause rejected on its head simply no
+      // longer pays for one.
+      const freshBody = clause.body.map((term) => freshTerm(term, id, freshVariables));
       const substitutions = collectClauseSubstitutions(clause, freshHead, freshBody);
-      const bindings = resolvedSubstitutions(substitutions, next);
 
       if (freshBody.length === 0) {
         yield {
@@ -146,7 +149,10 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
             method: sourceMethod(clause, 'fact'),
             sourceHead: clause.head,
             sourceBody: [],
-            bindings,
+            // A fact binds everything it is going to bind at head unification.
+            // A rule's substitutions are only final once its body is proved,
+            // so that branch resolves them against the proving environment.
+            bindings: resolvedSubstitutions(substitutions, next),
             children: [],
           },
         };
@@ -254,7 +260,17 @@ function builtinChildren(program, goal, env, depth, maxDepth, registry, active, 
 }
 
 function activeVariant(goal, env, active) {
-  return active.some((entry) => variantTerms(goal, env, entry.goal, entry.env));
+  // Only a goal for the same predicate can be a variant of this one, so reject
+  // the rest on their functor instead of on a structural comparison. Scan from
+  // the innermost entry outwards: a replay that is about to cycle repeats its
+  // nearest ancestor, not the goal the whole replay started from.
+  for (let index = active.length - 1; index >= 0; index--) {
+    const entry = active[index];
+    const candidate = entry.goal;
+    if (candidate.type !== goal.type || candidate.name !== goal.name || candidate.arity !== goal.arity) continue;
+    if (variantTerms(goal, env, candidate, entry.env)) return true;
+  }
+  return false;
 }
 
 function sourceMethod(clause, kind) {

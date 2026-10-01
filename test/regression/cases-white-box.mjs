@@ -6,7 +6,7 @@ import { spawnSync } from 'node:child_process';
 import * as publicApi from '../../src/index.js';
 import { Env, Program, atom, compound, copyResolved, flattenConjunction, listFromItems, numberTerm, parseProgramText, properListItems, stringTerm, termIsGround, termToString, unify, variable, variantTerms } from '../../src/index.js';
 import { ISO_OPERATOR_DEFINITIONS, parseGoalText, parseNumberTokenText } from '../../src/parser.js';
-import { compareTerms } from '../../src/term.js';
+import { compareTerms, deref } from '../../src/term.js';
 import { checkProofDocument, verdict } from '../../src/check-proof.js';
 import { formatTermForWrite } from '../../src/write.js';
 import { selectClauseCandidates } from '../../src/program.js';
@@ -1063,6 +1063,67 @@ path(X, Z) :- edge(X, Y), path(Y, Z).
         assertEqual(result.stderr, '', 'stderr');
         assertIncludes(result.stdout, 'collatzTrajectory(1000, [1000, 500, 250, 125', 'stdout');
         assertIncludes(result.stdout, 'collatzTrajectory(1, [1]).\n', 'stdout');
+      },
+    },
+    {
+      // The hot paths below settle the ordinary case without allocating the
+      // traversal state the hard case needs. These cases pin the hard cases:
+      // the state has to appear exactly when the comparison stops being
+      // shallow, acyclic, and decidable on a scalar.
+      name: 'variantTerms separates renaming from sharing and still rejects on scalars',
+      run: () => {
+        const goal = parseGoalText('step(1, X, point(Y, X))');
+        const renamed = parseGoalText('step(1, A, point(B, A))');
+        const shared = parseGoalText('step(1, A, point(B, B))');
+        const otherScalar = parseGoalText('step(2, A, point(B, A))');
+        assertEqual(variantTerms(goal, new Env(), renamed, new Env()), true, 'a consistent renaming is a variant');
+        assertEqual(variantTerms(goal, new Env(), shared, new Env()), false, 'sharing a variable is not a renaming');
+        assertEqual(variantTerms(goal, new Env(), otherScalar, new Env()), false, 'a differing scalar argument rejects');
+        assertEqual(
+          variantTerms(parseGoalText('step(1.0, A)'), new Env(), parseGoalText('step(1, A)'), new Env()),
+          false,
+          'a float and an integer argument stay distinct',
+        );
+      },
+    },
+    {
+      name: 'variantTerms and deref terminate on cyclic bindings',
+      run: () => {
+        const leftEnv = new Env();
+        leftEnv.bind('X', compound('f', [variable('X')]));
+        const rightEnv = new Env();
+        rightEnv.bind('Y', compound('f', [variable('Y')]));
+        assertEqual(variantTerms(variable('X'), leftEnv, variable('Y'), rightEnv), true, 'cyclic terms of one shape are variants');
+
+        const chain = new Env();
+        for (let index = 0; index < 40; index++) chain.bind(`V${index}`, variable(`V${index + 1}`));
+        chain.bind('V40', atom('done'));
+        assertEqual(deref(variable('V0'), chain).name, 'done', 'a forty-hop chain resolves to its value');
+
+        const cyclicChain = new Env();
+        cyclicChain.bind('A', variable('B'));
+        cyclicChain.bind('B', variable('A'));
+        assertEqual(deref(variable('A'), cyclicChain).type, 'var', 'a cyclic chain stops at a variable');
+      },
+    },
+    {
+      name: 'tabled answers separate on a deep list element and still merge on a repeated derivation',
+      run: () => {
+        const program = Program.parse(`
+:- table suffixed/2.
+:- table duplicated/1.
+mark(a).
+mark(b).
+chain(0, [E], E).
+chain(N, [x|T], E) :- N > 0, M is N - 1, chain(M, T, E).
+suffixed(E, L) :- mark(E), chain(40, L, E).
+duplicated(L) :- chain(40, L, a).
+duplicated(L) :- chain(40, L, a).
+`);
+        const distinct = run(program, { goal: 'suffixed(E, L)' });
+        assertEqual(distinct.stdout.trim().split('\n').length, 2, 'answers differing only past forty cells stay distinct');
+        const merged = run(program, { goal: 'duplicated(L)' });
+        assertEqual(merged.stdout.trim().split('\n').length, 1, 'one answer derived twice is tabled once');
       },
     },
   ];

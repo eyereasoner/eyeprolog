@@ -19,6 +19,10 @@ const ATTRIBUTED_ENV_FLATTEN_DEPTH = 256;
 // binding is just as safe to cache as a present one. Negative lookups are
 // especially common while tabling and constraint code probes fresh variables.
 const ENV_UNBOUND = Symbol('environment-unbound');
+// Dereferencing walks a binding chain. Chains are one or two hops in practice
+// and cyclic only when a term was built incorrectly, so the cycle guard starts
+// recording visited names only after a chain is long enough to be suspect.
+const DEREF_CYCLE_GUARD_HOPS = 16;
 // Runtime terms are structurally immutable: environments hold bindings beside
 // them rather than rewriting their argument arrays. Cache only the syntactic
 // variable names; binding reachability is still checked against each Env.
@@ -885,20 +889,34 @@ class SolverEnv extends Env {
 }
 
 export function deref(term, env) {
-  // Follow variable bindings until a non-variable term is reached. The seen set
-  // protects readback from accidental cycles in partially constructed terms.
+  // Follow variable bindings until a non-variable term is reached. This is the
+  // most frequently executed function in the runtime, so nothing it needs only
+  // occasionally may be paid for on every call: most terms are not variables
+  // at all, most environments declare no DCG locals, and almost every chain is
+  // one or two hops long.
+  if (term?.type !== VAR || env == null) return term;
+  // A live compiler-proven DCG local is the current unbound representative.
+  // No older Env layer can contain a binding for it. Both Env representations
+  // answer that question from this one set, so read it once per call instead
+  // of dispatching a method call per hop.
+  const locals = env._localVariables;
   let current = term;
   let seen = null;
-  while (current?.type === VAR) {
-    // A live compiler-proven DCG local is the current unbound representative.
-    // No older Env layer can contain a binding for it.
-    if (env?.isLocalVariable?.(current.name) === true) break;
-    const next = env?.get(current.name);
+  let hops = 0;
+  do {
+    if (locals != null && locals.has(current.name)) break;
+    const next = env.get(current.name);
     if (next === undefined) break;
-    if (seen?.has(current.name)) break;
-    (seen ??= new Set()).add(current.name);
+    // The seen set protects readback from accidental cycles in partially
+    // constructed terms. A cycle still terminates the walk once the guard
+    // starts recording, so ordinary chains never allocate it.
+    if (++hops > DEREF_CYCLE_GUARD_HOPS) {
+      if (seen == null) seen = new Set();
+      if (seen.has(current.name)) break;
+      seen.add(current.name);
+    }
     current = next;
-  }
+  } while (current?.type === VAR);
   return current;
 }
 
@@ -1519,40 +1537,65 @@ export function termSignature(term) {
   return term?.type === COMPOUND ? `${term.name}/${term.arity}` : null;
 }
 
-export function variantTerms(left, leftEnv, right, rightEnv, pairs = new Map(), reverse = new Map()) {
-  // Variant checks sit on the recursive-call hot path. Use an explicit work
-  // stack so long lists do not consume the JavaScript call stack.
-  const pending = [[left, right]];
-  const seen = new WeakMap();
-  while (pending.length > 0) {
-    [left, right] = pending.pop();
-    left = deref(left, leftEnv);
-    right = deref(right, rightEnv);
-    if (left.type === VAR || right.type === VAR) {
-      if (left.type !== VAR || right.type !== VAR) return false;
-      if (pairs.has(left.name) || reverse.has(right.name)) {
-        if (pairs.get(left.name) !== right.name || reverse.get(right.name) !== left.name) return false;
-        continue;
+export function variantTerms(left, leftEnv, right, rightEnv, pairs = null, reverse = null) {
+  // Variant checks sit on the recursive-call hot path, where the usual answer
+  // is "not a variant" and the usual reason is one mismatched scalar argument.
+  // Settle scalar and variable arguments as they are derefed and defer only
+  // compound ones to an explicit work stack, which long lists still need so
+  // they do not consume the JavaScript call stack. The stack, the variable
+  // pairing, and the cycle guard are therefore allocated only once something
+  // actually needs them, which a rejected comparison usually never does.
+  let leftStack = null;
+  let rightStack = null;
+  let seen = null;
+  let current = deref(left, leftEnv);
+  let other = deref(right, rightEnv);
+  for (;;) {
+    if (current.type === VAR || other.type === VAR) {
+      if (current.type !== VAR || other.type !== VAR) return false;
+      pairs ??= new Map();
+      reverse ??= new Map();
+      const forward = pairs.get(current.name);
+      const backward = reverse.get(other.name);
+      if (forward !== undefined || backward !== undefined) {
+        if (forward !== other.name || backward !== current.name) return false;
+      } else {
+        pairs.set(current.name, other.name);
+        reverse.set(other.name, current.name);
       }
-      pairs.set(left.name, right.name);
-      reverse.set(right.name, left.name);
-      continue;
+    } else if (current.type !== other.type || current.arity !== other.arity) {
+      return false;
+    } else if (current.type === NUMBER ? !sameNumberValue(current.name, other.name) : current.name !== other.name) {
+      return false;
+    } else if (current.type === COMPOUND && seen?.get(current)?.has(other) !== true) {
+      let recorded = false;
+      for (let i = 0; i < current.arity; i++) {
+        const leftArg = deref(current.args[i], leftEnv);
+        const rightArg = deref(other.args[i], rightEnv);
+        if (leftArg.type !== COMPOUND && rightArg.type !== COMPOUND
+          && leftArg.type !== VAR && rightArg.type !== VAR) {
+          if (leftArg.type !== rightArg.type) return false;
+          if (leftArg.type === NUMBER
+            ? !sameNumberValue(leftArg.name, rightArg.name)
+            : leftArg.name !== rightArg.name) return false;
+          continue;
+        }
+        if (!recorded) {
+          recorded = true;
+          let rights = (seen ??= new WeakMap()).get(current);
+          if (rights == null) seen.set(current, rights = new WeakSet());
+          rights.add(other);
+          leftStack ??= [];
+          rightStack ??= [];
+        }
+        leftStack.push(leftArg);
+        rightStack.push(rightArg);
+      }
     }
-
-    if (left.type !== right.type || left.arity !== right.arity) return false;
-    if (left.type === NUMBER ? !sameNumberValue(left.name, right.name) : left.name !== right.name) return false;
-    if (left.type !== COMPOUND) continue;
-
-    let rights = seen.get(left);
-    if (rights?.has(right)) continue;
-    if (rights == null) {
-      rights = new WeakSet();
-      seen.set(left, rights);
-    }
-    rights.add(right);
-    for (let i = left.arity - 1; i >= 0; i--) pending.push([left.args[i], right.args[i]]);
+    if (leftStack == null || leftStack.length === 0) return true;
+    current = leftStack.pop();
+    other = rightStack.pop();
   }
-  return true;
 }
 
 

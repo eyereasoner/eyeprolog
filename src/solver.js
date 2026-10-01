@@ -3223,13 +3223,13 @@ function rememberGroundChainSuccess(solver, seen) {
 
 function rememberMemoAnswer(entry, goal, env) {
   const variables = new Map();
-  const answerKeys = [];
-  const answerArgs = goal.args.map((arg) => {
-    const answer = copyResolvedWithKey(arg, env, variables);
-    answerKeys.push(answer.key);
-    return answer.term;
-  });
-  const key = answerKeys.join('\x1f');
+  const keyParts = [];
+  const answerArgs = new Array(goal.args.length);
+  for (let position = 0; position < goal.args.length; position++) {
+    if (position > 0) keyParts.push('\x1f');
+    answerArgs[position] = copyResolvedWithKey(goal.args[position], env, variables, keyParts);
+  }
+  const key = keyParts.join('');
   if (entry.answerKeys.has(key)) return;
   entry.answerKeys.add(key);
   const answerIndex = entry.answers.length;
@@ -3373,7 +3373,13 @@ function canonicalTermKey(term, env, variables) {
   return key.join('');
 }
 
-function copyResolvedWithKey(term, env, variables) {
+// Copies one answer argument and appends its variant key to `keyParts`.
+// Writing fragments into one shared array keeps a tabled answer linear in its
+// own size: returning a key per subterm instead made every enclosing term
+// rebuild the key of everything below it, so a predicate tabling long lists --
+// a Collatz trajectory, a transitive closure path -- paid quadratic string
+// building for each answer it recorded.
+function copyResolvedWithKey(term, env, variables, keyParts) {
   const value = derefForLocal(term, env);
   if (value.type === 'var') {
     let id = variables.get(value.name);
@@ -3381,19 +3387,24 @@ function copyResolvedWithKey(term, env, variables) {
       id = variables.size;
       variables.set(value.name, id);
     }
-    return { term: termModuleCache.variable(value.name), key: `var:${id}` };
+    keyParts.push('var:', id);
+    return termModuleCache.variable(value.name);
   }
   if (!value.args?.length) {
     // Atomic terms are immutable in the solver.  Share them across table
     // answers instead of allocating a fresh host object for every cell of a
     // large closure such as tc/2.
-    return { term: value, key: `${value.type}:${value.name}` };
+    keyParts.push(value.type, ':', value.name);
+    return value;
   }
-  const children = value.args.map((arg) => copyResolvedWithKey(arg, env, variables));
-  return {
-    term: termModuleCache.compound(value.name, children.map((child) => child.term)),
-    key: `${value.type}:${value.name}(${children.map((child) => child.key).join(',')})`,
-  };
+  keyParts.push(value.type, ':', value.name, '(');
+  const children = new Array(value.args.length);
+  for (let index = 0; index < value.args.length; index++) {
+    if (index > 0) keyParts.push(',');
+    children[index] = copyResolvedWithKey(value.args[index], env, variables, keyParts);
+  }
+  keyParts.push(')');
+  return termModuleCache.compound(value.name, children);
 }
 
 // Avoid circular import surprises in older Node loaders.

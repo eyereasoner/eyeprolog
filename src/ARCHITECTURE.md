@@ -39,6 +39,10 @@ Verification walks the supplied certificate and checks source-clause steps again
 the parsed `Program`; it does not call the solver to rediscover the proof.
 Built-in and abstract library nodes are explicit trust boundaries, while expanded
 proofs expose bundled Prolog-library clauses as ordinary source steps.
+Proof nodes share the runtime terms they resolve. Runtime terms are structurally
+immutable, so a ground subtree already is the snapshot a proof needs, and
+`resolveForProof` copies only the ancestors of an argument that variable
+resolution actually changed. Nothing anywhere may rewrite a term in place.
 
 `iso.js` and `program.js` remain facade modules for their existing exports, so
 this refactor does not change the public JavaScript API.
@@ -115,6 +119,16 @@ matching `*-host.js` adapter: `clpz-host.js` and `clpb-host.js`, for example,
 construct native propagation/search plans while their Prolog modules retain
 validation, residual constraints, and portable fallbacks. A cleaner file layout
 is not worth a runtime regression, so such splits must retain benchmark parity.
+
+Hot paths follow one allocation discipline: the state a walk or a comparison
+needs only for its hard case -- a cycle guard, a traversal stack, a variable
+pairing -- is allocated when that case actually appears rather than on entry.
+`deref`, `variantTerms`, and `goalHeadTermsCannotMatch` therefore decide the
+shallow, acyclic, scalar-argument case, which is the overwhelming majority of
+their calls, without allocating anything. A key a table or an index derives
+from a term is built once into one fragment array for the whole term: a key
+composed from a key per subterm makes recording one answer quadratic in that
+answer's own size.
 
 Performance claims use `npm test`'s own elapsed time across the full corpus,
 not predicate, inference, or host-call counts as a substitute for elapsed
