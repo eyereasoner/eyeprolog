@@ -3291,7 +3291,16 @@ function headCannotMatch(goal, head, env) {
 }
 
 function goalHeadTermsCannotMatch(goalTerm, headTerm, env) {
-  const pending = [[goalTerm, headTerm]];
+  // Scalar comparisons dominate indexed clause checks. Avoid allocating a
+  // traversal stack until a compound argument needs its children checked.
+  const first = derefForLocal(goalTerm, env);
+  if (first.type === VAR || headTerm.type === VAR) return false;
+  if (first.type !== headTerm.type || first.name !== headTerm.name || first.arity !== headTerm.arity) return true;
+  if (first.type !== COMPOUND) return false;
+  const pending = [];
+  for (let index = 0; index < first.arity; index++) {
+    pending.push([first.args[index], headTerm.args[index]]);
+  }
   while (pending.length > 0) {
     const [goalItem, headItem] = pending.pop();
     const actual = derefForLocal(goalItem, env);
