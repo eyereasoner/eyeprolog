@@ -83,16 +83,18 @@ An explanation is not verification. A convincing explanation can be produced
 for a wrong result, so the check must be capable of **disagreeing** with the
 answer.
 
-A proof document is read as a claim, not believed. `--check-proof` tests five
-conditions:
+A proof document is read as a claim, not believed. `--check-proof` tests seven
+conditions, specified in [SPEC.md](SPEC.md):
 
 | | condition | what it establishes |
 | --- | --- | --- |
 | **C1** | Resolution | every checked step really is an instance of the clause it cites — and the clause is taken from the program, not from the document, so a proof cannot be made valid by restating the rule it used |
 | **C2** | Well-founded | following what a step used never leads back to it; a proof that rested on itself would prove anything |
-| **C3** | Justification | every step carries exactly one known justification |
-| **C4** | Coverage | every claim has a step, and every use resolves to a step or to a statement the program gives |
-| **C5** | Re-decision | a step the document only *asserts* is computed again, independently, and must agree |
+| **C3** | Justification | every step carries exactly one known justification, in the shape it requires |
+| **C4** | Coverage | every claim has a step, and every use resolves to a step or to an instance of a program fact |
+| **C5** | Re-decision | a step the document only *asserts* is computed again, independently, and must agree; a control step must be composed of its uses |
+| **C6** | Boundary consistency | a `\+` or `findall/3` taken on trust is confronted with the evidence the program and the document show, which can refute it |
+| **C7** | Relevance | every claim answers a goal that was asked, and every step serves a claim |
 
 C5 is the trust contract. The largest class of steps in a typical proof is the
 primitive — arithmetic, comparison, string and date operations that no clause
@@ -115,11 +117,17 @@ with C5 as the only objecting condition.
 A condition that cannot fail is not much of a check.
 
 Not every step needs recomputing to be established. A control construct such as
-`once(G)` records the goal it wraps among its uses, and that goal is itself a
-step which C1 and C4 already check, so the conclusion is carried rather than
-trusted — and the checker verifies that entailment actually holds instead of
-assuming it. Constructs that claim something about the *absence* of further
-solutions are excluded, because no recorded use can establish an absence.
+`once(G)` is recorded as a `control` step whose uses are the goals it wraps,
+and those goals are themselves steps which C1 and C4 already check, so the
+conclusion is carried rather than trusted — and C5 verifies that the uses are
+exactly what the construct wraps instead of assuming it.
+
+Constructs that claim something about the *absence* of solutions — `\+ G` and
+`findall/3` — cannot be proved by any recorded use, so they stay trusted. They
+are not left unexamined, though: C6 confronts each one with the evidence at
+hand — the program's facts and the document's own steps, for predicates that
+are static and pure enough for that evidence to speak — and rejects one the
+evidence contradicts. What survives is reported as an obligation.
 
 ## 04 — Composition: a checked answer is data
 
@@ -216,11 +224,12 @@ proof, and `npm test` re-checks all of them on every run:
 | examples | 236 |
 | packaged proofs | 236 |
 | packaged check results | 236 |
-| recorded steps | 36432 |
-| verified against a source clause | 20753 |
-| recomputed independently | 14720 |
-| carried by the goal they wrap | 76 |
-| remaining obligations | 878 (2.4%) |
+| recorded steps | 147253 |
+| verified against a source clause | 131665 |
+| recomputed independently | 14713 |
+| carried by the goal they wrap | 10 |
+| trusted boundaries confronted with evidence | 515 |
+| remaining obligations | 860 (0.6%) |
 
 Each obligation names the conclusion it stands for, so the residue can be read
 rather than only counted. Two thirds of it is one thing: a `\+` step claims a

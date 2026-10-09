@@ -3,7 +3,9 @@ condition('C2', well_founded, ok, 38).
 condition('C3', justification, ok, 38).
 condition('C4', coverage, ok, 38).
 condition('C5', re_decision, ok, 15).
-obligation(absent, theory_scoped, \+ run_linear(2, [coin], [buy_flour, buy_yeast], _finalstate)).
+condition('C6', boundary_consistency, ok, 1).
+condition('C7', relevance, ok, 40).
+obligation(absent, theory_scoped, \+ run_linear(2, [coin], [buy_flour, buy_yeast], A)).
 steps(38).
 verified(22).
 recomputed(15).

@@ -3,6 +3,8 @@ condition('C2', well_founded, ok, 9).
 condition('C3', justification, ok, 9).
 condition('C4', coverage, ok, 9).
 condition('C5', re_decision, ok, 2).
+condition('C6', boundary_consistency, ok, 0).
+condition('C7', relevance, ok, 12).
 obligation(builtin, reflective, current_op(600, xfx, reports)).
 steps(9).
 verified(6).

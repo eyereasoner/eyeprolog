@@ -14,7 +14,7 @@ step(report(next_task, check_power),
      rule(5),
      ['Task' = check_power],
      [once(task(check_power, urgent))]).
-step(once(task(check_power, urgent)), builtin, [], [task(check_power, urgent)]).
+step(once(task(check_power, urgent)), control, [], [task(check_power, urgent)]).
 step(task(check_power, urgent), asserted, [], []).
 step(report(all_tasks, [task(check_power, urgent), task(check_network, normal), task(archive_logs, low)]),
      rule(6),

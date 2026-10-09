@@ -6,6 +6,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { Program, createDefaultRegistry, run } from '../src/index.js';
 import { fileURLToPath } from 'node:url';
+import { checkProofDocument } from '../src/check-proof.js';
 import { TestReporter, isMainModule, runStandalone } from './test-style.mjs';
 import { goalsFromSource } from './goal-metadata.mjs';
 import { listPrologFiles, withStandardModules } from './test-support.mjs';
@@ -126,7 +127,13 @@ function runProofCase(name, file) {
   const stdout = run(program, { goals: goalsFromSource(text), proof: true }).stdout;
 
   compareExpectedFile(expected, stdout, name, 'proof output');
-  Program.parse(stdout);
+  // A proof that matched its golden byte for byte could still be nonsense,
+  // so each one is also checked against the program it came from.
+  const report = checkProofDocument(program, stdout, { goals: goalsFromSource(text) });
+  if (!report.valid) {
+    const detail = report.failures.slice(0, 3).map((failure) => `[${failure.condition}] ${failure.detail}`).join('; ');
+    throw new Error(`proof for ${name} does not check: ${detail}`);
+  }
 }
 
 function formatWarnings(program) {

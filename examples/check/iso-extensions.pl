@@ -3,11 +3,13 @@ condition('C2', well_founded, ok, 12).
 condition('C3', justification, ok, 12).
 condition('C4', coverage, ok, 12).
 condition('C5', re_decision, ok, 1).
-obligation(builtin, theory_scoped, forall(color(Color), atom(Color))).
-obligation(collected, theory_scoped, findall(N - S, (cfor(1, 3, N), succ(N, S)), [1 - 2, 2 - 3, 3 - 4])).
-obligation(builtin, theory_scoped, findall(Template, color(Template), [red, green, blue, done], [done])).
-obligation(absent, theory_scoped, \+ variant(tree(X, X), tree(__anon0, _Y))).
-obligation(builtin, theory_scoped, countall(color(__anon1), 3)).
+condition('C6', boundary_consistency, ok, 0).
+condition('C7', relevance, ok, 18).
+obligation(builtin, theory_scoped, forall(color(A), atom(A))).
+obligation(collected, theory_scoped, findall(A - B, (cfor(1, 3, A), succ(A, B)), [1 - 2, 2 - 3, 3 - 4])).
+obligation(builtin, theory_scoped, findall(A, color(A), [red, green, blue, done], [done])).
+obligation(absent, theory_scoped, \+ variant(tree(A, A), tree(B, C))).
+obligation(builtin, theory_scoped, countall(color(A), 3)).
 steps(12).
 verified(6).
 recomputed(1).

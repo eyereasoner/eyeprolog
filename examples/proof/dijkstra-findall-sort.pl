@@ -25,7 +25,7 @@ step(shortestPath(dijkstra_findall_sort, "acbdef"),
      rule(15),
      ['Path' = "acbdef"],
      [once(dijkstra(a, f, "acbdef", 13))]).
-step(once(dijkstra(a, f, "acbdef", 13)), builtin, [], [dijkstra(a, f, "acbdef", 13)]).
+step(once(dijkstra(a, f, "acbdef", 13)), control, [], [dijkstra(a, f, "acbdef", 13)]).
 step(dijkstra(a, f, "acbdef", 13),
      rule(12),
      ['Start' = a, 'Goal' = f, 'Path' = "acbdef", 'Cost' = 13, 'Revpath' = "fedbca"],

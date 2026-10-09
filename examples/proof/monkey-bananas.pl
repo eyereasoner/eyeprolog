@@ -50,11 +50,11 @@ step(plan([go(loc3), push(loc1), climb_on, grab]),
       'G' = [loc1, loc1, loc1|"yy"]],
      [candidate_plan([go(loc3), push(loc1), climb_on, grab]),
       initial_state([loc1, loc2, loc3|"nn"]),
-      goal_state([__anon12, __anon13, __anon14, __anon15, y]),
+      goal_state([loc1, loc1, loc1|"yy"]),
       reachable_state([loc1, loc2, loc3|"nn"], [go(loc3), push(loc1), climb_on, grab], [loc1, loc1, loc1|"yy"])]).
 step(candidate_plan([go(loc3), push(loc1), climb_on, grab]), fact(3), [], []).
 step(initial_state([loc1, loc2, loc3|"nn"]), fact(7), [], []).
-step(goal_state([__anon12, __anon13, __anon14, __anon15, y]), fact(8), [], []).
+step(goal_state([loc1, loc1, loc1|"yy"]), fact(8), [], []).
 step(reachable_state([loc1, loc2, loc3|"nn"], [go(loc3), push(loc1), climb_on, grab], [loc1, loc1, loc1|"yy"]),
      rule(6),
      ['S1' = [loc1, loc2, loc3|"nn"],
@@ -126,7 +126,7 @@ step(plan([go(loc1), go(loc3), push(loc1), climb_on, grab]),
       'G' = [loc1, loc1, loc1|"yy"]],
      [candidate_plan([go(loc1), go(loc3), push(loc1), climb_on, grab]),
       initial_state([loc1, loc2, loc3|"nn"]),
-      goal_state([__anon12, __anon13, __anon14, __anon15, y]),
+      goal_state([loc1, loc1, loc1|"yy"]),
       reachable_state([loc1, loc2, loc3|"nn"], [go(loc1), go(loc3), push(loc1), climb_on, grab], [loc1, loc1, loc1|"yy"])]).
 step(candidate_plan([go(loc1), go(loc3), push(loc1), climb_on, grab]), fact(4), [], []).
 step(reachable_state([loc1, loc2, loc3|"nn"], [go(loc1), go(loc3), push(loc1), climb_on, grab], [loc1, loc1, loc1|"yy"]),
@@ -168,9 +168,10 @@ step(plan([go(loc3), push(loc1), climb_on, grab, climb_off]),
       'G' = [loc1, loc1, loc1|"ny"]],
      [candidate_plan([go(loc3), push(loc1), climb_on, grab, climb_off]),
       initial_state([loc1, loc2, loc3|"nn"]),
-      goal_state([__anon12, __anon13, __anon14, __anon15, y]),
+      goal_state([loc1, loc1, loc1|"ny"]),
       reachable_state([loc1, loc2, loc3|"nn"], [go(loc3), push(loc1), climb_on, grab, climb_off], [loc1, loc1, loc1|"ny"])]).
 step(candidate_plan([go(loc3), push(loc1), climb_on, grab, climb_off]), fact(4), [], []).
+step(goal_state([loc1, loc1, loc1|"ny"]), fact(8), [], []).
 step(reachable_state([loc1, loc2, loc3|"nn"], [go(loc3), push(loc1), climb_on, grab, climb_off], [loc1, loc1, loc1|"ny"]),
      rule(6),
      ['S1' = [loc1, loc2, loc3|"nn"],
@@ -235,7 +236,7 @@ step(plan([go(loc3), push(loc2), push(loc1), climb_on, grab]),
       'G' = [loc1, loc1, loc1|"yy"]],
      [candidate_plan([go(loc3), push(loc2), push(loc1), climb_on, grab]),
       initial_state([loc1, loc2, loc3|"nn"]),
-      goal_state([__anon12, __anon13, __anon14, __anon15, y]),
+      goal_state([loc1, loc1, loc1|"yy"]),
       reachable_state([loc1, loc2, loc3|"nn"], [go(loc3), push(loc2), push(loc1), climb_on, grab], [loc1, loc1, loc1|"yy"])]).
 step(candidate_plan([go(loc3), push(loc2), push(loc1), climb_on, grab]), fact(4), [], []).
 step(reachable_state([loc1, loc2, loc3|"nn"], [go(loc3), push(loc2), push(loc1), climb_on, grab], [loc1, loc1, loc1|"yy"]),

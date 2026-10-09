@@ -229,19 +229,26 @@ wrong result, so a check is only worth something if it is capable of
 *disagreeing* with the answer it checks. A condition that cannot fail is not
 much of a check.
 
-`--check-proof` therefore tests five conditions, four of which read the
-document and one of which does not:
+`--check-proof` therefore tests seven conditions, specified in
+[SPEC.md](SPEC.md). Five read the document against the program, and two, C5
+and C6, also confront it with evidence the document did not supply:
 
 - **C1 Resolution** — every checked step really is an instance of the clause it
   cites. The clause is taken from the program, not from the document, so a
   proof cannot be made valid by restating the rule it used.
 - **C2 Well-founded** — following what a step used never leads back to it. A
   proof that rested on itself would prove anything.
-- **C3 Justification** — every step carries exactly one known justification.
+- **C3 Justification** — every step carries exactly one known justification,
+  in the shape that justification requires.
 - **C4 Coverage** — every claim has a step, and every use resolves either to a
-  step or to a statement the program gives.
+  step or to an instance of a fact the program gives.
 - **C5 Re-decision** — a step the document only *asserts*, rather than derives,
-  is computed again and must agree.
+  is computed again and must agree; a control step must be composed of its uses.
+- **C6 Boundary consistency** — a `\+` or `findall/3` taken on trust is
+  confronted with the program's facts and the document's own steps, and fails
+  when they contradict it.
+- **C7 Relevance** — every claim answers a goal that was asked, and every step
+  serves a claim.
 
 C5 is what makes the rest worth having. The largest class of steps in a typical
 proof is the primitive: arithmetic, comparison, string and date operations that
@@ -269,10 +276,11 @@ they were trusted. They are named individually in the checker, counted
 separately in the result, and reported as what the check still rests on rather
 than what it establishes.
 
-The packaged corpus makes the proportion visible. Every one of the 235
-examples carries a proof: 36432 steps, of which 20753 are verified against
-their source clause, 14720 are recomputed independently, 76 are carried by the
-goals they wrap, and 878 — 2.4% — remain obligations, each one named. `npm test` re-checks all of them on every run, and the
+The packaged corpus makes the proportion visible. Every one of the 236
+examples carries a proof: 147253 steps, of which 131665 are verified against
+their source clause, 14713 are recomputed independently, 10 are carried by the
+goals they wrap, and 860 — 0.6% — remain obligations, each one named; 515
+trusted boundaries are confronted with evidence and none is contradicted. `npm test` re-checks all of them on every run, and the
 proof directory is read from disk rather than from a list, so a document cannot
 be added without being checked. An unverified proof is worse than none, because
 it still looks like evidence.

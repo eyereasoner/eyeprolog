@@ -3,6 +3,8 @@ condition('C2', well_founded, ok, 80).
 condition('C3', justification, ok, 80).
 condition('C4', coverage, ok, 118).
 condition('C5', re_decision, ok, 31).
+condition('C6', boundary_consistency, ok, 7).
+condition('C7', relevance, ok, 83).
 obligation(absent, theory_scoped, \+ member(res_airport_309, [res_airport_310])).
 obligation(absent, theory_scoped, \+ member(res_airport_1452, [res_airport_309, res_airport_310])).
 obligation(absent, theory_scoped, \+ member(res_airport_1587, [res_airport_1452, res_airport_309, res_airport_310])).

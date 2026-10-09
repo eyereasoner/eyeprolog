@@ -62,7 +62,7 @@ step(path(eulerian_path_case, [v1, v2, v3, v4, v5, v1, v3, v6, v2, v4, v6, v1]),
      ['Path' = [v1, v2, v3, v4, v5, v1, v3, v6, v2, v4, v6, v1]],
      [once(eulerian_path([v1, v2, v3, v4, v5, v1, v3, v6, v2, v4, v6, v1]))]).
 step(once(eulerian_path([v1, v2, v3, v4, v5, v1, v3, v6, v2, v4, v6, v1])),
-     builtin,
+     control,
      [],
      [eulerian_path([v1, v2, v3, v4, v5, v1, v3, v6, v2, v4, v6, v1])]).
 step(eulerian_path([v1, v2, v3, v4, v5, v1, v3, v6, v2, v4, v6, v1]),

@@ -56,7 +56,7 @@ step(missionaries_cannibals_answer(first_solution, [state(3, 3, left), state(3, 
      ['Path' = [state(3, 3, left), state(3, 1, right), state(3, 2, left), state(3, 0, right), state(3, 1, left), state(1, 1, right), state(2, 2, left), state(0, 2, right), state(0, 3, left), state(0, 1, right), state(1, 1, left), state(0, 0, right)]],
      [once(solution([state(3, 3, left), state(3, 1, right), state(3, 2, left), state(3, 0, right), state(3, 1, left), state(1, 1, right), state(2, 2, left), state(0, 2, right), state(0, 3, left), state(0, 1, right), state(1, 1, left), state(0, 0, right)]))]).
 step(once(solution([state(3, 3, left), state(3, 1, right), state(3, 2, left), state(3, 0, right), state(3, 1, left), state(1, 1, right), state(2, 2, left), state(0, 2, right), state(0, 3, left), state(0, 1, right), state(1, 1, left), state(0, 0, right)])),
-     builtin,
+     control,
      [],
      [solution([state(3, 3, left), state(3, 1, right), state(3, 2, left), state(3, 0, right), state(3, 1, left), state(1, 1, right), state(2, 2, left), state(0, 2, right), state(0, 3, left), state(0, 1, right), state(1, 1, left), state(0, 0, right)])]).
 step(solution([state(3, 3, left), state(3, 1, right), state(3, 2, left), state(3, 0, right), state(3, 1, left), state(1, 1, right), state(2, 2, left), state(0, 2, right), state(0, 3, left), state(0, 1, right), state(1, 1, left), state(0, 0, right)]),

@@ -3,18 +3,20 @@ condition('C2', well_founded, ok, 128).
 condition('C3', justification, ok, 128).
 condition('C4', coverage, ok, 186).
 condition('C5', re_decision, ok, 11).
-obligation(builtin, theory_scoped, aggregate_max(Key, Value, finish_time(Value, Key), 23, launch)).
-obligation(builtin, theory_scoped, aggregate_max(Key, Value, (depends(launch, Value), finish_time(Value, Key)), 22, security_review)).
-obligation(builtin, theory_scoped, aggregate_max(Key, Value, (depends(security_review, Value), finish_time(Value, Key)), 19, integration)).
-obligation(builtin, theory_scoped, aggregate_max(Key, Value, (depends(integration, Value), finish_time(Value, Key)), 15, backend)).
-obligation(builtin, theory_scoped, aggregate_max(Key, Value, (depends(backend, Value), finish_time(Value, Key)), 9, database)).
-obligation(builtin, theory_scoped, aggregate_max(Key, Value, (depends(database, Value), finish_time(Value, Key)), 5, architecture)).
-obligation(builtin, theory_scoped, aggregate_max(Key, Value, (depends(architecture, Value), finish_time(Value, Key)), 2, requirements)).
-obligation(absent, theory_scoped, \+ depends(requirements, _pred)).
-obligation(builtin, theory_scoped, aggregate_max(Key, Value, (depends(api_design, Value), finish_time(Value, Key)), 2, requirements)).
-obligation(builtin, theory_scoped, aggregate_max(Key, Value, (depends(frontend, Value), finish_time(Value, Key)), 4, api_design)).
-obligation(builtin, theory_scoped, aggregate_max(Key, Value, (depends(auth, Value), finish_time(Value, Key)), 5, architecture)).
-obligation(builtin, theory_scoped, aggregate_max(Key, Value, (depends(load_test, Value), finish_time(Value, Key)), 19, integration)).
+condition('C6', boundary_consistency, ok, 1).
+condition('C7', relevance, ok, 147).
+obligation(builtin, theory_scoped, aggregate_max(A, B, finish_time(B, A), 23, launch)).
+obligation(builtin, theory_scoped, aggregate_max(A, B, (depends(launch, B), finish_time(B, A)), 22, security_review)).
+obligation(builtin, theory_scoped, aggregate_max(A, B, (depends(security_review, B), finish_time(B, A)), 19, integration)).
+obligation(builtin, theory_scoped, aggregate_max(A, B, (depends(integration, B), finish_time(B, A)), 15, backend)).
+obligation(builtin, theory_scoped, aggregate_max(A, B, (depends(backend, B), finish_time(B, A)), 9, database)).
+obligation(builtin, theory_scoped, aggregate_max(A, B, (depends(database, B), finish_time(B, A)), 5, architecture)).
+obligation(builtin, theory_scoped, aggregate_max(A, B, (depends(architecture, B), finish_time(B, A)), 2, requirements)).
+obligation(absent, theory_scoped, \+ depends(requirements, A)).
+obligation(builtin, theory_scoped, aggregate_max(A, B, (depends(api_design, B), finish_time(B, A)), 2, requirements)).
+obligation(builtin, theory_scoped, aggregate_max(A, B, (depends(frontend, B), finish_time(B, A)), 4, api_design)).
+obligation(builtin, theory_scoped, aggregate_max(A, B, (depends(auth, B), finish_time(B, A)), 5, architecture)).
+obligation(builtin, theory_scoped, aggregate_max(A, B, (depends(load_test, B), finish_time(B, A)), 19, integration)).
 steps(128).
 verified(105).
 recomputed(11).

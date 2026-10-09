@@ -253,7 +253,7 @@ true :+ ready.
         const program = Program.parse(source.join('\n'), { sourceMetadata: true });
         const result = runEyeProlog(program, { goals: ['a(ind, a2)'], proof: true });
         assertIncludes(result.stdout, 'a(ind, a2).\n', 'deep answer');
-        const report = checkProofDocument(program, result.stdout);
+        const report = checkProofDocument(program, result.stdout, { goals: ['a(ind, a2)'] });
         assertEqual(report.valid, true, 'deep proof verifies independently');
         assertEqual(report.steps, depth + 2, 'every chain edge and fact is recorded');
         assertEqual(report.verified, depth + 2, 'every step is verified against source');
@@ -272,7 +272,7 @@ true :+ ready.
           const program = Program.parse(source, { sourceMetadata: true });
           const result = runEyeProlog(program, { goals: ['q(a)'], proof: true });
           assertIncludes(result.stdout, 'q(a).\n', 'answer');
-          assertEqual(checkProofDocument(program, result.stdout).valid, true, 'fallback proof verifies');
+          assertEqual(checkProofDocument(program, result.stdout, { goals: ['q(a)'] }).valid, true, 'fallback proof verifies');
         }
         const cyclic = Program.parse('q(a) :- q(a).\nq(a).', { sourceMetadata: true });
         assertEqual(proofNodeFor(cyclic, parseGoalText('q(a)')).method.kind, 'fact',

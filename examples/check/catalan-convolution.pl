@@ -3,8 +3,10 @@ condition('C2', well_founded, ok, 15).
 condition('C3', justification, ok, 15).
 condition('C4', coverage, ok, 17).
 condition('C5', re_decision, ok, 6).
-obligation(builtin, theory_scoped, sumall(Expression, (between(0, 11, I), J is 11 - I, catalan(I, A), catalan(J, B), Expression is A * B), 208012)).
-obligation(builtin, theory_scoped, sumall(Expression, (between(0, 9, N), catalan(N, Expression)), 6918)).
+condition('C6', boundary_consistency, ok, 0).
+condition('C7', relevance, ok, 19).
+obligation(builtin, theory_scoped, sumall(A, (between(0, 11, B), C is 11 - B, catalan(B, D), catalan(C, E), A is D * E), 208012)).
+obligation(builtin, theory_scoped, sumall(A, (between(0, 9, B), catalan(B, A)), 6918)).
 steps(15).
 verified(7).
 recomputed(6).

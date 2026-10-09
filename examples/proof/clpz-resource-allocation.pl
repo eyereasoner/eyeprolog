@@ -28,7 +28,7 @@ step(clpz_example(allocation, plan([2, 3, 1], durations([3, 2, 7]), 12)),
       element(1, [7, 2, 5], 7),
       chain(#>=, [3, 2]),
       sum([3, 2, 7], #=, 12),
-      (integer(X) -> between:between(0, 1, X) ; clpz:clpz_in(X, 0..1)),
+      (integer(1) -> between:between(0, 1, 1) ; clpz:clpz_in(1, 0..1)),
       1 #<==> 12 #=< 12,
       (integer(1) -> 1 =:= 1 ; true, var(1) -> 1 = 1 ; Var_1 = 1, clpz:clpz_equal(1, Var_1)),
       labeling([ff, down], [2, 3, 1, 1])]).
@@ -40,7 +40,7 @@ step(element(3, [4, 6, 2], 2), builtin, [], []).
 step(element(1, [7, 2, 5], 7), builtin, [], []).
 step(chain(#>=, [3, 2]), builtin, [], []).
 step(sum([3, 2, 7], #=, 12), builtin, [], []).
-step((integer(X) -> between:between(0, 1, X) ; clpz:clpz_in(X, 0..1)), builtin, [], []).
+step((integer(1) -> between:between(0, 1, 1) ; clpz:clpz_in(1, 0..1)), builtin, [], []).
 step(1 #<==> 12 #=< 12, builtin, [], []).
 step((integer(1) -> 1 =:= 1 ; true, var(1) -> 1 = 1 ; Var_1 = 1, clpz:clpz_equal(1, Var_1)),
      builtin,
@@ -58,7 +58,7 @@ step(clpz_example(allocation, plan([3, 1, 2], durations([4, 4, 2]), 10)),
       element(2, [7, 2, 5], 2),
       chain(#>=, [4, 4]),
       sum([4, 4, 2], #=, 10),
-      (integer(X) -> between:between(0, 1, X) ; clpz:clpz_in(X, 0..1)),
+      (integer(1) -> between:between(0, 1, 1) ; clpz:clpz_in(1, 0..1)),
       1 #<==> 10 #=< 12,
       (integer(1) -> 1 =:= 1 ; true, var(1) -> 1 = 1 ; Var_1 = 1, clpz:clpz_equal(1, Var_1)),
       labeling([ff, down], [3, 1, 2, 1])]).

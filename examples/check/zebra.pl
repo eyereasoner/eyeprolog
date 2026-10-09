@@ -1,11 +1,13 @@
-condition('C1', resolution, ok, 16).
-condition('C2', well_founded, ok, 27).
-condition('C3', justification, ok, 27).
-condition('C4', coverage, ok, 29).
-condition('C5', re_decision, ok, 11).
-steps(27).
-verified(16).
-recomputed(11).
+condition('C1', resolution, ok, 13).
+condition('C2', well_founded, ok, 19).
+condition('C3', justification, ok, 19).
+condition('C4', coverage, ok, 28).
+condition('C5', re_decision, ok, 6).
+condition('C6', boundary_consistency, ok, 0).
+condition('C7', relevance, ok, 22).
+steps(19).
+verified(13).
+recomputed(6).
 composed(0).
 trusted(0).
 claims(3).

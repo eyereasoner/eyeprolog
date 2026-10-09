@@ -12,19 +12,21 @@ clause(5,
         get_atts(var('Y'), required(ready)),
         var('Y') = ready)).
 
-step(accepts_required_value(ok), rule(4), ['X' = 7], [attach_required(Variable, 7), 7 = 7]).
-step(attach_required(Variable, 7), rule(1), ['Value' = 7], [put_atts(Variable, required(7))]).
-step(put_atts(Variable, required(7)), builtin, [], []).
+step(accepts_required_value(ok), rule(4), ['X' = 7], [attach_required(7, 7), 7 = 7]).
+step(attach_required(7, 7), rule(1), ['Variable' = 7, 'Value' = 7], [put_atts(7, required(7))]).
+step(put_atts(7, required(7)), builtin, [], []).
 step(7 = 7, builtin, [], []).
 step(alias_preserves_attribute(ok),
      rule(5),
      ['X' = ready, 'Y' = ready],
-     [attach_required(Variable, ready), Y = Y, get_atts(Y, required(ready)), ready = ready]).
-step(attach_required(Variable, ready),
+     [attach_required(ready, ready),
+      ready = ready,
+      get_atts(ready, required(ready)),
+      ready = ready]).
+step(attach_required(ready, ready),
      rule(1),
-     ['Value' = ready],
-     [put_atts(Variable, required(ready))]).
-step(put_atts(Variable, required(ready)), builtin, [], []).
-step(Y = Y, builtin, [], []).
-step(get_atts(Y, required(ready)), builtin, [], []).
+     ['Variable' = ready, 'Value' = ready],
+     [put_atts(ready, required(ready))]).
+step(put_atts(ready, required(ready)), builtin, [], []).
 step(ready = ready, builtin, [], []).
+step(get_atts(ready, required(ready)), builtin, [], []).

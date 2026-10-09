@@ -43,20 +43,81 @@ export function whiteBoxCases() {
           'step(birth(ada, 1815), fact(1), [], []).',
           'step(211 is 2026 - 1815, builtin, [], []).',
         ].join('\n');
-        const honestReport = checkProofDocument(program, honest);
+        const honestReport = checkProofDocument(program, honest, { goals: ['age(ada, A)'] });
         assertEqual(honestReport.valid, true, `honest proof checks: ${verdict(honestReport)}`);
         assertEqual(honestReport.redecided, 1, 'the arithmetic step is recomputed, not trusted');
 
         // The same document with 211 replaced by 999 everywhere. It stays
         // internally consistent, so nothing but recomputation can catch it.
         const lie = honest.replaceAll('211', '999');
-        const lieReport = checkProofDocument(program, lie);
+        const lieReport = checkProofDocument(program, lie, { goals: ['age(ada, A)'] });
         assertEqual(lieReport.valid, false, 'a false computed value is rejected');
         assertEqual(
           [...new Set(lieReport.failures.map((failure) => failure.condition))].join(','),
           'C5',
           'only recomputation objects, so C1-C4 alone would have accepted it',
         );
+      },
+    },
+    {
+      // C1, C3, C5, C6 and C7 each catch a document the others accept. One
+      // honest proof is altered once per condition, and each alteration must
+      // be caught by the condition it targets -- and by that one alone.
+      name: 'proof checking holds a document to each of C1-C7',
+      run: () => {
+        const source = [
+          'p(a).',
+          'p(b).',
+          'q(X) :- p(X).',
+          'r(X) :- \\+ p(X).',
+          'n(L) :- findall(X, p(X), L).',
+          'w(X) :- once(p(X)).',
+        ].join('\n');
+        const program = Program.parseSources([{ text: source, filename: 'conditions.pl' }], { sourceMetadata: true });
+        const goals = ['q(X)', 'r(X)', 'n(L)', 'w(X)'];
+        const check = (document, options = {}) => checkProofDocument(program, document, { goals, ...options });
+        const conditionsOf = (report) => [...new Set(report.failures.map((failure) => failure.condition))].join(',');
+        const honest = [
+          'q(a).',
+          'r(c).',
+          'n([a, b]).',
+          'w(a).',
+          '',
+          "clause(3, q(var('X')), p(var('X'))).",
+          '',
+          "step(q(a), rule(3), ['X' = a], [p(a)]).",
+          'step(p(a), fact(1), [], []).',
+          "step(r(c), rule(4), ['X' = c], [\\+ p(c)]).",
+          'step(\\+ p(c), absent, [], []).',
+          "step(n([a, b]), rule(5), ['L' = [a, b]], [findall(X, p(X), [a, b])]).",
+          'step(findall(X, p(X), [a, b]), collected, [], []).',
+          "step(w(a), rule(6), ['X' = a], [once(p(a))]).",
+          'step(once(p(a)), control, [], [p(a)]).',
+        ].join('\n');
+        const report = check(honest);
+        assertEqual(report.valid, true, `honest proof checks: ${verdict(report)}`);
+        assertEqual(report.composed, 1, 'the once/1 step is composed from its use');
+        assertEqual(report.conditions.find((condition) => condition.id === 'C6').covered, 2, 'both boundaries are confronted');
+
+        const cases = [
+          ['C1', honest.replace("clause(3, q(var('X')), p(var('X')))", "clause(3, q(var('X')), p(b))")],
+          ['C3', `${honest}\nstep(p(a), fact(1), [], []).`],
+          ['C5', honest.replace('step(once(p(a)), control, [], [p(a)])', 'step(once(p(a)), control, [], [p(b)])').replace('step(p(a), fact(1)', 'step(p(b), fact(2), [], []).\nstep(p(a), fact(1)')],
+          ['C6', honest.replaceAll('r(c)', 'r(b)').replaceAll('p(c)', 'p(b)').replace("'X' = c", "'X' = b")],
+          ['C6', honest.replaceAll('[a, b]', '[a]')],
+          ['C7', honest.replace('q(a).\n', 'q(a).\np(a).\n')],
+          ['C7', `${honest}\nstep(p(b), fact(2), [], []).`],
+        ];
+        for (const [condition, document] of cases) {
+          const altered = check(document);
+          assertEqual(conditionsOf(altered), condition, `the ${condition} alteration is caught by ${condition} alone`);
+        }
+
+        const strict = check(honest, { strict: true });
+        assertEqual(conditionsOf(strict), 'C5', 'a strict check forbids trusted boundaries under C5');
+        assertEqual(strict.failures.length, 2, 'one failure per trusted boundary');
+        assertEqual(check(honest, { goals: ['q(X)'] }).failures.filter((failure) => failure.condition === 'C7').length, 3,
+          'claims that answer no asked goal fail C7');
       },
     },
     {

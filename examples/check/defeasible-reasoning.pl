@@ -3,6 +3,8 @@ condition('C2', well_founded, ok, 14).
 condition('C3', justification, ok, 14).
 condition('C4', coverage, ok, 14).
 condition('C5', re_decision, ok, 0).
+condition('C6', boundary_consistency, ok, 0).
+condition('C7', relevance, ok, 20).
 obligation(builtin, theory_scoped, wfs_truth(reimbursable(taxi_receipt), true)).
 obligation(builtin, theory_scoped, wfs_truth(reimbursable(client_dinner_wine), false)).
 obligation(builtin, theory_scoped, wfs_truth(reimbursable(client_dinner_wine_preapproved), true)).

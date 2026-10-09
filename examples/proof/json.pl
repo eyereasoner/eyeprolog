@@ -21,7 +21,7 @@ step(json_example(generated, "{\"project\":\"EyeProlog\",\"ok\":true}"),
      ['Chars' = "{\"project\":\"EyeProlog\",\"ok\":true}"],
      [once(phrase(json_chars(pairs([string("project") - string("EyeProlog"), string("ok") - boolean(true)])), "{\"project\":\"EyeProlog\",\"ok\":true}"))]).
 step(once(phrase(json_chars(pairs([string("project") - string("EyeProlog"), string("ok") - boolean(true)])), "{\"project\":\"EyeProlog\",\"ok\":true}")),
-     builtin,
+     control,
      [],
      [phrase(json_chars(pairs([string("project") - string("EyeProlog"), string("ok") - boolean(true)])), "{\"project\":\"EyeProlog\",\"ok\":true}")]).
 step(phrase(json_chars(pairs([string("project") - string("EyeProlog"), string("ok") - boolean(true)])), "{\"project\":\"EyeProlog\",\"ok\":true}"),

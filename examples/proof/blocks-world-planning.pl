@@ -60,7 +60,7 @@ step(status(blocks_world, planned),
      [],
      [once(five_move_plan([move(e, d, table), move(d, c, table), move(c, b, table), move(d, table, c), move(e, table, d)], [on(a, table), on(b, a), on(c, table), on(d, c), on(e, d)]))]).
 step(once(five_move_plan([move(e, d, table), move(d, c, table), move(c, b, table), move(d, table, c), move(e, table, d)], [on(a, table), on(b, a), on(c, table), on(d, c), on(e, d)])),
-     builtin,
+     control,
      [],
      [five_move_plan([move(e, d, table), move(d, c, table), move(c, b, table), move(d, table, c), move(e, table, d)], [on(a, table), on(b, a), on(c, table), on(d, c), on(e, d)])]).
 step(five_move_plan([move(e, d, table), move(d, c, table), move(c, b, table), move(d, table, c), move(e, table, d)], [on(a, table), on(b, a), on(c, table), on(d, c), on(e, d)]),

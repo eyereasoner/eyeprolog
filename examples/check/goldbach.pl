@@ -3,6 +3,8 @@ condition('C2', well_founded, ok, 529).
 condition('C3', justification, ok, 529).
 condition('C4', coverage, ok, 626).
 condition('C5', re_decision, ok, 323).
+condition('C6', boundary_consistency, ok, 0).
+condition('C7', relevance, ok, 553).
 steps(529).
 verified(206).
 recomputed(323).

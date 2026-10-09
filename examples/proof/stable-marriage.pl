@@ -24,7 +24,7 @@ step(stable_marriage_answer(first_stable_matching, [pair(adam, bea), pair(brian,
      ['Matching' = [pair(adam, bea), pair(brian, dana), pair(cole, amy), pair(drew, cora)]],
      [once(stable_matching([pair(adam, bea), pair(brian, dana), pair(cole, amy), pair(drew, cora)]))]).
 step(once(stable_matching([pair(adam, bea), pair(brian, dana), pair(cole, amy), pair(drew, cora)])),
-     builtin,
+     control,
      [],
      [stable_matching([pair(adam, bea), pair(brian, dana), pair(cole, amy), pair(drew, cora)])]).
 step(stable_matching([pair(adam, bea), pair(brian, dana), pair(cole, amy), pair(drew, cora)]),

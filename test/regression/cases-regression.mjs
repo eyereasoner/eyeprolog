@@ -4362,12 +4362,13 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         // The check result is itself ordinary Prolog: one condition/4 fact per
         // condition, the totals, and a verdict. It parses, so a later program
         // can load and reason over it rather than scrape a report.
-        for (const condition of ['resolution', 'well_founded', 'justification', 'coverage', 're_decision']) {
+        for (const condition of ['resolution', 'well_founded', 'justification', 'coverage', 're_decision',
+          'boundary_consistency', 'relevance']) {
           assertIncludes(verified.stdout, `, ${condition}, `, `verification reports ${condition}`);
         }
         assertEqual(verified.stdout.trimEnd().split('\n').pop(), 'verdict(checked).', 'verification verdict');
         assertEqual(verified.stdout.includes('obligation('), false, 'nothing was left trusted');
-        assertEqual(parseProgramText(verified.stdout, {}).length, 12, 'the check document is readable Prolog');
+        assertEqual(parseProgramText(verified.stdout, {}).length, 14, 'the check document is readable Prolog');
         const quiet = runCli(['--quiet', '--check-proof', proofFile, programFile]);
         assertEqual(quiet.stdout, 'verdict(checked).\n', 'quiet verification stdout is the verdict alone');
         const strictVerified = runCli(['--iso-strict', '--check-proof', proofFile, programFile]);
@@ -4387,13 +4388,38 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         const tamperedFile = path.join(temp.dir, `proof-certificate-bad-${++temp.counter}.pl`);
         fs.writeFileSync(tamperedFile, generated.stdout.replace('step(p(a),', 'step(p(b),'));
         const rejected = runCli(['--check-proof', tamperedFile, programFile]);
-        assertEqual(rejected.status, 1, 'tampered verification status');
+        assertEqual(rejected.status, 2, 'tampered verification status');
         assertIncludes(rejected.stderr, 'is not a valid proof for this program', 'tampered verification stderr');
         // A failing run still accounts for every condition, so the report says
         // which one objected rather than only that something did.
         assertIncludes(rejected.stdout, 'condition(', 'tampered run still reports every condition');
         assertIncludes(rejected.stdout, 'failure(', 'tampered run records what objected, as a fact');
         assertIncludes(rejected.stdout, 'verdict(failed(', 'tampered run records a failing verdict');
+
+        // The goals a proof answers can be named; a claim that answers none
+        // of them fails C7.
+        const otherGoal = runCli(['--check-proof', proofFile, '--goal', 'p(X)', programFile]);
+        assertEqual(otherGoal.status, 2, 'a claim answering no named goal is rejected');
+        assertIncludes(otherGoal.stdout, "failure('C7', q(a), ", 'C7 names the claim');
+        const json = runCli(['--json', '--check-proof', proofFile, programFile]);
+        assertEqual(JSON.parse(json.stdout).valid, true, '--json writes the report as JSON');
+        assertEqual(runCli(['--json', programFile]).status, 1, '--json needs --check-proof');
+
+        // A trusted boundary checks with an obligation, and fails under
+        // --strict-proof.
+        const boundaryFile = path.join(temp.dir, `proof-boundary-${++temp.counter}.pl`);
+        fs.writeFileSync(boundaryFile, '%% ?- r(a).\ns(b).\nr(X) :- \\+ s(X).\n');
+        const boundaryProof = runCli(['--proof', boundaryFile]).stdout;
+        const lenient = runCli(['--check-proof', '-', boundaryFile], { input: boundaryProof });
+        assertEqual(lenient.stdout.trimEnd().split('\n').pop(), 'verdict(checked_with_obligations).', 'boundary verdict');
+        const strictProof = runCli(['--strict-proof', '--check-proof', '-', boundaryFile], { input: boundaryProof });
+        assertEqual(strictProof.status, 2, '--strict-proof forbids trusted boundaries');
+        assertIncludes(strictProof.stdout, "'trusted boundary forbidden: absent'", 'strict failure detail');
+
+        // Given as a program, a proof document is pointed at --check-proof.
+        const misused = runCli([proofFile]);
+        assertEqual(misused.status, 1, 'a proof document is not run as a program');
+        assertIncludes(misused.stderr, '--check-proof', 'the diagnostic says how to check it');
       },
     },
     {

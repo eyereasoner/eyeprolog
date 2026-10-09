@@ -3,6 +3,8 @@ condition('C2', well_founded, ok, 62).
 condition('C3', justification, ok, 62).
 condition('C4', coverage, ok, 94).
 condition('C5', re_decision, ok, 2).
+condition('C6', boundary_consistency, ok, 12).
+condition('C7', relevance, ok, 65).
 obligation(absent, theory_scoped, \+ member("ewew", ["wwww"])).
 obligation(absent, theory_scoped, \+ member("wwew", ["ewew", "wwww"])).
 obligation(absent, theory_scoped, \+ member("eeew", ["wwew", "ewew", "wwww"])).

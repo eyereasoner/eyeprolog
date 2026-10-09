@@ -65,6 +65,7 @@ printf 'human(socrates).\nmortal(X) :- human(X).\n' |
 - [The Art of EyeProlog](https://eyereasoner.github.io/eyeprolog/the-art-of-eyeprolog) — complete reference
 - [Why EyeProlog?](https://eyereasoner.github.io/eyeprolog/why-eyeprolog) — project scope and design
 - [ARC in EyeProlog](https://eyereasoner.github.io/eyeprolog/arc-in-eyeprolog) — answer, reason, check
+- [SPEC.md](SPEC.md) — the answer, proof and check format, and the seven conditions C1–C7 a proof check establishes
 - [Playground](https://eyereasoner.github.io/eyeprolog/playground) — run EyeProlog in a browser
 - [Examples](examples) — runnable programs and checked output
 - [Example decks](examples/deck/README.md) — explainable RDF/Prolog scenarios with reproducible roundtrips

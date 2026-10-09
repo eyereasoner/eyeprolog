@@ -5,14 +5,15 @@
 // comparison: a proof that matched its golden byte for byte could still be
 // nonsense, so each document is re-checked here -- every recorded inference
 // re-performed against the source clause, every use resolved, the derivation
-// graph tested for cycles, and every claim accounted for.
+// graph tested for cycles, every claim accounted for, every trusted boundary
+// confronted with the evidence, and every claim held to the goal it answers.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import { Program } from '../src/index.js';
-import { checkProofDocument, checkReportTerms, verdict } from '../src/check-proof.js';
+import { checkProofDocument, checkReportTerms, sourceGoals, verdict } from '../src/check-proof.js';
 import { TestReporter, assertEqual, isMainModule, runStandalone } from './test-style.mjs';
 import { proofExamples } from './run-examples.mjs';
 import { runTasksInParallel, serveTasks } from './parallel-tasks.mjs';
@@ -20,11 +21,6 @@ import { runTasksInParallel, serveTasks } from './parallel-tasks.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const examplesDir = path.join(root, 'examples');
 
-/// Proofs that do not check, and what each one exposes. An entry here is a
-/// gap in proof *generation*, not in the checker: the explanation replay
-/// cannot reproduce the answer, so the writer records it as `unproven` and
-/// says so rather than leaving it out.
-///
 /// Proofs that do not check, and what each one exposes. An entry here is a
 /// gap in proof *generation*, not in the checker: the explanation replay
 /// cannot reach the answer, so the writer records it as `unproven` and says
@@ -77,7 +73,8 @@ function checkPackagedProof(name) {
   const source = fs.readFileSync(path.join(examplesDir, name), 'utf8');
   const proof = fs.readFileSync(path.join(examplesDir, 'proof', name), 'utf8');
   const program = Program.parseSources([{ text: source, filename: name }], { sourceMetadata: true });
-  const report = checkProofDocument(program, proof);
+  // The proof answers the goals the example asks, and C7 holds it to them.
+  const report = checkProofDocument(program, proof, { goals: sourceGoals(program, [source]) });
 
   // The packaged report says, as ordinary Prolog facts, what checking this
   // document established and what it left as an obligation -- the same kind of

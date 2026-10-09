@@ -1242,13 +1242,19 @@ step(recommended_action_iri(before_review, iri('https://example.org/city/neighbo
       'Neighbourhood' = iri('https://example.org/city/neighbourhood/riverside'),
       'MobileP' = iri('https://example.org/vocab/mobileUnitAvailable')],
      [stage(before_review),
-      \+ local_center(before_review, Neighbourhood, _Local),
-      \+ reachable_center(before_review, Neighbourhood, _Remote),
+      \+ local_center(before_review, iri('https://example.org/city/neighbourhood/riverside'), _Local),
+      \+ reachable_center(before_review, iri('https://example.org/city/neighbourhood/riverside'), _Remote),
       v(mobile_unit_available, iri('https://example.org/vocab/mobileUnitAvailable')),
       known(before_review, iri('https://example.org/city/neighbourhood/riverside'), iri('https://example.org/vocab/mobileUnitAvailable'), iri('https://example.org/city/value/yes'))]).
 step(stage(before_review), fact(106), [], []).
-step(\+ local_center(before_review, Neighbourhood, _Local), absent, [], []).
-step(\+ reachable_center(before_review, Neighbourhood, _Remote), absent, [], []).
+step(\+ local_center(before_review, iri('https://example.org/city/neighbourhood/riverside'), _Local),
+     absent,
+     [],
+     []).
+step(\+ reachable_center(before_review, iri('https://example.org/city/neighbourhood/riverside'), _Remote),
+     absent,
+     [],
+     []).
 step(v(mobile_unit_available, iri('https://example.org/vocab/mobileUnitAvailable')),
      fact(74),
      [],

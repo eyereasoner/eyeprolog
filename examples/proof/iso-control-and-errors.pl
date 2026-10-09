@@ -29,7 +29,7 @@ step(first_destination(antwerp, ghent),
      rule(3),
      ['From' = antwerp, 'To' = ghent],
      [once(route(antwerp, ghent))]).
-step(once(route(antwerp, ghent)), builtin, [], [route(antwerp, ghent)]).
+step(once(route(antwerp, ghent)), control, [], [route(antwerp, ghent)]).
 step(route(antwerp, ghent), fact(1), [], []).
 step(report(cut_destination, ghent),
      rule(9),

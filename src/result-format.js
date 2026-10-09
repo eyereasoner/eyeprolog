@@ -15,7 +15,7 @@
 // Because the document is ordinary Prolog, it can be saved, loaded and
 // queried by another run, which records the answers as data rather than
 // running the query again.
-import { COMPOUND, Env, NUMBER, VAR, atom, compound, listFromItems, numberTerm, variable } from './term.js';
+import { ATOM, COMPOUND, Env, NUMBER, VAR, atom, compound, listFromItems, numberTerm, variable } from './term.js';
 import { formatTermForWrite } from './write.js';
 
 
@@ -190,6 +190,29 @@ function clauseTerm(number, clause, minted) {
     templateTerm(clause.head, anonymous, minted),
     templateTerm(bodyTerm(clause.body), anonymous, minted),
   ]);
+}
+
+// The `clause/3` record a proof writes for clause `number`, which a checker
+// rebuilds from the source to compare with the document's (C1).
+export function clauseRecordTerm(number, clause) {
+  return clauseTerm(number, clause, new Map());
+}
+
+// A `clause/3` record with its minted variable names renumbered from the
+// record's own order. The writer numbers them across the whole document, so
+// the same clause can carry `Var#3` in one document and `Var#1` in another;
+// only which minted variable is which belongs to the clause.
+export function normalizedClauseRecord(record) {
+  const minted = new Map();
+  const visit = (term) => {
+    if (term?.type !== COMPOUND) return term;
+    if (term.name === 'var' && term.args.length === 1 && term.args[0]?.type === ATOM &&
+        mintedParts(term.args[0].name) != null) {
+      return compound('var', [atom(mintedName(term.args[0].name, minted))]);
+    }
+    return compound(term.name, term.args.map(visit));
+  };
+  return visit(record);
 }
 
 function stepTerm(step, minted) {

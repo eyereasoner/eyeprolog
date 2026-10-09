@@ -1500,7 +1500,9 @@ eyeprolog --check-proof socrates.why.pl examples/socrates.pl
 
 The second command re-performs every inference the document records against
 the program; it does not search again for a proof. A changed source clause, a
-changed use, or a changed recorded binding makes the check fail. Proof input is
+changed use, or a changed recorded binding makes the check fail. The seven
+conditions it establishes, C1 to C7, and the report it writes are specified in
+[SPEC.md](SPEC.md). Proof input is
 parsed as Prolog data rather than loaded as a program, so its terms cannot
 trigger directives while being checked.
 
@@ -9594,7 +9596,9 @@ explicit.
 | `-h`, `--help` | Show usage |
 | `-p`, `--proof` | Print `why/2` explanations |
 | `--proof-detail abstract|expanded` | Select library abstraction for proof output; implies `--proof` |
-| `--check-proof File` | Check a saved proof document against the input program without proof search, writing the result as `condition/4`, `failure/3`, `obligation/3` and `verdict/1` facts; `-` reads the proof from stdin |
+| `--check-proof File` | Check a saved proof document against the input program without proof search, writing the result as `condition/4`, `failure/3`, `obligation/3` and `verdict/1` facts; `-` reads the proof from stdin; exits `2` when the proof is not valid. With `--goal`, the goals the proof answers |
+| `--strict-proof` | With `--check-proof`, forbid trusted boundaries |
+| `--json` | With `--check-proof`, write the report as JSON |
 | `-q`, `--quads` | Run embedded quad tests and fail if any do not hold |
 | `--quiet` | Suppress resolved answer terms while preserving Prolog output and diagnostics |
 | `--iso-strict` | Restrict parsing and execution to ISO/IEC 13211-1:1995 + Corrigenda 1–3; reject EyeProlog language extensions (including `table` and `:+`) and disable bundled-library autoloading |
@@ -9663,7 +9667,8 @@ Normal answers and `why/2` terms go to stdout, which makes them suitable for a
 golden file or another EyeProlog input. Warnings and statistics go to stderr so
 they do not corrupt that logical stream. A successful run normally exits with
 status zero; loading, syntax, option, and other uncaught errors use status `1`. `halt/0-1` can deliberately choose the
-process status from inside a program.
+process status from inside a program. `--check-proof` exits with status `2`
+when the proof it checked is not valid, after writing the report as usual.
 
 ### Embedded quad tests
 
@@ -9977,7 +9982,7 @@ source program has an exact answer file under
 [examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **236 programs** have a checked
 explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/) together with the result of that
 check under [examples/check](https://github.com/eyereasoner/eyeprolog/tree/main/examples/check/). A check result is itself ordinary Prolog
-— `condition/4` for each of the five conditions, `failure/3` for anything that
+— `condition/4` for each of the seven conditions, `failure/3` for anything that
 did not hold, one `obligation/3` naming each conclusion the check rests on
 rather than establishes, counts including `composed/1` for conclusions carried
 by the goals they wrap, and `verdict/1` — so the same reasoning that produced an answer

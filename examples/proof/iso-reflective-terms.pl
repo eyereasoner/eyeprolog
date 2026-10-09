@@ -61,10 +61,13 @@ step(alert(sensor_7, high) =.. [alert, sensor_7, high], builtin, [], []).
 step(report(variable_count, 3),
      rule(6),
      ['Count' = 3, 'Variables' = [__anon0, __anon1, __anon2]],
-     [term_variables(rule(X, pair(X, _Y), _Z), [X, _Y, _Z]),
+     [term_variables(rule(__anon0, pair(__anon0, __anon1), __anon2), [__anon0, __anon1, __anon2]),
       [__anon0, __anon1, __anon2] = [__anon0, __anon1, __anon2],
       3 = 3]).
-step(term_variables(rule(X, pair(X, _Y), _Z), [X, _Y, _Z]), builtin, [], []).
+step(term_variables(rule(__anon0, pair(__anon0, __anon1), __anon2), [__anon0, __anon1, __anon2]),
+     builtin,
+     [],
+     []).
 step([__anon0, __anon1, __anon2] = [__anon0, __anon1, __anon2], builtin, [], []).
 step(3 = 3, builtin, [], []).
 step(report(copied_shape, same_but_fresh),

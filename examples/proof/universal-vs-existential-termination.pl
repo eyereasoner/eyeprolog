@@ -22,7 +22,7 @@ step(findall(X - Y, append(X, Y, "abc"), [[] - "abc", "a" - "bc", "ab" - "c", "a
      [],
      []).
 step(length([[] - "abc", "a" - "bc", "ab" - "c", "abc" - []], 4), builtin, [], []).
-step(once((append([], Ys, Ys), [] == [])), builtin, [], [append([], Ys, Ys), [] == []]).
+step(once((append([], Ys, Ys), [] == [])), control, [], [append([], Ys, Ys), [] == []]).
 step(append([], Ys, Ys), builtin, [], []).
 step([] == [], builtin, [], []).
 step(true = true, builtin, [], []).

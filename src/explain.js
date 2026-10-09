@@ -62,6 +62,7 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
       yield {
         env: proved.env,
         node: {
+          raw: goal,
           goal: resolveForProof(goal, proved.env),
           method: 'conjunction',
           sourceHead: null,
@@ -81,6 +82,7 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
       yield {
         env: proofEnv,
         node: {
+          raw: goal,
           goal: resolveForProof(goal, proofEnv),
           method: goalMethod('builtin', goal),
           sourceHead: resolveForProof(goal, proofEnv),
@@ -109,6 +111,7 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
       yield {
         env: proofEnv,
         node: {
+          raw: goal,
           goal: resolveForProof(goal, proofEnv),
           method: goalMethod('library', goal),
           sourceHead: resolveForProof(goal, proofEnv),
@@ -145,6 +148,7 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
         yield {
           env: next,
           node: {
+          raw: goal,
             goal: resolveForProof(goal, next),
             method: sourceMethod(clause, 'fact'),
             sourceHead: clause.head,
@@ -153,6 +157,7 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
             // A rule's substitutions are only final once its body is proved,
             // so that branch resolves them against the proving environment.
             bindings: resolvedSubstitutions(substitutions, next),
+            rawSubstitutions: substitutions,
             children: [],
           },
         };
@@ -168,11 +173,13 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
           yield {
             env: proved.env,
             node: {
+          raw: goal,
               goal: resolveForProof(goal, proved.env),
               method: sourceMethod(clause, 'rule'),
               sourceHead: clause.head,
               sourceBody: clause.body,
               bindings: resolvedSubstitutions(substitutions, proved.env),
+              rawSubstitutions: substitutions,
               children: proved.children,
             },
           };
@@ -254,7 +261,11 @@ function selectReadyDeterministicBuiltin(goals, env, registry) {
 function builtinChildren(program, goal, env, depth, maxDepth, registry, active, detail) {
   if (goal.type !== COMPOUND) return [];
   if (goal.name === 'once' && goal.arity === 1) {
-    for (const proved of proveGoalAll(program, goal.args[0], env.clone(), depth, maxDepth, registry, active, detail)) return [proved.node];
+    // The wrapped goal is proved in an environment of its own, so it is
+    // settled against that one rather than the outer derivation's.
+    for (const proved of proveGoalAll(program, goal.args[0], env.clone(), depth, maxDepth, registry, active, detail)) {
+      return [settleProofNode(proved.node, proved.env)];
+    }
   }
   return [];
 }
@@ -813,9 +824,18 @@ function justificationTerm(node, numbering) {
     if (String(method.filename ?? '').startsWith('src/lib/')) return atom('builtin');
     return atom('asserted');
   }
+  // A control construct solved by the goals it wraps rests on them, not on
+  // a computation: it is `control`, and a checker composes it from its uses.
+  if (node.children?.length && isControlComposition(node.goal)) return atom('control');
   if (node.goal?.type === COMPOUND && node.goal.name === '\\+' && node.goal.arity === 1) return atom('absent');
   if (node.goal?.type === COMPOUND && node.goal.name === 'findall' && node.goal.arity === 3) return atom('collected');
   return atom('builtin');
+}
+
+const CONTROL_COMPOSITIONS = new Set(['call/1', 'once/1', 'ignore/1', 'catch/3', ';/2', '->/2', '*->/2']);
+
+function isControlComposition(goal) {
+  return goal?.type === COMPOUND && CONTROL_COMPOSITIONS.has(`${goal.name}/${goal.arity}`);
 }
 
 export function flattenProof(roots, program) {
@@ -919,6 +939,30 @@ function groundChainProof(program, goal, env, maxDepth, registry) {
   return null;
 }
 
+// A node is resolved when its own goal is proved, but a later goal of the
+// same derivation can still bind its variables: `goal_state(G)` is proved by
+// a fact before the plan that fixes `G` is found. A step must record the goal
+// as the whole solution leaves it, or its uses would not be the instances of
+// the clause body a checker re-derives, so once the derivation is complete
+// every node is resolved again against its final environment.
+function settleProofNode(root, env) {
+  const stack = [root];
+  while (stack.length) {
+    const node = stack.pop();
+    if (node.raw) {
+      node.goal = resolveForProof(node.raw, env);
+      if (node.method?.type === 'builtin' || node.method?.type === 'library') node.sourceHead = node.goal;
+      node.raw = null;
+    }
+    if (node.rawSubstitutions) {
+      node.bindings = resolvedSubstitutions(node.rawSubstitutions, env);
+      node.rawSubstitutions = null;
+    }
+    for (const child of node.children ?? []) stack.push(child);
+  }
+  return root;
+}
+
 // The root of an answer's proof tree, for `flattenProof`.
 export function proofNodeFor(program, goal, options = {}) {
   liveSolver = options.solver ?? null;
@@ -929,7 +973,9 @@ export function proofNodeFor(program, goal, options = {}) {
   try {
     const chain = groundChainProof(program, goal, env, options.maxDepth ?? Infinity, registry);
     if (chain) return chain;
-    for (const proof of proveGoalAll(program, goal, env, 0, maxDepth, registry, [], detail)) return proof.node;
+    for (const proof of proveGoalAll(program, goal, env, 0, maxDepth, registry, [], detail)) {
+      return settleProofNode(proof.node, proof.env);
+    }
   } catch {
     // A replay that raises has not explained anything, and an answer the
     // engine found should not be lost because explaining it failed. The

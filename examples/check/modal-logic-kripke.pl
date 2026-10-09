@@ -3,6 +3,8 @@ condition('C2', well_founded, ok, 17).
 condition('C3', justification, ok, 17).
 condition('C4', coverage, ok, 18).
 condition('C5', re_decision, ok, 0).
+condition('C6', boundary_consistency, ok, 0).
+condition('C7', relevance, ok, 21).
 obligation(absent, theory_scoped, \+ box_counterexample(w0, atom(clear))).
 obligation(absent, theory_scoped, \+ mforces(w0, box(atom(repaired)))).
 steps(17).

@@ -29,6 +29,8 @@ const BOOLEAN_OPTIONS = new Map([
   ['--stats', 'stats'], ['-s', 'stats'],
   ['--iso-strict', 'isoStrict'],
   ['--portable', 'portable'],
+  ['--strict-proof', 'strictProof'],
+  ['--json', 'json'],
   ['--version', 'version'], ['-v', 'version'],
   ['--warnings', 'warnings'], ['-w', 'warnings'],
 ]);
@@ -65,6 +67,8 @@ export function parseOptions(argv) {
     proof: false,
     proofDetail: 'abstract',
     checkProof: null,
+    strictProof: false,
+    json: false,
     quads: false,
     quiet: false,
     stats: false,
@@ -168,8 +172,8 @@ export async function main(argv) {
   if (options.checkProof != null && options.proof) {
     throw new Error('--check-proof cannot be combined with --proof or --proof-detail');
   }
-  if (options.checkProof != null && options.goals.length > 0) {
-    throw new Error('--check-proof cannot be combined with --goal');
+  if (options.checkProof == null && (options.strictProof || options.json)) {
+    throw new Error(`${options.json ? '--json' : '--strict-proof'} requires --check-proof`);
   }
 
   if (options.isoStrict && options.files.length === 0 && options.goals.length === 0 &&
@@ -231,6 +235,14 @@ export async function main(argv) {
     for (const source of sourceParts) options.goals.push(...goalsFromSource(source.text));
   }
 
+  // A proof document is ordinary Prolog, so run as a program it would quietly
+  // do nothing. One with no goals and no directives is almost certainly a
+  // proof meant for --check-proof, so say how to check it instead.
+  if (options.goals.length === 0 && !options.quads && options.checkProof == null &&
+      sourceParts.some((source) => looksLikeProofDocument(source.text))) {
+    throw new Error('this is a proof document, not a program; check it with eyeprolog --check-proof PROOF PROGRAM');
+  }
+
   // The ISO Prolog working-example quad files assume the Prologue predicates
   // are available as system predicates and therefore contain no use_module/1
   // directive. Import their portable EyeProlog counterparts in quad mode.
@@ -270,19 +282,25 @@ export async function main(argv) {
   }
 
   if (options.checkProof != null) {
-    const { checkProofDocument, checkReportTerms, verdictTermText } = await import('./check-proof.js');
+    const { checkProofDocument, checkReportTerms, publicReport, sourceGoals, verdictTermText } = await import('./check-proof.js');
     const text = proofText ?? await fs.readFile(options.checkProof, 'utf8');
-    const report = checkProofDocument(program, text);
-    if (report.steps === 0) throw new Error(`no step/4 proof step found in ${options.checkProof}`);
+    // The goals the proof answers: those given with --goal, or else the ones
+    // a run of the program asks by itself. C7 holds every claim to them.
+    const goals = options.goals.length > 0
+      ? options.goals
+      : sourceGoals(program, sourceParts.map((source) => source.text));
+    const report = checkProofDocument(program, text, { goals, strict: options.strictProof });
     // The check document goes to stdout whether or not the proof holds: a
     // failing check is a result to be read and reasoned over, not the absence
     // of one. The exit status and the stderr line carry the verdict to a shell.
-    if (!options.quiet) process.stdout.write(checkReportTerms(report));
+    if (options.json) process.stdout.write(`${JSON.stringify(publicReport(report), null, 2)}\n`);
+    else if (options.quiet) process.stdout.write(verdictTermText(report));
+    else process.stdout.write(checkReportTerms(report));
     if (!report.valid) {
       const source = proofOnStdin ? 'the proof read from stdin' : options.checkProof;
-      throw new Error(`${source} is not a valid proof for this program: ${report.failures.length} failure(s)`);
+      process.stderr.write(`eyeprolog: ${source} is not a valid proof for this program: ${report.failures.length} failure(s)\n`);
+      process.exitCode = 2;
     }
-    if (options.quiet) process.stdout.write(verdictTermText(report));
     return;
   }
 
@@ -299,6 +317,10 @@ export async function main(argv) {
     if (result.failed > 0) process.exitCode = 1;
     else if (result.undecided > 0) process.exitCode = 2;
   }
+}
+
+function looksLikeProofDocument(text) {
+  return /^step\(/m.test(text) && !/^:-/m.test(text) && goalsFromSource(text).length === 0;
 }
 
 async function loadEngine() {
@@ -421,12 +443,17 @@ Options:
                         as ordinary source steps. Only differs for a program
                         that calls a library. (implies --proof)
   --check-proof file    Check a saved proof document against the input program
-                        and write the result as Prolog facts: condition/4 per
-                        condition, failure/3 for what did not hold, one
-                        obligation/3 naming each conclusion the check rests on,
-                        and verdict/1.
+                        (conditions C1-C7, see SPEC.md) and write the result as
+                        Prolog facts: condition/4 per condition, failure/3 for
+                        what did not hold, one obligation/3 naming each
+                        conclusion the check rests on, and verdict/1. Exits 2
+                        when the proof is not valid.
                         Use - to read the proof from stdin, for example
                         eyeprolog --proof p.pl | eyeprolog --check-proof - p.pl
+                        With --goal, the goals the proof answers; otherwise
+                        the program's own %% ?- and ?- goals.
+  --strict-proof        With --check-proof, forbid trusted boundaries.
+  --json                With --check-proof, write the report as JSON.
   -q, --quads           Run embedded quad tests and fail if any do not hold.
                         Note: -q is quads, not quiet; --quiet has no short form.
   --quiet               Suppress answer terms while preserving Prolog output.
