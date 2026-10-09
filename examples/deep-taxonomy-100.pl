@@ -5,18 +5,7 @@
 % the next taxonomy class together with two side labels.
 % =============================================================================================================================
 
-% Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% ?- holds_result(X0, X1).
-
-%% ?- answer(X0, X1).
-
-%% ?- reason(X0, X1).
-
-%% ?- result(X0, X1).
-
-%% ?- checkPassed(X0, X1).
-
-%% ?- arc(X0, X1).
+%% ?- a(ind, a2).
 
 
 :- discontiguous(a/2).
@@ -334,51 +323,3 @@ a(X, j99) :- a(X, n98).
 a(X, n100) :- a(X, n99).
 a(X, i100) :- a(X, n99).
 a(X, j100) :- a(X, n99).
-
-% ARC checks
-
-arc(check1, "C1 OK - the starting classification n0 is present.") :-
- once(a(ind, n0)).
-
-arc(check2, "C2 OK - the first expansion produced n1 together with side labels i1 and j1.") :-
- once(a(ind, n1)),
- once(a(ind, i1)),
- once(a(ind, j1)).
-
-arc(check3, "C3 OK - the chain reaches the midpoint n50 and still carries both side-label branches.") :-
- once(a(ind, n50)),
- once(a(ind, i50)),
- once(a(ind, j50)).
-
-arc(check4, "C4 OK - the final taxonomy step from n99 to n100 was completed.") :-
- once(a(ind, n99)),
- once(a(ind, n100)).
-
-arc(check5, "C5 OK - once n100 is reached, the terminal class a2 is derived.") :-
- once(a(ind, n100)),
- once(a(ind, a2)).
-
-arc(check6, "C6 OK - the success flag is raised only after the terminal class a2 is present.") :-
- once(a(ind, a2)),
- once(holds_result(test, true)).
-
-% ARC report
-
-answer(report, "The test succeeds: starting from one individual classified as n0, the rules eventually classify it as n100 and then as a2.") :-
- once(holds_result(test, true)).
-
-reason(report, "The adjacent rules mirror the Eyeling N3 deep-taxonomy-100 chain: each rule advances one taxonomy level and adds the matching side labels.") :-
- once(a(ind, a2)),
- once(holds_result(test, true)).
-
-checkPassed(report, Check) :-
- arc(Check, _message).
-
-result(report, success) :-
- once(holds_result(test, true)),
- once(arc(check1, _c1)),
- once(arc(check2, _c2)),
- once(arc(check3, _c3)),
- once(arc(check4, _c4)),
- once(arc(check5, _c5)),
- once(arc(check6, _c6)).

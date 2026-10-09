@@ -5,6 +5,8 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { BuiltinRegistry, Env, Program, Solver, atom, compound, createDefaultRegistry, eyePrologInteropAutoload, eyePrologInteropLibraryIndicators, eyePrologInteropLibraryModules, eyePrologLibraryAutoload, eyePrologLibraryAutoloadModules, eyePrologLibraryIndicators, eyePrologNativeLibraryIndicators, eyePrologPortableLibraryIndicators, getEyePrologRegistry, listFromItems, makeProgram, proofCertificate, proofCertificatesFromText, run as runEyeProlog, standardLibrarySources, termToString, unify, variable, variantTerms, verifyProof } from '../../src/index.js';
 import { parseGoalText } from '../../src/parser.js';
+import { proofNodeFor } from '../../src/explain.js';
+import { checkProofDocument } from '../../src/check-proof.js';
 import { PrologError, formalErrorTerm } from '../../src/iso.js';
 import { assertEqual, assertIncludes } from '../test-style.mjs';
 import { goalsFromSource } from '../goal-metadata.mjs';
@@ -240,6 +242,43 @@ true :+ ready.
       },
     },
 
+    {
+      name: 'deep taxonomy proofs replay and check without a host recursion limit',
+      run: () => {
+        const depth = 2048;
+        const source = ['a(ind, n0).', `a(X, a2) :- a(X, n${depth}).`];
+        for (let level = 1; level <= depth; level++) {
+          for (const label of ['n', 'i', 'j']) source.push(`a(X, ${label}${level}) :- a(X, n${level - 1}).`);
+        }
+        const program = Program.parse(source.join('\n'), { sourceMetadata: true });
+        const result = runEyeProlog(program, { goals: ['a(ind, a2)'], proof: true });
+        assertIncludes(result.stdout, 'a(ind, a2).\n', 'deep answer');
+        const report = checkProofDocument(program, result.stdout);
+        assertEqual(report.valid, true, 'deep proof verifies independently');
+        assertEqual(report.steps, depth + 2, 'every chain edge and fact is recorded');
+        assertEqual(report.verified, depth + 2, 'every step is verified against source');
+        assertEqual(proofNodeFor(program, parseGoalText('a(ind, a2)'), { maxDepth: depth }), null,
+          'an explicit proof depth budget is still honored');
+      },
+    },
+    {
+      name: 'ground proof chains retain branching and builtin replay behavior',
+      run: () => {
+        for (const source of [
+          'q(a) :- p(a).\np(a) :- missing(a).\np(a).\nmissing(b).',
+          'q(a) :- p(X), X = a.\np(a).',
+          'q(a) :- once(p(a)).\np(a).',
+        ]) {
+          const program = Program.parse(source, { sourceMetadata: true });
+          const result = runEyeProlog(program, { goals: ['q(a)'], proof: true });
+          assertIncludes(result.stdout, 'q(a).\n', 'answer');
+          assertEqual(checkProofDocument(program, result.stdout).valid, true, 'fallback proof verifies');
+        }
+        const cyclic = Program.parse('q(a) :- q(a).\nq(a).', { sourceMetadata: true });
+        assertEqual(proofNodeFor(cyclic, parseGoalText('q(a)')).method.kind, 'fact',
+          'cyclic alternatives still fall through to a fact');
+      },
+    },
     {
       name: 'proof certificates verify source derivations without proof search',
       run: () => {

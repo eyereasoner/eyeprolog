@@ -2,7 +2,7 @@
 // The explanation printer replays a successful goal against the program and emits
 // ordinary EyeProlog facts with nested proof terms.  Explanations are therefore both
 // human-readable and machine-readable.
-import { ATOM, COMPOUND, Env, Term, VAR, atom, compound, deref, flattenConjunction, freshTerm, numberTerm, properListItems, termToString, unify, variantTerms } from './term.js';
+import { ATOM, COMPOUND, Env, Term, VAR, atom, compound, deref, flattenConjunction, freshTerm, numberTerm, properListItems, termIsGround, termToString, unify, variantTerms } from './term.js';
 import { selectClauseCandidates } from './program.js';
 import { parseGoalText, parseProgramText } from './parser.js';
 import { getEyePrologRegistry } from './standard-library.js';
@@ -864,6 +864,61 @@ export function flattenProof(roots, program) {
   return { clauses: [...clauses.entries()].sort((a, b) => a[0] - b[0]), steps };
 }
 
+// Ground, deterministic source chains can be replayed without keeping a host
+// call frame or an accumulating substitution environment for every edge.
+// Ambiguous clauses, open bodies, builtins and library boundaries continue
+// through the general replay, which owns their search and execution semantics.
+function groundChainProof(program, goal, env, maxDepth, registry) {
+  if (goal.module != null && goal.module !== 'user') return null;
+  if (!termIsGround(goal, env)) return null;
+  let current = resolveForProof(goal, env);
+  const seen = new Set();
+  const nodes = [];
+  while (nodes.length <= maxDepth) {
+    if (current.type !== ATOM && current.type !== COMPOUND) return null;
+    if (registry.get(current.name, current.arity)) return null;
+    const group = program.findGroup(current.name, current.arity, current.module ?? 'user');
+    if (!group || group.module !== 'user') return null;
+    const key = termToString(current, new Env(), true);
+    if (seen.has(key)) return null;
+    seen.add(key);
+    const candidates = selectClauseCandidates(group, current, new Env());
+    let matched = null;
+    for (const pass of [candidates.primary, candidates.fallback]) {
+      for (let index = 0; index < clauseCandidateLength(pass); index++) {
+        const clause = clauseCandidateAt(pass, index);
+        const variables = new Map();
+        const id = nextFreshId();
+        const head = freshTerm(clause.head, id, variables);
+        const next = new Env();
+        if (!unify(current, head, next)) continue;
+        if (matched || clause.body.length > 1) return null;
+        const body = clause.body.map((term) => freshTerm(term, id, variables));
+        if (body.some((term) => (term.module != null && term.module !== 'user') || !termIsGround(term, next))) return null;
+        matched = {
+          node: {
+            goal: current,
+            method: sourceMethod(clause, body.length ? 'rule' : 'fact'),
+            sourceHead: clause.head,
+            sourceBody: clause.body,
+            bindings: resolvedSubstitutions(collectClauseSubstitutions(clause, head, body), next),
+            children: [],
+          },
+          next: body.length ? resolveForProof(body[0], next) : null,
+        };
+      }
+    }
+    if (!matched) return null;
+    nodes.push(matched.node);
+    if (matched.next == null) {
+      for (let index = nodes.length - 2; index >= 0; index--) nodes[index].children.push(nodes[index + 1]);
+      return nodes[0];
+    }
+    current = matched.next;
+  }
+  return null;
+}
+
 // The root of an answer's proof tree, for `flattenProof`.
 export function proofNodeFor(program, goal, options = {}) {
   liveSolver = options.solver ?? null;
@@ -872,6 +927,8 @@ export function proofNodeFor(program, goal, options = {}) {
   const env = options.env ?? new Env();
   const detail = normalizeProofDetail(options.proofDetail ?? 'abstract');
   try {
+    const chain = groundChainProof(program, goal, env, options.maxDepth ?? Infinity, registry);
+    if (chain) return chain;
     for (const proof of proveGoalAll(program, goal, env, 0, maxDepth, registry, [], detail)) return proof.node;
   } catch {
     // A replay that raises has not explained anything, and an answer the

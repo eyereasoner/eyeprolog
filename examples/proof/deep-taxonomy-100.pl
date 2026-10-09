@@ -1,26 +1,8 @@
-holds_result(test, true).
-arc(check1, "C1 OK - the starting classification n0 is present.").
-arc(check2, "C2 OK - the first expansion produced n1 together with side labels i1 and j1.").
-arc(check3, "C3 OK - the chain reaches the midpoint n50 and still carries both side-label branches.").
-arc(check4, "C4 OK - the final taxonomy step from n99 to n100 was completed.").
-arc(check5, "C5 OK - once n100 is reached, the terminal class a2 is derived.").
-arc(check6, "C6 OK - the success flag is raised only after the terminal class a2 is present.").
-answer(report, "The test succeeds: starting from one individual classified as n0, the rules eventually classify it as n100 and then as a2.").
-reason(report, "The adjacent rules mirror the Eyeling N3 deep-taxonomy-100 chain: each rule advances one taxonomy level and adds the matching side labels.").
-checkPassed(report, check1).
-checkPassed(report, check2).
-checkPassed(report, check3).
-checkPassed(report, check4).
-checkPassed(report, check5).
-checkPassed(report, check6).
-result(report, success).
+a(ind, a2).
 
 clause(2, a(ind, n0), true).
-clause(3, holds_result(test, true), once(a(ind, a2))).
 clause(4, a(var('X'), a2), a(var('X'), n100)).
 clause(5, a(var('X'), n1), a(var('X'), n0)).
-clause(6, a(var('X'), i1), a(var('X'), n0)).
-clause(7, a(var('X'), j1), a(var('X'), n0)).
 clause(8, a(var('X'), n2), a(var('X'), n1)).
 clause(11, a(var('X'), n3), a(var('X'), n2)).
 clause(14, a(var('X'), n4), a(var('X'), n3)).
@@ -70,8 +52,6 @@ clause(143, a(var('X'), n47), a(var('X'), n46)).
 clause(146, a(var('X'), n48), a(var('X'), n47)).
 clause(149, a(var('X'), n49), a(var('X'), n48)).
 clause(152, a(var('X'), n50), a(var('X'), n49)).
-clause(153, a(var('X'), i50), a(var('X'), n49)).
-clause(154, a(var('X'), j50), a(var('X'), n49)).
 clause(155, a(var('X'), n51), a(var('X'), n50)).
 clause(158, a(var('X'), n52), a(var('X'), n51)).
 clause(161, a(var('X'), n53), a(var('X'), n52)).
@@ -122,41 +102,7 @@ clause(293, a(var('X'), n97), a(var('X'), n96)).
 clause(296, a(var('X'), n98), a(var('X'), n97)).
 clause(299, a(var('X'), n99), a(var('X'), n98)).
 clause(302, a(var('X'), n100), a(var('X'), n99)).
-clause(305, arc(check1, "C1 OK - the starting classification n0 is present."), once(a(ind, n0))).
-clause(306,
-       arc(check2, "C2 OK - the first expansion produced n1 together with side labels i1 and j1."),
-       (once(a(ind, n1)), once(a(ind, i1)), once(a(ind, j1)))).
-clause(307,
-       arc(check3, "C3 OK - the chain reaches the midpoint n50 and still carries both side-label branches."),
-       (once(a(ind, n50)), once(a(ind, i50)), once(a(ind, j50)))).
-clause(308,
-       arc(check4, "C4 OK - the final taxonomy step from n99 to n100 was completed."),
-       (once(a(ind, n99)), once(a(ind, n100)))).
-clause(309,
-       arc(check5, "C5 OK - once n100 is reached, the terminal class a2 is derived."),
-       (once(a(ind, n100)), once(a(ind, a2)))).
-clause(310,
-       arc(check6, "C6 OK - the success flag is raised only after the terminal class a2 is present."),
-       (once(a(ind, a2)), once(holds_result(test, true)))).
-clause(311,
-       answer(report, "The test succeeds: starting from one individual classified as n0, the rules eventually classify it as n100 and then as a2."),
-       once(holds_result(test, true))).
-clause(312,
-       reason(report, "The adjacent rules mirror the Eyeling N3 deep-taxonomy-100 chain: each rule advances one taxonomy level and adds the matching side labels."),
-       (once(a(ind, a2)), once(holds_result(test, true)))).
-clause(313, checkPassed(report, var('Check')), arc(var('Check'), anonymous(1))).
-clause(314,
-       result(report, success),
-       (once(holds_result(test, true)),
-        once(arc(check1, anonymous(1))),
-        once(arc(check2, anonymous(2))),
-        once(arc(check3, anonymous(3))),
-        once(arc(check4, anonymous(4))),
-        once(arc(check5, anonymous(5))),
-        once(arc(check6, anonymous(6))))).
 
-step(holds_result(test, true), rule(3), [], [once(a(ind, a2))]).
-step(once(a(ind, a2)), builtin, [], [a(ind, a2)]).
 step(a(ind, a2), rule(4), ['X' = ind], [a(ind, n100)]).
 step(a(ind, n100), rule(302), ['X' = ind], [a(ind, n99)]).
 step(a(ind, n99), rule(299), ['X' = ind], [a(ind, n98)]).
@@ -259,107 +205,3 @@ step(a(ind, n3), rule(11), ['X' = ind], [a(ind, n2)]).
 step(a(ind, n2), rule(8), ['X' = ind], [a(ind, n1)]).
 step(a(ind, n1), rule(5), ['X' = ind], [a(ind, n0)]).
 step(a(ind, n0), fact(2), [], []).
-step(arc(check1, "C1 OK - the starting classification n0 is present."),
-     rule(305),
-     [],
-     [once(a(ind, n0))]).
-step(once(a(ind, n0)), builtin, [], [a(ind, n0)]).
-step(arc(check2, "C2 OK - the first expansion produced n1 together with side labels i1 and j1."),
-     rule(306),
-     [],
-     [once(a(ind, n1)), once(a(ind, i1)), once(a(ind, j1))]).
-step(once(a(ind, n1)), builtin, [], [a(ind, n1)]).
-step(once(a(ind, i1)), builtin, [], [a(ind, i1)]).
-step(a(ind, i1), rule(6), ['X' = ind], [a(ind, n0)]).
-step(once(a(ind, j1)), builtin, [], [a(ind, j1)]).
-step(a(ind, j1), rule(7), ['X' = ind], [a(ind, n0)]).
-step(arc(check3, "C3 OK - the chain reaches the midpoint n50 and still carries both side-label branches."),
-     rule(307),
-     [],
-     [once(a(ind, n50)), once(a(ind, i50)), once(a(ind, j50))]).
-step(once(a(ind, n50)), builtin, [], [a(ind, n50)]).
-step(once(a(ind, i50)), builtin, [], [a(ind, i50)]).
-step(a(ind, i50), rule(153), ['X' = ind], [a(ind, n49)]).
-step(once(a(ind, j50)), builtin, [], [a(ind, j50)]).
-step(a(ind, j50), rule(154), ['X' = ind], [a(ind, n49)]).
-step(arc(check4, "C4 OK - the final taxonomy step from n99 to n100 was completed."),
-     rule(308),
-     [],
-     [once(a(ind, n99)), once(a(ind, n100))]).
-step(once(a(ind, n99)), builtin, [], [a(ind, n99)]).
-step(once(a(ind, n100)), builtin, [], [a(ind, n100)]).
-step(arc(check5, "C5 OK - once n100 is reached, the terminal class a2 is derived."),
-     rule(309),
-     [],
-     [once(a(ind, n100)), once(a(ind, a2))]).
-step(arc(check6, "C6 OK - the success flag is raised only after the terminal class a2 is present."),
-     rule(310),
-     [],
-     [once(a(ind, a2)), once(holds_result(test, true))]).
-step(once(holds_result(test, true)), builtin, [], [holds_result(test, true)]).
-step(answer(report, "The test succeeds: starting from one individual classified as n0, the rules eventually classify it as n100 and then as a2."),
-     rule(311),
-     [],
-     [once(holds_result(test, true))]).
-step(reason(report, "The adjacent rules mirror the Eyeling N3 deep-taxonomy-100 chain: each rule advances one taxonomy level and adds the matching side labels."),
-     rule(312),
-     [],
-     [once(a(ind, a2)), once(holds_result(test, true))]).
-step(checkPassed(report, check1),
-     rule(313),
-     ['Check' = check1],
-     [arc(check1, "C1 OK - the starting classification n0 is present.")]).
-step(checkPassed(report, check2),
-     rule(313),
-     ['Check' = check2],
-     [arc(check2, "C2 OK - the first expansion produced n1 together with side labels i1 and j1.")]).
-step(checkPassed(report, check3),
-     rule(313),
-     ['Check' = check3],
-     [arc(check3, "C3 OK - the chain reaches the midpoint n50 and still carries both side-label branches.")]).
-step(checkPassed(report, check4),
-     rule(313),
-     ['Check' = check4],
-     [arc(check4, "C4 OK - the final taxonomy step from n99 to n100 was completed.")]).
-step(checkPassed(report, check5),
-     rule(313),
-     ['Check' = check5],
-     [arc(check5, "C5 OK - once n100 is reached, the terminal class a2 is derived.")]).
-step(checkPassed(report, check6),
-     rule(313),
-     ['Check' = check6],
-     [arc(check6, "C6 OK - the success flag is raised only after the terminal class a2 is present.")]).
-step(result(report, success),
-     rule(314),
-     [],
-     [once(holds_result(test, true)),
-      once(arc(check1, "C1 OK - the starting classification n0 is present.")),
-      once(arc(check2, "C2 OK - the first expansion produced n1 together with side labels i1 and j1.")),
-      once(arc(check3, "C3 OK - the chain reaches the midpoint n50 and still carries both side-label branches.")),
-      once(arc(check4, "C4 OK - the final taxonomy step from n99 to n100 was completed.")),
-      once(arc(check5, "C5 OK - once n100 is reached, the terminal class a2 is derived.")),
-      once(arc(check6, "C6 OK - the success flag is raised only after the terminal class a2 is present."))]).
-step(once(arc(check1, "C1 OK - the starting classification n0 is present.")),
-     builtin,
-     [],
-     [arc(check1, "C1 OK - the starting classification n0 is present.")]).
-step(once(arc(check2, "C2 OK - the first expansion produced n1 together with side labels i1 and j1.")),
-     builtin,
-     [],
-     [arc(check2, "C2 OK - the first expansion produced n1 together with side labels i1 and j1.")]).
-step(once(arc(check3, "C3 OK - the chain reaches the midpoint n50 and still carries both side-label branches.")),
-     builtin,
-     [],
-     [arc(check3, "C3 OK - the chain reaches the midpoint n50 and still carries both side-label branches.")]).
-step(once(arc(check4, "C4 OK - the final taxonomy step from n99 to n100 was completed.")),
-     builtin,
-     [],
-     [arc(check4, "C4 OK - the final taxonomy step from n99 to n100 was completed.")]).
-step(once(arc(check5, "C5 OK - once n100 is reached, the terminal class a2 is derived.")),
-     builtin,
-     [],
-     [arc(check5, "C5 OK - once n100 is reached, the terminal class a2 is derived.")]).
-step(once(arc(check6, "C6 OK - the success flag is raised only after the terminal class a2 is present.")),
-     builtin,
-     [],
-     [arc(check6, "C6 OK - the success flag is raised only after the terminal class a2 is present.")]).
