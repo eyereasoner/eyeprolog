@@ -1,6 +1,6 @@
 // Shared test output helpers.
 // The runners use this small reporter so individual suites and `npm test` share
-// one compact Eyeling-style layout: colored OK/FAIL, sequence number, test description, and dimmed timing.
+// one compact layout: colored OK/FAIL, sequence number, test description, and dimmed timing.
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';

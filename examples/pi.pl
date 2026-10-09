@@ -13,6 +13,7 @@ pi(A, B, C, D, E) :-
     M is -E,
     pi(F, B, L, D, M).
 
-% query
-%% ?- pi(100000, _).
+% query: ten thousand terms of the series, a derivation ten thousand levels
+% deep whose proof records every term
+%% ?- pi(10000, _).
 

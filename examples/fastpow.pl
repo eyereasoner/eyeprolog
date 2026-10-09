@@ -1,4 +1,4 @@
-% Fast exponentiation examples adapted from Eyeling fastpow.n3.
+% Fast exponentiation examples.
 %
 % pow/3 demonstrates exponentiation by squaring, while pow_mod/4 performs the
 % same recursion under a modulus so huge powers remain small enough for ordinary

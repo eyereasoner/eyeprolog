@@ -1,4 +1,4 @@
-% Newton-Raphson root finding, adapted from Eyelet input/newton-raphson.pl.
+% Newton-Raphson root finding.
 % Each want_root/1 case names a function, starting point, and tolerance.  The
 % recursive finder stops when |f(x)| is below tolerance; otherwise it applies
 % x := x - f(x)/f'(x) using the corresponding derivative rule.

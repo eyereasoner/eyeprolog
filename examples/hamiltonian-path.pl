@@ -1,6 +1,6 @@
 :- use_module(library(lists)).
 
-% Hamiltonian path, adapted from Eyelet's input/hamiltonian-path.pl.
+% Hamiltonian path.
 %
 % The graph is the same six-vertex undirected graph.  eyeprolog spells the finite
 % vertex set directly and derives every path that visits each vertex exactly

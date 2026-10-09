@@ -1,4 +1,4 @@
-% Gray-code counter adapted from Eyeling gray-code-counter.n3.
+% Gray-code counter.
 % Boolean gates are represented as truth-table facts.  The circuit rules compose
 % those gates into next-state logic for three flip-flops, and testgcc/3 runs the
 % counter over a finite clock sequence.

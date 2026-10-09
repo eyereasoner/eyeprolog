@@ -1,6 +1,6 @@
 :- use_module(library(between), [between/3]).
 
-% Gregorian Easter computus adapted from Eyeling's easter.n3.
+% Gregorian Easter computus.
 % Each case is a year in a sample decade.  The rules derive the Meeus/Jones/
 % Butcher remainders, the final month/day, and a separate window check showing
 % that the result lies in the legal Gregorian Easter range.

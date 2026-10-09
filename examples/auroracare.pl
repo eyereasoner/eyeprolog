@@ -1,7 +1,6 @@
-% AuroraCare purpose-based medical-data exchange case adapted from Eyeling auroracare.n3.
-% The original N3 emits one Markdown block per scenario.  This eyeprolog
-% translation querys the policy decisions, reasons, traces, and ARC-style
-% check values as ordinary relation output.
+% AuroraCare purpose-based medical-data exchange case.
+% The example queries the policy decisions, reasons, traces, and ARC-style
+% check values of each scenario as ordinary relation output.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %% ?- label(X0, X1).

@@ -1,5 +1,5 @@
 % Nixon diamond: two independent defaults support incompatible conclusions.
-% This mirrors the classic EYE reasoning theme while keeping the conclusion explicit:
+% The conclusion is kept explicit:
 % a subject with both defaults is reported as conflicted rather than forced to
 % choose one extension.
 

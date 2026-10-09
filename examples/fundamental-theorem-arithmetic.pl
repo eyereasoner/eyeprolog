@@ -2,7 +2,6 @@
 :- use_module(library(lists)).
 :- table factor_smallest/2.
 
-% Adapted from Eyeling's fundamental-theorem-arithmetic.n3.
 % Compute a prime factorization by repeated smallest-divisor decomposition,
 % then check product reconstruction and primality of the distinct factors.
 

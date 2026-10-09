@@ -1,4 +1,4 @@
-% BMI — ARC-style Body Mass Index example adapted from Eyeling.
+% BMI — ARC-style Body Mass Index example.
 %
 % The example normalizes metric or US inputs, computes BMI, assigns the WHO
 % adult category, derives a healthy-weight band for the same height, and emits

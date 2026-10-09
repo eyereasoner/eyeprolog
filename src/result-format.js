@@ -6,11 +6,9 @@
 // conclusion.
 //
 // A step is a conclusion, the single term saying why it holds, the bindings
-// that justification used, and the conclusions it used -- deliberately the
-// shape eyeron, eyeling and eyeleng also write, where the three parts are
-// `pe:rule`, `pe:binding` and `pe:uses`. Naming a use by its own conclusion,
-// rather than by an id to be joined back, is what lets a proof be read
-// downward from the claim, and what lets a checker resolve it.
+// that justification used, and the conclusions it used. Naming a use by its
+// own conclusion, rather than by an id to be joined back, is what lets a
+// proof be read downward from the claim, and what lets a checker resolve it.
 //
 // Because the document is ordinary Prolog, it can be saved, loaded and
 // queried by another run, which records the answers as data rather than

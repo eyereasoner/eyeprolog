@@ -1,4 +1,4 @@
-% Diamond property, adapted from Eyelet's input/diamond-property.pl.
+% Diamond property.
 %
 % A relation has the diamond property when two outgoing steps from the same
 % source can be joined again.  This compact eyeprolog version keeps the same

@@ -1,9 +1,8 @@
 :- use_module(library(strings)).
 :- use_module(library(lists)).
 
-% Delfour insight-economy case adapted from Eyeling delfour.n3.
-% The original N3 emits a Markdown answer.  This eyeprolog
-% translation derives the same authorization, shopping banner, alternative, and
+% Delfour insight-economy case.
+% The example derives the authorization, shopping banner, alternative, and
 % checklist facts as relation query execution.
 %
 % Static input is kept as scoped data: the case, insight, policy, envelope, and

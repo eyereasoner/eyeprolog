@@ -1,4 +1,4 @@
-% Access control policy example adapted from Eyelet input/access-control-policy.pl.
+% Access control policy example.
 %
 % This version avoids findall/3 by expressing allOf/anyOf/noneOf checks as
 % finite logical conditions.  The universal allOf/noneOf checks use negation

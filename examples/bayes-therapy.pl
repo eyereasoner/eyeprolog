@@ -39,7 +39,7 @@
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.
 
-% Bayes therapy decision support adapted from Eyeling bayes-therapy.n3.
+% Bayes therapy decision support.
 % Probabilities are illustrative and are not medical advice.
 % The example combines a tiny Naive Bayes diagnosis model with a therapy
 % utility layer: expected utility = 10 * expectedSuccess - 3 * expectedAdverse.

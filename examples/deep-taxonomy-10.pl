@@ -1,7 +1,7 @@
 % =============================================================================================================================
 % Deep Taxonomy - depth 10 - expanded N3-style eyeprolog
 %
-% Adjacent rules mirror the Eyeling N3 deep-taxonomy chain. Each step derives
+% Adjacent rules form the deep-taxonomy chain. Each step derives
 % the next taxonomy class together with two side labels.
 % =============================================================================================================================
 

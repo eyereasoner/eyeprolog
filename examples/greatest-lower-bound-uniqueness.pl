@@ -6,8 +6,7 @@
 %% ?- sameGreatestLowerBound(X0, X1, X2, X3).
 
 
-% Adapted from Eyeling greatest-lower-bound-uniqueness.n3.  The named facts
-% intentionally use two different symbols, g1 and g2, so the final output shows
+% The named facts intentionally use two different symbols, g1 and g2, so the final output shows
 % the equality-style conclusion as an explicit derived relation.
 
 glbOf(g1, a, b).

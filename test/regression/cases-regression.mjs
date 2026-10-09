@@ -906,9 +906,8 @@ step(member(a, "a"), builtin, [], []).
       name: 'a bare ?- is the ISO query form, a labelled one is still a quad',
       run: () => {
         // `?-` is a prefix operator in ISO Table 7 and the quad syntax adds
-        // an infix one on top, so a goal written the usual way -- which is
-        // how eyeron writes its own -- must run here rather than be read as
-        // a quad that forgot its answers.
+        // an infix one on top, so a goal written the usual way must run here
+        // rather than be read as a quad that forgot its answers.
         const source = `p(1).\n\nnamed ?- p(X).\n   X = 1.\n\n?- p(X).\n`;
         const program = Program.parseSources([{ text: source, filename: 'both-forms.pl' }]);
         assertEqual(program.quads.length, 1, 'quad count');
@@ -4415,6 +4414,23 @@ child.stdin.write(\`consult(${consultedAtom}).\\n\`);
         const strictProof = runCli(['--strict-proof', '--check-proof', '-', boundaryFile], { input: boundaryProof });
         assertEqual(strictProof.status, 2, '--strict-proof forbids trusted boundaries');
         assertIncludes(strictProof.stdout, "'trusted boundary forbidden: absent'", 'strict failure detail');
+
+        // A run checks its own proof before writing it: an answer the replay
+        // cannot reproduce -- replaying this counter advances it again -- fails
+        // the run rather than yield an invalid proof.
+        const counterFile = path.join(temp.dir, `proof-counter-${++temp.counter}.pl`);
+        fs.writeFileSync(counterFile, [
+          '%% ?- tick(X).',
+          ':- dynamic(counter/1).',
+          'counter(0).',
+          'tick(N) :- retract(counter(N0)), N is N0 + 1, assertz(counter(N)).',
+          '',
+        ].join('\n'));
+        const refused = runCli(['--proof', counterFile]);
+        assertEqual(refused.status, 1, 'a proof that does not check fails the run');
+        assertIncludes(refused.stdout, 'tick(1).', 'the answer is still written');
+        assertNotIncludes(refused.stdout, 'step(', 'the proof is not');
+        assertIncludes(refused.stderr, 'the proof of this run does not check', 'the diagnostic says why');
 
         // Given as a program, a proof document is pointed at --check-proof.
         const misused = runCli([proofFile]);

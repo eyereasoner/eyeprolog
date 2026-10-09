@@ -1,8 +1,6 @@
-% Bayesian diagnosis adapted from Eyeling bayes-diagnosis.n3.
+% Bayesian diagnosis.
 % The integer-scaled rules keep the model executable in eyeprolog.  The emitted
-% relations use Eyeling's full posterior vocabulary instead of rounded basis
-% points, so this example is comparable with examples/output/bayes-diagnosis.n3
-% in the Eyeling repository.
+% relations use the full posterior vocabulary instead of rounded basis points.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %% ?- scores(X0, X1).
@@ -88,7 +86,7 @@ total_score(Total) :-
   (B is S3 + S4),
   (Total is A + B).
 
-% Decimal surface values from the Eyeling reference output.
+% Decimal surface values of the posterior scores.
 score_decimal(covid19, 0.0015470000000000002).
 score_decimal(influenza, 0.000048000000000000015).
 score_decimal(allergicRhinitis, 7.499999999999999e-7).

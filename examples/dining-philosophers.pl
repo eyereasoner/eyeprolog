@@ -1,4 +1,4 @@
-% Chandy-Misra dining philosophers trace adapted from Eyeling dining-philosophers.n3.
+% Chandy-Misra dining philosophers trace.
 %
 % The example does not search for an arbitrary schedule.  Instead, it reasons over
 % a finite trace of configurations and slots, deriving which fork requests are

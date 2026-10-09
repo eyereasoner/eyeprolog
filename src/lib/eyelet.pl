@@ -1,4 +1,4 @@
-% Eyelet forward reasoning for EyeProlog.
+% Forward reasoning for EyeProlog.
 %
 % The fixed-point driver lives here in Prolog. JavaScript only bootstraps this
 % module and adapts the recorded answer/fuse events to the embedding callbacks.
@@ -58,7 +58,7 @@ prepare_rules :-
     ;   true
     ).
 
-% Query-only Eyelet files are common. Detect them from clause heads and execute
+% Query-only forward-rule files are common. Detect them from clause heads and execute
 % their premises once instead of entering the fixed-point loop.
 plain_query_program :-
     \+ ( user:clause((Conc :+ _), _), Conc \== true, Conc \== false ).

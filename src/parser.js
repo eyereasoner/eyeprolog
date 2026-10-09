@@ -1152,9 +1152,8 @@ class Parser {
       // require a processor to have at all. Reading a `?-` term from a file
       // as a goal is instead 7.7.3's implementation-defined "method by which
       // a user delivers a goal" -- the notation nearly every Prolog uses for
-      // one, and the notation eyeron's documented subset defines, so a
-      // program written that way runs in both. `--iso-strict` does not
-      // accept it. A *labelled* quad with no answers stays an error, because
+      // one, so a program written that way runs in most engines.
+      // `--iso-strict` does not accept it. A *labelled* quad with no answers stays an error, because
       // a quad with nothing to check is not a quad.
       if (id == null) {
         accept({ kind: 'query', goal: query, source: { filename: this.filename, line } });

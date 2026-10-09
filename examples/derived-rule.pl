@@ -1,6 +1,6 @@
-% Derived rule example adapted from Eyeling derived-rule.n3.
+% Derived rule example.
 %
-% Eyeling source shape:
+% In N3 notation:
 %   minka a cat.
 %   charly a dog.
 %   { X a cat. } => { { Y a dog. } => { test is true. }. }.

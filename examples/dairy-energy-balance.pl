@@ -1,4 +1,4 @@
-% EYE-inspired dairy energy balance case study.
+% Dairy energy balance case study.
 %
 % cow(Cow, BodyWeightKg, MilkKgPerDay, RationEnergyMcalPerKgDM, IntakeKgDM)
 % records a small herd.  Rules estimate maintenance demand, milk-production

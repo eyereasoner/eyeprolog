@@ -1,4 +1,4 @@
-% EYE reasoning-inspired example: braking safety in alternative worlds.
+% Braking safety in alternative worlds.
 %
 % Four simplified models classify the same road scenarios. The example is not a
 % real safety calculator; it demonstrates rule-level model comparison.

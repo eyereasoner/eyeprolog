@@ -1,8 +1,7 @@
-% Cat Koko, adapted from Eyeling's examples/cat-koko.n3.
+% Cat Koko.
 %
-% The Eyeling output contains two existential witnesses. eyeprolog has no blank
-% node constructor in the portable core, so this adaptation names those
-% witnesses sk_0 and sk_1.
+% The conclusion has two existential witnesses. eyeprolog has no blank node
+% constructor in the portable core, so they are named sk_0 and sk_1.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %% ?- type(X0, X1).

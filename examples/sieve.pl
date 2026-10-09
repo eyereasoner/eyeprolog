@@ -1,8 +1,7 @@
-% Prime enumeration inspired by Eyelet input/sieve.pl.
-% The 1000-limit answer matches Eyelet output-swipl/sieve.pl.
+% Prime enumeration up to 1000.
 %
-% A plain-Prolog 6k-1/6k+1 candidate wheel preserves the same generated prime
-% list without requiring a host accelerator.
+% A plain-Prolog 6k-1/6k+1 candidate wheel generates the prime list without
+% requiring a host accelerator.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %% ?- primes(X0, X1).

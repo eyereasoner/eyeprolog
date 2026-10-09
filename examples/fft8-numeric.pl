@@ -1,4 +1,4 @@
-% Adapted from Eyeling's fft8-numeric.n3.
+% 8-point FFT.
 %
 % This is an 8-point radix-2 FFT over explicit complex pairs c(Real, Imag).
 % The rules are deliberately unrolled enough to keep proofs readable while still

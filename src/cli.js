@@ -7,7 +7,6 @@ import { goalsFromSource } from './goal-metadata.js';
 import { memoryStatistics } from './platform.js';
 
 let engineModule = null;
-let explanationModule = null;
 
 // The usage text documents the input file as optional, and `--goal` is
 // meaningful on its own.  Only fall back to stdin when it is actually
@@ -346,11 +345,6 @@ async function loadEngine() {
   return engineModule;
 }
 
-async function loadExplanation() {
-  if (explanationModule == null) explanationModule = await import('./explain.js');
-  return explanationModule;
-}
-
 async function runForwardDefault(engine, program, options) {
   const registry = engine.getEyePrologRegistry();
   const solver = new engine.Solver(program, {
@@ -395,25 +389,12 @@ async function runDefault(engine, program, options) {
       },
     });
     if (options.proof && !options.quiet) {
-      const explanation = await loadExplanation();
-      const detail = options?.proofDetail ?? 'abstract';
-      const roots = [];
-      const unexplained = [];
-      for (const fact of claimed) {
-        const node = explanation.proofNodeFor(program, fact, { registry, proofDetail: detail, solver });
-        if (node) roots.push(node);
-        else unexplained.push(fact);
-      }
-      const { clauses, steps } = explanation.flattenProof(roots, program);
-      // An answer the explanation replay cannot reproduce is recorded as
-      // `unproven` rather than left without a step: a document containing
-      // one is not a valid proof, and saying so is the point.
-      const concluded = new Set(steps.map((step) => engine.termToString(step.conclusion, new engine.Env(), true)));
-      for (const fact of unexplained) {
-        if (concluded.has(engine.termToString(fact, new engine.Env(), true))) continue;
-        steps.push({ conclusion: fact, by: engine.atom('unproven'), bindings: [], uses: [] });
-      }
-      process.stdout.write(engine.proofBlocks(program, clauses, steps));
+      // The proof is checked before it is written; one that does not check
+      // fails the run instead (SPEC.md, Section 7.1).
+      const { checkedProofBlocks } = await import('./proof-document.js');
+      process.stdout.write(checkedProofBlocks(program, claimed, {
+        registry, proofDetail: options?.proofDetail ?? 'abstract', solver, goals,
+      }));
     }
     if (haltCode != null) process.exitCode = haltCode;
   } finally {

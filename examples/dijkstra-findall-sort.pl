@@ -1,7 +1,7 @@
 :- use_module(library(lists)).
 :- table edge/3.
 
-% Eyelet-inspired Dijkstra example using findall/3 and sort/2.
+% Dijkstra example using findall/3 and sort/2.
 % The priority queue is represented as sorted list entries [Cost, Node | Path].
 % Each expansion collects unvisited neighbors with findall/3, appends them to
 % the frontier, and uses sort/2 so the cheapest frontier entry is processed next.

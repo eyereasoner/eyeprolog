@@ -1,7 +1,6 @@
 :- use_module(library(lists)).
 
-% Monkey and bananas planning problem, adapted from Eyelet's
-% input/monkey-bananas.pl.
+% Monkey and bananas planning problem.
 %
 % A state is [bananas_location, monkey_location, box_location, on_box,
 % has_bananas].  The selected output searches bounded move lists and derives successful

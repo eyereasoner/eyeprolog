@@ -1,7 +1,7 @@
 :- use_module(library(lists)).
 
 /* ───────────────────────────────────────────────────────────────────────────
-   Quine-McCluskey Logic Minimizer for Eyelet
+   Quine-McCluskey Logic Minimizer
    
    Problem:  f(A,B,C,D) = Σ m(1,3,7,11,15) + d(0,2,5)
    Goal:     Find the minimal Sum-of-Products (SOP) cover.
@@ -14,7 +14,7 @@
       lexicographically first using the key: 0 < 1 < - (don't care).
    ─────────────────────────────────────────────────────────────────────────── */
 
-% Eyelet Directives
+% Goals
 %% ?- answer(_).
 
 %% ?- reason(_).

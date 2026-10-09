@@ -1,7 +1,6 @@
-% Animal classification, adapted from Eyelet's input/animal.pl.
+% Animal classification.
 %
-% The Eyelet source uses Unicode predicate names; this eyeprolog version keeps the
-% same tiny inheritance idea with plain vocabulary names.
+% A tiny inheritance example with plain vocabulary names.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %% ?- type(X0, X1).

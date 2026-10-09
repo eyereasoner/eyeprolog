@@ -1,7 +1,6 @@
 :- use_module(library(lists)).
 
-% Wolf, goat and cabbage puzzle, adapted from Eyelet's
-% input/wolf-goat-cabbage.pl.
+% Wolf, goat and cabbage puzzle.
 %
 % A configuration is [man, wolf, goat, cabbage], where each item is on the west
 % bank w or east bank e.  The recursive search keeps a visited list so eyeprolog

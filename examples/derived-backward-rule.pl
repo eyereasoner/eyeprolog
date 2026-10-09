@@ -1,6 +1,6 @@
-% Derived backward rule example adapted from Eyeling derived-backward-rule.n3.
+% Derived backward rule example.
 %
-% Eyeling source shape:
+% In N3 notation:
 %   parentOf invOf childOf.
 %   alice parentOf bob.
 %   { P invOf Q. } => { { X Q Y. } <= { Y P X. }. }.

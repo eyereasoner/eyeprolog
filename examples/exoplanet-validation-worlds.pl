@@ -1,4 +1,4 @@
-% EYE reasoning-inspired example: exoplanet candidate validation worlds.
+% Exoplanet candidate validation worlds.
 %
 % Four simplified worlds classify candidate transit signals using either Bayes,
 % sensitivity-only reasoning, a heuristic threshold, or a stricter Bayesian rule.

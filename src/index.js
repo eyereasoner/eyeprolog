@@ -31,16 +31,15 @@ export { StreamManager } from './io.js';
 export { formatQuadTerm, runQuads } from './quads.js';
 export { executeForwardRules, hasForwardRules } from './execute.js';
 export { formatFact, proofBlocks, resultWriteOptions } from './result-format.js';
+export { ProofCheckError, checkedProofBlocks } from './proof-document.js';
 
 import { installCleanupLifecycle } from './cleanup.js';
 import { Program, autoloadProgramGoals } from './program.js';
 import { Solver } from './solver.js';
-import { flattenProof, proofNodeFor } from './explain.js';
+import { ProofCheckError, checkedProofBlocks } from './proof-document.js';
 import { getStrictIsoRegistry } from './iso.js';
 import { getEyePrologRegistry } from './standard-library.js';
 import { executeForwardRules, executeGoals, hasForwardRules, normalizeGoals } from './execute.js';
-import { proofBlocks } from './result-format.js';
-import { Env, atom, termToString } from './term.js';
 
 // The public API is an entry point above the solver/registry layers, so it can
 // install pruning-aware iterator disposal without introducing an import cycle.
@@ -90,7 +89,10 @@ export function run(source, options = {}) {
         options.ioOptions?.errorWrite?.(line);
       },
     }));
-    if (includeWhy) output.push(proofBlocksFor(program, derived, runOptions.registry, options.proofDetail, solver));
+    if (includeWhy) {
+      output.push(proofBlocksFor(program, derived, output,
+        { registry: runOptions.registry, proofDetail: options.proofDetail, solver }));
+    }
   } else {
     // A bare `?- Goal.` asks its question the same way a `%% ?-` comment
     // does; only the parser can find it, so it is picked up here.
@@ -103,34 +105,23 @@ export function run(source, options = {}) {
         claimed.push(resolved);
       },
     }));
-    if (includeWhy) output.push(proofBlocksFor(program, claimed, runOptions.registry, options.proofDetail, solver));
+    if (includeWhy) {
+      output.push(proofBlocksFor(program, claimed, output,
+        { registry: runOptions.registry, proofDetail: options.proofDetail, solver, goals }));
+    }
   }
   return { stdout: output.join(''), stats: solver.stats, haltCode };
 }
 
-// The `clause/3` and `step/4` blocks explaining the facts a run claimed.
-// One walk across every claim, so a conclusion several of them rest on is
-// explained once.
-//
-// An answer the solver found but the explanation replay cannot reproduce --
-// a CLP(B) answer decided by propagation rather than by resolution -- is
-// recorded as `unproven` rather than quietly left without a step. A document
-// containing one is not a valid proof, and saying so is the point.
-function proofBlocksFor(program, claimed, registry, proofDetail = 'abstract', solver = null) {
-  const roots = [];
-  const unexplained = [];
-  for (const fact of claimed) {
-    const node = proofNodeFor(program, fact, { registry, proofDetail, solver });
-    if (node) roots.push(node);
-    else unexplained.push(fact);
+// The checked proof blocks, or a ProofCheckError carrying the answers the run
+// had already written, so a caller still has them when the proof fails.
+function proofBlocksFor(program, claimed, output, options) {
+  try {
+    return checkedProofBlocks(program, claimed, options);
+  } catch (error) {
+    if (error instanceof ProofCheckError) error.stdout = output.join('');
+    throw error;
   }
-  const { clauses, steps } = flattenProof(roots, program);
-  const concluded = new Set(steps.map((step) => termToString(step.conclusion, new Env(), true)));
-  for (const fact of unexplained) {
-    if (concluded.has(termToString(fact, new Env(), true))) continue;
-    steps.push({ conclusion: fact, by: atom('unproven'), bindings: [], uses: [] });
-  }
-  return proofBlocks(program, clauses, steps);
 }
 
 export * from './explain.js';

@@ -1,4 +1,4 @@
-% EYE-inspired epidemic policy choice.
+% Epidemic policy choice.
 % Candidate interventions combine vaccination and mask factors against a base
 % reproduction-risk estimate.  The recommended policy is the only candidate
 % that satisfies the outbreak threshold in this simplified model.

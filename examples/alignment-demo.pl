@@ -1,6 +1,6 @@
-% Alignment demo, adapted from Eyeling's examples/alignment-demo.n3.
+% Alignment demo.
 %
-% The output is the Prolog-style counterpart of the Eyeling golden output:
+% The output is:
 % broader/narrower alignments, their transitive closure, the reflexive
 % narrower-or-equal relation, and the concepts that roll up to ref_car.
 

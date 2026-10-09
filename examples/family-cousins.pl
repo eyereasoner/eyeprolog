@@ -13,7 +13,7 @@
 % The family tree is scoped inside family_graph/2.  family_statement/3 projects
 % only the parent and seedBranch facts that the cousin rules need.
 
-% Family-cousins derivation adapted from Eyeling family-cousins.n3.
+% Family-cousins derivation.
 % Generation numbers are derived from parent links; branch labels distinguish
 % descendants of Bob from descendants of Carol.
 % The family tree and seed branch labels are quoted as a small formula term, so

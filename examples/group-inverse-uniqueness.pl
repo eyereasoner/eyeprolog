@@ -1,6 +1,6 @@
-% Group inverse uniqueness, adapted from Eyeling's examples/group-inverse-uniqueness.n3.
+% Group inverse uniqueness.
 %
-% The output mirrors the Eyeling golden result shape:
+% The output is:
 % sameInverse(x, i, j) and sameInverse(x, j, i).
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.

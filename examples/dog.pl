@@ -1,7 +1,7 @@
 :- use_module(library(lists)).
 :- use_module(library(iso_ext)).
 
-% Dog-license compliance rule adapted from Eyeling dog.n3.
+% Dog-license compliance rule.
 %
 % hasDog/2 records individual dogs.  dogCount/2 uses countall/2 to aggregate all
 % dogs per subject, and mustHave/2 derives the license obligation exactly for

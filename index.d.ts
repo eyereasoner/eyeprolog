@@ -385,6 +385,19 @@ export function formatFact(term: EyePrologTerm, writeOptions?: Record<string, un
 export function isLibraryClause(clause: unknown): boolean;
 export function isProgramClause(clause: unknown): boolean;
 export function proofBlocks(program: Program, clauses: EyePrologNumberedClause[], steps: EyePrologProofStep[]): string;
+/** The proof blocks for a run's claims, checked first; throws ProofCheckError when they do not check. */
+export function checkedProofBlocks(
+  program: Program,
+  claimed: EyePrologTerm[],
+  options?: { registry?: unknown; proofDetail?: 'abstract' | 'expanded'; solver?: unknown; goals?: (string | EyePrologTerm)[] },
+): string;
+/** Raised when a run's own proof does not check, so it is not written. */
+export class ProofCheckError extends Error {
+  /** The check report (SPEC.md, Section 9). */
+  report: { valid: boolean; failures: { condition: string; detail: string; conclusion: string | null }[]; [key: string]: unknown };
+  /** The answers the run had already written. */
+  stdout?: string;
+}
 export function proofNodeFor(program: Program, goal: EyePrologTerm, options?: EyePrologRunOptions): unknown;
 export function resultWriteOptions(program: Program, options?: Record<string, unknown>): Record<string, unknown>;
 export function whyNoProof(goal: EyePrologTerm): string;
@@ -473,6 +486,8 @@ declare const eyeprolog: {
   isLibraryClause: typeof isLibraryClause;
   isProgramClause: typeof isProgramClause;
   proofBlocks: typeof proofBlocks;
+  checkedProofBlocks: typeof checkedProofBlocks;
+  ProofCheckError: typeof ProofCheckError;
   proofNodeFor: typeof proofNodeFor;
   resultWriteOptions: typeof resultWriteOptions;
   whyNoProof: typeof whyNoProof;

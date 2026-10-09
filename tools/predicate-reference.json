@@ -947,7 +947,7 @@
       "origin": "library(eyelet)",
       "call": "becomes(+Condition,+Action)",
       "solutions": "meta",
-      "contract": "Declares/executes the Eyelet forward transition relating Condition to Action.",
+      "contract": "Declares/executes the forward transition relating Condition to Action.",
       "source": "src/lib/eyelet.pl",
       "profile": "library"
     },
@@ -4178,7 +4178,7 @@
       "origin": "library(eyelet)",
       "call": "stable(+Goal)",
       "solutions": "meta",
-      "contract": "Runs Goal to Eyelet fixed-point stability.",
+      "contract": "Runs Goal to forward-rule fixed-point stability.",
       "source": "src/lib/eyelet.pl",
       "profile": "library"
     },

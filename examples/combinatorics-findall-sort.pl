@@ -1,6 +1,6 @@
 :- use_module(library(lists)).
 
-% Eyelet-inspired combinations example using findall/3 and sort/2.
+% Combinations example using findall/3 and sort/2.
 %
 % combination/3 generates the same subset in several selection orders.  findall/3
 % collects those candidates, and sort/2 canonicalizes the list so each unordered

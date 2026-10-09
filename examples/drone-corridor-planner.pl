@@ -1,6 +1,6 @@
 :- use_module(library(lists)).
 
-% Bounded drone corridor planner adapted from Eyeling drone-corridor-planner.n3.
+% Bounded drone corridor planner.
 % States track city, battery level, and corridor permit.  A finite fuel list
 % bounds recursion; path/9 sums duration and cost while multiplying belief and
 % comfort.  Memoization helps because many surviving-plan checks reuse prefixes.

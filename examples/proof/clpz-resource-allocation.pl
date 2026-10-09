@@ -16,6 +16,14 @@ clause(1,
         var('Fast') #<==> var('Total') #=< 12,
         (integer(var('Fast')) -> var('Fast') =:= 1 ; true, var(var('Fast')) -> var('Fast') = 1 ; var('Var#1') = 1, clpz:clpz_equal(var('Fast'), var('Var#1'))),
         labeling([ff, down], [var('A'), var('B'), var('C'), var('Fast')]))).
+clause(2,
+       clpz_example(domain, domain(var('Infimum'), var('Supremum'), var('Size'), var('Domain'))),
+       (clpz:clpz_in(var('X'), 2..4 \/ 7),
+        fd_var(var('X')),
+        fd_inf(var('X'), var('Infimum')),
+        fd_sup(var('X'), var('Supremum')),
+        fd_size(var('X'), var('Size')),
+        fd_dom(var('X'), var('Domain')))).
 
 step(clpz_example(allocation, plan([2, 3, 1], durations([3, 2, 7]), 12)),
      rule(1),
@@ -72,4 +80,18 @@ step(chain(#>=, [4, 4]), builtin, [], []).
 step(sum([4, 4, 2], #=, 10), builtin, [], []).
 step(1 #<==> 10 #=< 12, builtin, [], []).
 step(labeling([ff, down], [3, 1, 2, 1]), builtin, [], []).
-step(clpz_example(domain, domain(2, 7, 4, 2..4 \/ 7)), unproven, [], []).
+step(clpz_example(domain, domain(2, 7, 4, 2..4 \/ 7)),
+     rule(2),
+     ['Infimum' = 2, 'Supremum' = 7, 'Size' = 4, 'Domain' = 2..4 \/ 7],
+     [clpz:clpz_in(X, 2..4 \/ 7),
+      fd_var(X),
+      fd_inf(X, 2),
+      fd_sup(X, 7),
+      fd_size(X, 4),
+      fd_dom(X, 2..4 \/ 7)]).
+step(clpz:clpz_in(X, 2..4 \/ 7), builtin, [], []).
+step(fd_var(X), builtin, [], []).
+step(fd_inf(X, 2), builtin, [], []).
+step(fd_sup(X, 7), builtin, [], []).
+step(fd_size(X, 4), builtin, [], []).
+step(fd_dom(X, 2..4 \/ 7), builtin, [], []).

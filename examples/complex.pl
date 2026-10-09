@@ -1,7 +1,6 @@
-% Complex numbers, adapted from Eyeling complex.n3.
+% Complex numbers.
 %
-% Complex values are represented as two-item lists [Real, Imaginary], matching
-% the pair-shaped pair lists used by the Eyeling source.
+% Complex values are represented as two-item lists [Real, Imaginary].
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %

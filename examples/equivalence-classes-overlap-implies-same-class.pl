@@ -1,4 +1,4 @@
-% Equivalence-class overlap example adapted from Eyeling.
+% Equivalence-class overlap example.
 %
 % The finite classMember/2 facts represent an already-computed equivalence
 % closure.  sameClassBecauseOfSharedMember/3 reports the witness Z proving that

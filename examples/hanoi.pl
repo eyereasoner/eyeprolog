@@ -1,6 +1,6 @@
 :- use_module(library(lists)).
 
-% Towers of Hanoi adapted from Eyeling hanoi.n3.
+% Towers of Hanoi.
 % hanoi/5 recursively builds the move list by moving N-1 disks aside, moving the
 % largest disk, then moving N-1 disks onto the target peg.  The size-3 answer is
 % small enough for a readable golden output while still exercising list append.

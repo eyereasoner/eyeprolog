@@ -1,6 +1,6 @@
 :- use_module(library(lists)).
 
-% Eyelet-inspired Eulerian path example using findall/3 and sort/2.
+% Eulerian path example using findall/3 and sort/2.
 %
 % The graph is undirected; edges have identifiers so the trail consumes each
 % physical edge exactly once even when vertices are revisited.  The remaining

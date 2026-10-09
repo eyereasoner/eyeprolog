@@ -21,25 +21,9 @@ import { runTasksInParallel, serveTasks } from './parallel-tasks.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const examplesDir = path.join(root, 'examples');
 
-/// Proofs that do not check, and what each one exposes. An entry here is a
-/// gap in proof *generation*, not in the checker: the explanation replay
-/// cannot reach the answer, so the writer records it as `unproven` and says
-/// so rather than leaving it out.
-///
-/// Both of these answers come from a search the replay would have to run
-/// again to reproduce -- a labeling and an optimisation -- rather than from
-/// a derivation it can follow.
-const KNOWN_GAPS = new Map([
-  ['clpb-weighted-planning.pl', 'an answer reached by optimising, which the replay would have to run again'],
-  ['clpz-resource-allocation.pl', 'an answer reached by labeling, which the replay would have to run again'],
-  ['bulk-stream-write.pl', 'an answer produced by writing a stream, which the replay does not re-perform'],
-  ['pi.pl', 'an answer reached by numeric iteration the replay would have to run again'],
-  ['portable-library-overlap.pl', 'an answer about which library supplied a predicate, which the replay cannot restate'],
-]);
-
 // Every example under examples/ has a packaged proof, and every one of them is
-// checked here. The list is read from the directory rather than written out,
-// so a proof cannot be added without being checked.
+// checked here. The list is read from the directory
+// rather than written out, so a proof cannot be added without being checked.
 
 export async function runProofChecking(reporter = new TestReporter()) {
   reporter.section('Proof checking');
@@ -60,6 +44,9 @@ export async function runProofChecking(reporter = new TestReporter()) {
     },
   });
   reporter.sectionTotal('proof checking');
+  const examples = fs.readdirSync(examplesDir).filter((name) => name.endsWith('.pl'));
+  const unproved = examples.filter((name) => !proofExamples.includes(name));
+  assertEqual(unproved.join(', '), '', 'every example has a packaged proof');
   // What the corpus establishes, in the terms the conditions use: a verified
   // step was re-performed against its source clause, a recomputed one was run
   // again independently and agreed, and a trusted one is what the check still
@@ -98,11 +85,6 @@ function checkPackagedProof(name) {
     redecided: report.redecided,
     trusted: report.trusted.length,
   };
-  const gap = KNOWN_GAPS.get(name);
-  if (gap) {
-    assertEqual(report.valid, false, `${name} now checks; remove it from KNOWN_GAPS (${gap})`);
-    return contribution;
-  }
   const detail = report.failures.slice(0, 3).map((failure) => `[${failure.condition}] ${failure.conclusion} -- ${failure.detail}`).join('; ');
   assertEqual(report.valid, true, `${name}: ${verdict(report)}${detail ? ` -- ${detail}` : ''}`);
   return contribution;

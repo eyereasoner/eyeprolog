@@ -1,9 +1,8 @@
 :- use_module(library(strings)).
 
-% Flandor insight-economy case adapted from Eyeling flandor.n3.
-% The original N3 renders a Markdown ARC report.  This eyeprolog translation keeps
-% the neutral insight, policy envelope, authorization, package choice, and checks
-% as queried relation output.
+% Flandor insight-economy case.
+% The example keeps the neutral insight, policy envelope, authorization, package
+% choice, and checks as queried relation output.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %% ?- caseName(X0, X1).

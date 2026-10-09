@@ -1,4 +1,4 @@
-% Context association adapted from Eyeling context-association.n3.
+% Context association.
 %
 % This version keeps the original shape: each context is named with log_nameOf
 % and its contents remain quoted formula data.  Nothing inside the three formulae

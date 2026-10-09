@@ -1,8 +1,6 @@
-% Superdense coding using discrete quantum computing, adapted from
-% Eyelet's input/superdense-coding.pl.
+% Superdense coding using discrete quantum computing.
 %
-% The Eyelet program toggles dynamic sdcoding/2 facts so answers appearing an
-% even number of times cancel. eyeprolog expresses the same finite example
+% Answers appearing an even number of times cancel. The example is expressed
 % declaratively: for this protocol the surviving messages are exactly those
 % with a single support path after the interference choices are expanded.
 

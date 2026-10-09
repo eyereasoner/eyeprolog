@@ -58,7 +58,7 @@ function currentWriteOptions(program, solver) {
 }
 
 
-// Eyelet forward-rule bootstrap.
+// Forward-rule bootstrap.
 //
 // The :+/2 fixed-point semantics live in library(eyelet).  This JavaScript
 // adapter only ensures that library is loaded, invokes its Prolog driver, and
@@ -123,8 +123,8 @@ function resolvedInteger(term, env, fallback) {
 
 function forwardLine(term, program, solver) {
   return `${formatTermForWrite(term, new Env(), {
-    // Eyelet historically used portray_clause/2. Keep character lists as list
-    // syntax rather than collapsing them according to double_quotes.
+    // Keep character lists as list syntax rather than collapsing them
+    // according to double_quotes.
     doubleQuotes: null,
     operators: [...program.operators.values()],
     quoted: true,

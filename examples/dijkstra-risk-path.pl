@@ -1,4 +1,4 @@
-% Risk-adjusted route selection adapted from Eyeling dijkstra-risk-path.n3.
+% Risk-adjusted route selection.
 %
 % The score is raw delivery cost plus ten times accumulated risk.  Candidate
 % routes are fixed path lists, while route_cost/4 reduces each list to raw cost,

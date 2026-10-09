@@ -2,7 +2,7 @@
 // The explanation printer replays a successful goal against the program and emits
 // ordinary EyeProlog facts with nested proof terms.  Explanations are therefore both
 // human-readable and machine-readable.
-import { ATOM, COMPOUND, Env, Term, VAR, atom, compound, deref, flattenConjunction, freshTerm, numberTerm, properListItems, termIsGround, termToString, unify, variantTerms } from './term.js';
+import { ATOM, COMPOUND, Env, Term, VAR, atom, compareTerms, compound, deref, flattenConjunction, freshTerm, numberTerm, properListItems, termIsGround, termToString, unify, variantTerms } from './term.js';
 import { selectClauseCandidates } from './program.js';
 import { parseGoalText, parseProgramText } from './parser.js';
 import { getEyePrologRegistry } from './standard-library.js';
@@ -50,12 +50,21 @@ export function explainProof(program, goal, options = {}) {
 // gets a fresh one, which is enough for everything that is pure resolution.
 let liveSolver = null;
 
+// Whether a replay past its depth budget continues as a chain. A caller that
+// sets an explicit `maxDepth` gets that depth as a hard limit instead.
+let chainBeyondDepth = true;
+
 function hostSolver(program, registry) {
   return liveSolver && liveSolver.program === program ? liveSolver : new Solver(program, { registry });
 }
 
 function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, detail) {
-  if (depth > maxDepth) return;
+  // Past the depth budget, nested replay would cost a host call frame per
+  // level; a deep derivation continues as an iterative chain instead.
+  if (depth > maxDepth) {
+    if (chainBeyondDepth) yield* chainProof(program, goal, env, maxDepth, registry, active, detail);
+    return;
+  }
 
   if (goal.type === COMPOUND && goal.name === ',' && goal.arity === 2) {
     for (const proved of proveGoalsAll(program, flattenConjunction(goal), env, depth + 1, maxDepth, registry, active, detail)) {
@@ -69,6 +78,51 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
           sourceBody: flattenConjunction(goal),
           bindings: [],
           children: proved.children,
+        },
+      };
+    }
+    return;
+  }
+
+  // `Module:Goal` runs Goal in Module, as the solver does. A goal in a
+  // bundled library is one library step under abstract detail, recomputed by a
+  // checker as the qualified goal it is; any other is a control step resting
+  // on the goal it qualifies.
+  if (goal.type === COMPOUND && goal.name === ':' && goal.arity === 2) {
+    const module = deref(goal.args[0], env);
+    const inner = deref(goal.args[1], env);
+    if (module.type !== ATOM || (inner.type !== ATOM && inner.type !== COMPOUND)) return;
+    const qualified = withModule(inner, module.name);
+    if (detail !== 'expanded' && module.name !== 'user' && program.modules.get(module.name)?.filename?.startsWith('src/lib/')) {
+      const solver = hostSolver(program, registry);
+      for (const next of solver.solve([goal], env.clone(), 0)) {
+        const proofEnv = next.clone ? next.clone() : next;
+        yield {
+          env: proofEnv,
+          node: {
+            raw: goal,
+            goal: resolveForProof(goal, proofEnv),
+            method: goalMethod('library', goal),
+            sourceHead: resolveForProof(goal, proofEnv),
+            sourceBody: [],
+            bindings: [],
+            children: [],
+          },
+        };
+      }
+      return;
+    }
+    for (const proved of proveGoalAll(program, qualified, env, depth + 1, maxDepth, registry, active, detail)) {
+      yield {
+        env: proved.env,
+        node: {
+          raw: goal,
+          goal: resolveForProof(goal, proved.env),
+          method: goalMethod('builtin', goal),
+          sourceHead: null,
+          sourceBody: [],
+          bindings: [],
+          children: [proved.node],
         },
       };
     }
@@ -191,6 +245,130 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
       }
     }
   }
+}
+
+// The number of levels a chain may run before the replay gives up on it, so
+// a program that recurses without end still ends its explanation.
+const CHAIN_LIMIT = 10_000_000;
+
+// A deep derivation, replayed one level at a time. At each level the goal is
+// resolved with the first clause whose head matches and whose body, up to a
+// final call of a program predicate, is proved; that final call is the next
+// level. Every level commits to its clause, so the chain finds the leftmost
+// derivation -- the one Prolog's depth-first search finds first -- whenever
+// that derivation needs no backtracking into an earlier level, and finds
+// nothing otherwise. A level's other goals are replayed as usual, from a fresh
+// depth budget.
+//
+// The chain yields at most one solution: a caller that needs another one has
+// to do without, and records its answer as unproven.
+function* chainProof(program, goal, env, maxDepth, registry, active, detail) {
+  const levels = [];
+  const seen = new Set();
+  let current = goal;
+  let currentEnv = env;
+  for (let level = 0; level < CHAIN_LIMIT; level++) {
+    const resolved = deref(current, currentEnv);
+    if (!isChainableCall(program, resolved, currentEnv, registry, detail)) {
+      // The last call of the chain is not a program predicate: replay it as
+      // usual and end the chain there.
+      let last = null;
+      for (const proved of proveGoalAll(program, current, currentEnv, 0, maxDepth, registry, active, detail)) {
+        last = proved;
+        break;
+      }
+      if (!last) return;
+      levels.push(last.node);
+      currentEnv = last.env;
+      break;
+    }
+    if (termIsGround(resolved, currentEnv)) {
+      const key = termToString(resolveForProof(resolved, currentEnv), new Env(), true);
+      if (seen.has(key)) return;
+      seen.add(key);
+    }
+
+    const group = program.findGroup(resolved.name, resolved.arity, resolved.module ?? 'user');
+    const candidates = selectClauseCandidates(group, resolved, currentEnv);
+    let matched = null;
+    search: for (const pass of [candidates.primary, candidates.fallback]) {
+      for (let index = 0; index < clauseCandidateLength(pass); index++) {
+        const clause = clauseCandidateAt(pass, index);
+        const id = nextFreshId();
+        const freshVariables = new Map();
+        const freshHead = freshTerm(clause.head, id, freshVariables);
+        const next = currentEnv.clone();
+        if (!unify(resolved, freshHead, next)) continue;
+        const freshBody = clause.body.map((term) => freshTerm(term, id, freshVariables));
+        const last = freshBody[freshBody.length - 1];
+        const continues = last != null && isChainableCall(program, deref(last, next), next, registry, detail);
+        const prefix = continues ? freshBody.slice(0, -1) : freshBody;
+        let proved = null;
+        for (const solution of proveGoalsAll(program, prefix, next, 0, maxDepth, registry, active, detail)) {
+          proved = solution;
+          break;
+        }
+        if (!proved) {
+          // A cut in a clause that failed may have pruned the clauses after
+          // it, which a chain cannot tell apart from not having reached it.
+          if (prefix.some((term) => term.type === ATOM && term.name === '!')) return;
+          continue;
+        }
+        matched = {
+          clause,
+          env: proved.env,
+          children: proved.children,
+          substitutions: collectClauseSubstitutions(clause, freshHead, freshBody),
+          continuation: continues ? last : null,
+        };
+        break search;
+      }
+    }
+    if (!matched) return;
+    // The goal and bindings are resolved once the whole derivation is found,
+    // when the replay settles its nodes; resolving them here as well would
+    // walk a binding history that grows with every level.
+    levels.push({
+      raw: current,
+      goal: current,
+      method: sourceMethod(matched.clause, matched.clause.body.length ? 'rule' : 'fact'),
+      sourceHead: matched.clause.head,
+      sourceBody: matched.clause.body,
+      bindings: [],
+      rawSubstitutions: matched.substitutions,
+      children: matched.children,
+    });
+    currentEnv = matched.env;
+    // Each level adds bindings, and a lookup walks the layers they are kept
+    // in; flattening the layers from time to time keeps a deep chain linear.
+    currentEnv.compactForDeepContinuation?.();
+    if (!matched.continuation) break;
+    current = matched.continuation;
+    if (level === CHAIN_LIMIT - 1) return;
+  }
+  // Each level rests on the next, as the last of its uses.
+  for (let index = levels.length - 2; index >= 0; index--) levels[index].children.push(levels[index + 1]);
+  yield { env: currentEnv, node: levels[0] };
+}
+
+// A call the chain can take a level through: a predicate the program defines,
+// rather than a built-in, a control construct or a bundled library predicate
+// the replay records as one step.
+function isChainableCall(program, goal, env, registry, detail) {
+  if (goal.type !== ATOM && goal.type !== COMPOUND) return false;
+  if (builtinDefinition(program, goal, env, registry).handled) return false;
+  const group = program.findGroup(goal.name, goal.arity, goal.module ?? 'user');
+  if (!group) return false;
+  if (detail !== 'expanded' && group.module !== 'user' && program.modules.get(group.module)?.filename?.startsWith('src/lib/')) return false;
+  return true;
+}
+
+// A copy of a goal that runs in `module`, as the solver qualifies one.
+function withModule(term, module) {
+  if (term.type !== ATOM && term.type !== COMPOUND) return term;
+  const copy = new Term(term.type, term.name, term.args.map((arg) => withModule(arg, module)));
+  copy.module = module;
+  return copy;
 }
 
 function clauseCandidateLength(candidate) {
@@ -597,23 +775,20 @@ function renderWhyTerm(answer, proofTerm) {
   return ['why(', `${indent(1)}${answer},`, proofTerm, ').', '', ''].join('\n');
 }
 
-// The justification, as one term. `rule`/`fact` name the clause they used;
-// unlike eyeron's bare `rule(N)` they also name the file it came from,
-// because a program here is assembled from several sources and the
-// abstract/expanded distinction turns on whether a clause is library
-// source.
+// The justification, as one term. `rule`/`fact` name the clause they used,
+// and also the file it came from, because a program here is assembled from
+// several sources and the abstract/expanded distinction turns on whether a
+// clause is library source.
 
 // One step: the conclusion, the single term saying why it holds, the
-// bindings that justification used, and what it used. Those four parts, in
-// that order, are what eyeron, eyeling and eyeleng also write -- `pe:rule`,
-// `pe:binding` and `pe:uses` in the two RDF syntaxes. The one difference is
-// what `uses` holds: there a premise is named by its own conclusion and
-// looked up among sibling steps, while here it is the nested step itself,
-// because a resolution proof is a tree and the same goal may be proved more
-// than once within it.
+// bindings that justification used, and what it used. In this nested
+// rendering `uses` holds the nested steps themselves, because a resolution
+// proof is a tree and the same goal may be proved more than once within it;
+// the flat proof document below names each use by its own conclusion
+// instead.
 function renderAbstractProofTerm(node, level) {
   const goal = termToString(node.goal, new Env(), true);
-  // A step that used nothing is one line, the way eyeron writes a leaf.
+  // A step that used nothing is one line.
   if (!node.children.length) {
     return `${indent(level)}step(${goal}, ${renderMethodTerm(node.method)}, ${renderBindingsTerm(node.bindings)}, [])`;
   }
@@ -640,7 +815,7 @@ function renderUsesTerm(children, level) {
 }
 
 // `'Name' = Value` pairs, the form the standard's `variable_names` read
-// option uses and the one eyeron writes in its own result documents.
+// option uses.
 function renderBindingsTerm(bindings) {
   return renderProofListInline(bindings, binding => `${quoteAtomText(binding.name)} = ${termToString(binding.value, new Env(), true)}`);
 }
@@ -728,8 +903,8 @@ function resolvedSubstitutions(substitutions, env) {
 //
 // A resolution proof is a tree, but a proof *document* is a flat set of
 // steps, one per conclusion, each naming what it used by that use's own
-// conclusion rather than by nesting it. That is the shape eyeron, eyeling
-// and eyeleng all write, and it is what makes a proof checkable: a reader
+// conclusion rather than by nesting it. That is what makes a proof
+// checkable: a reader
 // resolves a use by looking for the step that concludes it, so a conclusion
 // reached twice is explained once instead of being copied out again under
 // every derivation that needs it.
@@ -832,7 +1007,7 @@ function justificationTerm(node, numbering) {
   return atom('builtin');
 }
 
-const CONTROL_COMPOSITIONS = new Set(['call/1', 'once/1', 'ignore/1', 'catch/3', ';/2', '->/2', '*->/2']);
+const CONTROL_COMPOSITIONS = new Set(['call/1', 'once/1', 'ignore/1', 'catch/3', ';/2', '->/2', '*->/2', ':/2']);
 
 function isControlComposition(goal) {
   return goal?.type === COMPOUND && CONTROL_COMPOSITIONS.has(`${goal.name}/${goal.arity}`);
@@ -946,16 +1121,23 @@ function groundChainProof(program, goal, env, maxDepth, registry) {
 // the clause body a checker re-derives, so once the derivation is complete
 // every node is resolved again against its final environment.
 function settleProofNode(root, env) {
+  const resolve = settlingResolver(env);
   const stack = [root];
   while (stack.length) {
     const node = stack.pop();
     if (node.raw) {
-      node.goal = resolveForProof(node.raw, env);
+      node.goal = resolve(node.raw);
       if (node.method?.type === 'builtin' || node.method?.type === 'library') node.sourceHead = node.goal;
       node.raw = null;
     }
     if (node.rawSubstitutions) {
-      node.bindings = resolvedSubstitutions(node.rawSubstitutions, env);
+      const bindings = [];
+      for (const substitution of node.rawSubstitutions) {
+        const value = resolve(substitution.fresh);
+        if (value.type === VAR) continue;
+        bindings.push({ name: substitution.name, value });
+      }
+      node.bindings = bindings;
       node.rawSubstitutions = null;
     }
     for (const child of node.children ?? []) stack.push(child);
@@ -963,9 +1145,71 @@ function settleProofNode(root, env) {
   return root;
 }
 
+// resolveForProof against one final environment, remembering what each
+// variable resolved to. A deep derivation threads an output argument through
+// every level as a chain of variables bound to variables, and resolving each
+// level's goal by walking that chain again would make settling quadratic;
+// every variable on a chain walked once is remembered with the chain's end.
+function settlingResolver(env) {
+  const memo = new Map();
+  const locals = env._localVariables;
+  const resolveVariable = (name) => {
+    const path = [];
+    let current = name;
+    let result;
+    for (;;) {
+      const known = memo.get(current);
+      if (known !== undefined) {
+        result = known;
+        break;
+      }
+      path.push(current);
+      const next = locals != null && locals.has(current) ? undefined : env.get(current);
+      if (next === undefined) {
+        result = new Term(VAR, originalVariableName(current), []);
+        break;
+      }
+      if (next.type === VAR) {
+        // A binding cycle cannot arise from unification with an occurs
+        // check; the bound only keeps a malformed environment from hanging.
+        if (path.length > CHAIN_LIMIT) {
+          result = new Term(VAR, originalVariableName(current), []);
+          break;
+        }
+        current = next.name;
+        continue;
+      }
+      result = resolve(next);
+      break;
+    }
+    for (const visited of path) memo.set(visited, result);
+    return result;
+  };
+  const resolve = (term) => {
+    if (term.type === VAR) return resolveVariable(term.name);
+    let args = null;
+    for (let index = 0; index < term.args.length; index++) {
+      const child = resolve(term.args[index]);
+      if (args == null && child !== term.args[index]) args = term.args.slice();
+      if (args != null) args[index] = child;
+    }
+    if (args == null && term.module == null) return term;
+    return new Term(term.type, term.name, args ?? term.args.slice());
+  };
+  return resolve;
+}
+
 // The root of an answer's proof tree, for `flattenProof`.
+//
+// The answer is replayed as the ground goal it is. A program whose
+// predicates insist on an unbound output argument -- a counter, a generated
+// name, a stream handle -- cannot be asked that way, so when `questions` (the
+// goals the run asked) are given and the ground replay finds nothing, the
+// question the answer is an instance of is replayed instead, and the first
+// derivation that yields exactly this answer is the one recorded.
 export function proofNodeFor(program, goal, options = {}) {
   liveSolver = options.solver ?? null;
+  chainBeyondDepth = options.maxDepth == null;
   const maxDepth = options.maxDepth ?? 256;
   const registry = options.registry ?? getEyePrologRegistry();
   const env = options.env ?? new Env();
@@ -977,10 +1221,29 @@ export function proofNodeFor(program, goal, options = {}) {
       return settleProofNode(proof.node, proof.env);
     }
   } catch {
-    // A replay that raises has not explained anything, and an answer the
-    // engine found should not be lost because explaining it failed. The
-    // caller records the answer as `unproven`, which says exactly that.
-    return null;
+    // A replay that raises has not explained anything; the question may.
+  }
+  for (const question of options.questions ?? []) {
+    const node = proofNodeThroughQuestion(program, question, goal, maxDepth, registry, detail);
+    if (node) return node;
+  }
+  // An answer the engine found should not be lost because explaining it
+  // failed. The caller records it as `unproven`, which says exactly that.
+  return null;
+}
+
+function proofNodeThroughQuestion(program, question, answer, maxDepth, registry, detail) {
+  const asked = freshTerm(question, `question${nextFreshId()}`);
+  if (!unify(asked, answer, new Env())) return null;
+  try {
+    for (const proof of proveGoalAll(program, asked, new Env(), 0, maxDepth, registry, [], detail)) {
+      if (compareTerms(resolveForProof(asked, proof.env), answer) !== 0) continue;
+      const node = settleProofNode(proof.node, proof.env);
+      node.goal = answer;
+      return node;
+    }
+  } catch {
+    // This question cannot be replayed either.
   }
   return null;
 }

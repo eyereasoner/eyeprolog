@@ -1,13 +1,11 @@
 :- use_module(library(between), [between/3]).
 :- use_module(library(lists)).
 
-% Polynomial roots over complex integer candidates, adapted from Eyelet's
-% input/polynomial.pl.
+% Polynomial roots over complex integer candidates.
 %
-% Complex numbers are represented as [Real, Imaginary].  This eyeprolog version
-% keeps the example generic by evaluating a polynomial with Horner's rule and
-% searching a finite complex-integer candidate grid.  The two cases below are
-% the same quartic polynomials used by the Eyelet source.
+% Complex numbers are represented as [Real, Imaginary].  The example stays
+% generic by evaluating a polynomial with Horner's rule and searching a finite
+% complex-integer candidate grid.  The two cases below are quartic polynomials.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %% ?- polynomial(X0, X1).

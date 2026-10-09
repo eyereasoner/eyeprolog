@@ -1,10 +1,9 @@
 :- use_module(library(lists)).
 
-% EYE reasoning-inspired example: four-colour map check for the European Union.
+% Four-colour map check for the European Union.
 %
-% The source EYE example encodes the EU neighbourhood map and an answer assigning
-% four colours. This eyeprolog version keeps the same map/assignment shape and adds
-% a rule-level validation layer that rejects equal colours across borders.
+% The EU neighbourhood map comes with an answer assigning four colours, and a
+% rule-level validation layer that rejects equal colours across borders.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %

@@ -1,6 +1,6 @@
-% Peano arithmetic port from EYE reasoning/peano.
+% Peano arithmetic.
 %
-% The EYE example defines add, multiply and factorial over Peano numerals.
+% The example defines add, multiply and factorial over Peano numerals.
 % Its selected output computes (1 * 2 + 3)! and emits the factorial of 5.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.

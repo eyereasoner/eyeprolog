@@ -1,12 +1,9 @@
-% Basic Monadic Benchmark port from EYE reasoning/basic-monadic.
+% Basic Monadic Benchmark.
 %
-% This example adapts ten small monadic reasoning cases.
-% from EYE and the EYE selected-goal shape:
+% Ten small monadic reasoning cases with the selected-goal shape:
 %   D0 R D1, D1 R D2, ..., D9 R D0 -> R cycle (D0 ... D9 D0).
 %
-% The expected output contains 1518 distinct cycle relations, matching
-% EYE reasoning/basic-monadic/10tt_answer.n3 in cardinality and content
-% after translating N3 statements to eyeprolog relation terms.
+% The expected output contains 1518 distinct cycle relations.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %% ?- cycle(X0, X1).

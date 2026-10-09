@@ -1,4 +1,4 @@
-% Proof by contrapositive example adapted from Eyelet input/proof-by-contrapositive.pl.
+% Proof by contrapositive example.
 %
 % The implication itself is represented as data with implies/2.  The proof
 % rule remains ordinary eyeprolog: if A implies B and B is false, then A is false.

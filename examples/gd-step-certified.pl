@@ -29,7 +29,6 @@
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.
 
-% Adapted from Eyeling's gd-step-certified.n3.
 % One-dimensional gradient descent over certified interval bounds.
 
 max_k(10).

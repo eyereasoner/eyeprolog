@@ -1,6 +1,6 @@
 :- use_module(library(dates)).
 
-% Age checker adapted from Eyeling.
+% Age checker.
 % The example combines date literals, ISO-8601 duration values, an explicit
 % local_time/1 fact, difference/3, and duration comparison. Declaring the date
 % as scenario data keeps the result reproducible across hosts and runs.
@@ -27,6 +27,6 @@ ageAbove(S, A) :-
   difference(D, B, F),
   (F @> A).
 
-% Test mirroring the Eyeling example.
+% Test of the age threshold.
 holds_result(test, true) :-
   ageAbove(_, 'P80Y').

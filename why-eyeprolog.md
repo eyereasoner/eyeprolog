@@ -61,14 +61,9 @@ keeps convenience from quietly redefining the language.
 
 The standards argument becomes especially concrete for RDF systems. RDF gives
 applications a standardized graph data model, but choosing a rule language for
-those graphs is a separate decision.
-
-[Eyeling](https://github.com/eyereasoner/eyeling) takes a compact, web-native
-approach: it reasons directly over Notation3, RDF-JS datasets, and streaming RDF
-messages. N3 is expressive and practically valuable, but it is not an ISO
-standard or a W3C Recommendation. Prolog, by contrast, is defined by the
-ISO/IEC 13211 family of international standards, while RDF belongs to the W3C
-standards ecosystem.
+those graphs is a separate decision. Prolog is defined by the ISO/IEC 13211
+family of international standards, while RDF belongs to the W3C standards
+ecosystem, so a rule language for RDF can itself be a standard.
 
 EyeProlog and
 [`rdf-prolog-interchange`](https://github.com/eyereasoner/rdf-prolog-interchange)
@@ -98,11 +93,7 @@ The companion example suite applies the same boundary to other forms of inspecta
 This combination is compelling when interoperability, reproducibility,
 long-term maintenance, or independent verification matter. It also opens RDF
 data to relational programming, constraints, recursion, collections, and
-portable Prolog libraries. Eyeling remains the natural choice when an
-application deliberately wants its rules, data, and streaming interfaces to
-stay directly in the evolving N3 and RDF ecosystem. The two approaches serve
-different boundaries rather than pretending that one boundary fits every
-system.
+portable Prolog libraries.
 
 ## Small enough to inspect, useful enough to embed
 
@@ -144,7 +135,7 @@ resource behavior for an otherwise ordinary recursive predicate.
 
 Forward chaining is explicit too. Normal mode recognizes `Conclusion :+ Premise`
 and executes those rules with the Prolog fixed-point driver in the bundled
-`library(eyelet)`. That module owns the Eyelet semantics—rule selection,
+`library(eyelet)`. That module owns the forward-rule semantics—rule selection,
 fixed-point iteration, skolemization, `stable/1`, `becomes/2`, and the
 `true :+ Goal` / `false :+ Goal` control conventions—rather than duplicating the
 reasoning algorithm in JavaScript. The remaining JavaScript support is limited to
@@ -277,9 +268,9 @@ separately in the result, and reported as what the check still rests on rather
 than what it establishes.
 
 The packaged corpus makes the proportion visible. Every one of the 236
-examples carries a proof: 147253 steps, of which 131665 are verified against
-their source clause, 14713 are recomputed independently, 10 are carried by the
-goals they wrap, and 860 — 0.6% — remain obligations, each one named; 515
+examples carries a proof: 212365 steps, of which 156674 are verified against
+their source clause, 54753 are recomputed independently, 10 are carried by the
+goals they wrap, and 928 — 0.4% — remain obligations, each one named; 516
 trusted boundaries are confronted with evidence and none is contradicted. `npm test` re-checks all of them on every run, and the
 proof directory is read from disk rather than from a list, so a document cannot
 be added without being checked. An unverified proof is worse than none, because

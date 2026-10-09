@@ -1,6 +1,6 @@
 :- use_module(library(lists)).
 
-% List collections inspired by the Eyeling collection example.
+% List collections.
 % Demonstrates list literals, member/2, length/2, append/3, and [Head|Tail].
 % Each queried relation demonstrates one list operation.
 % Output declarations: host-supplied goals select the relations written to this example's golden output.

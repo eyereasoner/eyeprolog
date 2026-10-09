@@ -1,7 +1,7 @@
-% Socrates is mortal, adapted from Eyelet's input/socrates.pl.
+% Socrates is mortal.
 %
-% Eyelet uses type('Socrates', 'Man') and a single rule deriving Mortal.
-% eyeprolog keeps the same reasoning shape and emits relation facts.
+% A single rule derives mortality from being a man, and the example emits
+% relation facts.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %% ?- type(X0, X1).

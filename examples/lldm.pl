@@ -1,4 +1,4 @@
-% Leg Length Discrepancy Measurement, adapted from Eyeling lldm.n3.
+% Leg Length Discrepancy Measurement.
 %
 % The measurement and intermediate geometry are kept in helper predicates so
 % the default relation query execution stays concise.  The visible output is

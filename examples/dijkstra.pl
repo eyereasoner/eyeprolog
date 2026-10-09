@@ -1,10 +1,9 @@
 :- use_module(library(lists)).
 
-% Weighted path enumeration adapted from Eyeling dijkstra.n3.
+% Weighted path enumeration.
 %
-% The Eyeling source uses collect/sort built-ins for Dijkstra's queue.  This
-% eyeprolog variant enumerates simple paths, keeps the bounded frontier shown in
-% the Eyeling output for a -> f, and scopes the graph inside a quoted term so the
+% This example enumerates simple paths, keeps a bounded frontier for a -> f,
+% and scopes the graph inside a quoted term so the
 % route network is not asserted as ambient edge facts.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
@@ -48,7 +47,7 @@ path(Node, Goal, Visited, [Node|Path], Cost) :-
   path(Next, Goal, [Next|Visited], Path, Restcost),
   (Cost is Stepcost + Restcost).
 
-% Derived reverse links, mirroring the rule output in the Eyeling example.
+% Derived reverse links.
 edge([B, A], Cost) :-
   base_link(A, B, Cost).
 

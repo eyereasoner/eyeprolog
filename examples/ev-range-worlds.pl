@@ -1,4 +1,4 @@
-% EYE-inspired electric-vehicle range worlds.
+% Electric-vehicle range worlds.
 %
 % The same trips are evaluated under four modelling worlds: base consumption,
 % speed-aware consumption, physics-aware consumption, and physics plus safety

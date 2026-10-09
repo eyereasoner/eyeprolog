@@ -2,7 +2,7 @@
 
 ```text
 Title:      The EyeProlog Answer, Proof and Check Format
-Version:    eyeprolog 1.6.32
+Version:    eyeprolog 1.6.33
 Status:     Informational
 Author:     Jos De Roo, KNoWS office of IDLab, Ghent University - imec
 Repository: https://github.com/eyereasoner/eyeprolog
@@ -21,18 +21,13 @@ together.
 ## Status of This Memo
 
 This document is not an Internet Standards Track specification. It describes
-the formats as implemented by eyeprolog 1.6.32, for readers who want to
+the formats as implemented by eyeprolog 1.6.33, for readers who want to
 produce or consume proofs and check reports, or to implement a compatible
 reasoner or checker. The Prolog language itself is specified by ISO/IEC
 13211-1 and its corrigenda, and EyeProlog's profile of it, its libraries and
 its extensions are documented in [*The Art of EyeProlog*](the-art-of-eyeprolog.md).
 Where this document and the implementation disagree, that is a defect in one
 of them.
-
-The proof format and the checker follow [peye](https://github.com/eyereasoner/peye)'s
-specification, read in Prolog syntax: the same conditions, the same report,
-the same command line, adapted where Prolog differs from peye's pure rule
-language.
 
 ## Table of Contents
 
@@ -93,7 +88,7 @@ only when, they appear in all capitals.
 - **Claim**: an answer a run reports (Section 5).
 - **Document**: Prolog text holding a sequence of facts (Sections 8-10).
 - **Reasoner**: an implementation of Sections 3-8, which writes answers and
-  proofs.
+  proofs, and checks its own proofs as Section 9 describes.
 - **Checker**: an implementation of Sections 8-10, which does not depend on a
   reasoner.
 
@@ -197,11 +192,41 @@ The **proof detail** decides how far a derivation is explained:
 - `expanded` explains through it, recording the library's own clauses as
   `builtin` steps, since they have no clause number.
 
-A claim whose derivation the replay cannot reproduce -- an answer reached by
-constraint propagation, labeling or optimisation, by numeric iteration the
-replay would have to run again, or by reading a stream -- is recorded as
-`unproven` rather than left without a step. A document containing such a step
-is not a valid proof (Section 9.4), and saying so is the point.
+A claim is replayed as the ground goal it is. When that finds no derivation
+-- typically because the program insists on computing an argument itself, as
+a counter, a generated name or a stream handle is computed -- the goal the
+run asked is replayed instead, and the first derivation whose answer is the
+claim is recorded.
+
+A goal `Module:Goal` is replayed as `Goal` in `Module`, as the solver runs it:
+in a bundled library under `abstract` detail as one `builtin` step for the
+qualified goal, and otherwise as a `control` step whose use is `Goal`.
+
+A derivation deeper than the replay's nesting budget continues as a **chain**:
+each level commits to the first clause whose head matches the goal and whose
+body, up to a final call of a program predicate, is proved, and that final
+call is the next level. A chain finds the leftmost derivation -- the one
+depth-first search finds first -- whenever that derivation needs no
+backtracking into an earlier level, so a deterministic recursion of any depth
+is explained without nesting.
+
+A claim whose derivation the replay still cannot reproduce -- an answer that
+depends on state the run changed, such as a counter kept in the database --
+is recorded as `unproven` rather than left without a step. A document
+containing such a step is not a valid proof (Section 9.4).
+
+### 7.1 Self-check
+
+A reasoner MUST check every proof it generates, as Section 9 describes and
+against the goals the run asked, before writing it, and MUST fail with an
+error rather than write a proof that does not pass. The answers a run has
+already reported stay reported; only the proof is withheld. A run with
+`unproven` steps therefore fails when a proof is asked of it. A run without
+claims has a proof without claims, which is valid and certifies nothing.
+
+A reasoner MAY check the structures its proof is written from rather than
+reading the written document back, provided the report is the one reading
+the document would give.
 
 ## 8. Proof Documents
 
@@ -250,7 +275,7 @@ is the list of the goals that justify `Goal`, in order. `By` is one of:
 | `rule(N)` | `Goal` is an instance of the head of rule `N`, whose body instance is `Uses`. | the clause's variables | the body instance |
 | `fact(N)` | `Goal` is an instance of fact `N`. | the clause's variables | empty |
 | `builtin` | `Goal` is a built-in or bundled library goal that holds. | empty, or a library clause's variables under `expanded` | empty, or a library clause's body under `expanded` |
-| `control` | `Goal` is `call/1`, `once/1`, `ignore/1`, `catch/3`, a disjunction or an if-then, solved by `Uses`. | empty | the goals that solved it |
+| `control` | `Goal` is `call/1`, `once/1`, `ignore/1`, `catch/3`, `M:G`, a disjunction or an if-then, solved by `Uses`. | empty | the goals that solved it |
 | `absent` | `Goal` is a negation `\+ G` taken on trust. | empty | empty |
 | `collected` | `Goal` is a `findall/3` taken on trust. | empty | empty |
 | `asserted` | `Goal` was solved by a clause added at run time, which has no clause number. | empty | empty |
@@ -321,7 +346,8 @@ claims is valid and certifies nothing.
 
 A `builtin` step is **re-decided**: its goal is solved, for its first
 solution, against a program that holds the bundled libraries the document's
-goals need and no clause of the program under check, so a goal only the
+goals need (a goal qualified with a bundled library's module loads that
+library) and no clause of the program under check, so a goal only the
 program could satisfy cannot succeed. The step agrees when the goal succeeds
 and is afterwards a variant of itself, that is, solving it bound nothing but
 fresh variables. It fails C5 when the goal fails, binds something, or raises
@@ -336,7 +362,12 @@ which depends on attribute, constraint or stream state the run built up, or
 would perform I/O (`get_atts/2`, `put_atts/2`, `open/3,4`, `close/1,2`,
 `read/2`, `read_term/3`, `write/2`, `write_term/3`, `nl/1`, `set_input/1`,
 `set_output/1`, `current_input/1`, `current_output/1`, `at_end_of_stream/1`,
-`stream_property/2`, `sat/1`, `taut/2`, `sat_count/2`). Such a step, and one
+`stream_property/2`, `put_char/2`, `put_code/2`, `put_byte/2`, `get_char/2`,
+`get_code/2`, `get_byte/2`, `peek_char/2`, `peek_code/2`, `peek_byte/2`,
+`writeq/2`, `print/2`, `write_canonical/2`, `format/3`, `flush_output/1`,
+`set_stream_position/2`, `gensym/2`, `reset_gensym/0,1`, the CLP(B) `sat/1`,
+`taut/2`, `sat_count/2` and `weighted_maximum/3`, and the CLP(Z) `fd_var/1`,
+`fd_inf/2`, `fd_sup/2`, `fd_size/2`, `fd_dom/2` and `fd_degree/2`). Such a step, and one
 that cannot be re-decided, is a trusted boundary of kind `builtin`, with the
 reason `reflective`, `stateful` or `theory_scoped`.
 
@@ -345,7 +376,7 @@ order, to one of the **alternatives** of its goal:
 
 | Goal | Alternatives |
 | --- | --- |
-| `call(G)`, `once(G)`, `ignore(G)`, `catch(G, C, R)` | the conjuncts of `G` |
+| `call(G)`, `once(G)`, `ignore(G)`, `catch(G, C, R)`, `M:G` | the conjuncts of `G` |
 | `(C -> T)`, `(C *-> T)` | the conjuncts of `C`, then those of `T` |
 | `(C -> T ; E)`, `(C *-> T ; E)` | the conjuncts of `C`, then those of `T`; or the conjuncts of `E` |
 | `(A ; B)` | the conjuncts of `A`; or the conjuncts of `B` |
@@ -377,7 +408,7 @@ evidential while its predicate is being decided.
 The **evidence** for a goal is:
 
 - when the goal is a control construct (`,`, `;`, `->`, `*->`, `\+`,
-  `call/1`, `once/1`, `ignore/1`, `catch/3`, `findall/3,4`, `forall/2`,
+  `call/1`, `once/1`, `ignore/1`, `catch/3`, `:/2`, `findall/3,4`, `forall/2`,
   `bagof/3`, `setof/3`, `aggregate_all/3,4`), none: the boundary is left
   undecided;
 - when the goal's predicate has program clauses: if it is evidential, the
@@ -406,7 +437,11 @@ refuted remains an obligation (Section 10).
 
 ### 9.8 C7 Relevance
 
-The **questions** are the goals the proof answers (Section 4). Each claim
+The **questions** are the goals the proof answers (Section 4). When there
+are none and the program has forward rules (`Conclusion :+ Premise`, run to a
+fixed point when no goal is asked), the questions are, for each forward rule,
+each conjunct of its conclusion other than `false`, and, for a rule whose
+conclusion is `true`, its premise. Each claim
 MUST be an instance of a question: unifying a fresh copy of the question with
 the claim must leave the claim identical to itself. Each step MUST be
 reachable from a conjunct of a claim through the conjuncts of uses.
@@ -526,7 +561,7 @@ goals, the command line MUST say how to check it instead.
 | Exit code | Meaning |
 | --- | --- |
 | 0 | Success, including a check that found the proof valid. |
-| 1 | An error, printed to standard error as `eyeprolog: message`. |
+| 1 | An error, printed to standard error as `eyeprolog: message`, including a run whose proof does not check (Section 7.1). |
 | 2 | A check that found the proof not valid; the report is printed as usual. |
 
 A program MAY choose its own exit status with `halt/1`.
@@ -554,17 +589,18 @@ holds only conditional on them.
 
 ## 13. Conformance
 
-A conforming **reasoner** implements Sections 3 to 8 and produces answers and
-proof documents in the written form of Section 6. A conforming **checker**
+A conforming **reasoner** implements Sections 3 to 8, produces answers and
+proof documents in the written form of Section 6, and checks every proof it
+produces as Section 7.1 requires. A conforming **checker**
 implements Sections 8 to 10 and does not depend on a reasoner. For the same
 program and goals, a conforming reasoner and checker MUST produce the same
-answers, proof documents and reports as eyeprolog 1.6.32, byte for byte,
+answers, proof documents and reports as eyeprolog 1.6.33, byte for byte,
 except for the `Detail` texts of failures (Section 10) and where the host's
 floating-point library functions differ in the last digit.
 
 The repository's examples, with their saved answers (`examples/output/`),
 proofs (`examples/proof/`) and reports (`examples/check/`), test this on 236
-programs; `npm test` regenerates and re-checks every one of them, as well as
+programs, each with its proof; `npm test` regenerates and re-checks every one of them, as well as
 the proof cases of the conformance suite in `test/conformance/proofs/`.
 
 ---
@@ -683,6 +719,7 @@ implements this document, not requirements on other implementations.
 | [src/goal-metadata.js](src/goal-metadata.js) | Declared `%% ?-` goals (Section 4) |
 | [src/explain.js](src/explain.js) | The proof replay, clause numbering and the flat proof (Sections 3, 7, 8) |
 | [src/result-format.js](src/result-format.js) | Writing answers, clause records and steps (Sections 6, 8) |
+| [src/proof-document.js](src/proof-document.js) | Checking a run's own proof before it is written (Section 7.1) |
 | [src/check-proof.js](src/check-proof.js) | Reading and checking proof documents and writing reports, with no search of the program (Sections 9, 10) |
 | [src/cli.js](src/cli.js) | The command line (Section 11) |
 | [test/run-proof-checking.mjs](test/run-proof-checking.mjs) | Re-checking every packaged proof against its saved report |
@@ -693,10 +730,20 @@ the program until its first derivation is found. The replay resolves every
 node of that derivation again once it is complete, so a goal solved early in a
 derivation is recorded with the bindings later goals gave it.
 
-**Ground chains skip the replay's machinery.** A ground goal that a chain of
+**Deep derivations are replayed iteratively.** A ground goal that a chain of
 single-goal clauses proves, each with exactly one matching clause, is followed
-iteratively, so a taxonomy thousands of levels deep is proved without a host
-call frame per level.
+directly, so a taxonomy thousands of levels deep is proved without a host
+call frame per level. Past its nesting budget the general replay continues as
+a chain (Section 7), flattening its binding history as it goes, and the
+derivation is resolved once at the end with every variable chain remembered,
+so a recursion threading an output argument through ten thousand levels is
+explained in time linear in its depth.
+
+**A reasoner checks its own proofs in memory.** The proof a run builds is
+checked as the claims, clause records and steps it is written from, which
+gives the report reading the written document back would give, without
+writing and reading it; `--check-proof` reads and checks the text. That the
+two agree is what checking the packaged documents establishes.
 
 **C5 is independent by construction.** The program a `builtin` step is
 re-decided in is built once per document, from an empty source with the

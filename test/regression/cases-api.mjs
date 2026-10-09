@@ -161,7 +161,7 @@ export function apiCases() {
       },
     },
     {
-      name: 'run executes Prolog Eyelet forward rules when no explicit goal is supplied',
+      name: 'run executes Prolog forward rules when no explicit goal is supplied',
       run: () => {
         const result = run('seed(a).\nseen(X) :+ seed(X).\ntrue :+ seen(X).\n');
         assertEqual(result.stdout, 'seen(a).\n', 'forward stdout');
@@ -169,7 +169,7 @@ export function apiCases() {
       },
     },
     {
-      name: 'Eyelet forward rules autoload library helpers and dynify source state',
+      name: 'forward rules autoload library helpers and dynify source state',
       run: () => {
         const result = run(`
 state(a).
@@ -182,7 +182,7 @@ true :+ ready.
       },
     },
     {
-      name: 'Eyelet false conclusions emit a fuse and halt status 2',
+      name: 'forward-rule false conclusions emit a fuse and halt status 2',
       run: () => {
         const result = run('bad(a).\nfalse :+ bad(X).\n');
         assertEqual(result.stdout, 'fuse(bad(a)).\n', 'fuse stdout');
@@ -190,7 +190,7 @@ true :+ ready.
       },
     },
     {
-      name: 'Eyelet ordinary conclusions skolemize conclusion-only variables',
+      name: 'forward-rule ordinary conclusions skolemize conclusion-only variables',
       run: () => {
         const result = run('seed(a).\npair(X, Y) :+ seed(X).\ntrue :+ pair(X, Y).\n');
         assertEqual(result.stdout, 'pair(a,sk_0).\n', 'skolemized forward answer');
@@ -242,6 +242,36 @@ true :+ ready.
       },
     },
 
+    {
+      // A run checks its own proof before writing it, and fails rather than
+      // write one that does not check.
+      name: 'a forward run checks its proof before writing it',
+      run: () => {
+        const forward = runEyeProlog('p(a).\np(b).\nq(X) :+ p(X).\nr(X) :+ q(X), X \\== b.\ntrue :+ r(X).\n', { proof: true });
+        assertIncludes(forward.stdout, 'step(r(a), asserted, [], []).', 'a forward run answers its query rule');
+
+      },
+    },
+    {
+      // Answers the replay used to give up on: a derivation thousands of
+      // levels deep, a module-qualified goal, and an output argument the
+      // program insists on computing itself.
+      name: 'proofs replay deep chains, qualified goals and output-mode answers',
+      run: () => {
+        const cases = [
+          ['count(N, N) :- !.\ncount(I, N) :- J is I + 1, count(J, N).\ndone(N) :- count(0, N).\n', 'done(5000)'],
+          [':- use_module(library(lists)).\njoined(L) :- lists:append([a], [b], L).\n', 'joined(L)'],
+          [':- use_module(library(gensym)).\nfresh(X) :- reset_gensym(item), gensym(item, X).\n', 'fresh(X)'],
+        ];
+        for (const [source, goal] of cases) {
+          const program = Program.parse(source, { sourceMetadata: true });
+          const result = runEyeProlog(program, { goals: [goal], proof: true });
+          assertIncludes(result.stdout, 'step(', `${goal} has a proof`);
+          const report = checkProofDocument(program, result.stdout, { goals: [goal] });
+          assertEqual(report.valid, true, `${goal}'s proof checks`);
+        }
+      },
+    },
     {
       name: 'deep taxonomy proofs replay and check without a host recursion limit',
       run: () => {
@@ -1391,10 +1421,10 @@ answer(ok) :-
         assertEqual(Boolean(registry.get('append', 3)), false, 'append/3 is not ISO core');
         assertEqual(library.eyePrologLibrary, true, 'complete registry marker');
         assertEqual(library.defs.size, 227, 'EyeProlog registry contains ISO definitions, cleanup controls, observability extensions, WFS predicates, and generic library adapters');
-        assertEqual(registry.get('eyeprolog__dynify', 1), null, 'Eyelet dynify adapter is absent from the ISO registry');
-        assertEqual(Boolean(library.get('eyeprolog__dynify', 1)), true, 'Eyelet dynify adapter is an internal EyeProlog library primitive');
-        assertEqual(registry.get('eyeprolog__eyelet_emit', 2), null, 'Eyelet event adapter is absent from the ISO registry');
-        assertEqual(Boolean(library.get('eyeprolog__eyelet_emit', 2)), true, 'Eyelet event adapter is an internal EyeProlog library primitive');
+        assertEqual(registry.get('eyeprolog__dynify', 1), null, 'forward-rule dynify adapter is absent from the ISO registry');
+        assertEqual(Boolean(library.get('eyeprolog__dynify', 1)), true, 'forward-rule dynify adapter is an internal EyeProlog library primitive');
+        assertEqual(registry.get('eyeprolog__eyelet_emit', 2), null, 'forward-rule event adapter is absent from the ISO registry');
+        assertEqual(Boolean(library.get('eyeprolog__eyelet_emit', 2)), true, 'forward-rule event adapter is an internal EyeProlog library primitive');
         assertEqual(registry.get('eyeprolog__random_value', 1), null, 'native random helper is absent from the ISO registry');
         assertEqual(Boolean(library.get('eyeprolog__random_value', 1)), true, 'native random helper is an internal EyeProlog library adapter');
         assertEqual(registry.get('eyeprolog__socket_client_open', 4), null, 'socket adapter is absent from the ISO registry');
@@ -1430,8 +1460,8 @@ answer(ok) :-
         assertEqual(eyePrologInteropAutoload['set_nth0/4'] ?? null, null, 'set_nth0/4 is outside the conservative interop subset');
         assertEqual(eyePrologLibraryAutoload['set_nth0/4'], 'lists', 'complete library autoload includes EyeProlog-only exports');
         assertEqual(eyePrologLibraryAutoload['pairs_keys_values/3'], 'pairs', 'complete library autoload includes library(pairs)');
-        assertEqual(eyePrologLibraryAutoload['stable/1'], 'eyelet', 'complete library autoload includes Eyelet stable/1');
-        assertEqual(eyePrologLibraryAutoload['becomes/2'], 'eyelet', 'complete library autoload includes Eyelet becomes/2');
+        assertEqual(eyePrologLibraryAutoload['stable/1'], 'eyelet', 'complete library autoload includes stable/1');
+        assertEqual(eyePrologLibraryAutoload['becomes/2'], 'eyelet', 'complete library autoload includes becomes/2');
         assertEqual(eyePrologLibraryAutoloadModules.length, 42, 'all bundled src/lib modules are indexed for autoload');
         assertEqual(eyePrologNativeLibraryIndicators.length, 122, 'host-supported library count');
         assertEqual(eyePrologNativeLibraryIndicators.includes('call_nth/2'), true, 'call_nth/2 remains classified as host-supported');

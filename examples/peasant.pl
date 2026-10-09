@@ -1,4 +1,4 @@
-% Peasant multiplication and exponentiation cases, adapted from Eyelet.
+% Peasant multiplication and exponentiation cases.
 % The selected inputs include very large integers to exercise native numeric
 % built-ins through ordinary relations.  The want_* facts keep the example from
 % enumerating an unbounded arithmetic domain.

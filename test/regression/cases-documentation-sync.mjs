@@ -154,9 +154,9 @@ ${profile}`;
         assertIncludes(book, 'interactive top-level query autoloads its canonical bundled provider', 'REPL autoload');
         assertIncludes(book, 'Autoloading therefore supplies', 'autoload syntax boundary');
         assertIncludes(book, 'Residual constraints are part of the displayed answer even when', 'top-level hidden residuals');
-        assertIncludes(book, 'EyeProlog normal mode also accepts `:+`', 'Eyelet forward-rule extension');
-        assertIncludes(book, '`library(eyelet)`', 'Eyelet library surface');
-        assertNotIncludes(readme, '## Eyelet forward rules', 'README delegates Eyelet details to the book');
+        assertIncludes(book, 'EyeProlog normal mode also accepts `:+`', 'forward-rule extension');
+        assertIncludes(book, '`library(eyelet)`', 'forward-rule library surface');
+        assertNotIncludes(readme, '## Forward rules', 'README delegates forward-rule details to the book');
         assertNotIncludes(readme, '## HTTP and JSON', 'README delegates HTTP/JSON details to the book');
         assertIncludes(profile, 'an unresolved unqualified predicate may autoload its unique provider', 'Why EyeProlog autoload policy');
       },

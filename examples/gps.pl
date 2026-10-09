@@ -1,6 +1,6 @@
 :- use_module(library(lists)).
 
-% GPS route-planning example translated from Eyeling's gps.n3.
+% GPS route-planning example.
 % The map is stored as quoted formula data and projected with ordinary term
 % traversal and =../2. Route
 % paths accumulate action sequence, duration, cost, belief, and comfort; table
@@ -93,7 +93,7 @@ recommended_route(routeDirect) :-
 
 outcome(routeDirect, "Take the direct route via Brugge.").
 
-% Verification checks, analogous to the false-producing guards in gps.n3.
+% Verification checks of the planned routes.
 check(c1, true) :-
   traveller_path(i1, [drive_gent_brugge, drive_brugge_oostende], _, _, _, _).
 

@@ -1,6 +1,6 @@
 :- use_module(library(lists)).
 
-% Data negotiation with policies, adapted from Eyelet input/data-negotiation.pl.
+% Data negotiation with policies.
 % Two agents own different datasets.  A negotiation succeeds only when the
 % requester lacks the data, the provider has it, the requester policy allows
 % asking for it, and the provider policy allows sharing it.

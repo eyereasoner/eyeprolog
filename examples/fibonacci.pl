@@ -15,8 +15,8 @@
 % fast-doubling recurrence F(2n), F(2n+1) over arbitrary-size integers.
 
 % BigInt Fibonacci via fast doubling, implemented in Prolog using generic
-% decimal add/sub/mul built-ins.  The result predicate follows Eyeling's
-% fibonacci.n3 output shape: N fibonacci Value.
+% decimal add/sub/mul built-ins.  The result predicate has the shape
+% N fibonacci Value.
 fib_case(0).
 fib_case(1).
 fib_case(10).

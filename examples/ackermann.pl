@@ -1,4 +1,4 @@
-% Ackermann-style hyperoperation benchmark adapted from Eyeling ackermann.n3.
+% Ackermann-style hyperoperation benchmark.
 % The public ackermann/2 answers are small, but the helper relation exercises
 % deeply nested arithmetic recursion: hyper/4 encodes successor, addition,
 % multiplication, exponentiation, and then the Ackermann-style offset

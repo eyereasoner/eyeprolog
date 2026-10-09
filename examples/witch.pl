@@ -1,4 +1,4 @@
-% Burn the witch, adapted from Eyeling's examples/witch.n3.
+% Burn the witch.
 %
 % This is the classic N3/Semantic Web rule chain in eyeprolog form: a duck
 % floats; something with the same weight as something that floats also floats;

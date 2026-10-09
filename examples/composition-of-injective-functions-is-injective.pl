@@ -1,7 +1,6 @@
-% Composition of injective functions is injective, adapted from Eyeling's
-% examples/composition-of-injective-functions-is-injective.n3.
+% Composition of injective functions is injective.
 %
-% The output mirrors the Eyeling golden result shape:
+% The output is:
 % sameInputByCompositeInjectivity(h, a, b) and the symmetric counterpart.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.

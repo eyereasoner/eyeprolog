@@ -1,4 +1,4 @@
-% EYE-inspired field nitrogen balance case study.
+% Field nitrogen balance case study.
 %
 % field(Field, SoilN, FertilizerN, LossFraction, CropDemandN) stores a compact
 % nutrient budget.  Rules derive retained nitrogen, deficit, surplus, and a

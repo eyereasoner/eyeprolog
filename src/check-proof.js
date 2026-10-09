@@ -2,8 +2,7 @@
 //
 // A proof document says what was concluded and why. Checking it means
 // re-performing every inference it records against the program it claims to
-// come from. SPEC.md, Section 11, is the specification; it follows peye's
-// proof checker, read in Prolog syntax.
+// come from. SPEC.md, Section 9, is the specification.
 //
 // A checker does not reason. It never searches for a derivation the document
 // failed to record, and it never runs the program; it only verifies what is
@@ -79,15 +78,44 @@ const NOT_REDECIDABLE = new Map([
   ['current_input/1', 'stateful'],
   ['at_end_of_stream/1', 'stateful'],
   ['stream_property/2', 'stateful'],
+  ['put_char/2', 'stateful'],
+  ['put_code/2', 'stateful'],
+  ['put_byte/2', 'stateful'],
+  ['get_char/2', 'stateful'],
+  ['get_code/2', 'stateful'],
+  ['get_byte/2', 'stateful'],
+  ['peek_char/2', 'stateful'],
+  ['peek_code/2', 'stateful'],
+  ['peek_byte/2', 'stateful'],
+  ['writeq/2', 'stateful'],
+  ['print/2', 'stateful'],
+  ['write_canonical/2', 'stateful'],
+  ['format/3', 'stateful'],
+  ['flush_output/1', 'stateful'],
+  ['set_stream_position/2', 'stateful'],
+  // A generated name depends on the counter the run advanced.
+  ['gensym/2', 'stateful'],
+  ['reset_gensym/1', 'stateful'],
+  ['reset_gensym/0', 'stateful'],
+  // CLP(B) answers from the constraint store the run posted.
   ['sat/1', 'stateful'],
   ['taut/2', 'stateful'],
   ['sat_count/2', 'stateful'],
+  // weighted_maximum/3 also insists on computing its maximum itself.
+  ['weighted_maximum/3', 'stateful'],
+  // CLP(Z) domain reflection reads the constraint store of a variable.
+  ['fd_var/1', 'stateful'],
+  ['fd_inf/2', 'stateful'],
+  ['fd_sup/2', 'stateful'],
+  ['fd_size/2', 'stateful'],
+  ['fd_dom/2', 'stateful'],
+  ['fd_degree/2', 'stateful'],
 ]);
 
 // Control constructs, which C6 never takes as evidence and C5 composes from
 // their uses rather than recomputes.
 const CONTROL_KEYS = new Set([
-  ',/2', ';/2', '->/2', '*->/2', '\\+/1', 'call/1', 'once/1', 'ignore/1', 'catch/3',
+  ',/2', ';/2', '->/2', '*->/2', '\\+/1', 'call/1', 'once/1', 'ignore/1', 'catch/3', ':/2',
   'findall/3', 'findall/4', 'forall/2', 'bagof/3', 'setof/3', 'aggregate_all/3', 'aggregate_all/4',
 ]);
 
@@ -153,6 +181,7 @@ function controlAlternatives(goal) {
     return [conjuncts(goal.args[0])];
   }
   if (isCompound(goal, 'catch', 3)) return [conjuncts(goal.args[0])];
+  if (isCompound(goal, ':', 2)) return [conjuncts(goal.args[1])];
   if (isCompound(goal, '->', 2) || isCompound(goal, '*->', 2)) {
     return [[...conjuncts(goal.args[0]), ...conjuncts(goal.args[1])]];
   }
@@ -262,7 +291,17 @@ function makeRedecider(program, goals) {
   if (goals.length === 0) return () => ({ status: 'unavailable' });
   let primitives = null;
   try {
-    primitives = Program.parseSources([{ text: '', filename: '<check>' }], {
+    // A goal qualified with a bundled library's module is recomputed in that
+    // library, which a qualified call does not autoload by itself.
+    const libraries = new Set();
+    for (const goal of goals) {
+      if (!isCompound(goal, ':', 2) || goal.args[0]?.type !== ATOM) continue;
+      const filename = program?.modules?.get(goal.args[0].name)?.filename ?? '';
+      const library = /^src\/lib\/([a-z_0-9]+)\.pl$/.exec(filename)?.[1];
+      if (library) libraries.add(library);
+    }
+    const text = [...libraries].map((library) => `:- use_module(library(${library})).\n`).join('');
+    primitives = Program.parseSources([{ text, filename: '<check>' }], {
       sourceMetadata: false,
       isoStrict: program?.strictIso === true,
     });
@@ -313,6 +352,28 @@ export function sourceGoals(program, sourceTexts = []) {
   const declared = sourceTexts.flatMap((text) => goalsFromSource(text));
   if (declared.length > 0) return declared;
   return (program?.queries ?? []).map((query) => query.goal);
+}
+
+// The questions a proof's claims must answer (C7): the goals given, or else the
+// program's own `?- Goal.` queries, or else, for a program run by its forward
+// rules, what those rules conclude -- each head other than `true` and `false`,
+// and the body of a `true :+ Body` query rule.
+export function proofQuestions(program, goals) {
+  const asked = readQuestions(program, goals ?? sourceGoals(program));
+  if (asked.length > 0) return asked;
+  const questions = [];
+  for (const clause of program?.clauses ?? []) {
+    if (!isCompound(clause.head, ':+', 2) || (clause.body ?? []).length !== 0) continue;
+    const [conclusion, premise] = clause.head.args;
+    if (isAtom(conclusion, 'true')) {
+      questions.push(premise);
+      continue;
+    }
+    for (const head of flattenConjunction(conclusion)) {
+      if (!isAtom(head, 'false')) questions.push(head);
+    }
+  }
+  return questions;
 }
 
 // What C6 may take as evidence. A predicate qualifies when it is static and
@@ -381,17 +442,28 @@ function evidenceAnalysis(program, steps) {
 //           claim to them. Default: the program's own `?- Goal.` queries.
 //   strict  forbid trusted boundaries: each fails C5.
 export function checkProofDocument(program, text, options = {}) {
+  const failures = [];
+  const fail = (condition, detail, term) => {
+    failures.push({ condition, detail, conclusion: term == null ? null : key(term), term: term ?? null });
+  };
+  return checkProof(program, readProofDocument(text, program, fail), options, failures);
+}
+
+// Check a proof given as the structures it is written from -- its claims, its
+// `clause/3` records and its steps -- rather than as text. A reasoner checks
+// its own proofs this way before writing them (SPEC.md, Section 7.1); that the
+// text it writes reads back as the same structures is what checking the
+// packaged documents establishes.
+export function checkProof(program, { claims, records = [], steps: allSteps }, options = {}, failures = []) {
   const writeOptions = {
     doubleQuotes: program?.doubleQuotes ?? 'chars', doubleBar: true, quoted: true,
     operators: [...(program?.operators?.values() ?? [])],
   };
   const show = (term) => formatTermForWrite(term, new Env(), writeOptions);
-  const failures = [];
   const fail = (condition, detail, term) => {
     failures.push({ condition, detail, conclusion: term == null ? null : key(term), term: term ?? null });
   };
 
-  const { claims, records, steps: allSteps } = readProofDocument(text, program, fail);
   const numbering = clauseNumbering(program).byNumber;
 
   // clause/3 records are not authority: the source program is. Each must
@@ -540,7 +612,7 @@ export function checkProofDocument(program, text, options = {}) {
   }
 
   const confronted = checkBoundaries(program, steps, boundaries, redecide, fail, show);
-  checkRelevance(claims, steps, readQuestions(program, options.goals ?? sourceGoals(program)), fail, show);
+  checkRelevance(claims, steps, proofQuestions(program, options.goals), fail, show);
   checkWellFounded(steps, fail, show);
 
   const failed = (condition) => failures.filter((failure) => failure.condition === condition).length;

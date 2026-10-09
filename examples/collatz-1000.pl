@@ -2,12 +2,9 @@
 
 :- table collatz/2.
 
-% Collatz conjecture suite translated from Eyeling's examples/collatz-1000.n3.
+% Collatz conjecture suite.
 % It enumerates starts N = 1000, 999, ..., 1 by deriving N = 1000 - N0
 % from a repeat relation, then querys each full trajectory.
-%
-% Source N3:
-% https://raw.githubusercontent.com/eyereasoner/eyeling/refs/heads/main/examples/collatz-1000.n3
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 % Explicit tabling caches shared suffix trajectories so the 1000 starts do not recompute
@@ -16,8 +13,8 @@
 
 
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.
-% The N3 source defines repeat/2 recursively; this EyeProlog version uses the
-% equivalent bounded generator so the 1000-case regression remains stack-safe.
+% repeat/2 is a bounded generator rather than a recursive definition, so the
+% 1000-case regression remains stack-safe.
 
 % Query / query execution of the test suite.
 % Generate N in {1000..1} and ask the backward-defined collatz/2 predicate

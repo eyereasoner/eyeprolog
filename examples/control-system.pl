@@ -1,4 +1,4 @@
-% Control Systems example, adapted from Eyelet's input/control-system.pl.
+% Control Systems example.
 %
 % The example combines measurements, observations, targets, logarithmic
 % feedforward compensation, square-root normalization, and nonlinear feedback.

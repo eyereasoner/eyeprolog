@@ -1,6 +1,6 @@
 :- use_module(library(lists)).
 
-% Graph reachability example adapted from Eyelet input/graph-reachability.pl.
+% Graph reachability example.
 % The recursive search carries a Visited list and rejects already-seen nodes with
 % not(member(...)).  This keeps reachability finite and also lets the example
 % derive explicit not_reachable/2 evidence for a negative test case.

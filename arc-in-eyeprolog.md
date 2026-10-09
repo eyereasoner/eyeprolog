@@ -204,8 +204,9 @@ the program themselves, with a different copy of the checker if they like.
   step rested on.
 - **Check independently** — recompute what the document merely asserts, from a
   position that cannot reuse the theory.
-- **Fail visibly** — a proof that cannot be explained records the answer as
-  `unproven` rather than omitting it.
+- **Fail visibly** — a run checks its own proof before writing it; one that
+  cannot be explained fails the run rather than yield a proof that does not
+  hold.
 - **Name what is trusted** — an obligation counted and labelled is honest; an
   obligation folded into a success is not.
 - **Prefer executable verification** — checking runs in the test suite, not in
@@ -224,12 +225,12 @@ proof, and `npm test` re-checks all of them on every run:
 | examples | 236 |
 | packaged proofs | 236 |
 | packaged check results | 236 |
-| recorded steps | 147253 |
-| verified against a source clause | 131665 |
-| recomputed independently | 14713 |
+| recorded steps | 212365 |
+| verified against a source clause | 156674 |
+| recomputed independently | 54753 |
 | carried by the goal they wrap | 10 |
-| trusted boundaries confronted with evidence | 515 |
-| remaining obligations | 860 (0.6%) |
+| trusted boundaries confronted with evidence | 516 |
+| remaining obligations | 928 (0.4%) |
 
 Each obligation names the conclusion it stands for, so the residue can be read
 rather than only counted. Two thirds of it is one thing: a `\+` step claims a

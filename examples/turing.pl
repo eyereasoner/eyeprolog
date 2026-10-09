@@ -1,6 +1,6 @@
 :- use_module(library(lists)).
 
-% Universal Turing machine example adapted from Eyelet's input/turing.pl.
+% Universal Turing machine example.
 %
 % The machine below adds 1 to a binary number represented as a list of bits.
 % A tape is split into a reversed left side, current cell, and right side; move/7
