@@ -26,6 +26,17 @@ them. Robert Kowalski summed this up as “algorithm = logic + control”. Most 
 the craft of Prolog lies in keeping the logic fixed while improving the
 control.
 
+The title acknowledges a debt. Leon Sterling and Ehud Shapiro's *The Art of
+Prolog* (1986) taught a generation to read a logic program first as a
+definition and only then as a computation, to build programs from small,
+well-understood relations, and to treat accumulators, generate-and-test,
+grammars, and interpreters as a craft with principles of its own. This book
+follows the same plan. It begins with logic programs as relations and the
+search that computes them (Parts I–III), turns to constructing, transforming,
+and applying programs (Parts IV–VII), and then covers the practical ISO language
+and its reference (Parts VIII–IX), ending with laboratories (Part X). Every
+chapter ends with exercises, and every Part closes with a historical note.
+
 ## Getting started
 
 EyeProlog requires Node.js 18 or newer. Check with:
@@ -262,9 +273,16 @@ into later rules.
 Facts are statements, not commands. Their order can affect the order of
 answers, but a fact never means “do this now”.
 
-**Exercise.** Add `grandparent/2` using two calls to `parent/2`. Query all
-grandparents, then only those of `diego`. Predict which output changes after
-adding `parent(diego, elena).`
+**Exercises.**
+
+1. Add `grandparent/2` using two calls to `parent/2`. Query all grandparents,
+   then only those of `diego`.
+2. Predict which answers change after adding `parent(diego, elena).`, then run
+   both versions and compare.
+3. Define `sibling/2` from `parent/2` so that nobody is their own sibling.
+   Which built-in from Chapter 2 does the definition need?
+4. Write `child/2` and `parent/2` as two independent fact tables instead of a
+   rule. Which facts can now disagree, and why does the rule rule that out?
 
 ## 2. Terms, variables, and substitution
 
@@ -336,10 +354,17 @@ route(a, d, path([a, b, d], cost(9))).
 The outer `measurement(...)` is a statement; the nested `sample(...)` is data.
 The syntax is the same, and position decides the role.
 
-**Checkpoint.** Without running anything, decide whether each pair unifies:
-`point(X, X)` with `point(red, red)`, `point(X, X)` with `point(red, blue)`,
-and `[Head | Tail]` with `[a, b, c]`. Then check with `=/2`. Write
-`diagonal/1`, which succeeds for `point(X, X)`.
+**Exercises.**
+
+1. Without running anything, decide whether each pair unifies:
+   `point(X, X)` with `point(red, red)`, `point(X, X)` with `point(red, blue)`,
+   and `[Head | Tail]` with `[a, b, c]`. Then check each with `=/2`.
+2. Write `diagonal/1`, which succeeds for `point(X, X)`, and query it with
+   `point(2, 2)` and `point(2, 3)`.
+3. Give the most general unifier of `reading(S, V, unit(U))` and
+   `reading(temp, 91, unit(celsius))`, then of `f(X, g(X))` and `f(a, Y)`.
+4. Represent a calendar date as a compound term and write `same_month/2` for
+   two dates. Which arguments of the term does the unification compare?
 
 ## 3. Rules and their two readings
 
@@ -529,9 +554,19 @@ and per-group `negationStratum`, request the analysis with `analyzeNegation`,
 reject unstratified programs with `strictNegation`, or call
 `program.assertStratifiedNegation()`.
 
-**Checkpoint.** Take one rule from this chapter. Read it once as a sentence
-about all of its ground instances and once as a sequence of subquestions, and
-say which body goal first binds each variable.
+**Exercises.**
+
+1. Read `eligible/1` once as a sentence about all of its ground instances and
+   once as a sequence of subquestions, and say which body goal first binds
+   each variable. Then move `Years >= 18` to the front and predict what
+   happens.
+2. Write the least Herbrand model of the `can_enter/1` clauses for
+   `staff(ann)`, `visitor(bob)`, `visitor(cy)`, and `escorted(bob)`.
+3. Extend `different/2` to compare `pair(a, b)` and `pair(b, a)`, and explain
+   in Herbrand terms why they denote different objects.
+4. Write a three-predicate program whose negative dependencies are
+   stratified, then add one clause that breaks the stratification and run it
+   with `--warnings`.
 
 ## 4. Recursion: describing reachability
 
@@ -599,9 +634,17 @@ cyclic graph. Table the finite relation; bound the witness relation, for
 example by keeping a list of visited vertices and requiring
 `\+ member(Next, Visited)` so that only simple paths are built.
 
-**Checkpoint.** For the family in Chapter 1, predict every `ancestor/2` answer.
-For one indirect answer, name the clauses used and say what moves closer to a
-known fact at each step.
+**Exercises.**
+
+1. For the family in Chapter 1, predict every `ancestor/2` answer (there are
+   six). For one indirect answer, name the clauses used and say what moves
+   closer to a known fact at each step.
+2. Write `edge/2` facts for a three-vertex cycle and query a tabled
+   `reach/2`. Remove the `table` declaration and explain what changes.
+3. Give `path/3` a visited list so that it returns only simple paths, and
+   check that it terminates on the cyclic graph from exercise 2.
+4. State the termination argument for `ancestor/2` over a finite acyclic
+   `parent/2` relation, without tabling.
 
 ## 5. Lists as relations
 
@@ -645,8 +688,36 @@ The `lists` library provides the standard relations, including `member/2`,
 not yet known; a relation that needs a proper list may enumerate possible tails
 or raise an instantiation error, so bind the tail first.
 
-**Checkpoint.** Trace `joins([a], [b, c], Whole)` by hand. Then bind `Whole` to
-`[a, b, c]`, leave the first two arguments open, and predict every split.
+**Exercises.**
+
+1. Trace `joins([a], [b, c], Whole)` by hand. Then bind `Whole` to
+   `[a, b, c]`, leave the first two arguments open, and predict every split.
+2. Use `joins/3` to define `last_item/2` and `prefix_of/2` without writing any
+   new recursion.
+3. Write `length_of/2` with an accumulator in the style of `reverse_acc/2`, and
+   say which argument must be bound for it to terminate.
+4. Define `contains_item/2` for a list that may contain duplicates. How many
+   answers does `contains_item(a, [a, b, a])` give, and why?
+
+### Historical note: clauses become a programming medium
+
+The ingredients of Part I were assembled across several traditions.
+First-order logic supplied variables, substitution, and quantified formulas.
+Herbrand's 1930 thesis made ground terms and ground instances central to proof
+theory. Robinson's 1965 resolution principle gave automated deduction a
+uniform, machine-oriented inference rule whose practical force came from
+unification.
+
+Prolog emerged when these ideas met a natural-language project in Marseille in
+the early 1970s. Colmerauer and Roussel stress that the project did not begin
+as an abstract attempt to invent a programming language: the need to analyze
+French drove the development of executable clauses and their control.
+Kowalski's procedural interpretation of Horn clauses, worked out in Edinburgh
+at the same time, explained why a set of logical sentences could be run as a
+program. Lists then became more than containers. They represented sentences,
+syntax trees, proof states, and sequences of goals, and the two-clause list
+program condensed a much older mathematical pattern, definition by
+constructors and structural induction, into executable form.
 
 # Part II — Search
 
@@ -713,8 +784,16 @@ factorial(N, F) :-
 `factorial(5, F)` gives `F = 120`; `factorial(N, 120)` raises an error at
 `N > 0`. Record the intended mode in tests and comments.
 
-**Checkpoint.** In `square/2`, which goal binds `N`? What happens if you swap
-the two body goals?
+**Exercises.**
+
+1. In `square/2`, which goal binds `N`? Swap the two body goals and run the
+   query; explain the instantiation error.
+2. Write `cube_below/2` that enumerates the cubes of the integers from 1 to a
+   given bound.
+3. Define `triangle_number(N, T)` for `T = 1 + 2 + ... + N` by recursion, then
+   by a closed formula with `is/2`, and compare them for `N` from 0 to 10.
+4. Explain why `factorial(N, 120)` cannot run backwards, and write a separate
+   relation that finds `N` by bounded generation.
 
 ## 7. Failure, negation, and quantification
 
@@ -789,9 +868,16 @@ goal of `wfs_truth/2` must be ground, as must direct calls to `tnot/1`, and in
 WFS rules every variable in the head or under `tnot/1` must occur in a positive
 body literal. Strict ISO mode has no `tnot/1`; `\+/1` is unchanged.
 
-**Checkpoint.** In the three-position game, change `move(b, c)` to
-`move(c, b)` and predict the truth value of each `win/1` atom before running
-`wfs_truth/2`.
+**Exercises.**
+
+1. With `user(ann)`, `user(bob)`, and `blocked(bob)`, run `allowed(U)`, then
+   swap the two body goals and explain why the answer disappears.
+2. Write `all_tests_pass/1` for a suite in which one test has no `passed/1`
+   fact, and name the closed-world assumption the answer depends on.
+3. In the three-position game, change `move(b, c)` to `move(c, b)` and predict
+   the truth value of each `win/1` atom before running `wfs_truth/2`.
+4. Rewrite `allowed/1` for open data, where a missing `blocked/1` fact means
+   "unknown", using an explicit status relation.
 
 ## 8. Collecting and choosing answers
 
@@ -844,8 +930,16 @@ Keep candidate generation (`route/4`) separate from choice (`best_route/4`).
 The candidates can then be listed, counted, tested, and optimized by different
 queries without rewriting the search.
 
-**Checkpoint.** With no `route/4` facts at all, predict the result of
-`findall/3`, `countall/2`, `sumall/3`, and `aggregate_min/5` over it.
+**Exercises.**
+
+1. With no `route/4` facts at all, predict the result of `findall/3`,
+   `countall/2`, `sumall/3`, and `aggregate_min/5` over it.
+2. Give two `edge/3` facts with the same cost from one node and compare
+   `outgoing_costs/2` with the sorted set of costs.
+3. Change the key of `best_route/4` so that ties are broken by the route with
+   fewer stops before term order.
+4. Write `cheapest_per_origin/2` that returns one best route for every origin.
+   Which variable must be bound before the aggregate runs?
 
 ## 9. Structured data, text, and contexts
 
@@ -902,6 +996,16 @@ never becomes a fact of the program. It stays data inside one message, and
   <img src="book-assets/context-data-boundary.svg" alt="Raw text becomes structured members inside one message context, which ordinary term traversal inspects without asserting those members globally.">
   <figcaption>Normalize text into structure at the boundary; inspecting a member inside one context does not make it a fact.</figcaption>
 </figure>
+**Exercises.**
+
+1. Use `functor/3`, `arg/3`, and `=../2` to take `reading(temp, 91)` apart, and
+   to build `reading(humidity, 40)` from its name and arguments.
+2. Extend `normalized/2` to remove punctuation before splitting, and test it on
+   two inputs that should normalize to the same words.
+3. Add a second message to the `hot_event/1` program and query `hot_event(Id)`.
+   Confirm that `severity(high)` is still not a fact of the program.
+4. Write `context_value(Context, Name, Value)` for members of the form
+   `Name(Value)`, using `context_member/2` and `=../2`.
 
 ## 10. From puzzles to models
 
@@ -959,8 +1063,39 @@ The visited list makes the search finite: no state is entered twice on one
 path. EyeProlog is at its best when the answer has a small witness such as a
 path, schedule, or proof; numerical kernels belong in the host.
 
-**Checkpoint.** Remove `(A \= C)` from `coloring/3` and predict the number of
-answers before running it. (There are twelve; account for the six new ones.)
+**Exercises.**
+
+1. Remove `(A \= C)` from `coloring/3` and predict the number of answers
+   before running it. (There are twelve; account for the six new ones.)
+2. Move all three tests to the end of `coloring/3` and compare the work
+   reported by `--stats` with the original.
+3. Color the four regions of a map in which one region touches the other
+   three, using `color/1` and as few tests as possible.
+4. Write `transition/3` facts for a two-jug water puzzle and use `plan/4` to
+   find a sequence of moves. What makes the search finite?
+
+### Historical note: control, databases, and finite failure
+
+Early Prolog made a decisive engineering choice: clauses would be tried in
+textual order and subgoals selected left to right. That choice made logic
+executable, and it also made control visible. A logically symmetric
+conjunction could behave asymmetrically when one order supplied a value and
+another asked arithmetic to run too soon.
+
+The meeting of logic programming and database research in the 1970s sharpened
+questions about finite relations, closed-world reasoning, and query
+evaluation. Keith Clark's 1978 account did not identify failure with
+unrestricted logical negation; it related negation as failure to a completed
+database reading. Later work on stratification by Apt, Blair, and Walker
+disciplined negative dependencies, and the well-founded semantics gave
+recursion through negation a three-valued meaning. Aggregation continued the
+database lineage: a set of solutions could itself become data, provided the
+nested search was finite.
+
+These distinctions explain EyeProlog's conservative treatment. Negation and
+aggregation are powerful because they expose a bounded subcomputation. Their
+safety comes not from punctuation but from an argument about scope and
+termination.
 
 # Part III — Trustworthy reasoning
 
@@ -1057,8 +1192,16 @@ not hold.
 A proof is also a design review: detours point at overgrown helpers, and a
 premise hidden inside a computed value should become a fact.
 
-**Checkpoint.** Edit `socrates.why.pl` so that the first step binds `'X'` to
-`plato`, and run the check again. Which condition fails?
+**Exercises.**
+
+1. Run `--proof` on `examples/socrates.pl` and read each `step/4` downward
+   from the claim, naming the clause it cites.
+2. Save the proof as `socrates.why.pl`, edit the first step so that it binds
+   `'X'` to `plato`, and run `--check-proof` again. Which condition fails?
+3. Write a program in which the same goal is used twice in one body, and
+   confirm that the proof records one step for it.
+4. Add a `\+` goal to a rule and find the `absent` step in its proof. Why is it
+   reported as a trusted boundary?
 
 ## 12. Integrity checks as ordinary predicates
 
@@ -1114,6 +1257,14 @@ perfectly valid answer, not invalid input. Keep four outcomes apart:
 
 `false/0` keeps its ISO meaning: a built-in that always fails. Clauses for
 `false` are rejected with `permission_error(modify, static_procedure)`.
+**Exercises.**
+
+1. Add `probability/2` facts, one of them above 1, and query
+   `invalid_probability/2`.
+2. Write an integrity relation for a person holding two incompatible roles at
+   the same time, with arguments that identify both role records.
+3. For a loan-approval theory, give one example of each of the four outcomes:
+   no answer, an integrity answer, a resource limit, and an error.
 
 ## 13. Termination, tabling, and performance
 
@@ -1214,9 +1365,17 @@ Resource limits are never answers. Normal execution has no implicit depth
 limit; if an embedder sets `maxDepth` and a search exceeds it, EyeProlog raises
 `resource_error(depth_limit)` rather than quietly failing the branch.
 
-**Checkpoint.** Classify three recursive calls: one over a shrinking list, one
-over a finite cyclic graph, one that builds `s(s(...))` terms without bound.
-Which terminate without tabling, which with it, and which with neither?
+**Exercises.**
+
+1. Classify three recursive calls: one over a shrinking list, one over a
+   finite cyclic graph, one that builds `s(s(...))` terms without bound. Which
+   terminate without tabling, which with it, and which with neither?
+2. Run the untabled `reach/2` on a two-vertex cycle under a depth limit, then
+   add `:- table reach/2.` and compare the outcomes.
+3. Write a forward rule `Conclusion :+ Premise` that derives `ancestor/2` from
+   `parent/2` facts, and run it without a goal.
+4. Compare `--stats` for `reach(a, Z)` and `reach(Z, a)` on the same tabled
+   graph, and explain the difference.
 
 ## 14. Knowledge engineering
 
@@ -1264,8 +1423,16 @@ The same layering works for most theories:
 Prefer positive concepts, negate only across a closed boundary, and keep
 confidence and provenance as data, not rule order.
 
-**Checkpoint.** Which facts in the battery example can a proof *not*
-authenticate? (Hint: where do the numbers come from?)
+**Exercises.**
+
+1. Which facts in the battery example can a proof *not* authenticate? (Hint:
+   where do the numbers come from?)
+2. Add a `cooling_failed/1` fact and a second policy rule for `action/2`, and
+   check that the physics predicates did not change.
+3. Run `examples/spacecraft-battery-diagnosis.pl` with `--proof` and sort its
+   steps into the five layers listed in this chapter.
+4. Lay out the layers for a small theory of your own: source facts, helpers,
+   decisions, integrity relations, and outputs.
 
 ## 15. Explicit data boundaries
 
@@ -1325,9 +1492,15 @@ number. General text must go through a term constructor or serializer, never
 straight into source. The resource options cap the work an untrusted input can
 cause.
 
-**Checkpoint.** For one record your application receives, write down what the
-host validates, the term it builds, the goal it asks, and the limit that bounds
-the work.
+**Exercises.**
+
+1. For one record your application receives, write down what the host
+   validates, the term it builds, the goal it asks, and the limit that bounds
+   the work.
+2. Change `allowedSensors` so that a sensor name could contain a quote, and
+   explain why string interpolation is then unsafe.
+3. Extend the host to accept a list of readings and ask one goal per reading.
+   Which of the four claims gains a new owner?
 
 ## 16. Embedding EyeProlog
 
@@ -1557,6 +1730,37 @@ point is dropped as soon as nothing is left. Mode-sensitive extensions can also
 supply `ready`, `fallbackWhenNotReady`, and `shouldUse` metadata, which affect
 dispatch and early filtering and are therefore part of the extension's
 contract.
+**Exercises.**
+
+1. Run the `run()` example and print `result.stats`. Then set
+   `solutionLimit: 1` on a goal with several answers and explain why the limit
+   is not a proof of absence.
+2. Use `proofCertificate` and `verifyProof` on `q(a)`, then edit the program
+   so that `p(a)` is missing and verify the old certificate again.
+3. Add a host relation `host_time/1` to the registry with
+   `createEyePrologRegistry()`, and decide whether it may be marked
+   `deterministic`.
+
+### Historical note: from answers to accountable inference
+
+The least-model semantics of van Emden and Kowalski (1976) connected definite
+programs to a mathematical fixed point: keep adding supported ground
+consequences until nothing new appears. Tabled logic programming, developed in
+systems such as XSB and described by Chen and Warren, turned that fixed point
+into a goal-directed technique that shares recursive calls and accumulates
+their answers. EyeProlog's explicit tabling is far smaller than those systems,
+but inherits their central insight: remembering a recursive question can change
+termination without changing what the relation says. For finite Datalog with
+recursion through `tnot/1`, it uses the alternating-fixed-point account of the
+well-founded semantics, so a negative cycle may remain undefined instead of
+being collapsed into negation as failure.
+
+In parallel, deductive databases asked where facts come from and how derived
+claims keep their provenance. The lesson is architectural. A proof procedure
+can attest that a conclusion follows from the supplied clauses. It cannot
+authenticate a database, calibrate a sensor, or authorize a request. Systems
+became more trustworthy when those boundaries were named rather than left
+implicit.
 
 # Part IV — The craft of logic programming
 
@@ -1655,9 +1859,16 @@ selected goal, the clauses that match it, the bindings each produces, and the
 calls that repeat. The sketch usually shows a generator that is too broad or a
 test placed too late.
 
-**Checkpoint.** Swap two body goals in a rule of your own. Before running it,
-predict whether the answer set, termination, first answer, or proof shape
-changes.
+**Exercises.**
+
+1. Swap two body goals in a rule of your own. Before running it, predict
+   whether the answer set, termination, first answer, or proof shape changes.
+2. Run both `adult/1` clauses with `Person` unbound and explain the
+   difference.
+3. Rewrite `bad_member/2` so that it terminates, and state the measure that
+   decreases.
+4. Write the intended modes of `append/3` that terminate, and give one call
+   that does not.
 
 ## 18. Constructing a program
 
@@ -1755,8 +1966,16 @@ concept has no stable meaning yet. Add one representative query per layer as
 you go, so a silent failure in normalization shows up before the final
 decision predicate does.
 
-**Checkpoint.** For a domain of your own, write three positive ground
-examples, one near miss, and the intended query mode before writing any rule.
+**Exercises.**
+
+1. For a domain of your own, write three positive ground examples, one near
+   miss, and the intended query mode before writing any rule.
+2. Write `suffix/2` from examples, as `prefix/2` was written, starting with the
+   smallest positive case.
+3. Split a rule of your own into generate and test parts, as in
+   `compatible_pair/2`, and compare the proofs.
+4. Choose a representation for a timetable and justify it by the questions it
+   must answer.
 
 ## 19. Correctness and termination
 
@@ -1824,8 +2043,16 @@ A failed eligibility query may be a legitimate "no". A successful
 `invalid_limits/3` query means the host should stop deciding until the data is
 repaired.
 
-**Checkpoint.** For one recursive relation of your own, state its invariant and
-its termination measure in one sentence each.
+**Exercises.**
+
+1. For one recursive relation of your own, state its invariant and its
+   termination measure in one sentence each.
+2. Prove by induction that `prefix/2` returns only prefixes, then that it finds
+   every prefix of a proper list.
+3. Move the subtraction in `factorial/2` after the recursive call and show
+   which of the three claims fails.
+4. Write an integrity relation in the style of `invalid_limits/3` for a range
+   whose lower bound exceeds its upper bound.
 
 ## 20. Improving a program
 
@@ -1887,9 +2114,36 @@ Finally, resist generality nobody needs. A predicate that supports three modes
 can be harder to terminate, explain, and index than two simple predicates with
 clear contracts. Generalize when the second real use appears.
 
-**Checkpoint.** Make exactly one control change to a program and classify each
-difference in answers, proofs, and `--stats` as intended, harmless but
-observable, or a regression.
+**Exercises.**
+
+1. Make exactly one control change to a program and classify each difference
+   in answers, proofs, and `--stats` as intended, harmless but observable, or a
+   regression.
+2. Replace `connected/2` by a tabled reachability relation and compare the
+   number of answers and the work on a graph with many paths.
+3. Find a predicate of your own named like `step2/3` and replace it with a
+   helper that adds vocabulary, as `within_thermal_limits/1` does.
+4. Hoist one invariant computation out of a recursion, then check that the
+   answers and the first proof are unchanged.
+
+### Historical note: logic plus control
+
+Kowalski's 1979 formulation "algorithm = logic + control" gave a durable name
+to the dual reading developed in this Part. The logic component states what is
+known; control determines how it is used. The slogan did not claim that control
+was unimportant. It argued that control can often be improved while meaning
+stays fixed, and that programs are easier to reason about when the two are
+kept apart.
+
+The craft tradition of Prolog grew around this tension. Goal ordering,
+accumulators, generate-and-test, and changes of representation were never
+mere interpreter tricks; at their best they were transformations justified by
+invariants and modes. Sterling and Shapiro made construction and improvement
+central to *The Art of Prolog*, showing that declarative clarity and
+procedural competence mature together. Later work on the verification of logic
+programs, collected in Apt's *From Logic Programming to Prolog* (1997), gave
+the same intuition a formal footing: partial correctness, completeness, and
+termination are separate obligations, each with its own proof method.
 
 # Part V — Advanced relational design
 
@@ -2005,12 +2259,14 @@ usually locate the problem.
 
 **Exercises.**
 
-1. Draw the and–or tree for `ancestor(byron, Who)`, then add a second parent
-   of `clara` and mark where it branches.
-2. Write a cyclic `edge/2` graph, table `path/2`, and compare its answers with
-   the table rounds reported by `--stats`.
-3. Write a recursive rule whose call grows a list each step and explain why
-   tabling does not make it finite.
+1. Draw the and–or tree for `ancestor(byron, Who)`. Then add a second parent of
+   `clara` and mark where the tree gains a branch.
+2. For `eligible/1`, keep a binding ledger for an applicant whose
+   `verified/1` fact is missing, and name the choice that search resumes from.
+3. Write a cyclic `edge/2` graph, table `path/2`, and compare its answers with
+   the table counters reported by `--stats`.
+4. Write a recursive rule whose call grows a term on every step, like
+   `grows/1`, and explain why tabling cannot make it finite.
 
 ## 22. Trees, languages, and symbolic evaluation
 
@@ -2154,9 +2410,12 @@ first rule, expanding `X` into `add(X, number(0))`, and rewriting never stops.
 
 **Exercises.**
 
-1. Define `tree_size/2` and `tree_height/2`.
-2. Add adjectives to the grammar and subtraction to the evaluator.
-3. Define constant folding for `add(number(A), number(B))`.
+1. Define `tree_size/2` and `tree_height/2` for the `tree/3` representation.
+2. Add adjectives to the sentence grammar and subtraction to `evaluate/2`.
+3. Extend `simplify/2` with constant folding for `add(number(A), number(B))`,
+   and give a measure showing that repeated simplification terminates.
+4. Prove by structural induction that applying `mirror/2` twice returns the
+   original tree.
 
 ## 23. Transforming programs
 
@@ -2284,9 +2543,13 @@ drops a mode is a different program.
 
 **Exercises.**
 
-1. Unfold a two-clause helper and count the resulting caller clauses.
-2. Compare direct and accumulator-based list length in several modes.
-3. Find a transformation that keeps the answer set but changes the first proof
+1. Unfold a helper with two clauses into its caller and count the resulting
+   caller clauses. What did the proof lose?
+2. Compare a direct and an accumulator-based list length in every mode you can
+   call them in. Which modes does each support, and which terminate?
+3. State the invariant of `sum_from/3` and use it to show that
+   `sum_numbers/2` and `sum_numbers_acc/2` agree on ground numeric lists.
+4. Find a transformation that keeps the answer set but changes the first proof
    that `once/1` selects.
 
 ## 24. Designing finite search
@@ -2396,10 +2659,12 @@ it only when that order is part of the specification.
 
 **Exercises.**
 
-1. Add skills and time slots to the assignment example.
-2. Make `simple_path/3` return an accumulated cost.
-3. Write a recursive first clause that starves a valid later base clause, then
-   repair it.
+1. Add skills and time slots to `assignment/2`, keeping the search finite.
+2. Make `simple_path/3` return the accumulated cost of the path as well.
+3. Change the key in `best_plan/3` so that equal-cost plans prefer the shorter
+   plan, and explain why the new key does so.
+4. Write a recursive first clause that starves a valid later base clause, then
+   repair it and explain why the repair terminates.
 
 ## 25. Case study: an auditable decision service
 
@@ -2532,9 +2797,36 @@ a past decision can be reconstructed under the rules that governed it.
 
 **Exercises.**
 
-1. Add time-bounded training using explicit dates and `difference/3` from `library(dates)`.
-2. Model `denial/3` without assuming every failed permit has the same reason.
+1. Add a second badge for `ada` and observe that `permit(Person, Zone)` gives
+   one answer with two proofs. Redesign the relation so the badge is part of
+   the answer.
+2. Add time-bounded training using explicit dates and `difference/3` from
+   `library(dates)`.
 3. Write an integrity relation for a badge assigned to two people.
+4. Model `denial/3` without assuming that every failed permit has the same
+   reason.
+
+### Historical note: interpreters, transformation, and the art tradition
+
+Logic programming became a laboratory for symbolic computation because its
+principal data (terms, clauses, substitutions, and proof trees) could be
+represented with the same structures as any other domain. Meta-interpreters
+made resolution itself a topic of programs; Pereira and Warren's definite
+clause grammars (1980) made language recognition relational; partial
+evaluation showed how a general relation could be specialized when part of its
+input was known.
+
+Futamura's work in the 1970s gave partial evaluation a striking reading:
+specializing an interpreter to a source program yields a compiled program.
+Tamaki and Sato's unfold/fold transformations (1984) gave logic programs a
+calculus of meaning-preserving rewrites. EyeProlog does not build every classic
+transformation in. What it inherits is the demand that a transformation name
+its invariant and preserve a stated answer contract.
+
+*The Art of Prolog* joined computation, construction, nondeterminism, grammars,
+interpreters, transformation, and applications into one sustained account of
+craft. This Part follows that breadth with EyeProlog's explicit means: syntax is
+data, state is an argument, and audit evidence remains visible.
 
 # Part VI — Mathematics made executable
 
@@ -2634,32 +2926,17 @@ A tabled predicate makes the connection concrete. Its table grows with each
 new answer until no rule adds another — a local, demand-driven fixed-point
 computation.
 
-### Where the idea came from
-
-The path to logic programming ran through mathematics examining its own
-methods. Hilbert made formal proof and consistency mathematical subjects.
-Gödel showed that sufficiently expressive consistent systems cannot prove
-every arithmetical truth. Church and Turing made "effective procedure" exact
-and proved that some decision problems have no algorithm. Herbrand reduced
-quantified statements to ground instances, Robinson turned unification into a
-uniform inference rule, and van Emden and Kowalski gave definite programs
-their least-model meaning. Each step made one idea precise and exposed a new
-limit; resolution, in particular, still needed control — selection order,
-clause order, and eventually tabling.
-
 **Exercises.**
 
 1. Run `triple/3` with one, two, and three arguments bound. Compare the
    question asked, the answers, and the amount of search.
 2. Keep only primitive triples by rejecting those whose sides share a divisor.
-   Which generators make the negation safe?
-3. In `examples/fundamental-theorem-arithmetic.pl`, separate the witness it
-   constructs from the property it verifies.
-4. Draw the fixed-point rounds for a four-edge graph with one cycle.
-
-**Checkpoint.** For one printed answer, state the existential claim its
-bindings witness, the finite domain that made search possible, and what
-further argument a universal theorem would need.
+   Which generators must run first to make the negation safe?
+3. Draw the fixed-point rounds of the least model for a four-edge graph with
+   one cycle.
+4. For one printed answer of `triple/3`, state the existential claim its
+   bindings witness, the finite domain that made the search possible, and what
+   further argument a universal theorem would need.
 
 ## 27. Recursion is induction in motion
 
@@ -2764,16 +3041,15 @@ it.
 
 **Exercises.**
 
-1. Define multiplication on Peano naturals and give its decreasing measure.
-2. Prove the strengthened `reverse_go/3` invariant on paper.
-3. Compare the termination arguments for list membership and for reachability
-   on a cyclic graph.
-4. In `examples/peano-calculus.pl`, find where the data constructors determine
-   the available induction.
-
-**Checkpoint.** Line up one recursive program with its induction proof — base
-clause and base case, recursive call and hypothesis, head and conclusion —
-then give a separate termination measure.
+1. Define multiplication on Peano naturals using `plus/3` and give its
+   decreasing measure.
+2. Prove the strengthened `reverse_go/3` invariant by induction on the first
+   argument.
+3. Compare the termination arguments for list membership and for tabled
+   reachability on a cyclic graph.
+4. In `examples/peano-calculus.pl`, line up one recursive predicate with its
+   induction proof (base clause and base case, recursive call and hypothesis,
+   head and conclusion), then give a separate termination measure.
 
 ## 28. Algebra, symmetry, and representation
 
@@ -2894,10 +3170,8 @@ and which induction it exposes.
    for a zero denominator and a noncanonical zero.
 3. Use `examples/d3-group.pl` to check identity, inverses, and associativity.
    Which checks are exhaustive, and why?
-
-**Checkpoint.** Take a value with two possible representations. Say whether
-EyeProlog treats them as structurally equal, whether the domain treats them as
-equivalent, and what connects the two.
+4. Use `integer_rectangle/3` to list the rectangles of area 36, then explain
+   which argument supplies the finite direction for the inverse problem.
 
 ## 29. Search as experimental mathematics
 
@@ -2984,18 +3258,16 @@ conditions alongside the result.
 
 **Exercises.**
 
-1. Turn a familiar universal conjecture into a bounded counterexample search.
-   State what an empty result does and does not prove.
-2. Estimate the naive search space of `send-more-money.pl`, then identify the
-   constraint that removes the most branches.
+1. Turn a familiar universal conjecture into a bounded counterexample search in
+   the style of `counterexample_to_odd_square/1`. State what an empty result
+   proves and what it does not.
+2. Estimate the naive search space of `examples/send-more-money.pl`, then
+   identify the constraint that removes the most branches.
 3. Search a three-element carrier for a noncommutative operation with an
-   identity.
-4. For one scientific example, list every premise that is not pure logic.
-
-**Checkpoint.** Label a computation as witness construction, counterexample,
-exhaustive finite check, bounded evidence, or numerical model evaluation. In
-one sentence each, say what its success proves and what its failure leaves
-open.
+   identity, and return the offending pair as a witness.
+4. Classify one computation of your own as witness construction,
+   counterexample, exhaustive finite check, bounded evidence, or numerical
+   model evaluation, and say what its success and its failure establish.
 
 ## 30. What mathematics promises
 
@@ -3061,14 +3333,34 @@ from which version of the theory.
    trust.
 2. Write a conclusion that is valid from false premises, and explain why proof
    checking cannot repair it.
-3. Write a one-page trust contract for an embedded EyeProlog service: accepted
-   sources, model scope, numeric assumptions, resource bounds, proof
-   retention, and known limits.
+3. Prefix one strong conclusion with every condition it depends on: source
+   authenticity, model scope, built-in semantics, finite search, theory
+   version, and derivation validity.
+4. Write a one-page trust contract for an embedded EyeProlog service: accepted
+   sources, model scope, numeric assumptions, resource bounds, proof retention,
+   and known limits.
 
-**Checkpoint.** Prefix one strong conclusion with every condition it depends
-on: source authenticity, model scope, built-in semantics, finite search,
-theory version, and derivation validity. If the qualified claim still
-matters, the model has earned its confidence.
+### Historical note: mathematics examines its own methods
+
+The path to logic programming ran through mathematics examining its own
+methods. Hilbert's program made formal proof and consistency mathematical
+objects. Gödel established limits for sufficiently expressive effective
+axiomatic systems. Church and Turing made effective calculability precise
+enough to prove that some decision problems have no algorithm. Herbrand and
+Robinson supplied the ideas that became central to automated first-order
+deduction.
+
+Logic programming belongs to this history because it operationalizes a
+restricted proof discipline. It does not erase the limit results or turn every
+existence proof into an efficient witness generator. It gives a small region
+where propositions, substitutions, proof steps, and computations can be
+inspected together.
+
+The deeper inheritance is a style of honesty. Mathematics advanced by proving
+not only more statements but also where its methods fail, separating truth,
+provability, decidability, and computation. Finite bounds, mode restrictions,
+search risks, and trust boundaries belong in an account of EyeProlog for the
+same reason: limits are part of the result, not fine print.
 
 # Part VII — The reasoning laboratory
 
@@ -3216,13 +3508,12 @@ Keep three outcomes distinct:
 
 1. Build the domain-language test table for `ancestor/2`, including a cycle and
    the disputed reflexive case.
-2. Write bounded commutativity and associativity tests for a finite operation
-   table. Which is cheaper, and why?
+2. Extend `bounded_double_law/0` into bounded commutativity and associativity
+   tests for a finite operation table. Which is cheaper, and why?
 3. Write a metamorphic test for a route planner.
 4. Design a test that tells "no answer" apart from "invalid input".
-
-**Checkpoint.** Fill in the test matrix for one public relation and say which
-expected outputs should be exact goldens.
+5. Fill in the minimum test matrix for one public relation and say which
+   expected outputs should be exact goldens.
 
 ## 32. Debugging by meaning, search, and proof
 
@@ -3356,14 +3647,13 @@ Otherwise the repository remembers the fix and forgets the reason.
 
 1. Introduce a missing join into a two-relation rule, then use the proof of a
    false positive to find it.
-2. Write a term-growing recursive rule and explain why tabling cannot make its
-   answer space finite.
+2. Make `optimized_square/2` differ from `reference_square/2` at one point and
+   show that `disagreement/2` finds it. Add the check for the other direction.
 3. Compare `--stats` before and after moving an invariant calculation out of a
    recursion.
-
-**Checkpoint.** Turn one defect into a regression: the smallest disputed
-ground question, the expected answer, the first wrong binding or search
-choice, the repaired invariant, and the test that fails if it returns.
+4. Turn one defect into a regression: the smallest disputed ground question,
+   the expected answer, the first wrong binding or search choice, the repaired
+   invariant, and the test that fails if the defect returns.
 
 ## 33. A pattern catalog for reasoning
 
@@ -3511,9 +3801,27 @@ that. Use the smallest set of patterns the problem actually calls for.
 2. Refactor an opaque rule into boundary, concept, and decision layers, and
    compare the proofs before and after.
 3. Write a versioned evidence envelope for the Chapter 25 decision service.
+4. For one real theory, pick the smallest set of patterns that solves its
+   problem and name the pressure that justifies each.
 
-**Checkpoint.** For one real theory, pick the smallest set of patterns that
-solves its problem and name the pressure that justifies each.
+### Historical note: executable specifications learn to remember
+
+Logic programs have long stood between specification and implementation. That
+made testing both easier and subtler: a ground clause could serve as an
+example, yet a relation might have several modes and an answer set rather than
+one returned value. Shapiro's algorithmic program debugging (1983) turned this
+into a method, locating a wrong clause by asking an oracle about the intended
+meaning of the program's subgoals. Testing practice later absorbed ideas from
+theorem proving, database validation, regression testing, and property-based
+testing.
+
+A repository makes this practice durable. A theory, its exact answer files,
+proof files, conformance corpus, and version tags preserve not only a program
+but expectations about its meaning. Regression tests make old decisions
+reviewable; property tests seek counterexamples; metamorphic tests state what
+must stay invariant under controlled change. Patterns complete the cycle by
+naming recurring design knowledge, so that the failure that taught a lesson
+becomes executable memory.
 
 # Part VIII — Standard Prolog in practice
 
@@ -3615,8 +3923,17 @@ and
 [`iso-integer-arithmetic.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-integer-arithmetic.pl)
 run each of these side by side.
 
-**Checkpoint.** Name one absence in a route planner that should fail and one
-broken precondition that should throw.
+**Exercises.**
+
+1. Rewrite `travel_status/3` as two clauses, one for `connected` and one using
+   `\+ route(From, To)`. With `route(a, b)` stated twice, count the solutions
+   of each version with `findall/3` and explain the difference.
+2. Make `require_route/2` throw `type_error(atom, From)` when `From` is not an
+   atom, and show that `checked_route/3` lets that error pass outward.
+3. Remove `Seller^` from `regional_total/2` and predict its answers for a
+   region with two sellers.
+4. In a route planner, name one absence that should fail and one broken
+   precondition that should throw.
 
 ## 35. Reflective terms and atomic conversion
 
@@ -3658,8 +3975,15 @@ and
 [`iso-atomic-conversion.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-atomic-conversion.pl),
 which lists every three-character sub-atom of `eyeprolog`.
 
-**Checkpoint.** Given `pair(X, X)`, predict `term_variables/2` before and
-after `copy_term/2`.
+**Exercises.**
+
+1. Given `pair(X, X)`, predict the result of `term_variables/2` before and
+   after `copy_term/2`.
+2. Write `term_size/2`, counting the nodes of a term, once with `functor/3` and
+   `arg/3` and once with `=../2`.
+3. Explain why `3 + 4 < 8` succeeds while `3 + 4 @< 8` fails.
+4. Use `sub_atom/5` with `findall/3` to collect every three-character sub-atom
+   of `eyeprolog`, and predict their number before running it.
 
 ## 36. Dynamic predicates, directives, and operators
 
@@ -3728,8 +4052,16 @@ See
 and
 [`iso-operators.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-operators.pl).
 
-**Checkpoint.** Give the clause order after one `asserta/1` and two
-`assertz/1` calls.
+**Exercises.**
+
+1. Give the clause order of `task/2` after one `asserta/1` and two `assertz/1`
+   calls.
+2. Write `pop_task/1`, which retracts the first `task/2` clause and returns it,
+   and show that backtracking into a later failure does not restore the task.
+3. Declare an infix operator such as `implies` and write three facts with it.
+   Use `write_canonical/1` to show the terms that were stored.
+4. Write an embedded quad test that checks the `task/2` order produced by
+   `prepare_queue/0`.
 
 ## 37. Streams and term I/O
 
@@ -3792,18 +4124,33 @@ it.
 writes a fixture under `/tmp`, reads it back and observes the end of the
 stream.
 
-**Checkpoint.** Why does `write_event/2` belong outside the relation that
-decides what an event means?
+**Exercises.**
+
+1. Use `write_event/2` to write two events, then read them back with `read/2`
+   until `end_of_file`.
+2. Write `f('A b', 1+2, "ab")` with `write/1`, `writeq/1`, and
+   `write_canonical/1`, and say which outputs another Prolog can read back.
+3. Open a text stream for writing and call `put_byte/2` on it. Which error is
+   raised, and why is that better than guessing an encoding?
+4. Why does `write_event/2` belong outside the relation that decides what an
+   event means?
 
 ### Historical note: the practical language becomes portable
 
-In the late 1970s and 1980s Prolog spread from Marseille into several
-implementation traditions. The Edinburgh and DECsystem-10 lineage settled the
-practical vocabulary of ordered control, term inspection, dynamic clauses,
-operators and streams, and the differences between systems made portability a
-lasting concern. ISO/IEC 13211-1:1995 gave that practice a common core, against
-which later constraints, modules, tabling and coroutining could be named as
-extensions.
+By the late 1970s and 1980s, Prolog had spread from Marseille into several
+implementation traditions. David H. D. Warren's DECsystem-10 Prolog compiler
+(1977), whose techniques he later distilled into the Warren Abstract Machine
+(1983), established much of the practical vocabulary in Edinburgh: ordered control,
+term inspection, dynamic clauses, operators, and streams. These facilities made
+Prolog useful far beyond theorem-proving examples, but differences between
+systems also made portability a recurring concern.
+
+ISO/IEC 13211-1:1995 gave that accumulated practice a common core. It did not
+freeze the language: constraints, modules, tabling, coroutining, and other
+facilities continued to develop in implementations and in later
+standardization work. What the standard supplied was a stable, shared account
+of ordinary Prolog terms, control, state, errors, and I/O, against which
+extensions could be named.
 
 # Part IX — Reference as practice
 
@@ -7933,10 +8280,18 @@ filename, open with a comment stating the lesson and the model's boundary,
 keep its queries finite and its output small, include a positive and a
 boundary case, and come with its answer, proof, and check files.
 
-**Checkpoint.** Run one example with `--proof --stats`. Which output is the
-reusable logical result, which describes this particular run, and which
-status does a calling process see? Change one fact and predict all three before
-rerunning.
+**Exercises.**
+
+1. Run one example with `--proof --stats`. Which output is the reusable
+   logical result, which describes this particular run, and which status does a
+   calling process see? Change one fact and predict all three before rerunning.
+2. Save the proof of `examples/socrates.pl` and check it with `--check-proof`.
+   Delete the step for `type(socrates, man)` and check again; then restore it
+   and delete the step for `type(socrates, mortal)` instead. Why does only the
+   second deletion fail, and which conditions report it?
+3. Write a three-quad test file for `ancestor/2` with one ordered answer
+   sequence, one `false.` description, and one labelled quad, and run it with
+   `--quads`.
 
 ## 41. Standards, limits, and implementation boundaries
 
@@ -8105,6 +8460,25 @@ languages and theories and are not EyeProlog specifications.
 - David Hilbert,
   [“Mathematical Problems”](https://www.gutenberg.org/ebooks/71655), Paris,
   1900. The problem-directed axiomatic culture behind Part VI.
+- Robert A. Kowalski, “Predicate Logic as Programming Language”, *Proceedings
+  of IFIP Congress 74*, 1974, pp. 569–574. The procedural interpretation of
+  Horn clauses (Part I).
+- David H. D. Warren, *An Abstract Prolog Instruction Set*, Technical Note 309,
+  SRI International, 1983. The Warren Abstract Machine (Part VIII).
+- Fernando C. N. Pereira and David H. D. Warren, “Definite Clause Grammars for
+  Language Analysis”, *Artificial Intelligence* 13(3), 1980, pp. 231–278
+  (Chapter 22).
+- Hisao Tamaki and Taisuke Sato, “Unfold/Fold Transformation of Logic
+  Programs”, *Proceedings of the Second International Logic Programming
+  Conference*, 1984, pp. 127–138 (Chapter 23).
+- Ehud Y. Shapiro, *Algorithmic Program Debugging*, MIT Press, 1983
+  (Chapter 32).
+- Krzysztof R. Apt, *From Logic Programming to Prolog*, Prentice Hall, 1997.
+  Correctness, completeness, and termination of logic programs (Chapter 19).
+- William F. Clocksin and Christopher S. Mellish, *Programming in Prolog*,
+  Springer, 1981; Ivan Bratko, *Prolog Programming for Artificial
+  Intelligence*, Addison-Wesley, 1986. Teaching Prolog by construction
+  (Part X).
 - Dörthe Arndt and Stephan Mennicke,
   [“Notation3 as an Existential Rule Language”](https://arxiv.org/abs/2308.07332),
   2023. Semantic Web rules and existential-rule reasoning.
@@ -8304,6 +8678,23 @@ variables. Tabling recognizes variant calls.
 
 **Witness.** A ground term demonstrating an existential claim: a path, an
 assignment, a factorization, a schedule.
+
+### Historical note: manuals become specifications
+
+Early Prolog programmers learned from implementation manuals, examples, and
+books whose descriptions were often inseparable from one particular system. As
+the language spread, reference writing acquired a second task: telling the
+portable language apart from implementation convention. Predicate indexes,
+precise mode and error descriptions, and standards documents became tools for
+comparing systems rather than merely operating one of them.
+
+Standardization made that distinction explicit, and conformance suites such as
+Ulrich Neumerkel's ISO conformity assessment made many disagreements between
+systems executable. A mature reference therefore joins several kinds of
+evidence: normative prose, named predicates and flags, examples,
+implementation boundaries, and reproducible tests. It is not a substitute for
+programming practice; it is a map from a concrete question to the contract
+that governs it.
 
 # Part X — Laboratories
 
@@ -8505,3 +8896,20 @@ an unbounded theorem.
 **Laboratories.** A finished answer is an artifact, not a paragraph: a source
 file, the predicted output, the actual output, and one sentence explaining any
 difference.
+
+### Historical note: logic programming grows through exercises
+
+Logic programming has long been taught by construction. Lists, family
+relations, puzzles, grammars, interpreters, search problems, and small expert
+systems became recurring exercises because each exposes both a logical
+relation and the control needed to compute with it. Clocksin and Mellish's
+*Programming in Prolog* (1981), Bratko's *Prolog Programming for Artificial
+Intelligence* (1986), and Sterling and Shapiro's *The Art of Prolog* (1986)
+made this dual reading the core of teaching: an exercise was not finished when
+a clause parsed, but when its meaning, modes, and behavior could be explained.
+
+Laboratory practice later absorbed regression testing, property-based
+checking, benchmark corpora, and reproducible command-line runs. These tools
+fit logic programming unusually well, because a small change can be examined
+at several levels at once: answers, failures, witnesses, proofs, and search.
+The laboratory is where a declarative claim becomes an executable experiment.
