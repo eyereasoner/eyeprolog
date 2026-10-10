@@ -588,7 +588,7 @@ ${profile}`;
           'ISO-EVALUABLE-FUNCTOR-MATRIX.md',
         ]) assertIncludes(book, name, `book ${name}`);
         assertIncludes(readme, 'implementation reference is [*The Art of EyeProlog*]', 'README book hand-off');
-        assertIncludes(readme, 'test/conformance/ISO-COMPLIANCE.md', 'README concise review link');
+        assertIncludes(readme, 'test/conformance/ISO-COMPLIANCE', 'README concise review link');
         for (const heading of ['## Tabling', '## Cleanup-aware control', '## Strict ISO',
           '## Module and definite clause grammar', '## Trealla and Scryer interoperability']) {
           assertNotIncludes(readme, heading, `README delegates ${heading} to the book`);

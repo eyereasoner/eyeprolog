@@ -435,6 +435,8 @@
   </footer>
 
   <script type="module">
+    import { goalsFromSource } from './src/goal-metadata.js';
+
     const EXAMPLES = [
           "abstract-interpretation",
           "access-control-policy",
@@ -886,7 +888,7 @@
     }
 
     function suggestedGoalsFromSource(text) {
-      return [...text.matchAll(/^\s*%%\s*goal:\s*(.+)$/gm)].map((match) => match[1].trim());
+      return goalsFromSource(text).map((text) => text.replace(/\s+/g, ' '));
     }
 
     function selectedGoals() {
