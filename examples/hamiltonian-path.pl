@@ -12,8 +12,9 @@
 %% ?- hamiltonianPath(X0, X1).
 
 
-% The finite six-vertex graph is small enough to search directly.  adjacent/2
-% is tabled because every candidate path repeatedly asks the same edge tests.
+% The finite six-vertex graph is small enough to search directly, so nothing is
+% tabled.  adjacent/2 makes the graph undirected, so every Hamiltonian path is
+% found once in each direction: the 120 paths in the output are 60 routes.
 
 edge(v1, v2).
 edge(v1, v3).

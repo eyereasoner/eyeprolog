@@ -19,7 +19,7 @@ alg(signature, "HMAC-SHA256").
 auditEntries(case, 1).
 filesWritten(case, 6).
 allChecksPass(result, true).
-signatureVerifies(check, true).
+signatureAcceptedAsTrusted(check, true).
 payloadHashMatches(check, true).
 minimizationStripsSensitiveTerms(check, true).
 scopeComplete(check, true).

@@ -1,5 +1,6 @@
-% Memoize interval computations reused across width, midpoint, gradient, step,
-% objective, and contraction report relations.
+% Certified gradient descent on f(x) = (x - 1)^2 over an interval of starting
+% points. Each step maps the whole interval through x' = x - eta * f'(x).
+%
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %
 % This is a proof-friendly optimization trace: every numeric fact needed to
@@ -30,6 +31,12 @@
 % Program structure: facts set up the scenario, and rules derive the queried conclusions.
 
 % One-dimensional gradient descent over certified interval bounds.
+%
+% For eta =< 1/2 the update x' = x - 2 * eta * (x - target) is increasing in x,
+% so the image of [L, U] is exactly [L', U'] with each endpoint updated on its
+% own. Width shrinks by the factor 1 - 2 * eta every step. Subtracting the
+% interval of steps from the interval of points instead would count the same x
+% twice (the interval dependency problem) and widen the bounds at every step.
 
 max_k(10).
 target(1.0).
@@ -60,16 +67,13 @@ p_bounds(K, Pl, Pu) :-
 x_bounds(K1, L1, U1) :-
   previous(K1, K),
   x_bounds(K, L, U),
+  eta_le_half(true),
   target(A),
   eta(Eta),
   (Dl is L - A),
   (Du is U - A),
-  (Gl is 2 * Dl),
-  (Gu is 2 * Du),
-  (Pl is Eta * Gl),
-  (Pu is Eta * Gu),
-  (L1 is L - Pu),
-  (U1 is U - Pl).
+  (L1 is L - Eta * 2 * Dl),
+  (U1 is U - Eta * 2 * Du).
 
 width(K, W) :-
   x_bounds(K, L, U),

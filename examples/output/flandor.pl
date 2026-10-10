@@ -22,9 +22,9 @@ gridReliefMW(why, 85).
 outcome(decision, "Allowed").
 target(decision, macroInsight).
 allChecksPass(result, true).
-signatureVerifies(check, true).
+signatureAcceptedAsTrusted(check, true).
 payloadHashMatches(check, true).
-hmacMatches(check, true).
+hmacIsExpectedValue(check, true).
 minimizationStripsSensitiveTerms(check, true).
 scopeComplete(check, true).
 authorizationAllowed(check, true).

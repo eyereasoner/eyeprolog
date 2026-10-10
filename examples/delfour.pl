@@ -51,7 +51,7 @@
 
 %% ?- allChecksPass(X0, X1).
 
-%% ?- signatureVerifies(X0, X1).
+%% ?- signatureAcceptedAsTrusted(X0, X1).
 
 %% ?- payloadHashMatches(X0, X1).
 
@@ -95,6 +95,12 @@ product_catalog(delfourCatalog, [
   product(prod_CHOC_050, "prod_CHOC_050", "Milk Chocolate Bar", 150, 15.0),
   product(prod_CHOC_150, "prod_CHOC_150", "85% Dark Chocolate", 60, 6.0)
 ]).
+
+% A suggested alternative must come from the same shelf as the scanned product.
+product_category(prod_BIS_001, biscuits).
+product_category(prod_BIS_101, biscuits).
+product_category(prod_CHOC_050, chocolate).
+product_category(prod_CHOC_150, chocolate).
 
 insight_graph(delfourInsightGraph, (
   metric(insight, "sugar_g_per_serving"),
@@ -201,7 +207,10 @@ payload_hash_matches(check) :-
   envelope_hash(envelope, Digest),
   payload_hash_sha256(signature, Digest).
 
-signature_verifies(check) :-
+% The HMAC is not recomputed here. The input states that it was verified
+% upstream (hmacVerificationMode trustedPrecomputedInput), and this check only
+% accepts that statement; it vouches for the declaration, not for the bytes.
+signature_accepted_as_trusted(check) :-
   hmac_verification_mode(signature, trustedPrecomputedInput).
 
 minimization_strips_sensitive_terms(check) :-
@@ -236,20 +245,22 @@ banner_headline(banner, "Track sugar per serving while you scan") :-
 banner_note(banner, "High sugar") :-
   banner_flags_high_sugar(check).
 
-better_lower_sugar(Scannedsugar, Candidatesugar) :-
-  product(Other),
+better_lower_sugar(Category, Scannedsugar, Candidatesugar) :-
+  product_category(Other, Category),
   sugar_tenths(Other, Othersugar),
   (Scannedsugar > Othersugar),
   (Othersugar < Candidatesugar).
 
-% Pick the lowest-sugar alternative according to the insight suggestion policy.
+% Pick the lowest-sugar alternative in the scanned product's category,
+% according to the insight suggestion policy.
 suggested_alternative(case, Candidate) :-
   scanned_product(scan, Scanned),
+  product_category(Scanned, Category),
   sugar_tenths(Scanned, Scannedsugar),
-  product(Candidate),
+  product_category(Candidate, Category),
   sugar_tenths(Candidate, Candidatesugar),
   (Scannedsugar > Candidatesugar),
-  \+ better_lower_sugar(Scannedsugar, Candidatesugar).
+  \+ better_lower_sugar(Category, Scannedsugar, Candidatesugar).
 
 banner_suggested_alternative(banner, Name) :-
   banner_note(banner, "High sugar"),
@@ -275,7 +286,7 @@ files_written_expected(check) :-
   files_written(case, 6).
 
 all_checks_pass(result) :-
-  signature_verifies(check),
+  signature_accepted_as_trusted(check),
   payload_hash_matches(check),
   minimization_strips_sensitive_terms(check),
   scope_complete(check),
@@ -305,7 +316,7 @@ alg(signature, Alg) :- signature_alg(signature, Alg).
 auditEntries(case, Count) :- audit_entries(case, Count).
 filesWritten(case, Count) :- files_written(case, Count).
 allChecksPass(result, true) :- all_checks_pass(result).
-signatureVerifies(check, true) :- signature_verifies(check).
+signatureAcceptedAsTrusted(check, true) :- signature_accepted_as_trusted(check).
 payloadHashMatches(check, true) :- payload_hash_matches(check).
 minimizationStripsSensitiveTerms(check, true) :- minimization_strips_sensitive_terms(check).
 scopeComplete(check, true) :- scope_complete(check).

@@ -9,7 +9,7 @@ import { Program, run } from '../src/index.js';
 import { fileURLToPath } from 'node:url';
 import { TestReporter, isMainModule, runStandalone } from './test-style.mjs';
 import { runTasksInParallel, serveTasks } from './parallel-tasks.mjs';
-import { goalsInProgramOrder } from './goal-metadata.mjs';
+import { goalsFromSource } from './goal-metadata.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 const packageRoot = path.resolve(root, '..');
@@ -97,7 +97,7 @@ function runProgramExample(programFile, filename, options) {
     },
   });
   try {
-    const result = run(program, { ...options, goals: goalsInProgramOrder(program, text) });
+    const result = run(program, { ...options, goals: goalsFromSource(text) });
     if (expectedExit) throw new Error(`${filename} expected exit ${expectedExit[1]}, but reasoning succeeded`);
     return result.stdout;
   } catch (error) {

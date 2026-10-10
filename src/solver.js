@@ -919,7 +919,7 @@ export class Solver {
         }
 
         if (group.tabled) {
-          const key = memoKey(goal, env, group);
+          const key = memoKey(goal, env);
           if (key.hasBound) {
             const mapKey = `${group.module}:${goal.name}/${goal.arity}:${key.text}`;
             const broadKey = `${group.module}:${goal.name}/${goal.arity}`;
@@ -3324,17 +3324,16 @@ function derefForLocal(term, env) {
   return current;
 }
 
-function memoKey(goal, env, group = null) {
-  const required = group?.tableInputPositions ?? [];
-  const ground = goal.args.map((arg) => termIsGround(arg, env));
-  const hasBound = group?.tableAllVariants === true || (required.length > 0
-    ? required.some((index) => ground[index])
-    : ground.some(Boolean));
-  if (!hasBound) return { hasBound: false, text: '' };
-
+// The table key of a call to an explicitly tabled predicate: the call's
+// variant, so `anc(X, Y)` and `anc(A, B)` share one table. Every call pattern
+// is tabled, including fully open ones: a declared table is part of the
+// program's operational contract, and leaving an open call untabled turned a
+// left-recursive `anc(X, Z) :- anc(X, Y), p(Y, Z).` back into an infinite
+// depth-first descent.
+function memoKey(goal, env) {
   const variables = new Map();
   const parts = goal.args.map((arg) => canonicalTermKey(arg, env, variables));
-  return { hasBound, text: parts.join('|') };
+  return { hasBound: true, text: parts.join('|') };
 }
 
 function canonicalTermKey(term, env, variables) {

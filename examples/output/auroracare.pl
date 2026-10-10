@@ -44,7 +44,7 @@ trace(scenarioF, "urn:policy:research-aurora-diabetes:permit:odrl:permission_mat
 trace(scenarioD, "deny:prohibited_purpose").
 trace(scenarioD, "urn:policy:deny-insurance:deny:odrl:prohibition_matched").
 trace(scenarioG, "deny:subject_opted_out_ai_training").
-trace(scenarioC, "urn:policy:qi-2025-aurora:deny:odrl:no_permission_matched").
+trace(scenarioC, "deny:no_permission_matched").
 checkC1(scenarioA, "SKIPPED - not a prohibited purpose").
 checkC1(scenarioB, "SKIPPED - not a prohibited purpose").
 checkC1(scenarioC, "SKIPPED - not a prohibited purpose").

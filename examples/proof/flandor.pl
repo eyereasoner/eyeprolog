@@ -22,9 +22,9 @@ gridReliefMW(why, 85).
 outcome(decision, "Allowed").
 target(decision, macroInsight).
 allChecksPass(result, true).
-signatureVerifies(check, true).
+signatureAcceptedAsTrusted(check, true).
 payloadHashMatches(check, true).
-hmacMatches(check, true).
+hmacIsExpectedValue(check, true).
 minimizationStripsSensitiveTerms(check, true).
 scopeComplete(check, true).
 authorizationAllowed(check, true).
@@ -114,9 +114,11 @@ clause(113,
 clause(114,
        payload_hash_matches(check),
        (envelopeHash(envelope, var('Digest')), payload_hash_sha256(signature, var('Digest')))).
-clause(115, signature_verifies(check), hmacVerificationMode(signature, trustedPrecomputedInput)).
+clause(115,
+       signature_accepted_as_trusted(check),
+       hmacVerificationMode(signature, trustedPrecomputedInput)).
 clause(116,
-       hmac_matches(check),
+       hmac_is_expected_value(check),
        (hmacVerificationMode(signature, trustedPrecomputedInput),
         signature_hmac(signature, "955968ca99a191783bc00cba068128ccb9ff40a5e6114fda13a52c74ee27329e"))).
 clause(117,
@@ -177,7 +179,7 @@ clause(129,
 clause(130, lowest_cost_eligible_package_chosen(check), recommended_package(case, anonymous(1))).
 clause(131,
        all_checks_pass(result),
-       (signature_verifies(check),
+       (signature_accepted_as_trusted(check),
         payload_hash_matches(check),
         minimization_strips_sensitive_terms(check),
         scope_complete(check),
@@ -213,9 +215,9 @@ clause(144,
 clause(145, outcome(decision, var('Outcome')), decision(decision, var('Outcome'), anonymous(1))).
 clause(146, target(decision, var('Target')), decision(decision, anonymous(1), var('Target'))).
 clause(147, allChecksPass(result, true), all_checks_pass(result)).
-clause(148, signatureVerifies(check, true), signature_verifies(check)).
+clause(148, signatureAcceptedAsTrusted(check, true), signature_accepted_as_trusted(check)).
 clause(149, payloadHashMatches(check, true), payload_hash_matches(check)).
-clause(150, hmacMatches(check, true), hmac_matches(check)).
+clause(150, hmacIsExpectedValue(check, true), hmac_is_expected_value(check)).
 clause(151,
        minimizationStripsSensitiveTerms(check, true),
        minimization_strips_sensitive_terms(check)).
@@ -243,8 +245,12 @@ clause(164,
        reason(whyRecommendationPolicy, "The recommendation policy is \"lowest_cost_package_covering_all_active_needs\", so the cheapest package that covers all active needs within budget is selected."),
        recommended_package(case, anonymous(1))).
 clause(165,
-       reason(whySelectedPackage, "Selected package \"Flandor Retooling Pulse\" covers export=true, skills=true, grid=true, cost=€120M."),
-       recommended_package(case, pkgFlandor)).
+       reason(whySelectedPackage, var('Text')),
+       (recommended_package(case, var('Pkg')),
+        packageName(var('Pkg'), var('Name')),
+        costMEUR(var('Pkg'), var('Cost')),
+        number_chars(var('Cost'), var('CostChars')),
+        append(["Selected package \"", var('Name'), "\" covers export=true, skills=true, grid=true, cost=€", var('CostChars'), "M."], var('Text')))).
 clause(166,
        reason(whyUsage, "Usage is permitted only for purpose \"regional_stabilization\" and the envelope expires at 2026-04-08T19:00:00+00:00."),
        authorization_allowed(check)).
@@ -399,7 +405,7 @@ step(allChecksPass(result, true), rule(147), [], [all_checks_pass(result)]).
 step(all_checks_pass(result),
      rule(131),
      [],
-     [signature_verifies(check),
+     [signature_accepted_as_trusted(check),
       payload_hash_matches(check),
       minimization_strips_sensitive_terms(check),
       scope_complete(check),
@@ -409,7 +415,7 @@ step(all_checks_pass(result),
       duty_timing_consistent(check),
       surveillance_reuse_prohibited(check),
       files_written_expected(check)]).
-step(signature_verifies(check),
+step(signature_accepted_as_trusted(check),
      rule(115),
      [],
      [hmacVerificationMode(signature, trustedPrecomputedInput)]).
@@ -476,10 +482,13 @@ step(surveillance_reuse_prohibited(check),
      [prohibition(policy, odrlDistribute, macroInsight, "firm_surveillance")]).
 step(prohibition(policy, odrlDistribute, macroInsight, "firm_surveillance"), fact(92), [], []).
 step(files_written_expected(check), rule(128), [], [files_written(case, 6)]).
-step(signatureVerifies(check, true), rule(148), [], [signature_verifies(check)]).
+step(signatureAcceptedAsTrusted(check, true),
+     rule(148),
+     [],
+     [signature_accepted_as_trusted(check)]).
 step(payloadHashMatches(check, true), rule(149), [], [payload_hash_matches(check)]).
-step(hmacMatches(check, true), rule(150), [], [hmac_matches(check)]).
-step(hmac_matches(check),
+step(hmacIsExpectedValue(check, true), rule(150), [], [hmac_is_expected_value(check)]).
+step(hmac_is_expected_value(check),
      rule(116),
      [],
      [hmacVerificationMode(signature, trustedPrecomputedInput),
@@ -525,8 +534,21 @@ step(reason(whyRecommendationPolicy, "The recommendation policy is \"lowest_cost
      [recommended_package(case, pkgFlandor)]).
 step(reason(whySelectedPackage, "Selected package \"Flandor Retooling Pulse\" covers export=true, skills=true, grid=true, cost=€120M."),
      rule(165),
+     ['Text' = "Selected package \"Flandor Retooling Pulse\" covers export=true, skills=true, grid=true, cost=€120M.",
+      'Pkg' = pkgFlandor,
+      'Name' = "Flandor Retooling Pulse",
+      'Cost' = 120,
+      'CostChars' = "120"],
+     [recommended_package(case, pkgFlandor),
+      packageName(pkgFlandor, "Flandor Retooling Pulse"),
+      costMEUR(pkgFlandor, 120),
+      number_chars(120, "120"),
+      append(["Selected package \"", "Flandor Retooling Pulse", "\" covers export=true, skills=true, grid=true, cost=€", "120", "M."], "Selected package \"Flandor Retooling Pulse\" covers export=true, skills=true, grid=true, cost=€120M.")]).
+step(number_chars(120, "120"), builtin, [], []).
+step(append(["Selected package \"", "Flandor Retooling Pulse", "\" covers export=true, skills=true, grid=true, cost=€", "120", "M."], "Selected package \"Flandor Retooling Pulse\" covers export=true, skills=true, grid=true, cost=€120M."),
+     builtin,
      [],
-     [recommended_package(case, pkgFlandor)]).
+     []).
 step(reason(whyUsage, "Usage is permitted only for purpose \"regional_stabilization\" and the envelope expires at 2026-04-08T19:00:00+00:00."),
      rule(166),
      [],

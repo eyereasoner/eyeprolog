@@ -231,6 +231,7 @@ research_policy_match(S) :-
   environment(S, "secure_env"),
   tom(S, anonymisation),
   subject_opt_in(S),
+  \+ subject_opt_out(S),
   category(S, labResults).
 
 insurance_prohibition_match(S) :-
@@ -241,18 +242,30 @@ ai_training_opt_out_match(S) :-
   purpose(S, trainTestAndEvaluateAiSystemsAlgorithms),
   subject_opt_out(S).
 
+% A scenario is permitted when some permission policy matches, and prohibited
+% when a prohibition or the subject's opt-out applies.
+permission_match(S) :- primary_policy_match(S).
+permission_match(S) :- qi_policy_match(S).
+permission_match(S) :- research_policy_match(S).
+
+prohibition_match(S) :- insurance_prohibition_match(S).
+prohibition_match(S) :- subject_opt_out(S).
+
+% Deny by default: neither a permission nor a prohibition applies.
+no_policy_match(S) :-
+  scenario(S),
+  \+ permission_match(S),
+  \+ prohibition_match(S).
+
 careTeamLinked(S, true) :- care_team_linked(S).
 subjectOptIn(S, true) :- subject_opt_in(S).
 subjectOptOut(S, true) :- subject_opt_out(S).
 
-% Permit when a scenario satisfies one of the allowed policy branches.
-decision(S, "PERMIT") :- primary_policy_match(S).
-decision(S, "PERMIT") :- qi_policy_match(S).
-decision(S, "PERMIT") :- research_policy_match(S).
-% Deny branches preserve the reason that will be queried for the report.
-decision(S, "DENY") :- insurance_prohibition_match(S).
-decision(S, "DENY") :- ai_training_opt_out_match(S).
-decision(scenarioC, "DENY") :- purpose(scenarioC, ensureQualitySafetyHealthcare).
+% Permit when a permission matches and no prohibition applies; a prohibition
+% always denies, and a scenario that matches nothing is denied by default.
+decision(S, "PERMIT") :- permission_match(S), \+ prohibition_match(S).
+decision(S, "DENY") :- prohibition_match(S).
+decision(S, "DENY") :- no_policy_match(S).
 
 matchedPolicyUid(S, Uid) :- primary_policy_match(S), policyUid(policyPrimary, Uid).
 matchedPolicyUid(S, Uid) :- qi_policy_match(S), policyUid(policyQi, Uid).
@@ -264,7 +277,8 @@ reason(S, "Permitted: ODRL/DPV policy matched for secondary use.") :- qi_policy_
 reason(S, "Permitted: subject opted in and an ODRL/DPV policy matched (anonymised dataset in secure environment).") :- research_policy_match(S).
 reason(S, "Denied: the requested purpose (insurance management) is prohibited by policy.") :- insurance_prohibition_match(S).
 reason(S, "Denied: you opted out of your data being used to train AI systems.") :- ai_training_opt_out_match(S).
-reason(scenarioC, "Denied: no policy matched (purpose, environment, TOMs, or categories out of scope).") :- purpose(scenarioC, ensureQualitySafetyHealthcare).
+reason(S, "Denied: the subject opted out of this purpose.") :- subject_opt_out(S), \+ ai_training_opt_out_match(S).
+reason(S, "Denied: no policy matched (purpose, environment, TOMs, or categories out of scope).") :- no_policy_match(S).
 
 trace(S, "permit:primary_care_allowed") :- primary_policy_match(S).
 trace(S, "urn:policy:primary-care-001:permit:odrl:permission_matched") :- primary_policy_match(S).
@@ -273,7 +287,8 @@ trace(S, "urn:policy:research-aurora-diabetes:permit:odrl:permission_matched") :
 trace(S, "deny:prohibited_purpose") :- insurance_prohibition_match(S).
 trace(S, "urn:policy:deny-insurance:deny:odrl:prohibition_matched") :- insurance_prohibition_match(S).
 trace(S, "deny:subject_opted_out_ai_training") :- ai_training_opt_out_match(S).
-trace(scenarioC, "urn:policy:qi-2025-aurora:deny:odrl:no_permission_matched") :- purpose(scenarioC, ensureQualitySafetyHealthcare).
+trace(S, "deny:subject_opted_out") :- subject_opt_out(S), \+ ai_training_opt_out_match(S).
+trace(S, "deny:no_permission_matched") :- no_policy_match(S).
 
 % C1-C10 below are the ARC-style checklist lines from the upstream output.
 checkC1(scenarioA, "SKIPPED - not a prohibited purpose") :- decision(scenarioA, "PERMIT").

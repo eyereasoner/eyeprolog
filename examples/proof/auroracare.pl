@@ -44,7 +44,7 @@ trace(scenarioF, "urn:policy:research-aurora-diabetes:permit:odrl:permission_mat
 trace(scenarioD, "deny:prohibited_purpose").
 trace(scenarioD, "urn:policy:deny-insurance:deny:odrl:prohibition_matched").
 trace(scenarioG, "deny:subject_opted_out_ai_training").
-trace(scenarioC, "urn:policy:qi-2025-aurora:deny:odrl:no_permission_matched").
+trace(scenarioC, "deny:no_permission_matched").
 checkC1(scenarioA, "SKIPPED - not a prohibited purpose").
 checkC1(scenarioB, "SKIPPED - not a prohibited purpose").
 checkC1(scenarioC, "SKIPPED - not a prohibited purpose").
@@ -143,11 +143,11 @@ clause(77, purpose(scenarioB, ensureQualitySafetyHealthcare), true).
 clause(78, environment(scenarioB, "secure_env"), true).
 clause(79, category(scenarioB, labResults), true).
 clause(80, category(scenarioB, patientSummary), true).
+clause(81, scenario(scenarioC), true).
 clause(83, scenario_label(scenarioC, "C – Quality improvement (out of scope)"), true).
 clause(84,
        scenario_description(scenarioC, "QI analyst with only lab results; policy expects labs + summary."),
        true).
-clause(88, purpose(scenarioC, ensureQualitySafetyHealthcare), true).
 clause(93, scenario_label(scenarioD, "D – Insurance management"), true).
 clause(94,
        scenario_description(scenarioD, "Insurance bot attempting to use health data for insurance management (prohibited purpose)."),
@@ -215,6 +215,7 @@ clause(141,
         environment(var('S'), "secure_env"),
         tom(var('S'), anonymisation),
         subject_opt_in(var('S')),
+        \+ subject_opt_out(var('S')),
         category(var('S'), labResults))).
 clause(142,
        insurance_prohibition_match(var('S')),
@@ -223,209 +224,214 @@ clause(142,
 clause(143,
        ai_training_opt_out_match(var('S')),
        (purpose(var('S'), trainTestAndEvaluateAiSystemsAlgorithms), subject_opt_out(var('S')))).
-clause(144, careTeamLinked(var('S'), true), care_team_linked(var('S'))).
-clause(145, subjectOptIn(var('S'), true), subject_opt_in(var('S'))).
-clause(146, subjectOptOut(var('S'), true), subject_opt_out(var('S'))).
-clause(147, decision(var('S'), "PERMIT"), primary_policy_match(var('S'))).
-clause(148, decision(var('S'), "PERMIT"), qi_policy_match(var('S'))).
-clause(149, decision(var('S'), "PERMIT"), research_policy_match(var('S'))).
-clause(150, decision(var('S'), "DENY"), insurance_prohibition_match(var('S'))).
-clause(151, decision(var('S'), "DENY"), ai_training_opt_out_match(var('S'))).
-clause(152, decision(scenarioC, "DENY"), purpose(scenarioC, ensureQualitySafetyHealthcare)).
+clause(144, permission_match(var('S')), primary_policy_match(var('S'))).
+clause(145, permission_match(var('S')), qi_policy_match(var('S'))).
+clause(146, permission_match(var('S')), research_policy_match(var('S'))).
+clause(147, prohibition_match(var('S')), insurance_prohibition_match(var('S'))).
+clause(148, prohibition_match(var('S')), subject_opt_out(var('S'))).
+clause(149,
+       no_policy_match(var('S')),
+       (scenario(var('S')), \+ permission_match(var('S')), \+ prohibition_match(var('S')))).
+clause(150, careTeamLinked(var('S'), true), care_team_linked(var('S'))).
+clause(151, subjectOptIn(var('S'), true), subject_opt_in(var('S'))).
+clause(152, subjectOptOut(var('S'), true), subject_opt_out(var('S'))).
 clause(153,
+       decision(var('S'), "PERMIT"),
+       (permission_match(var('S')), \+ prohibition_match(var('S')))).
+clause(154, decision(var('S'), "DENY"), prohibition_match(var('S'))).
+clause(155, decision(var('S'), "DENY"), no_policy_match(var('S'))).
+clause(156,
        matchedPolicyUid(var('S'), var('Uid')),
        (primary_policy_match(var('S')), policyUid(policyPrimary, var('Uid')))).
-clause(154,
+clause(157,
        matchedPolicyUid(var('S'), var('Uid')),
        (qi_policy_match(var('S')), policyUid(policyQi, var('Uid')))).
-clause(155,
+clause(158,
        matchedPolicyUid(var('S'), var('Uid')),
        (research_policy_match(var('S')), policyUid(policyResearch, var('Uid')))).
-clause(156,
+clause(159,
        matchedProhibition(var('S'), policyDenyInsurance),
        insurance_prohibition_match(var('S'))).
-clause(157,
+clause(160,
        reason(var('S'), "Permitted: clinician in the patient's care team, and the primary-care policy matched."),
        primary_policy_match(var('S'))).
-clause(158,
+clause(161,
        reason(var('S'), "Permitted: ODRL/DPV policy matched for secondary use."),
        qi_policy_match(var('S'))).
-clause(159,
+clause(162,
        reason(var('S'), "Permitted: subject opted in and an ODRL/DPV policy matched (anonymised dataset in secure environment)."),
        research_policy_match(var('S'))).
-clause(160,
+clause(163,
        reason(var('S'), "Denied: the requested purpose (insurance management) is prohibited by policy."),
        insurance_prohibition_match(var('S'))).
-clause(161,
+clause(164,
        reason(var('S'), "Denied: you opted out of your data being used to train AI systems."),
        ai_training_opt_out_match(var('S'))).
-clause(162,
-       reason(scenarioC, "Denied: no policy matched (purpose, environment, TOMs, or categories out of scope)."),
-       purpose(scenarioC, ensureQualitySafetyHealthcare)).
-clause(163, trace(var('S'), "permit:primary_care_allowed"), primary_policy_match(var('S'))).
-clause(164,
+clause(166,
+       reason(var('S'), "Denied: no policy matched (purpose, environment, TOMs, or categories out of scope)."),
+       no_policy_match(var('S'))).
+clause(167, trace(var('S'), "permit:primary_care_allowed"), primary_policy_match(var('S'))).
+clause(168,
        trace(var('S'), "urn:policy:primary-care-001:permit:odrl:permission_matched"),
        primary_policy_match(var('S'))).
-clause(165,
+clause(169,
        trace(var('S'), "urn:policy:qi-2025-aurora:permit:odrl:permission_matched"),
        qi_policy_match(var('S'))).
-clause(166,
+clause(170,
        trace(var('S'), "urn:policy:research-aurora-diabetes:permit:odrl:permission_matched"),
        research_policy_match(var('S'))).
-clause(167, trace(var('S'), "deny:prohibited_purpose"), insurance_prohibition_match(var('S'))).
-clause(168,
+clause(171, trace(var('S'), "deny:prohibited_purpose"), insurance_prohibition_match(var('S'))).
+clause(172,
        trace(var('S'), "urn:policy:deny-insurance:deny:odrl:prohibition_matched"),
        insurance_prohibition_match(var('S'))).
-clause(169,
+clause(173,
        trace(var('S'), "deny:subject_opted_out_ai_training"),
        ai_training_opt_out_match(var('S'))).
-clause(170,
-       trace(scenarioC, "urn:policy:qi-2025-aurora:deny:odrl:no_permission_matched"),
-       purpose(scenarioC, ensureQualitySafetyHealthcare)).
-clause(171,
+clause(175, trace(var('S'), "deny:no_permission_matched"), no_policy_match(var('S'))).
+clause(176,
        checkC1(scenarioA, "SKIPPED - not a prohibited purpose"),
        decision(scenarioA, "PERMIT")).
-clause(172, checkC2(scenarioA, "OK - clinician"), decision(scenarioA, "PERMIT")).
-clause(173, checkC3(scenarioA, "OK - care-team linked"), decision(scenarioA, "PERMIT")).
-clause(174, checkC4(scenarioA, "SKIPPED"), decision(scenarioA, "PERMIT")).
-clause(175,
+clause(177, checkC2(scenarioA, "OK - clinician"), decision(scenarioA, "PERMIT")).
+clause(178, checkC3(scenarioA, "OK - care-team linked"), decision(scenarioA, "PERMIT")).
+clause(179, checkC4(scenarioA, "SKIPPED"), decision(scenarioA, "PERMIT")).
+clause(180,
        checkC5(scenarioA, "OK - operator=isAnyOf, allowed=[\"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#LAB_RESULTS\"], requested=[\"https://example.org/health#PATIENT_SUMMARY\"]"),
        decision(scenarioA, "PERMIT")).
-clause(176,
+clause(181,
        checkC6(scenarioA, "SKIPPED - no prohibition matched"),
        decision(scenarioA, "PERMIT")).
-clause(177,
+clause(182,
        checkC7(scenarioA, "OK - trace shows matching permission"),
        decision(scenarioA, "PERMIT")).
-clause(178,
+clause(183,
        checkC8(scenarioA, "SKIPPED - no matched policy or no duties"),
        decision(scenarioA, "PERMIT")).
-clause(179,
+clause(184,
        checkC9(scenarioA, "SKIPPED - policy has no environment constraint"),
        decision(scenarioA, "PERMIT")).
-clause(180,
+clause(185,
        checkC10Text(scenarioA, "INFO - matched policy: urn:policy:primary-care-001"),
        decision(scenarioA, "PERMIT")).
-clause(181,
+clause(186,
        checkC1(scenarioB, "SKIPPED - not a prohibited purpose"),
        decision(scenarioB, "PERMIT")).
-clause(182, checkC2(scenarioB, "SKIPPED"), decision(scenarioB, "PERMIT")).
-clause(183, checkC3(scenarioB, "SKIPPED"), decision(scenarioB, "PERMIT")).
-clause(184,
+clause(187, checkC2(scenarioB, "SKIPPED"), decision(scenarioB, "PERMIT")).
+clause(188, checkC3(scenarioB, "SKIPPED"), decision(scenarioB, "PERMIT")).
+clause(189,
        checkC4(scenarioB, "OK - opt-in present and policy matched"),
        decision(scenarioB, "PERMIT")).
-clause(185,
+clause(190,
        checkC5(scenarioB, "OK - operator=isAllOf, allowed=[\"https://example.org/health#LAB_RESULTS\", \"https://example.org/health#PATIENT_SUMMARY\"], requested=[\"https://example.org/health#LAB_RESULTS\", \"https://example.org/health#PATIENT_SUMMARY\"]"),
        decision(scenarioB, "PERMIT")).
-clause(186,
+clause(191,
        checkC6(scenarioB, "SKIPPED - no prohibition matched"),
        decision(scenarioB, "PERMIT")).
-clause(187,
+clause(192,
        checkC7(scenarioB, "OK - trace shows matching permission"),
        decision(scenarioB, "PERMIT")).
-clause(188,
+clause(193,
        checkC8(scenarioB, "INFO - duties attached: duty:https://w3id.org/dpv/legal/eu/ehds#requireConsent, duty:https://w3id.org/dpv/legal/eu/ehds#noExfiltration"),
        decision(scenarioB, "PERMIT")).
-clause(189,
+clause(194,
        checkC9(scenarioB, "OK - operator=eq, allowed=\"secure_env\", requested=\"secure_env\""),
        decision(scenarioB, "PERMIT")).
-clause(190,
+clause(195,
        checkC10Text(scenarioB, "INFO - matched policy: urn:policy:qi-2025-aurora"),
        decision(scenarioB, "PERMIT")).
-clause(191,
+clause(196,
        checkC1(scenarioC, "SKIPPED - not a prohibited purpose"),
        decision(scenarioC, "DENY")).
-clause(192, checkC2(scenarioC, "SKIPPED"), decision(scenarioC, "DENY")).
-clause(193, checkC3(scenarioC, "SKIPPED"), decision(scenarioC, "DENY")).
-clause(194,
+clause(197, checkC2(scenarioC, "SKIPPED"), decision(scenarioC, "DENY")).
+clause(198, checkC3(scenarioC, "SKIPPED"), decision(scenarioC, "DENY")).
+clause(199,
        checkC4(scenarioC, "OK - denied because opt-in missing or no policy match"),
        decision(scenarioC, "DENY")).
-clause(195, checkC5(scenarioC, "SKIPPED"), decision(scenarioC, "DENY")).
-clause(196, checkC6(scenarioC, "SKIPPED - no prohibition matched"), decision(scenarioC, "DENY")).
-clause(197, checkC7(scenarioC, "SKIPPED"), decision(scenarioC, "DENY")).
-clause(198,
+clause(200, checkC5(scenarioC, "SKIPPED"), decision(scenarioC, "DENY")).
+clause(201, checkC6(scenarioC, "SKIPPED - no prohibition matched"), decision(scenarioC, "DENY")).
+clause(202, checkC7(scenarioC, "SKIPPED"), decision(scenarioC, "DENY")).
+clause(203,
        checkC8(scenarioC, "SKIPPED - no matched policy or no duties"),
        decision(scenarioC, "DENY")).
-clause(199, checkC9(scenarioC, "SKIPPED"), decision(scenarioC, "DENY")).
-clause(200, checkC10Text(scenarioC, "SKIPPED - no matched policy"), decision(scenarioC, "DENY")).
-clause(201, checkC1(scenarioD, "OK - denied prohibited purpose"), decision(scenarioD, "DENY")).
-clause(202, checkC2(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
-clause(203, checkC3(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
-clause(204, checkC4(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
-clause(205, checkC5(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
-clause(206, checkC6(scenarioD, "OK - denied due to prohibition"), decision(scenarioD, "DENY")).
-clause(207, checkC7(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
-clause(208,
+clause(204, checkC9(scenarioC, "SKIPPED"), decision(scenarioC, "DENY")).
+clause(205, checkC10Text(scenarioC, "SKIPPED - no matched policy"), decision(scenarioC, "DENY")).
+clause(206, checkC1(scenarioD, "OK - denied prohibited purpose"), decision(scenarioD, "DENY")).
+clause(207, checkC2(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
+clause(208, checkC3(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
+clause(209, checkC4(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
+clause(210, checkC5(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
+clause(211, checkC6(scenarioD, "OK - denied due to prohibition"), decision(scenarioD, "DENY")).
+clause(212, checkC7(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
+clause(213,
        checkC8(scenarioD, "SKIPPED - no matched policy or no duties"),
        decision(scenarioD, "DENY")).
-clause(209, checkC9(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
-clause(210, checkC10Text(scenarioD, "SKIPPED - no matched policy"), decision(scenarioD, "DENY")).
-clause(211,
+clause(214, checkC9(scenarioD, "SKIPPED"), decision(scenarioD, "DENY")).
+clause(215, checkC10Text(scenarioD, "SKIPPED - no matched policy"), decision(scenarioD, "DENY")).
+clause(216,
        checkC1(scenarioE, "SKIPPED - not a prohibited purpose"),
        decision(scenarioE, "PERMIT")).
-clause(212, checkC2(scenarioE, "OK - clinician"), decision(scenarioE, "PERMIT")).
-clause(213, checkC3(scenarioE, "OK - care-team linked"), decision(scenarioE, "PERMIT")).
-clause(214, checkC4(scenarioE, "SKIPPED"), decision(scenarioE, "PERMIT")).
-clause(215,
+clause(217, checkC2(scenarioE, "OK - clinician"), decision(scenarioE, "PERMIT")).
+clause(218, checkC3(scenarioE, "OK - care-team linked"), decision(scenarioE, "PERMIT")).
+clause(219, checkC4(scenarioE, "SKIPPED"), decision(scenarioE, "PERMIT")).
+clause(220,
        checkC5(scenarioE, "OK - operator=isAnyOf, allowed=[\"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#LAB_RESULTS\"], requested=[\"https://example.org/health#LAB_RESULTS\"]"),
        decision(scenarioE, "PERMIT")).
-clause(216,
+clause(221,
        checkC6(scenarioE, "SKIPPED - no prohibition matched"),
        decision(scenarioE, "PERMIT")).
-clause(217,
+clause(222,
        checkC7(scenarioE, "OK - trace shows matching permission"),
        decision(scenarioE, "PERMIT")).
-clause(218,
+clause(223,
        checkC8(scenarioE, "SKIPPED - no matched policy or no duties"),
        decision(scenarioE, "PERMIT")).
-clause(219,
+clause(224,
        checkC9(scenarioE, "SKIPPED - policy has no environment constraint"),
        decision(scenarioE, "PERMIT")).
-clause(220,
+clause(225,
        checkC10Text(scenarioE, "INFO - matched policy: urn:policy:primary-care-001"),
        decision(scenarioE, "PERMIT")).
-clause(221,
+clause(226,
        checkC1(scenarioF, "SKIPPED - not a prohibited purpose"),
        decision(scenarioF, "PERMIT")).
-clause(222, checkC2(scenarioF, "SKIPPED"), decision(scenarioF, "PERMIT")).
-clause(223, checkC3(scenarioF, "SKIPPED"), decision(scenarioF, "PERMIT")).
-clause(224,
+clause(227, checkC2(scenarioF, "SKIPPED"), decision(scenarioF, "PERMIT")).
+clause(228, checkC3(scenarioF, "SKIPPED"), decision(scenarioF, "PERMIT")).
+clause(229,
        checkC4(scenarioF, "OK - opt-in present and policy matched"),
        decision(scenarioF, "PERMIT")).
-clause(225,
+clause(230,
        checkC5(scenarioF, "OK - operator=isAnyOf, allowed=[\"https://example.org/health#LAB_RESULTS\", \"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#IMAGING_REPORT\"], requested=[\"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#LAB_RESULTS\"]"),
        decision(scenarioF, "PERMIT")).
-clause(226,
+clause(231,
        checkC6(scenarioF, "SKIPPED - no prohibition matched"),
        decision(scenarioF, "PERMIT")).
-clause(227,
+clause(232,
        checkC7(scenarioF, "OK - trace shows matching permission"),
        decision(scenarioF, "PERMIT")).
-clause(228,
+clause(233,
        checkC8(scenarioF, "INFO - duties attached: duty:https://w3id.org/dpv/legal/eu/ehds#annualOutcomeReport, duty:https://w3id.org/dpv/legal/eu/ehds#noReidentification, duty:https://w3id.org/dpv/legal/eu/ehds#noExfiltration"),
        decision(scenarioF, "PERMIT")).
-clause(229,
+clause(234,
        checkC9(scenarioF, "OK - operator=eq, allowed=\"secure_env\", requested=\"secure_env\""),
        decision(scenarioF, "PERMIT")).
-clause(230,
+clause(235,
        checkC10Text(scenarioF, "INFO - matched policy: urn:policy:research-aurora-diabetes"),
        decision(scenarioF, "PERMIT")).
-clause(231,
+clause(236,
        checkC1(scenarioG, "SKIPPED - not a prohibited purpose"),
        decision(scenarioG, "DENY")).
-clause(232, checkC2(scenarioG, "SKIPPED"), decision(scenarioG, "DENY")).
-clause(233, checkC3(scenarioG, "SKIPPED"), decision(scenarioG, "DENY")).
-clause(234,
+clause(237, checkC2(scenarioG, "SKIPPED"), decision(scenarioG, "DENY")).
+clause(238, checkC3(scenarioG, "SKIPPED"), decision(scenarioG, "DENY")).
+clause(239,
        checkC4(scenarioG, "OK - denied because opt-in missing or no policy match"),
        decision(scenarioG, "DENY")).
-clause(235, checkC5(scenarioG, "SKIPPED"), decision(scenarioG, "DENY")).
-clause(236, checkC6(scenarioG, "SKIPPED - no prohibition matched"), decision(scenarioG, "DENY")).
-clause(237, checkC7(scenarioG, "SKIPPED"), decision(scenarioG, "DENY")).
-clause(238,
+clause(240, checkC5(scenarioG, "SKIPPED"), decision(scenarioG, "DENY")).
+clause(241, checkC6(scenarioG, "SKIPPED - no prohibition matched"), decision(scenarioG, "DENY")).
+clause(242, checkC7(scenarioG, "SKIPPED"), decision(scenarioG, "DENY")).
+clause(243,
        checkC8(scenarioG, "SKIPPED - no matched policy or no duties"),
        decision(scenarioG, "DENY")).
-clause(239, checkC9(scenarioG, "SKIPPED"), decision(scenarioG, "DENY")).
-clause(240, checkC10Text(scenarioG, "SKIPPED - no matched policy"), decision(scenarioG, "DENY")).
+clause(244, checkC9(scenarioG, "SKIPPED"), decision(scenarioG, "DENY")).
+clause(245, checkC10Text(scenarioG, "SKIPPED - no matched policy"), decision(scenarioG, "DENY")).
 
 step(label(scenarioA, "A – Primary care visit"),
      rule(134),
@@ -526,7 +532,7 @@ step(scenario_description(scenarioG, "Data user wants to train AI, but the subje
      [],
      []).
 step(careTeamLinked(scenarioA, true),
-     rule(144),
+     rule(150),
      ['S' = scenarioA],
      [care_team_linked(scenarioA)]).
 step(care_team_linked(scenarioA),
@@ -539,7 +545,7 @@ step(requester(scenarioA, clinicianAlba), fact(64), [], []).
 step(subject(scenarioA, ruben), fact(66), [], []).
 step(linkedTo(clinicianAlba, ruben), fact(53), [], []).
 step(careTeamLinked(scenarioE, true),
-     rule(144),
+     rule(150),
      ['S' = scenarioE],
      [care_team_linked(scenarioE)]).
 step(care_team_linked(scenarioE),
@@ -549,7 +555,7 @@ step(care_team_linked(scenarioE),
 step(requester(scenarioE, gpRuben), fact(105), [], []).
 step(subject(scenarioE, ruben), fact(107), [], []).
 step(linkedTo(gpRuben, ruben), fact(54), [], []).
-step(subjectOptIn(scenarioF, true), rule(145), ['S' = scenarioF], [subject_opt_in(scenarioF)]).
+step(subjectOptIn(scenarioF, true), rule(151), ['S' = scenarioF], [subject_opt_in(scenarioF)]).
 step(subject_opt_in(scenarioF),
      rule(137),
      ['S' = scenarioF, 'Subject' = ruben, 'Purpose' = healthcareScientificResearch],
@@ -559,7 +565,7 @@ step(subject_opt_in(scenarioF),
 step(subject(scenarioF, ruben), fact(117), [], []).
 step(purpose(scenarioF, healthcareScientificResearch), fact(118), [], []).
 step(consentAllow(ruben, healthcareScientificResearch), fact(55), [], []).
-step(subjectOptOut(scenarioG, true), rule(146), ['S' = scenarioG], [subject_opt_out(scenarioG)]).
+step(subjectOptOut(scenarioG, true), rule(152), ['S' = scenarioG], [subject_opt_out(scenarioG)]).
 step(subject_opt_out(scenarioG),
      rule(138),
      ['S' = scenarioG, 'Subject' = ruben, 'Purpose' = trainTestAndEvaluateAiSystemsAlgorithms],
@@ -570,7 +576,11 @@ step(subject(scenarioG, ruben), fact(129), [], []).
 step(purpose(scenarioG, trainTestAndEvaluateAiSystemsAlgorithms), fact(130), [], []).
 step(consentDeny(ruben, trainTestAndEvaluateAiSystemsAlgorithms), fact(56), [], []).
 step(decision(scenarioA, "PERMIT"),
-     rule(147),
+     rule(153),
+     ['S' = scenarioA],
+     [permission_match(scenarioA), \+ prohibition_match(scenarioA)]).
+step(permission_match(scenarioA),
+     rule(144),
      ['S' = scenarioA],
      [primary_policy_match(scenarioA)]).
 step(primary_policy_match(scenarioA),
@@ -585,8 +595,13 @@ step(purpose(scenarioA, primaryCareManagement), fact(67), [], []).
 step(requesterRole(scenarioA, "clinician"), fact(65), [], []).
 step(category(scenarioA, patientSummary), fact(69), [], []).
 step(allowAnyCategory(policyPrimary, patientSummary), fact(32), [], []).
+step(\+ prohibition_match(scenarioA), absent, [], []).
 step(decision(scenarioE, "PERMIT"),
-     rule(147),
+     rule(153),
+     ['S' = scenarioE],
+     [permission_match(scenarioE), \+ prohibition_match(scenarioE)]).
+step(permission_match(scenarioE),
+     rule(144),
      ['S' = scenarioE],
      [primary_policy_match(scenarioE)]).
 step(primary_policy_match(scenarioE),
@@ -601,7 +616,12 @@ step(purpose(scenarioE, primaryCareManagement), fact(108), [], []).
 step(requesterRole(scenarioE, "clinician"), fact(106), [], []).
 step(category(scenarioE, labResults), fact(110), [], []).
 step(allowAnyCategory(policyPrimary, labResults), fact(33), [], []).
-step(decision(scenarioB, "PERMIT"), rule(148), ['S' = scenarioB], [qi_policy_match(scenarioB)]).
+step(\+ prohibition_match(scenarioE), absent, [], []).
+step(decision(scenarioB, "PERMIT"),
+     rule(153),
+     ['S' = scenarioB],
+     [permission_match(scenarioB), \+ prohibition_match(scenarioB)]).
+step(permission_match(scenarioB), rule(145), ['S' = scenarioB], [qi_policy_match(scenarioB)]).
 step(qi_policy_match(scenarioB),
      rule(140),
      ['S' = scenarioB],
@@ -613,8 +633,13 @@ step(purpose(scenarioB, ensureQualitySafetyHealthcare), fact(77), [], []).
 step(environment(scenarioB, "secure_env"), fact(78), [], []).
 step(category(scenarioB, labResults), fact(79), [], []).
 step(category(scenarioB, patientSummary), fact(80), [], []).
+step(\+ prohibition_match(scenarioB), absent, [], []).
 step(decision(scenarioF, "PERMIT"),
-     rule(149),
+     rule(153),
+     ['S' = scenarioF],
+     [permission_match(scenarioF), \+ prohibition_match(scenarioF)]).
+step(permission_match(scenarioF),
+     rule(146),
      ['S' = scenarioF],
      [research_policy_match(scenarioF)]).
 step(research_policy_match(scenarioF),
@@ -624,12 +649,16 @@ step(research_policy_match(scenarioF),
       environment(scenarioF, "secure_env"),
       tom(scenarioF, anonymisation),
       subject_opt_in(scenarioF),
+      \+ subject_opt_out(scenarioF),
       category(scenarioF, labResults)]).
 step(environment(scenarioF, "secure_env"), fact(119), [], []).
 step(tom(scenarioF, anonymisation), fact(120), [], []).
+step(\+ subject_opt_out(scenarioF), absent, [], []).
 step(category(scenarioF, labResults), fact(122), [], []).
-step(decision(scenarioD, "DENY"),
-     rule(150),
+step(\+ prohibition_match(scenarioF), absent, [], []).
+step(decision(scenarioD, "DENY"), rule(154), ['S' = scenarioD], [prohibition_match(scenarioD)]).
+step(prohibition_match(scenarioD),
+     rule(147),
      ['S' = scenarioD],
      [insurance_prohibition_match(scenarioD)]).
 step(insurance_prohibition_match(scenarioD),
@@ -639,316 +668,317 @@ step(insurance_prohibition_match(scenarioD),
       prohibitPurpose(policyDenyInsurance, insuranceManagement)]).
 step(purpose(scenarioD, insuranceManagement), fact(98), [], []).
 step(prohibitPurpose(policyDenyInsurance, insuranceManagement), fact(52), [], []).
-step(decision(scenarioG, "DENY"),
-     rule(151),
+step(decision(scenarioG, "DENY"), rule(154), ['S' = scenarioG], [prohibition_match(scenarioG)]).
+step(prohibition_match(scenarioG), rule(148), ['S' = scenarioG], [subject_opt_out(scenarioG)]).
+step(decision(scenarioC, "DENY"), rule(155), ['S' = scenarioC], [no_policy_match(scenarioC)]).
+step(no_policy_match(scenarioC),
+     rule(149),
+     ['S' = scenarioC],
+     [scenario(scenarioC), \+ permission_match(scenarioC), \+ prohibition_match(scenarioC)]).
+step(scenario(scenarioC), fact(81), [], []).
+step(\+ permission_match(scenarioC), absent, [], []).
+step(\+ prohibition_match(scenarioC), absent, [], []).
+step(matchedPolicyUid(scenarioA, "urn:policy:primary-care-001"),
+     rule(156),
+     ['S' = scenarioA, 'Uid' = "urn:policy:primary-care-001"],
+     [primary_policy_match(scenarioA), policyUid(policyPrimary, "urn:policy:primary-care-001")]).
+step(policyUid(policyPrimary, "urn:policy:primary-care-001"), fact(28), [], []).
+step(matchedPolicyUid(scenarioE, "urn:policy:primary-care-001"),
+     rule(156),
+     ['S' = scenarioE, 'Uid' = "urn:policy:primary-care-001"],
+     [primary_policy_match(scenarioE), policyUid(policyPrimary, "urn:policy:primary-care-001")]).
+step(matchedPolicyUid(scenarioB, "urn:policy:qi-2025-aurora"),
+     rule(157),
+     ['S' = scenarioB, 'Uid' = "urn:policy:qi-2025-aurora"],
+     [qi_policy_match(scenarioB), policyUid(policyQi, "urn:policy:qi-2025-aurora")]).
+step(policyUid(policyQi, "urn:policy:qi-2025-aurora"), fact(34), [], []).
+step(matchedPolicyUid(scenarioF, "urn:policy:research-aurora-diabetes"),
+     rule(158),
+     ['S' = scenarioF, 'Uid' = "urn:policy:research-aurora-diabetes"],
+     [research_policy_match(scenarioF),
+      policyUid(policyResearch, "urn:policy:research-aurora-diabetes")]).
+step(policyUid(policyResearch, "urn:policy:research-aurora-diabetes"), fact(41), [], []).
+step(matchedProhibition(scenarioD, policyDenyInsurance),
+     rule(159),
+     ['S' = scenarioD],
+     [insurance_prohibition_match(scenarioD)]).
+step(reason(scenarioA, "Permitted: clinician in the patient's care team, and the primary-care policy matched."),
+     rule(160),
+     ['S' = scenarioA],
+     [primary_policy_match(scenarioA)]).
+step(reason(scenarioE, "Permitted: clinician in the patient's care team, and the primary-care policy matched."),
+     rule(160),
+     ['S' = scenarioE],
+     [primary_policy_match(scenarioE)]).
+step(reason(scenarioB, "Permitted: ODRL/DPV policy matched for secondary use."),
+     rule(161),
+     ['S' = scenarioB],
+     [qi_policy_match(scenarioB)]).
+step(reason(scenarioF, "Permitted: subject opted in and an ODRL/DPV policy matched (anonymised dataset in secure environment)."),
+     rule(162),
+     ['S' = scenarioF],
+     [research_policy_match(scenarioF)]).
+step(reason(scenarioD, "Denied: the requested purpose (insurance management) is prohibited by policy."),
+     rule(163),
+     ['S' = scenarioD],
+     [insurance_prohibition_match(scenarioD)]).
+step(reason(scenarioG, "Denied: you opted out of your data being used to train AI systems."),
+     rule(164),
      ['S' = scenarioG],
      [ai_training_opt_out_match(scenarioG)]).
 step(ai_training_opt_out_match(scenarioG),
      rule(143),
      ['S' = scenarioG],
      [purpose(scenarioG, trainTestAndEvaluateAiSystemsAlgorithms), subject_opt_out(scenarioG)]).
-step(decision(scenarioC, "DENY"),
-     rule(152),
-     [],
-     [purpose(scenarioC, ensureQualitySafetyHealthcare)]).
-step(purpose(scenarioC, ensureQualitySafetyHealthcare), fact(88), [], []).
-step(matchedPolicyUid(scenarioA, "urn:policy:primary-care-001"),
-     rule(153),
-     ['S' = scenarioA, 'Uid' = "urn:policy:primary-care-001"],
-     [primary_policy_match(scenarioA), policyUid(policyPrimary, "urn:policy:primary-care-001")]).
-step(policyUid(policyPrimary, "urn:policy:primary-care-001"), fact(28), [], []).
-step(matchedPolicyUid(scenarioE, "urn:policy:primary-care-001"),
-     rule(153),
-     ['S' = scenarioE, 'Uid' = "urn:policy:primary-care-001"],
-     [primary_policy_match(scenarioE), policyUid(policyPrimary, "urn:policy:primary-care-001")]).
-step(matchedPolicyUid(scenarioB, "urn:policy:qi-2025-aurora"),
-     rule(154),
-     ['S' = scenarioB, 'Uid' = "urn:policy:qi-2025-aurora"],
-     [qi_policy_match(scenarioB), policyUid(policyQi, "urn:policy:qi-2025-aurora")]).
-step(policyUid(policyQi, "urn:policy:qi-2025-aurora"), fact(34), [], []).
-step(matchedPolicyUid(scenarioF, "urn:policy:research-aurora-diabetes"),
-     rule(155),
-     ['S' = scenarioF, 'Uid' = "urn:policy:research-aurora-diabetes"],
-     [research_policy_match(scenarioF),
-      policyUid(policyResearch, "urn:policy:research-aurora-diabetes")]).
-step(policyUid(policyResearch, "urn:policy:research-aurora-diabetes"), fact(41), [], []).
-step(matchedProhibition(scenarioD, policyDenyInsurance),
-     rule(156),
-     ['S' = scenarioD],
-     [insurance_prohibition_match(scenarioD)]).
-step(reason(scenarioA, "Permitted: clinician in the patient's care team, and the primary-care policy matched."),
-     rule(157),
-     ['S' = scenarioA],
-     [primary_policy_match(scenarioA)]).
-step(reason(scenarioE, "Permitted: clinician in the patient's care team, and the primary-care policy matched."),
-     rule(157),
-     ['S' = scenarioE],
-     [primary_policy_match(scenarioE)]).
-step(reason(scenarioB, "Permitted: ODRL/DPV policy matched for secondary use."),
-     rule(158),
-     ['S' = scenarioB],
-     [qi_policy_match(scenarioB)]).
-step(reason(scenarioF, "Permitted: subject opted in and an ODRL/DPV policy matched (anonymised dataset in secure environment)."),
-     rule(159),
-     ['S' = scenarioF],
-     [research_policy_match(scenarioF)]).
-step(reason(scenarioD, "Denied: the requested purpose (insurance management) is prohibited by policy."),
-     rule(160),
-     ['S' = scenarioD],
-     [insurance_prohibition_match(scenarioD)]).
-step(reason(scenarioG, "Denied: you opted out of your data being used to train AI systems."),
-     rule(161),
-     ['S' = scenarioG],
-     [ai_training_opt_out_match(scenarioG)]).
 step(reason(scenarioC, "Denied: no policy matched (purpose, environment, TOMs, or categories out of scope)."),
-     rule(162),
-     [],
-     [purpose(scenarioC, ensureQualitySafetyHealthcare)]).
+     rule(166),
+     ['S' = scenarioC],
+     [no_policy_match(scenarioC)]).
 step(trace(scenarioA, "permit:primary_care_allowed"),
-     rule(163),
+     rule(167),
      ['S' = scenarioA],
      [primary_policy_match(scenarioA)]).
 step(trace(scenarioE, "permit:primary_care_allowed"),
-     rule(163),
+     rule(167),
      ['S' = scenarioE],
      [primary_policy_match(scenarioE)]).
 step(trace(scenarioA, "urn:policy:primary-care-001:permit:odrl:permission_matched"),
-     rule(164),
+     rule(168),
      ['S' = scenarioA],
      [primary_policy_match(scenarioA)]).
 step(trace(scenarioE, "urn:policy:primary-care-001:permit:odrl:permission_matched"),
-     rule(164),
+     rule(168),
      ['S' = scenarioE],
      [primary_policy_match(scenarioE)]).
 step(trace(scenarioB, "urn:policy:qi-2025-aurora:permit:odrl:permission_matched"),
-     rule(165),
+     rule(169),
      ['S' = scenarioB],
      [qi_policy_match(scenarioB)]).
 step(trace(scenarioF, "urn:policy:research-aurora-diabetes:permit:odrl:permission_matched"),
-     rule(166),
+     rule(170),
      ['S' = scenarioF],
      [research_policy_match(scenarioF)]).
 step(trace(scenarioD, "deny:prohibited_purpose"),
-     rule(167),
+     rule(171),
      ['S' = scenarioD],
      [insurance_prohibition_match(scenarioD)]).
 step(trace(scenarioD, "urn:policy:deny-insurance:deny:odrl:prohibition_matched"),
-     rule(168),
+     rule(172),
      ['S' = scenarioD],
      [insurance_prohibition_match(scenarioD)]).
 step(trace(scenarioG, "deny:subject_opted_out_ai_training"),
-     rule(169),
+     rule(173),
      ['S' = scenarioG],
      [ai_training_opt_out_match(scenarioG)]).
-step(trace(scenarioC, "urn:policy:qi-2025-aurora:deny:odrl:no_permission_matched"),
-     rule(170),
-     [],
-     [purpose(scenarioC, ensureQualitySafetyHealthcare)]).
-step(checkC1(scenarioA, "SKIPPED - not a prohibited purpose"),
-     rule(171),
-     [],
-     [decision(scenarioA, "PERMIT")]).
-step(checkC1(scenarioB, "SKIPPED - not a prohibited purpose"),
-     rule(181),
-     [],
-     [decision(scenarioB, "PERMIT")]).
-step(checkC1(scenarioC, "SKIPPED - not a prohibited purpose"),
-     rule(191),
-     [],
-     [decision(scenarioC, "DENY")]).
-step(checkC1(scenarioD, "OK - denied prohibited purpose"),
-     rule(201),
-     [],
-     [decision(scenarioD, "DENY")]).
-step(checkC1(scenarioE, "SKIPPED - not a prohibited purpose"),
-     rule(211),
-     [],
-     [decision(scenarioE, "PERMIT")]).
-step(checkC1(scenarioF, "SKIPPED - not a prohibited purpose"),
-     rule(221),
-     [],
-     [decision(scenarioF, "PERMIT")]).
-step(checkC1(scenarioG, "SKIPPED - not a prohibited purpose"),
-     rule(231),
-     [],
-     [decision(scenarioG, "DENY")]).
-step(checkC2(scenarioA, "OK - clinician"), rule(172), [], [decision(scenarioA, "PERMIT")]).
-step(checkC2(scenarioB, "SKIPPED"), rule(182), [], [decision(scenarioB, "PERMIT")]).
-step(checkC2(scenarioC, "SKIPPED"), rule(192), [], [decision(scenarioC, "DENY")]).
-step(checkC2(scenarioD, "SKIPPED"), rule(202), [], [decision(scenarioD, "DENY")]).
-step(checkC2(scenarioE, "OK - clinician"), rule(212), [], [decision(scenarioE, "PERMIT")]).
-step(checkC2(scenarioF, "SKIPPED"), rule(222), [], [decision(scenarioF, "PERMIT")]).
-step(checkC2(scenarioG, "SKIPPED"), rule(232), [], [decision(scenarioG, "DENY")]).
-step(checkC3(scenarioA, "OK - care-team linked"),
-     rule(173),
-     [],
-     [decision(scenarioA, "PERMIT")]).
-step(checkC3(scenarioB, "SKIPPED"), rule(183), [], [decision(scenarioB, "PERMIT")]).
-step(checkC3(scenarioC, "SKIPPED"), rule(193), [], [decision(scenarioC, "DENY")]).
-step(checkC3(scenarioD, "SKIPPED"), rule(203), [], [decision(scenarioD, "DENY")]).
-step(checkC3(scenarioE, "OK - care-team linked"),
-     rule(213),
-     [],
-     [decision(scenarioE, "PERMIT")]).
-step(checkC3(scenarioF, "SKIPPED"), rule(223), [], [decision(scenarioF, "PERMIT")]).
-step(checkC3(scenarioG, "SKIPPED"), rule(233), [], [decision(scenarioG, "DENY")]).
-step(checkC4(scenarioA, "SKIPPED"), rule(174), [], [decision(scenarioA, "PERMIT")]).
-step(checkC4(scenarioB, "OK - opt-in present and policy matched"),
-     rule(184),
-     [],
-     [decision(scenarioB, "PERMIT")]).
-step(checkC4(scenarioC, "OK - denied because opt-in missing or no policy match"),
-     rule(194),
-     [],
-     [decision(scenarioC, "DENY")]).
-step(checkC4(scenarioD, "SKIPPED"), rule(204), [], [decision(scenarioD, "DENY")]).
-step(checkC4(scenarioE, "SKIPPED"), rule(214), [], [decision(scenarioE, "PERMIT")]).
-step(checkC4(scenarioF, "OK - opt-in present and policy matched"),
-     rule(224),
-     [],
-     [decision(scenarioF, "PERMIT")]).
-step(checkC4(scenarioG, "OK - denied because opt-in missing or no policy match"),
-     rule(234),
-     [],
-     [decision(scenarioG, "DENY")]).
-step(checkC5(scenarioA, "OK - operator=isAnyOf, allowed=[\"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#LAB_RESULTS\"], requested=[\"https://example.org/health#PATIENT_SUMMARY\"]"),
+step(trace(scenarioC, "deny:no_permission_matched"),
      rule(175),
-     [],
-     [decision(scenarioA, "PERMIT")]).
-step(checkC5(scenarioB, "OK - operator=isAllOf, allowed=[\"https://example.org/health#LAB_RESULTS\", \"https://example.org/health#PATIENT_SUMMARY\"], requested=[\"https://example.org/health#LAB_RESULTS\", \"https://example.org/health#PATIENT_SUMMARY\"]"),
-     rule(185),
-     [],
-     [decision(scenarioB, "PERMIT")]).
-step(checkC5(scenarioC, "SKIPPED"), rule(195), [], [decision(scenarioC, "DENY")]).
-step(checkC5(scenarioD, "SKIPPED"), rule(205), [], [decision(scenarioD, "DENY")]).
-step(checkC5(scenarioE, "OK - operator=isAnyOf, allowed=[\"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#LAB_RESULTS\"], requested=[\"https://example.org/health#LAB_RESULTS\"]"),
-     rule(215),
-     [],
-     [decision(scenarioE, "PERMIT")]).
-step(checkC5(scenarioF, "OK - operator=isAnyOf, allowed=[\"https://example.org/health#LAB_RESULTS\", \"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#IMAGING_REPORT\"], requested=[\"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#LAB_RESULTS\"]"),
-     rule(225),
-     [],
-     [decision(scenarioF, "PERMIT")]).
-step(checkC5(scenarioG, "SKIPPED"), rule(235), [], [decision(scenarioG, "DENY")]).
-step(checkC6(scenarioA, "SKIPPED - no prohibition matched"),
+     ['S' = scenarioC],
+     [no_policy_match(scenarioC)]).
+step(checkC1(scenarioA, "SKIPPED - not a prohibited purpose"),
      rule(176),
      [],
      [decision(scenarioA, "PERMIT")]).
-step(checkC6(scenarioB, "SKIPPED - no prohibition matched"),
+step(checkC1(scenarioB, "SKIPPED - not a prohibited purpose"),
      rule(186),
      [],
      [decision(scenarioB, "PERMIT")]).
-step(checkC6(scenarioC, "SKIPPED - no prohibition matched"),
+step(checkC1(scenarioC, "SKIPPED - not a prohibited purpose"),
      rule(196),
      [],
      [decision(scenarioC, "DENY")]).
-step(checkC6(scenarioD, "OK - denied due to prohibition"),
+step(checkC1(scenarioD, "OK - denied prohibited purpose"),
      rule(206),
      [],
      [decision(scenarioD, "DENY")]).
-step(checkC6(scenarioE, "SKIPPED - no prohibition matched"),
+step(checkC1(scenarioE, "SKIPPED - not a prohibited purpose"),
      rule(216),
      [],
      [decision(scenarioE, "PERMIT")]).
-step(checkC6(scenarioF, "SKIPPED - no prohibition matched"),
+step(checkC1(scenarioF, "SKIPPED - not a prohibited purpose"),
      rule(226),
      [],
      [decision(scenarioF, "PERMIT")]).
-step(checkC6(scenarioG, "SKIPPED - no prohibition matched"),
+step(checkC1(scenarioG, "SKIPPED - not a prohibited purpose"),
      rule(236),
      [],
      [decision(scenarioG, "DENY")]).
-step(checkC7(scenarioA, "OK - trace shows matching permission"),
-     rule(177),
-     [],
-     [decision(scenarioA, "PERMIT")]).
-step(checkC7(scenarioB, "OK - trace shows matching permission"),
-     rule(187),
-     [],
-     [decision(scenarioB, "PERMIT")]).
-step(checkC7(scenarioC, "SKIPPED"), rule(197), [], [decision(scenarioC, "DENY")]).
-step(checkC7(scenarioD, "SKIPPED"), rule(207), [], [decision(scenarioD, "DENY")]).
-step(checkC7(scenarioE, "OK - trace shows matching permission"),
-     rule(217),
-     [],
-     [decision(scenarioE, "PERMIT")]).
-step(checkC7(scenarioF, "OK - trace shows matching permission"),
-     rule(227),
-     [],
-     [decision(scenarioF, "PERMIT")]).
-step(checkC7(scenarioG, "SKIPPED"), rule(237), [], [decision(scenarioG, "DENY")]).
-step(checkC8(scenarioA, "SKIPPED - no matched policy or no duties"),
+step(checkC2(scenarioA, "OK - clinician"), rule(177), [], [decision(scenarioA, "PERMIT")]).
+step(checkC2(scenarioB, "SKIPPED"), rule(187), [], [decision(scenarioB, "PERMIT")]).
+step(checkC2(scenarioC, "SKIPPED"), rule(197), [], [decision(scenarioC, "DENY")]).
+step(checkC2(scenarioD, "SKIPPED"), rule(207), [], [decision(scenarioD, "DENY")]).
+step(checkC2(scenarioE, "OK - clinician"), rule(217), [], [decision(scenarioE, "PERMIT")]).
+step(checkC2(scenarioF, "SKIPPED"), rule(227), [], [decision(scenarioF, "PERMIT")]).
+step(checkC2(scenarioG, "SKIPPED"), rule(237), [], [decision(scenarioG, "DENY")]).
+step(checkC3(scenarioA, "OK - care-team linked"),
      rule(178),
      [],
      [decision(scenarioA, "PERMIT")]).
-step(checkC8(scenarioB, "INFO - duties attached: duty:https://w3id.org/dpv/legal/eu/ehds#requireConsent, duty:https://w3id.org/dpv/legal/eu/ehds#noExfiltration"),
-     rule(188),
-     [],
-     [decision(scenarioB, "PERMIT")]).
-step(checkC8(scenarioC, "SKIPPED - no matched policy or no duties"),
-     rule(198),
-     [],
-     [decision(scenarioC, "DENY")]).
-step(checkC8(scenarioD, "SKIPPED - no matched policy or no duties"),
-     rule(208),
-     [],
-     [decision(scenarioD, "DENY")]).
-step(checkC8(scenarioE, "SKIPPED - no matched policy or no duties"),
+step(checkC3(scenarioB, "SKIPPED"), rule(188), [], [decision(scenarioB, "PERMIT")]).
+step(checkC3(scenarioC, "SKIPPED"), rule(198), [], [decision(scenarioC, "DENY")]).
+step(checkC3(scenarioD, "SKIPPED"), rule(208), [], [decision(scenarioD, "DENY")]).
+step(checkC3(scenarioE, "OK - care-team linked"),
      rule(218),
      [],
      [decision(scenarioE, "PERMIT")]).
-step(checkC8(scenarioF, "INFO - duties attached: duty:https://w3id.org/dpv/legal/eu/ehds#annualOutcomeReport, duty:https://w3id.org/dpv/legal/eu/ehds#noReidentification, duty:https://w3id.org/dpv/legal/eu/ehds#noExfiltration"),
-     rule(228),
-     [],
-     [decision(scenarioF, "PERMIT")]).
-step(checkC8(scenarioG, "SKIPPED - no matched policy or no duties"),
-     rule(238),
-     [],
-     [decision(scenarioG, "DENY")]).
-step(checkC9(scenarioA, "SKIPPED - policy has no environment constraint"),
-     rule(179),
-     [],
-     [decision(scenarioA, "PERMIT")]).
-step(checkC9(scenarioB, "OK - operator=eq, allowed=\"secure_env\", requested=\"secure_env\""),
+step(checkC3(scenarioF, "SKIPPED"), rule(228), [], [decision(scenarioF, "PERMIT")]).
+step(checkC3(scenarioG, "SKIPPED"), rule(238), [], [decision(scenarioG, "DENY")]).
+step(checkC4(scenarioA, "SKIPPED"), rule(179), [], [decision(scenarioA, "PERMIT")]).
+step(checkC4(scenarioB, "OK - opt-in present and policy matched"),
      rule(189),
      [],
      [decision(scenarioB, "PERMIT")]).
-step(checkC9(scenarioC, "SKIPPED"), rule(199), [], [decision(scenarioC, "DENY")]).
-step(checkC9(scenarioD, "SKIPPED"), rule(209), [], [decision(scenarioD, "DENY")]).
-step(checkC9(scenarioE, "SKIPPED - policy has no environment constraint"),
-     rule(219),
+step(checkC4(scenarioC, "OK - denied because opt-in missing or no policy match"),
+     rule(199),
      [],
-     [decision(scenarioE, "PERMIT")]).
-step(checkC9(scenarioF, "OK - operator=eq, allowed=\"secure_env\", requested=\"secure_env\""),
+     [decision(scenarioC, "DENY")]).
+step(checkC4(scenarioD, "SKIPPED"), rule(209), [], [decision(scenarioD, "DENY")]).
+step(checkC4(scenarioE, "SKIPPED"), rule(219), [], [decision(scenarioE, "PERMIT")]).
+step(checkC4(scenarioF, "OK - opt-in present and policy matched"),
      rule(229),
      [],
      [decision(scenarioF, "PERMIT")]).
-step(checkC9(scenarioG, "SKIPPED"), rule(239), [], [decision(scenarioG, "DENY")]).
-step(checkC10Text(scenarioA, "INFO - matched policy: urn:policy:primary-care-001"),
+step(checkC4(scenarioG, "OK - denied because opt-in missing or no policy match"),
+     rule(239),
+     [],
+     [decision(scenarioG, "DENY")]).
+step(checkC5(scenarioA, "OK - operator=isAnyOf, allowed=[\"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#LAB_RESULTS\"], requested=[\"https://example.org/health#PATIENT_SUMMARY\"]"),
      rule(180),
      [],
      [decision(scenarioA, "PERMIT")]).
-step(checkC10Text(scenarioB, "INFO - matched policy: urn:policy:qi-2025-aurora"),
+step(checkC5(scenarioB, "OK - operator=isAllOf, allowed=[\"https://example.org/health#LAB_RESULTS\", \"https://example.org/health#PATIENT_SUMMARY\"], requested=[\"https://example.org/health#LAB_RESULTS\", \"https://example.org/health#PATIENT_SUMMARY\"]"),
      rule(190),
      [],
      [decision(scenarioB, "PERMIT")]).
-step(checkC10Text(scenarioC, "SKIPPED - no matched policy"),
-     rule(200),
-     [],
-     [decision(scenarioC, "DENY")]).
-step(checkC10Text(scenarioD, "SKIPPED - no matched policy"),
-     rule(210),
-     [],
-     [decision(scenarioD, "DENY")]).
-step(checkC10Text(scenarioE, "INFO - matched policy: urn:policy:primary-care-001"),
+step(checkC5(scenarioC, "SKIPPED"), rule(200), [], [decision(scenarioC, "DENY")]).
+step(checkC5(scenarioD, "SKIPPED"), rule(210), [], [decision(scenarioD, "DENY")]).
+step(checkC5(scenarioE, "OK - operator=isAnyOf, allowed=[\"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#LAB_RESULTS\"], requested=[\"https://example.org/health#LAB_RESULTS\"]"),
      rule(220),
      [],
      [decision(scenarioE, "PERMIT")]).
-step(checkC10Text(scenarioF, "INFO - matched policy: urn:policy:research-aurora-diabetes"),
+step(checkC5(scenarioF, "OK - operator=isAnyOf, allowed=[\"https://example.org/health#LAB_RESULTS\", \"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#IMAGING_REPORT\"], requested=[\"https://example.org/health#PATIENT_SUMMARY\", \"https://example.org/health#LAB_RESULTS\"]"),
      rule(230),
      [],
      [decision(scenarioF, "PERMIT")]).
+step(checkC5(scenarioG, "SKIPPED"), rule(240), [], [decision(scenarioG, "DENY")]).
+step(checkC6(scenarioA, "SKIPPED - no prohibition matched"),
+     rule(181),
+     [],
+     [decision(scenarioA, "PERMIT")]).
+step(checkC6(scenarioB, "SKIPPED - no prohibition matched"),
+     rule(191),
+     [],
+     [decision(scenarioB, "PERMIT")]).
+step(checkC6(scenarioC, "SKIPPED - no prohibition matched"),
+     rule(201),
+     [],
+     [decision(scenarioC, "DENY")]).
+step(checkC6(scenarioD, "OK - denied due to prohibition"),
+     rule(211),
+     [],
+     [decision(scenarioD, "DENY")]).
+step(checkC6(scenarioE, "SKIPPED - no prohibition matched"),
+     rule(221),
+     [],
+     [decision(scenarioE, "PERMIT")]).
+step(checkC6(scenarioF, "SKIPPED - no prohibition matched"),
+     rule(231),
+     [],
+     [decision(scenarioF, "PERMIT")]).
+step(checkC6(scenarioG, "SKIPPED - no prohibition matched"),
+     rule(241),
+     [],
+     [decision(scenarioG, "DENY")]).
+step(checkC7(scenarioA, "OK - trace shows matching permission"),
+     rule(182),
+     [],
+     [decision(scenarioA, "PERMIT")]).
+step(checkC7(scenarioB, "OK - trace shows matching permission"),
+     rule(192),
+     [],
+     [decision(scenarioB, "PERMIT")]).
+step(checkC7(scenarioC, "SKIPPED"), rule(202), [], [decision(scenarioC, "DENY")]).
+step(checkC7(scenarioD, "SKIPPED"), rule(212), [], [decision(scenarioD, "DENY")]).
+step(checkC7(scenarioE, "OK - trace shows matching permission"),
+     rule(222),
+     [],
+     [decision(scenarioE, "PERMIT")]).
+step(checkC7(scenarioF, "OK - trace shows matching permission"),
+     rule(232),
+     [],
+     [decision(scenarioF, "PERMIT")]).
+step(checkC7(scenarioG, "SKIPPED"), rule(242), [], [decision(scenarioG, "DENY")]).
+step(checkC8(scenarioA, "SKIPPED - no matched policy or no duties"),
+     rule(183),
+     [],
+     [decision(scenarioA, "PERMIT")]).
+step(checkC8(scenarioB, "INFO - duties attached: duty:https://w3id.org/dpv/legal/eu/ehds#requireConsent, duty:https://w3id.org/dpv/legal/eu/ehds#noExfiltration"),
+     rule(193),
+     [],
+     [decision(scenarioB, "PERMIT")]).
+step(checkC8(scenarioC, "SKIPPED - no matched policy or no duties"),
+     rule(203),
+     [],
+     [decision(scenarioC, "DENY")]).
+step(checkC8(scenarioD, "SKIPPED - no matched policy or no duties"),
+     rule(213),
+     [],
+     [decision(scenarioD, "DENY")]).
+step(checkC8(scenarioE, "SKIPPED - no matched policy or no duties"),
+     rule(223),
+     [],
+     [decision(scenarioE, "PERMIT")]).
+step(checkC8(scenarioF, "INFO - duties attached: duty:https://w3id.org/dpv/legal/eu/ehds#annualOutcomeReport, duty:https://w3id.org/dpv/legal/eu/ehds#noReidentification, duty:https://w3id.org/dpv/legal/eu/ehds#noExfiltration"),
+     rule(233),
+     [],
+     [decision(scenarioF, "PERMIT")]).
+step(checkC8(scenarioG, "SKIPPED - no matched policy or no duties"),
+     rule(243),
+     [],
+     [decision(scenarioG, "DENY")]).
+step(checkC9(scenarioA, "SKIPPED - policy has no environment constraint"),
+     rule(184),
+     [],
+     [decision(scenarioA, "PERMIT")]).
+step(checkC9(scenarioB, "OK - operator=eq, allowed=\"secure_env\", requested=\"secure_env\""),
+     rule(194),
+     [],
+     [decision(scenarioB, "PERMIT")]).
+step(checkC9(scenarioC, "SKIPPED"), rule(204), [], [decision(scenarioC, "DENY")]).
+step(checkC9(scenarioD, "SKIPPED"), rule(214), [], [decision(scenarioD, "DENY")]).
+step(checkC9(scenarioE, "SKIPPED - policy has no environment constraint"),
+     rule(224),
+     [],
+     [decision(scenarioE, "PERMIT")]).
+step(checkC9(scenarioF, "OK - operator=eq, allowed=\"secure_env\", requested=\"secure_env\""),
+     rule(234),
+     [],
+     [decision(scenarioF, "PERMIT")]).
+step(checkC9(scenarioG, "SKIPPED"), rule(244), [], [decision(scenarioG, "DENY")]).
+step(checkC10Text(scenarioA, "INFO - matched policy: urn:policy:primary-care-001"),
+     rule(185),
+     [],
+     [decision(scenarioA, "PERMIT")]).
+step(checkC10Text(scenarioB, "INFO - matched policy: urn:policy:qi-2025-aurora"),
+     rule(195),
+     [],
+     [decision(scenarioB, "PERMIT")]).
+step(checkC10Text(scenarioC, "SKIPPED - no matched policy"),
+     rule(205),
+     [],
+     [decision(scenarioC, "DENY")]).
+step(checkC10Text(scenarioD, "SKIPPED - no matched policy"),
+     rule(215),
+     [],
+     [decision(scenarioD, "DENY")]).
+step(checkC10Text(scenarioE, "INFO - matched policy: urn:policy:primary-care-001"),
+     rule(225),
+     [],
+     [decision(scenarioE, "PERMIT")]).
+step(checkC10Text(scenarioF, "INFO - matched policy: urn:policy:research-aurora-diabetes"),
+     rule(235),
+     [],
+     [decision(scenarioF, "PERMIT")]).
 step(checkC10Text(scenarioG, "SKIPPED - no matched policy"),
-     rule(240),
+     rule(245),
      [],
      [decision(scenarioG, "DENY")]).

@@ -85,4 +85,6 @@ lld_left_length_cm(M, L) :- type(M, lld_alarm), val(M, d53Cm, L).
 lld_right_length_cm(M, R) :- type(M, lld_alarm), val(M, d64Cm, R).
 lld_discrepancy_cm(M, D) :- type(M, lld_alarm), val(M, dCm, D).
 lld_threshold_cm(M, T) :- type(M, lld_alarm), threshold(M, lld_alarm_threshold_cm, T).
-lld_reason(M, "discrepancy below negative threshold") :- type(M, lld_alarm).
+% The reason names the threshold the discrepancy actually crossed.
+lld_reason(M, "discrepancy below negative threshold") :- measurement(M), val(M, dCm, D), threshold(M, lld_alarm_threshold_cm, T), (Negt is 0 - T), (D < Negt).
+lld_reason(M, "discrepancy above positive threshold") :- measurement(M), val(M, dCm, D), threshold(M, lld_alarm_threshold_cm, T), (D > T).

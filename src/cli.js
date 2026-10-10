@@ -377,7 +377,7 @@ async function runDefault(engine, program, options) {
     },
   });
   program = solver.program;
-  const goals = engine.normalizeGoals(options.goals, solver);
+  const goals = engine.goalsInProgramOrder(program, engine.normalizeGoals(options.goals, solver));
   try {
     // A run states what it concluded and then why: the claims stream as
     // they are found, and the blocks explaining them follow at the end.

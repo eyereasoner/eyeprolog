@@ -12,7 +12,9 @@
 
 
 
-% Two sample sentences share the same tiny grammar but have different parse counts.
+% Two sample sentences share the same tiny grammar. The second is ambiguous: the
+% prepositional phrase "with the telescope" can attach to "the box" or to "sees
+% the box", so it has two parse trees where the first has one.
 
 sentence(command, 5).
 sentence(ambiguous_pp, 8).
@@ -58,12 +60,32 @@ span(Sentence, Category, Start, End) :-
   span(Sentence, Left, Start, Middle),
   span(Sentence, Right, Middle, End).
 
+% The chart says which items exist; it stores each item once, however many ways
+% it can be built. Counting parse trees therefore needs its own relation: an
+% item's tree count is the sum, over every way to build it, of the product of
+% its parts' counts. Each recursive call covers a strictly shorter interval, so
+% the counting terminates without tabling.
+parse_trees(Sentence, Category, Start, End, Count) :-
+  sumall(N, tree_count(Sentence, Category, Start, End, N), Count).
+
+tree_count(Sentence, Category, Start, End, 1) :-
+  word(Sentence, Start, Token),
+  terminal(Category, Token),
+  (End =:= Start + 1).
+tree_count(Sentence, Category, Start, End, N) :-
+  rule(Category, Left, Right),
+  span(Sentence, Left, Start, Middle),
+  span(Sentence, Right, Middle, End),
+  parse_trees(Sentence, Left, Start, Middle, LeftCount),
+  parse_trees(Sentence, Right, Middle, End, RightCount),
+  (N is LeftCount * RightCount).
+
 chart_parser_answer(parsed, Sentence) :-
   sentence(Sentence, Length),
   span(Sentence, s, 0, Length).
 chart_parser_answer(parse_count, count(Sentence, Count)) :-
   sentence(Sentence, Length),
-  countall(span(Sentence, s, 0, Length), Count).
+  parse_trees(Sentence, s, 0, Length, Count).
 chart_parser_answer(noun_phrase_count, count(Sentence, Count)) :-
   sentence(Sentence, Length),
   countall(span(Sentence, np, _start, _end), Count),

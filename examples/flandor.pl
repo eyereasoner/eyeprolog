@@ -1,4 +1,5 @@
 :- use_module(library(strings)).
+:- use_module(library(lists)).
 
 % Flandor insight-economy case.
 % The example keeps the neutral insight, policy envelope, authorization, package
@@ -55,11 +56,11 @@
 
 %% ?- derivedFromNeed(X0, X1).
 
-%% ?- signatureVerifies(X0, X1).
+%% ?- signatureAcceptedAsTrusted(X0, X1).
 
 %% ?- payloadHashMatches(X0, X1).
 
-%% ?- hmacMatches(X0, X1).
+%% ?- hmacIsExpectedValue(X0, X1).
 
 %% ?- minimizationStripsSensitiveTerms(X0, X1).
 
@@ -232,8 +233,12 @@ payload_hash_matches(check) :-
   envelopeHash(envelope, Digest),
   payload_hash_sha256(signature, Digest).
 
-signature_verifies(check) :- hmacVerificationMode(signature, trustedPrecomputedInput).
-hmac_matches(check) :-
+% The HMAC is not recomputed here. The input states that it was verified
+% upstream (hmacVerificationMode trustedPrecomputedInput); these checks accept
+% that statement and compare the recorded HMAC with the expected value. They
+% vouch for the declaration, not for the bytes.
+signature_accepted_as_trusted(check) :- hmacVerificationMode(signature, trustedPrecomputedInput).
+hmac_is_expected_value(check) :-
   hmacVerificationMode(signature, trustedPrecomputedInput),
   signature_hmac(signature, "955968ca99a191783bc00cba068128ccb9ff40a5e6114fda13a52c74ee27329e").
 
@@ -300,7 +305,7 @@ threshold_reached(check) :- export_weakness(case), skills_strain(case), grid_str
 lowest_cost_eligible_package_chosen(check) :- recommended_package(case, _pkg).
 
 all_checks_pass(result) :-
-  signature_verifies(check),
+  signature_accepted_as_trusted(check),
   payload_hash_matches(check),
   minimization_strips_sensitive_terms(check),
   scope_complete(check),
@@ -327,9 +332,9 @@ gridReliefMW(why, Mw) :- recommended_package(case, Pkg), grid_relief_mw(Pkg, Mw)
 outcome(decision, Outcome) :- decision(decision, Outcome, _target).
 target(decision, Target) :- decision(decision, _outcome, Target).
 allChecksPass(result, true) :- all_checks_pass(result).
-signatureVerifies(check, true) :- signature_verifies(check).
+signatureAcceptedAsTrusted(check, true) :- signature_accepted_as_trusted(check).
 payloadHashMatches(check, true) :- payload_hash_matches(check).
-hmacMatches(check, true) :- hmac_matches(check).
+hmacIsExpectedValue(check, true) :- hmac_is_expected_value(check).
 minimizationStripsSensitiveTerms(check, true) :- minimization_strips_sensitive_terms(check).
 scopeComplete(check, true) :- scope_complete(check).
 authorizationAllowed(check, true) :- authorization_allowed(check).
@@ -345,5 +350,10 @@ reason(whyExportWeakness, "Export weakness is active because at least one cluste
 reason(whySkillsStrain, "Skills strain is active because technical vacancy rate is 4.6% (threshold > 3.9%).") :- skills_strain(case).
 reason(whyGridStress, "Grid stress is active because congestion hours = 19 (threshold > 11).") :- grid_stress(case).
 reason(whyRecommendationPolicy, "The recommendation policy is \"lowest_cost_package_covering_all_active_needs\", so the cheapest package that covers all active needs within budget is selected.") :- recommended_package(case, _pkg).
-reason(whySelectedPackage, "Selected package \"Flandor Retooling Pulse\" covers export=true, skills=true, grid=true, cost=€120M.") :- recommended_package(case, pkgFlandor).
+reason(whySelectedPackage, Text) :-
+  recommended_package(case, Pkg),
+  packageName(Pkg, Name),
+  costMEUR(Pkg, Cost),
+  number_chars(Cost, CostChars),
+  append(["Selected package \"", Name, "\" covers export=true, skills=true, grid=true, cost=€", CostChars, "M."], Text).
 reason(whyUsage, "Usage is permitted only for purpose \"regional_stabilization\" and the envelope expires at 2026-04-08T19:00:00+00:00.") :- authorization_allowed(check).

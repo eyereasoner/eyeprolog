@@ -1,7 +1,8 @@
 % ISO integer division, remainders, shifts, and bit operations.
 %
-% In EyeProlog's supported profile, div and // both truncate the quotient toward
-% zero. mod normalizes by a positive divisor while rem keeps the dividend sign.
+% // truncates the quotient toward zero, while div rounds it down, toward
+% negative infinity. mod takes the sign of the divisor, while rem keeps the sign
+% of the dividend.
 %% ?- report(X0, X1).
 
 

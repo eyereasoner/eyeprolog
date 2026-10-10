@@ -92,11 +92,18 @@ safety_status(Cover, Zeros, true) :-
     zeros_safe(Cover, Zeros), !.
 safety_status(_, _, false).
 
-minimality_status(Primes, Minterms, Limit, false) :-
+% A smaller cover is a counterexample to minimality: a combination of at most
+% Limit primes that still covers every minterm. Minimality is the absence of
+% such a counterexample, so the proof records that absence explicitly.
+smaller_cover(Primes, Minterms, Limit, Combo) :-
     between_range(1, Limit, N),
     find_combination(N, Primes, Combo),
-    covers_all(Combo, Minterms), !.
-minimality_status(_, _, _, true).
+    covers_all(Combo, Minterms).
+
+minimality_status(Primes, Minterms, Limit, true) :-
+    \+ smaller_cover(Primes, Minterms, Limit, _).
+minimality_status(Primes, Minterms, Limit, false) :-
+    once(smaller_cover(Primes, Minterms, Limit, _)).
 
 equality_status(X, X, true) :- !.
 equality_status(_, _, false).

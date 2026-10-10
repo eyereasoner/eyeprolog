@@ -3,8 +3,9 @@
 % GPS route-planning example.
 % The map is stored as quoted formula data and projected with ordinary term
 % traversal and =../2. Route
-% paths accumulate action sequence, duration, cost, belief, and comfort; table
-% keeps repeated comparison and explanation queries from recomputing paths.
+% paths accumulate action sequence, duration, cost, belief, and comfort. The map
+% is acyclic and small, so routes are recomputed for each query; nothing is
+% tabled.
 
 %% ?- recommendedRoute(X0, X1).
 

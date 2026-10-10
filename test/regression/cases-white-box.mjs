@@ -1039,6 +1039,30 @@ path(X, Z) :- edge(X, Y), path(Y, Z).
       },
     },
     {
+      name: 'tabled left recursion terminates for open and partly bound calls',
+      run: () => {
+        const source = `
+:- table anc/2.
+p(a, b).
+p(b, c).
+p(c, a).
+anc(X, Y) :- p(X, Y).
+anc(X, Z) :- anc(X, Y), p(Y, Z).
+`;
+        const expected = {
+          'anc(X, Y)': 9,
+          'anc(X, b)': 3,
+          'anc(a, Y)': 3,
+          'anc(a, a)': 1,
+        };
+        for (const [goal, count] of Object.entries(expected)) {
+          const result = run(Program.parse(source), { goal, maxInferences: 100_000 });
+          const answers = result.stdout.trim().split('\n').filter(Boolean);
+          assertEqual(answers.length, count, `${goal} answers`);
+        }
+      },
+    },
+    {
       name: 'challenging examples declare their dynamic-programming tables explicitly',
       run: () => {
         const checks = [

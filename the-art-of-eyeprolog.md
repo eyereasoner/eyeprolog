@@ -4472,10 +4472,12 @@ A tabled positive recursive predicate is evaluated through an answer table:
 recurring calls consume answers already found, new answers are recorded, and
 evaluation continues to a fixed point. For eligible large, finite,
 function-free Datalog components, EyeProlog may represent a declared table as
-one shared most-general relation or an indexed least model. For other declared
-tables it may infer structurally bound input positions to improve reuse. These
-choices happen inside an explicit declaration; they never table an undeclared
-predicate.
+one shared most-general relation or an indexed least model. Every call to a
+declared predicate is tabled, whatever its arguments: open and partly bound
+calls each get a table keyed by their variant, so a left-recursive rule such as
+`anc(X, Z) :- anc(X, Y), p(Y, Z).` terminates for `anc(X, Y)` as well as for
+`anc(a, Y)`. These choices happen inside an explicit declaration; they never
+table an undeclared predicate.
 
 Ordinary `\+/1` remains ISO negation as failure. `tnot/1` requests
 well-founded evaluation for eligible finite, range-restricted Datalog
@@ -7895,8 +7897,10 @@ to solve. Pass a callable goal with `-g` or `--goal`:
 eyeprolog --goal 'ancestor(ada, Who)' examples/ancestor.pl
 ```
 
-Repeat the option to ask several questions in one run; answers appear in the
-order the goals were given. `--quiet` suppresses the answer terms while keeping
+Repeat the option to ask several questions in one run. Goals are answered
+grouped by predicate, in the order the predicates first appear in the source,
+and in the order given within one predicate, so a program's answers come out in
+the same order however its goals are listed. `--quiet` suppresses the answer terms while keeping
 Prolog output such as `write/1`, which suits command-style goals.
 
 A program can also carry its own question, either as an ISO query or as the

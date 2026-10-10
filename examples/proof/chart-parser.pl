@@ -1,7 +1,7 @@
 chart_parser_answer(parsed, command).
 chart_parser_answer(parsed, ambiguous_pp).
 chart_parser_answer(parse_count, count(command, 1)).
-chart_parser_answer(parse_count, count(ambiguous_pp, 1)).
+chart_parser_answer(parse_count, count(ambiguous_pp, 2)).
 chart_parser_answer(noun_phrase_count, count(command, 2)).
 chart_parser_answer(noun_phrase_count, count(ambiguous_pp, 4)).
 
@@ -43,20 +43,23 @@ clause(31,
         span(var('Sentence'), var('Left'), var('Start'), var('Middle')),
         span(var('Sentence'), var('Right'), var('Middle'), var('End')))).
 clause(32,
+       parse_trees(var('Sentence'), var('Category'), var('Start'), var('End'), var('Count')),
+       sumall(var('N'), tree_count(var('Sentence'), var('Category'), var('Start'), var('End'), var('N')), var('Count'))).
+clause(35,
        chart_parser_answer(parsed, var('Sentence')),
        (sentence(var('Sentence'), var('Length')), span(var('Sentence'), s, 0, var('Length')))).
-clause(33,
+clause(36,
        chart_parser_answer(parse_count, count(var('Sentence'), var('Count'))),
        (sentence(var('Sentence'), var('Length')),
-        countall(span(var('Sentence'), s, 0, var('Length')), var('Count')))).
-clause(34,
+        parse_trees(var('Sentence'), s, 0, var('Length'), var('Count')))).
+clause(37,
        chart_parser_answer(noun_phrase_count, count(var('Sentence'), var('Count'))),
        (sentence(var('Sentence'), var('Length')),
         countall(span(var('Sentence'), np, anonymous(1), anonymous(2)), var('Count')),
         var('Length') > 0)).
 
 step(chart_parser_answer(parsed, command),
-     rule(32),
+     rule(35),
      ['Sentence' = command, 'Length' = 5],
      [sentence(command, 5), span(command, s, 0, 5)]).
 step(sentence(command, 5), fact(2), [], []).
@@ -138,7 +141,7 @@ step(word(command, 4, box), fact(8), [], []).
 step(terminal(noun, box), fact(19), [], []).
 step(5 is 4 + 1, builtin, [], []).
 step(chart_parser_answer(parsed, ambiguous_pp),
-     rule(32),
+     rule(35),
      ['Sentence' = ambiguous_pp, 'Length' = 8],
      [sentence(ambiguous_pp, 8), span(ambiguous_pp, s, 0, 8)]).
 step(sentence(ambiguous_pp, 8), fact(3), [], []).
@@ -261,23 +264,31 @@ step(word(ambiguous_pp, 7, telescope), fact(16), [], []).
 step(terminal(noun, telescope), fact(20), [], []).
 step(8 is 7 + 1, builtin, [], []).
 step(chart_parser_answer(parse_count, count(command, 1)),
-     rule(33),
+     rule(36),
      ['Sentence' = command, 'Count' = 1, 'Length' = 5],
-     [sentence(command, 5), countall(span(command, s, 0, 5), 1)]).
-step(countall(span(command, s, 0, 5), 1), builtin, [], []).
-step(chart_parser_answer(parse_count, count(ambiguous_pp, 1)),
-     rule(33),
-     ['Sentence' = ambiguous_pp, 'Count' = 1, 'Length' = 8],
-     [sentence(ambiguous_pp, 8), countall(span(ambiguous_pp, s, 0, 8), 1)]).
-step(countall(span(ambiguous_pp, s, 0, 8), 1), builtin, [], []).
+     [sentence(command, 5), parse_trees(command, s, 0, 5, 1)]).
+step(parse_trees(command, s, 0, 5, 1),
+     rule(32),
+     ['Sentence' = command, 'Category' = s, 'Start' = 0, 'End' = 5, 'Count' = 1],
+     [sumall(Expression, tree_count(command, s, 0, 5, Expression), 1)]).
+step(sumall(Expression, tree_count(command, s, 0, 5, Expression), 1), builtin, [], []).
+step(chart_parser_answer(parse_count, count(ambiguous_pp, 2)),
+     rule(36),
+     ['Sentence' = ambiguous_pp, 'Count' = 2, 'Length' = 8],
+     [sentence(ambiguous_pp, 8), parse_trees(ambiguous_pp, s, 0, 8, 2)]).
+step(parse_trees(ambiguous_pp, s, 0, 8, 2),
+     rule(32),
+     ['Sentence' = ambiguous_pp, 'Category' = s, 'Start' = 0, 'End' = 8, 'Count' = 2],
+     [sumall(Expression, tree_count(ambiguous_pp, s, 0, 8, Expression), 2)]).
+step(sumall(Expression, tree_count(ambiguous_pp, s, 0, 8, Expression), 2), builtin, [], []).
 step(chart_parser_answer(noun_phrase_count, count(command, 2)),
-     rule(34),
+     rule(37),
      ['Sentence' = command, 'Count' = 2, 'Length' = 5],
      [sentence(command, 5), countall(span(command, np, _start, _end), 2), 5 > 0]).
 step(countall(span(command, np, _start, _end), 2), builtin, [], []).
 step(5 > 0, builtin, [], []).
 step(chart_parser_answer(noun_phrase_count, count(ambiguous_pp, 4)),
-     rule(34),
+     rule(37),
      ['Sentence' = ambiguous_pp, 'Count' = 4, 'Length' = 8],
      [sentence(ambiguous_pp, 8), countall(span(ambiguous_pp, np, _start, _end), 4), 8 > 0]).
 step(countall(span(ambiguous_pp, np, _start, _end), 4), builtin, [], []).

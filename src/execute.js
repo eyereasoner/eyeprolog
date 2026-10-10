@@ -20,6 +20,18 @@ export function normalizeGoals(requestedGoals, solver) {
   });
 }
 
+// Host goals run grouped in the source order of their predicate groups, keeping
+// the supplied order within a group; goals for predicates with no group come
+// last. The CLI, the API, the playground and the example goldens therefore
+// print the answers of one program in one order, however the goals were listed.
+export function goalsInProgramOrder(program, goals) {
+  const order = new Map([...program.groups.keys()].map((key, index) => [key, index]));
+  return goals
+    .map((goal, index) => ({ goal, index, rank: order.get(`${goal.name}/${goal.arity}`) ?? Number.MAX_SAFE_INTEGER }))
+    .sort((left, right) => left.rank - right.rank || left.index - right.index)
+    .map(({ goal }) => goal);
+}
+
 export function executeGoals(program, solver, goals, { onAnswer = () => {} } = {}) {
   const initialWriteOptions = currentWriteOptions(program, solver);
   const queriedKeys = new Set(goals.map((goal) => `${goal.name}/${goal.arity}`));

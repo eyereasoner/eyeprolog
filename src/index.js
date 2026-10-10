@@ -39,7 +39,7 @@ import { Solver } from './solver.js';
 import { ProofCheckError, checkedProofBlocks } from './proof-document.js';
 import { getStrictIsoRegistry } from './iso.js';
 import { getEyePrologRegistry } from './standard-library.js';
-import { executeForwardRules, executeGoals, hasForwardRules, normalizeGoals } from './execute.js';
+import { executeForwardRules, executeGoals, goalsInProgramOrder, hasForwardRules, normalizeGoals } from './execute.js';
 
 // The public API is an entry point above the solver/registry layers, so it can
 // install pruning-aware iterator disposal without introducing an import cycle.
@@ -97,7 +97,7 @@ export function run(source, options = {}) {
     // A bare `?- Goal.` asks its question the same way a `%% ?-` comment
     // does; only the parser can find it, so it is picked up here.
     const declared = requestedGoals.length === 0 ? program.queries.map((query) => query.goal) : requestedGoals;
-    const goals = normalizeGoals(declared, solver);
+    const goals = goalsInProgramOrder(program, normalizeGoals(declared, solver));
     const claimed = [];
     ({ haltCode } = executeGoals(program, solver, goals, {
       onAnswer: (line, resolved) => {

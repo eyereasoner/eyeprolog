@@ -1,12 +1,245 @@
 # Example decks
 
-Wide-audience companion explanations for selected runnable examples.
+Every runnable program under [`examples/`](..) has a deck: a short, wide-audience
+walk through the question it answers, the facts and rules that model it, the
+answer EyeProlog derives, the proof behind that answer, and the independent
+check of that proof. Each deck links to the source and opens the example in the
+[playground](https://eyereasoner.github.io/eyeprolog/playground).
 
-- [Introduction to EyeProlog](https://eyereasoner.github.io/eyeprolog/examples/deck/introduction-to-eyeprolog) — a guided slide deck introducing facts, rules, answers, proofs, CLP(Z), CLP(B), ISO conformance, JavaScript embedding, RDF roundtrips, and a categorized path through the example corpus.
-- [Cross-organization data sharing](https://eyereasoner.github.io/eyeprolog/examples/deck/cross-organization-data-sharing) — ODRL/DPV sharing decisions with permit, deny, review, safeguards, and obligations.
-- [Explainable EV-depot configuration](https://eyereasoner.github.io/eyeprolog/examples/deck/explainable-ev-depot-configuration) — reversible configuration rules that select a charger, explain blockers, and derive required changes.
-- [ODRL policy reasoning](https://eyereasoner.github.io/eyeprolog/examples/deck/odrl-policy-reasoning) — permissions, prohibitions, duties, conflicts, and defaults.
-- [Operational incident response](https://eyereasoner.github.io/eyeprolog/examples/deck/operational-incident-response) — topology-aware root-cause, impact, evidence-chain, and safe-mitigation reasoning.
-- [SBOM vulnerability response](https://eyereasoner.github.io/eyeprolog/examples/deck/sbom-vulnerability-response) — transitive exposure paths, severity policy, waivers, deployment decisions, and upgrade actions.
-- [Scientific evidence graph](https://eyereasoner.github.io/eyeprolog/examples/deck/scientific-evidence-graph) — RDF 1.2 claims, provenance, evidence quality, corroboration, and explicit disagreement.
-- [Symbiotic Knowledge Graphs](https://eyereasoner.github.io/eyeprolog/examples/deck/symbiotic-knowledge-graphs) — a real-world RDF → Prolog → RDF heatwave-response loop in which AI proposes, explicit rules govern, people review, and accepted knowledge improves later decisions.
+- [A backward rule](https://eyereasoner.github.io/eyeprolog/examples/deck/backward) — Is 5 more interesting than 3?
+- [A Boolean circuit](https://eyereasoner.github.io/eyeprolog/examples/deck/clpb-boolean-circuit) — Does this gate network really compute XOR?
+- [A CDCL SAT step](https://eyereasoner.github.io/eyeprolog/examples/deck/cdcl-sat-solver) — How does a SAT solver learn from a conflict?
+- [A chart parser](https://eyereasoner.github.io/eyeprolog/examples/deck/chart-parser) — Is this sentence grammatical, and which phrases does it contain?
+- [A command parser](https://eyereasoner.github.io/eyeprolog/examples/deck/dcg-command-parser) — One grammar that both reads and writes home-automation commands
+- [A derived rule](https://eyereasoner.github.io/eyeprolog/examples/deck/derived-rule) — If there is a cat, does a dog make the test true?
+- [A dog licence rule](https://eyereasoner.github.io/eyeprolog/examples/deck/dog) — Who has so many dogs that they need a licence?
+- [A DPLL SAT solver](https://eyereasoner.github.io/eyeprolog/examples/deck/sat-solver-dpll) — Can these five clauses all be true at once?
+- [A drone corridor planner](https://eyereasoner.github.io/eyeprolog/examples/deck/drone-corridor-planner) — Which delivery plans from Gent to Oostende are reliable and cheap enough?
+- [A feature model in Boolean constraints](https://eyereasoner.github.io/eyeprolog/examples/deck/clpb-feature-model) — Which product configurations are valid, and how many are there?
+- [A partial evaluator](https://eyereasoner.github.io/eyeprolog/examples/deck/partial-evaluator) — What is left of a program when some of its inputs are already known?
+- [A review quorum](https://eyereasoner.github.io/eyeprolog/examples/deck/clpb-cardinality) — Which two reviewers satisfy every rule?
+- [A rule that writes a rule](https://eyereasoner.github.io/eyeprolog/examples/deck/derived-backward-rule) — Can one fact about two relations produce a new rule?
+- [A truth maintenance system](https://eyereasoner.github.io/eyeprolog/examples/deck/truth-maintenance-system) — Which beliefs follow from which assumptions, and which clash?
+- [A Turing machine](https://eyereasoner.github.io/eyeprolog/examples/deck/turing) — Can a handful of clauses run a Turing machine?
+- [A vanilla meta-interpreter](https://eyereasoner.github.io/eyeprolog/examples/deck/vanilla-meta-interpreter) — Can Prolog describe how Prolog runs?
+- [A withdrawn evidence demand](https://eyereasoner.github.io/eyeprolog/examples/deck/evidence-demand-authority) — What follows when an authority asks for something it had no power to ask?
+- [Abstract interpretation](https://eyereasoner.github.io/eyeprolog/examples/deck/abstract-interpretation) — Can this program divide by zero?
+- [Access control policy](https://eyereasoner.github.io/eyeprolog/examples/deck/access-control-policy) — Does this request satisfy the policy?
+- [Ackermann](https://eyereasoner.github.io/eyeprolog/examples/deck/ackermann) — How fast can a tiny recursive definition grow?
+- [Advanced ODRL policy](https://eyereasoner.github.io/eyeprolog/examples/deck/odrl-policy-advanced) — One policy, three requests, three different outcomes
+- [Age check](https://eyereasoner.github.io/eyeprolog/examples/deck/age) — Is this person older than 80?
+- [Aliases and namespaces](https://eyereasoner.github.io/eyeprolog/examples/deck/aliases-and-namespaces) — Which names are built in, and which are just your vocabulary?
+- [Allen's interval calculus](https://eyereasoner.github.io/eyeprolog/examples/deck/allen-interval-calculus) — How do two time intervals relate?
+- [An expression language](https://eyereasoner.github.io/eyeprolog/examples/deck/dcg-expression-language) — Parse arithmetic, evaluate it, and print it back with the right parentheses
+- [Ancestors](https://eyereasoner.github.io/eyeprolog/examples/deck/ancestor) — Who descends from whom?
+- [Animal classification](https://eyereasoner.github.io/eyeprolog/examples/deck/animal) — If Joe is a human, is Joe an animal?
+- [Annotation](https://eyereasoner.github.io/eyeprolog/examples/deck/annotation) — Who said what, and when?
+- [Attributed variables](https://eyereasoner.github.io/eyeprolog/examples/deck/attributed-variables) — Can a variable carry a promise about its future value?
+- [AuroraCare](https://eyereasoner.github.io/eyeprolog/examples/deck/auroracare) — Should this use of a patient's health data be permitted, and why?
+- [Basic monadic benchmark](https://eyereasoner.github.io/eyeprolog/examples/deck/basic-monadic) — Which labelled ten-step cycles exist in a graph of 10,000 edges?
+- [Bayesian diagnosis](https://eyereasoner.github.io/eyeprolog/examples/deck/bayes-diagnosis) — Which disease best explains these symptoms?
+- [Bayesian therapy choice](https://eyereasoner.github.io/eyeprolog/examples/deck/bayes-therapy) — Which therapy is best when the diagnosis is uncertain?
+- [Beam deflection](https://eyereasoner.github.io/eyeprolog/examples/deck/beam-deflection) — Does this cantilever beam bend too far?
+- [Big-number multiplication and powers](https://eyereasoner.github.io/eyeprolog/examples/deck/peasant) — Can a logic program multiply 34-digit numbers exactly?
+- [Binomial coefficients and Vandermonde's identity](https://eyereasoner.github.io/eyeprolog/examples/deck/binomial-vandermonde) — Do two ways of counting the same committees agree?
+- [Blocks-world planning](https://eyereasoner.github.io/eyeprolog/examples/deck/blocks-world-planning) — Which five moves turn one stack of blocks into another?
+- [Body mass index](https://eyereasoner.github.io/eyeprolog/examples/deck/bmi) — What is this person's BMI, and which category does it fall in?
+- [Braking safety in alternative worlds](https://eyereasoner.github.io/eyeprolog/examples/deck/braking-safety-worlds) — Can the car stop in time, and does the answer depend on the model?
+- [Buck converter design](https://eyereasoner.github.io/eyeprolog/examples/deck/buck-converter-design) — Does this voltage regulator keep its ripple within limits?
+- [Bulk stream writing](https://eyereasoner.github.io/eyeprolog/examples/deck/bulk-stream-write) — Does every character written to a file come back when it is read?
+- [Burn the witch](https://eyereasoner.github.io/eyeprolog/examples/deck/witch) — How far can a chain of silly rules go?
+- [Cache performance](https://eyereasoner.github.io/eyeprolog/examples/deck/cache-performance) — Is the cache actually earning its keep?
+- [Canary release](https://eyereasoner.github.io/eyeprolog/examples/deck/canary-release) — Should this release be rolled back?
+- [Cat Koko](https://eyereasoner.github.io/eyeprolog/examples/deck/cat-koko) — How do you say "there is a cat" without naming the cat?
+- [Catalan numbers](https://eyereasoner.github.io/eyeprolog/examples/deck/catalan-convolution) — How many ways can you cut a polygon into triangles?
+- [Certified gradient-descent bounds](https://eyereasoner.github.io/eyeprolog/examples/deck/gd-step-certified) — What can interval arithmetic certify about ten gradient-descent steps?
+- [Choosing an epidemic policy](https://eyereasoner.github.io/eyeprolog/examples/deck/epidemic-policy) — Which intervention brings the outbreak under control?
+- [Clinical-trial screening](https://eyereasoner.github.io/eyeprolog/examples/deck/clinical-trial-screening) — Which patients can enter a diabetes trial, and why are the others turned away?
+- [Collatz trajectories for 1 to 1000](https://eyereasoner.github.io/eyeprolog/examples/deck/collatz-1000) — Does every start from 1 to 1000 reach 1?
+- [Combinations with findall and sort](https://eyereasoner.github.io/eyeprolog/examples/deck/combinatorics-findall-sort) — What are all the ways to choose 3 items out of 5?
+- [Common ISO extensions](https://eyereasoner.github.io/eyeprolog/examples/deck/iso-extensions) — Which everyday extensions do mature Prolog systems share?
+- [Competitive enzyme inhibition](https://eyereasoner.github.io/eyeprolog/examples/deck/competitive-enzyme-kinetics) — How much does an inhibitor slow an enzyme down?
+- [Complex numbers](https://eyereasoner.github.io/eyeprolog/examples/deck/complex) — What is i to the power i?
+- [Composing injective functions](https://eyereasoner.github.io/eyeprolog/examples/deck/composition-of-injective-functions-is-injective) — If f and g are injective, what follows when g ∘ f sends two inputs to the same place?
+- [Computing the date of Easter](https://eyereasoner.github.io/eyeprolog/examples/deck/easter-computus) — On which day does Easter fall in each year from 2026 to 2035?
+- [Computing π](https://eyereasoner.github.io/eyeprolog/examples/deck/pi) — How close does the Nilakantha series get to π?
+- [Context association](https://eyereasoner.github.io/eyeprolog/examples/deck/context-association) — Which named graph holds the data, which holds its signature, and which holds the signature's metadata?
+- [Context schema audit](https://eyereasoner.github.io/eyeprolog/examples/deck/context-schema-audit) — Which fields in a message do not fit the schema?
+- [Continued fraction for √2](https://eyereasoner.github.io/eyeprolog/examples/deck/continued-fraction-sqrt2) — How do the fractions 3/2, 7/5, 17/12, … close in on the square root of two?
+- [Control system](https://eyereasoner.github.io/eyeprolog/examples/deck/control-system) — What signal should each actuator receive?
+- [Correlating service logs](https://eyereasoner.github.io/eyeprolog/examples/deck/observability-log-correlation) — Which failures in unstructured logs belong to the same user journey?
+- [Critical path scheduling](https://eyereasoner.github.io/eyeprolog/examples/deck/critical-path-schedule) — When can the project finish, and which tasks decide that?
+- [Cross-organization data sharing](https://eyereasoner.github.io/eyeprolog/examples/deck/cross-organization-data-sharing) — Decision
+- [Dairy energy balance](https://eyereasoner.github.io/eyeprolog/examples/deck/dairy-energy-balance) — Is each cow eating enough energy for her body and her milk?
+- [Data negotiation](https://eyereasoner.github.io/eyeprolog/examples/deck/data-negotiation) — Which data requests can both sides agree to?
+- [Deep taxonomy, depth 10](https://eyereasoner.github.io/eyeprolog/examples/deck/deep-taxonomy-10) — Does one individual, climbing ten levels of a class hierarchy, reach the top?
+- [Deep taxonomy, depth 100](https://eyereasoner.github.io/eyeprolog/examples/deck/deep-taxonomy-100) — What does a reasoner have to derive to answer one question?
+- [Deep taxonomy, depth 1000](https://eyereasoner.github.io/eyeprolog/examples/deck/deep-taxonomy-1000) — How does a proof grow when the chain gets ten times longer?
+- [Deep taxonomy, depth 10000](https://eyereasoner.github.io/eyeprolog/examples/deck/deep-taxonomy-10000) — Can a reasoner follow ten thousand dependent steps without losing its way?
+- [Deep taxonomy, depth 100000](https://eyereasoner.github.io/eyeprolog/examples/deck/deep-taxonomy-100000) — Does the whole pipeline (answer, proof, and check) hold up at 300,000 rules?
+- [Defeasible reasoning](https://eyereasoner.github.io/eyeprolog/examples/deck/defeasible-reasoning) — Which travel expenses get reimbursed, and what happens when two policies both claim one?
+- [Delayed disequality with dif/2](https://eyereasoner.github.io/eyeprolog/examples/deck/dif-constraints) — How do you say "these must differ" before you know what they are?
+- [Delfour: a privacy-preserving shopping insight](https://eyereasoner.github.io/eyeprolog/examples/deck/delfour) — Can a store scanner give diabetes-aware advice without ever learning about the diabetes?
+- [Deontic logic](https://eyereasoner.github.io/eyeprolog/examples/deck/deontic-logic) — Which duties were broken, which were repaired, and does someone need to review it?
+- [Dijkstra with findall and sort](https://eyereasoner.github.io/eyeprolog/examples/deck/dijkstra-findall-sort) — What is the cheapest route, found the way Dijkstra would?
+- [Dining philosophers](https://eyereasoner.github.io/eyeprolog/examples/deck/dining-philosophers) — Who eats when, and with which forks?
+- [DONALD + GERALD = ROBERT](https://eyereasoner.github.io/eyeprolog/examples/deck/donald-gerald-robert) — Which digit does each letter stand for?
+- [Equality saturation](https://eyereasoner.github.io/eyeprolog/examples/deck/equality-saturation) — What is the cheapest expression equal to this one?
+- [Euler's totient](https://eyereasoner.github.io/eyeprolog/examples/deck/totient-summatory) — How many numbers up to N share no factor with N?
+- [Eulerian path](https://eyereasoner.github.io/eyeprolog/examples/deck/eulerian-path) — Can you walk every street exactly once?
+- [EV range worlds](https://eyereasoner.github.io/eyeprolog/examples/deck/ev-range-worlds) — Will the battery last the trip, and under which assumptions?
+- [Existential rules with witnesses](https://eyereasoner.github.io/eyeprolog/examples/deck/existential-rule) — How can a rule say "there exists something" without inventing anonymous objects?
+- [Exoplanet validation worlds](https://eyereasoner.github.io/eyeprolog/examples/deck/exoplanet-validation-worlds) — When does a transit signal really mean a planet?
+- [Explainable EV-depot configuration](https://eyereasoner.github.io/eyeprolog/examples/deck/explainable-ev-depot-configuration) — Questions, not just filtering
+- [Expression evaluator](https://eyereasoner.github.io/eyeprolog/examples/deck/expression-eval) — What is (2 × 3) + (10 − 4), and how was it computed?
+- [Factorial with integer constraints](https://eyereasoner.github.io/eyeprolog/examples/deck/clpz-factorial) — What is 6!, computed with constraints instead of `is/2`?
+- [Family cousins](https://eyereasoner.github.io/eyeprolog/examples/deck/family-cousins) — Who are cousins in this family tree?
+- [Fast exponentiation](https://eyereasoner.github.io/eyeprolog/examples/deck/fastpow) — How do you compute 3 to the power 10000 without 10000 multiplications?
+- [Fibonacci by fast doubling](https://eyereasoner.github.io/eyeprolog/examples/deck/fibonacci) — How do you compute the 10,000th Fibonacci number without computing all the ones before it?
+- [Field nitrogen balance](https://eyereasoner.github.io/eyeprolog/examples/deck/field-nitrogen-balance) — Which fields get too little nitrogen, which get too much, and where is leaching worst?
+- [Finding a bug by asking smaller questions](https://eyereasoner.github.io/eyeprolog/examples/deck/declarative-fault-localization) — Where is the fault in a list-maximum predicate that gives the wrong answer?
+- [Flandor](https://eyereasoner.github.io/eyeprolog/examples/deck/flandor) — May a regional board use an economic insight, and which support package should it activate?
+- [Floating-point arithmetic](https://eyereasoner.github.io/eyeprolog/examples/deck/floating-point) — What happens when a logic program computes with decimals?
+- [Four colours for Europe](https://eyereasoner.github.io/eyeprolog/examples/deck/four-color-map) — Does this colouring of the EU map keep every pair of neighbours apart?
+- [Four-colouring the European Union](https://eyereasoner.github.io/eyeprolog/examples/deck/map-four-color-search) — Can 27 countries be coloured with four colours so that no neighbours match?
+- [GDPR-style compliance](https://eyereasoner.github.io/eyeprolog/examples/deck/gdpr-compliance) — Is this processing of personal data allowed, and if not, why not?
+- [Global constraints over integers](https://eyereasoner.github.io/eyeprolog/examples/deck/clpz-global-constraints) — How do whole-problem constraints describe tables, schedules, costs, and tours?
+- [Goldbach for powers of two](https://eyereasoner.github.io/eyeprolog/examples/deck/goldbach) — Can each power of two from 4 to 2²⁵ be written as a sum of two primes?
+- [GPS route choice](https://eyereasoner.github.io/eyeprolog/examples/deck/gps) — Which route should we take from Gent to Oostende?
+- [Gray-code counter](https://eyereasoner.github.io/eyeprolog/examples/deck/gray-code-counter) — Does this three-bit circuit count in Gray code?
+- [Greatest lower bounds are unique](https://eyereasoner.github.io/eyeprolog/examples/deck/greatest-lower-bound-uniqueness) — If two things are both the greatest lower bound of the same pair, are they the same?
+- [Hamiltonian paths](https://eyereasoner.github.io/eyeprolog/examples/deck/hamiltonian-path) — Which routes visit every vertex of this graph exactly once?
+- [Hamming(7,4) error correction](https://eyereasoner.github.io/eyeprolog/examples/deck/hamming-code) — Which bit of this received packet was flipped, and what was sent?
+- [Heat loss through a wall](https://eyereasoner.github.io/eyeprolog/examples/deck/heat-loss) — How much heat escapes through this wall on a cold day?
+- [Herbrand semantics](https://eyereasoner.github.io/eyeprolog/examples/deck/herbrand-semantics) — Can two different names mean the same thing?
+- [Herbrand witnesses](https://eyereasoner.github.io/eyeprolog/examples/deck/herbrand-witnesses) — How do you say "there exists" in a rule?
+- [Heron's theorem](https://eyereasoner.github.io/eyeprolog/examples/deck/heron-theorem) — What is the area of a triangle when you only know its sides?
+- [HTTP client](https://eyereasoner.github.io/eyeprolog/examples/deck/http-client) — How does a Prolog program fetch and read a JSON document?
+- [Ideal gas law](https://eyereasoner.github.io/eyeprolog/examples/deck/ideal-gas-law) — Is the pressure in this gas cell close to one atmosphere?
+- [Illegitimate reasoning](https://eyereasoner.github.io/eyeprolog/examples/deck/illegitimate-reasoning) — Can a program spot a bad argument?
+- [Integer partitions](https://eyereasoner.github.io/eyeprolog/examples/deck/integer-partitions) — In how many ways can a number be written as a sum?
+- [Integrity check](https://eyereasoner.github.io/eyeprolog/examples/deck/integrity-check) — Is the input itself consistent?
+- [Introduction to EyeProlog](https://eyereasoner.github.io/eyeprolog/examples/deck/introduction-to-eyeprolog) — What is EyeProlog?
+- [Intuitionistic logic with a Kripke model](https://eyereasoner.github.io/eyeprolog/examples/deck/intuitionistic-logic-kripke) — When is "p or not p" not automatically true?
+- [Inverses in a group are unique](https://eyereasoner.github.io/eyeprolog/examples/deck/group-inverse-uniqueness) — If two elements both undo `x`, are they really different?
+- [ISO atomic conversion](https://eyereasoner.github.io/eyeprolog/examples/deck/iso-atomic-conversion) — How do atoms, characters, codes and numbers relate?
+- [ISO control and errors](https://eyereasoner.github.io/eyeprolog/examples/deck/iso-control-and-errors) — How does standard Prolog choose, commit, and recover?
+- [ISO dynamic database](https://eyereasoner.github.io/eyeprolog/examples/deck/iso-dynamic-database) — How does a Prolog program keep changing state?
+- [ISO extension pipeline audit](https://eyereasoner.github.io/eyeprolog/examples/deck/iso-extension-pipeline-audit) — Can one bounded report count, summarize, trace, and check a pipeline?
+- [ISO grouped solutions](https://eyereasoner.github.io/eyeprolog/examples/deck/iso-grouped-solutions) — How do you turn many answers into one list, or one list per group?
+- [ISO integer arithmetic](https://eyereasoner.github.io/eyeprolog/examples/deck/iso-integer-arithmetic) — What is -7 divided by 3?
+- [ISO operators](https://eyereasoner.github.io/eyeprolog/examples/deck/iso-operators) — Can a program read like a sentence and still be an ordinary term?
+- [Job-shop scheduling](https://eyereasoner.github.io/eyeprolog/examples/deck/job-shop-scheduling) — What is the shortest way to run three jobs on two shared machines?
+- [JSON](https://eyereasoner.github.io/eyeprolog/examples/deck/json) — Can one grammar both read and write JSON?
+- [Knapsack optimization](https://eyereasoner.github.io/eyeprolog/examples/deck/knapsack-optimization) — Which gear gives an expedition the most value within its weight limit?
+- [Knight's tour](https://eyereasoner.github.io/eyeprolog/examples/deck/knights-tour-warnsdorff) — Can a chess knight visit every square of a board exactly once?
+- [Knowledge-engineering alignment](https://eyereasoner.github.io/eyeprolog/examples/deck/knowledge-engineering-alignment-flow) — Can data in a local vocabulary be read as a shared standard without rewriting it?
+- [Knuth–Bendix completion](https://eyereasoner.github.io/eyeprolog/examples/deck/knuth-bendix-completion) — Does every way of simplifying a term lead to the same result?
+- [Language](https://eyereasoner.github.io/eyeprolog/examples/deck/language) — How does an EyeProlog program look when its names are web identifiers?
+- [Law of cosines](https://eyereasoner.github.io/eyeprolog/examples/deck/law-of-cosines) — How long is the third side of a triangle?
+- [Least-squares regression](https://eyereasoner.github.io/eyeprolog/examples/deck/least-squares-regression) — Which straight line best fits these points, and is the fit good enough?
+- [Lee routing](https://eyereasoner.github.io/eyeprolog/examples/deck/lee) — How do you route a wire around obstacles on a chip?
+- [Leg length discrepancy measurement](https://eyereasoner.github.io/eyeprolog/examples/deck/lldm) — Are this patient's legs measurably different in length?
+- [Linear logic with resources](https://eyereasoner.github.io/eyeprolog/examples/deck/linear-logic-resources) — Can a rule use each resource exactly once?
+- [List collections](https://eyereasoner.github.io/eyeprolog/examples/deck/list-collection) — How do you work with a whole list as one value?
+- [Manufacturing quality control](https://eyereasoner.github.io/eyeprolog/examples/deck/manufacturing-quality-control) — Is this production line capable of staying inside its tolerances?
+- [Mapping a data-processing record to a policy](https://eyereasoner.github.io/eyeprolog/examples/deck/dpv-odrl-purpose-mapping) — Does this policy really say what the processing record says?
+- [Markov logic, one world at a time](https://eyereasoner.github.io/eyeprolog/examples/deck/markov-logic-network) — Which possible world best fits soft, weighted rules?
+- [Matrix multiplication is not commutative](https://eyereasoner.github.io/eyeprolog/examples/deck/matrix-noncommutativity) — Does A·B always equal B·A?
+- [Matrix-chain order](https://eyereasoner.github.io/eyeprolog/examples/deck/matrix-chain-order) — In what order should six matrices be multiplied to do the least work?
+- [Microgrid dispatch](https://eyereasoner.github.io/eyeprolog/examples/deck/microgrid-dispatch) — How should a campus cover its load with renewables, a battery, and the grid?
+- [Missionaries and cannibals](https://eyereasoner.github.io/eyeprolog/examples/deck/missionaries-cannibals) — Can everyone cross the river without anyone being outnumbered?
+- [Modal logic on a Kripke frame](https://eyereasoner.github.io/eyeprolog/examples/deck/modal-logic-kripke) — What is necessarily true, and what is merely possible?
+- [Modular exponentiation](https://eyereasoner.github.io/eyeprolog/examples/deck/modular-exponentiation) — What is 7⁵⁶⁰ mod 561, without ever computing 7⁵⁶⁰?
+- [Monkey and bananas](https://eyereasoner.github.io/eyeprolog/examples/deck/monkey-bananas) — How does a monkey get bananas hanging out of reach?
+- [N queens with constraints](https://eyereasoner.github.io/eyeprolog/examples/deck/clpz-n-queens) — How can N queens share a board without attacking each other?
+- [Naive reverse](https://eyereasoner.github.io/eyeprolog/examples/deck/bench) — How much work does it take to reverse a list the slow way?
+- [Network SLA check](https://eyereasoner.github.io/eyeprolog/examples/deck/network-sla) — Does this network path meet its latency promise?
+- [New Scientist Enigma 1225](https://eyereasoner.github.io/eyeprolog/examples/deck/enigma1225) — Which symmetric 8 × 8 grid scores highest?
+- [Newton–Raphson root finding](https://eyereasoner.github.io/eyeprolog/examples/deck/newton-raphson) — Where does a function cross zero?
+- [Numeric 8-point FFT](https://eyereasoner.github.io/eyeprolog/examples/deck/fft8-numeric) — Which frequencies are hidden in eight samples?
+- [ODRL policy](https://eyereasoner.github.io/eyeprolog/examples/deck/odrl-policy) — May this dataset be used for research?
+- [ODRL policy reasoning](https://eyereasoner.github.io/eyeprolog/examples/deck/odrl-policy-reasoning) — One reasoner, many kinds of policy questions
+- [Operational incident response](https://eyereasoner.github.io/eyeprolog/examples/deck/operational-incident-response) — Decision
+- [Orbital transfer design](https://eyereasoner.github.io/eyeprolog/examples/deck/orbital-transfer-design) — Can a spacecraft get from Earth's orbit to Mars's orbit within its fuel budget?
+- [Overlapping equivalence classes](https://eyereasoner.github.io/eyeprolog/examples/deck/equivalence-classes-overlap-implies-same-class) — If two classes share a member, are they the same class?
+- [Path discovery](https://eyereasoner.github.io/eyeprolog/examples/deck/path-discovery) — How can you fly from Ostend to Prague with at most two stopovers?
+- [Paths through a cycle](https://eyereasoner.github.io/eyeprolog/examples/deck/cyclic-path) — Which nodes can reach which, when the graph loops back on itself?
+- [Peano arithmetic](https://eyereasoner.github.io/eyeprolog/examples/deck/peano-arithmetic) — What is (1 × 2 + 3)! when numbers are only zero and successors?
+- [Peano calculus](https://eyereasoner.github.io/eyeprolog/examples/deck/peano-calculus) — Can arithmetic be built from nothing but zero and "the next number"?
+- [Pendulum period](https://eyereasoner.github.io/eyeprolog/examples/deck/pendulum-period) — Does a one-metre pendulum swing with a two-second period?
+- [Pointer analysis](https://eyereasoner.github.io/eyeprolog/examples/deck/pointer-analysis) — Which objects can each pointer variable point to?
+- [Polynomial roots](https://eyereasoner.github.io/eyeprolog/examples/deck/polynomial) — Which complex integers are roots of these quartic polynomials?
+- [Portable library overlap](https://eyereasoner.github.io/eyeprolog/examples/deck/portable-library-overlap) — Can one program use nine libraries and still run on three Prolog systems?
+- [Prime factors of 202,692,987](https://eyereasoner.github.io/eyeprolog/examples/deck/fundamental-theorem-arithmetic) — Which primes multiply to this number, and how do we know the list is right?
+- [Prime range and totient](https://eyereasoner.github.io/eyeprolog/examples/deck/prime-range) — Which numbers up to 30 are prime, and how many numbers below 271 are coprime to it?
+- [Primes below 1000](https://eyereasoner.github.io/eyeprolog/examples/deck/sieve) — Which numbers up to 1000 are prime?
+- [Proof by contrapositive](https://eyereasoner.github.io/eyeprolog/examples/deck/proof-contrapositive) — If the ground is dry, is it raining?
+- [Propositional Dynamic Logic](https://eyereasoner.github.io/eyeprolog/examples/deck/propositional-dynamic-logic) — Can every way of acting reach the garden, or only some?
+- [Quine–McCluskey logic minimization](https://eyereasoner.github.io/eyeprolog/examples/deck/quine-mccluskey) — What is the smallest sum-of-products formula for this Boolean function?
+- [Radioactive decay](https://eyereasoner.github.io/eyeprolog/examples/deck/radioactive-decay) — How much activity is left after 16 hours?
+- [Ranked consumer-policy risks](https://eyereasoner.github.io/eyeprolog/examples/deck/odrl-dpv-risk-ranked) — Which clauses of this agreement put the consumer at risk, and which matter most?
+- [Ranking healthcare policy risks](https://eyereasoner.github.io/eyeprolog/examples/deck/odrl-dpv-healthcare-risk-ranked) — Which gaps in this healthcare data policy are the most urgent to fix?
+- [Ranking RDF 1.2 annotated claims](https://eyereasoner.github.io/eyeprolog/examples/deck/rdf12-annotated-claims) — Is the bridge open or closed?
+- [RDF 1.2 annotations](https://eyereasoner.github.io/eyeprolog/examples/deck/rdf12-annotation) — Who said this, and when?
+- [RDF 1.2 directional language tags](https://eyereasoner.github.io/eyeprolog/examples/deck/rdf12-directional-language) — Will Arabic text still read right to left after reasoning?
+- [RDF 1.2 graph join](https://eyereasoner.github.io/eyeprolog/examples/deck/rdf12-trig-graph-join) — Which station reported this sensor reading?
+- [RDF 1.2 named graphs](https://eyereasoner.github.io/eyeprolog/examples/deck/rdf12-trig-named-graph) — Can rules reason inside one graph without leaking into others?
+- [RDF 1.2 nested triple terms](https://eyereasoner.github.io/eyeprolog/examples/deck/rdf12-nested-triple-term) — What is buried inside a claim about a claim?
+- [RDF 1.2 triple terms](https://eyereasoner.github.io/eyeprolog/examples/deck/rdf12-triple-term) — Can a statement be talked about without being asserted?
+- [RDF 1.2 triple terms in a named graph](https://eyereasoner.github.io/eyeprolog/examples/deck/rdf12-trig-triple-term) — Does a claim keep its context when it is unpacked?
+- [Reachability with a visited list](https://eyereasoner.github.io/eyeprolog/examples/deck/graph-reachability) — Can you get from one node to another, and can the program prove when you can't?
+- [Reflective terms](https://eyereasoner.github.io/eyeprolog/examples/deck/iso-reflective-terms) — How does a program look inside a term whose shape it does not know?
+- [Register allocation](https://eyereasoner.github.io/eyeprolog/examples/deck/register-allocation) — Which variables get a CPU register, and which must spill to memory?
+- [Reified conditionals](https://eyereasoner.github.io/eyeprolog/examples/deck/reified-conditionals) — How can a condition become data that reusable control predicates act on?
+- [Relational cube lookup](https://eyereasoner.github.io/eyeprolog/examples/deck/relational-cube-lookup) — Can 2000 two-key lookups over 3375 facts stay fast and fully explained?
+- [Reproducible UUIDs](https://eyereasoner.github.io/eyeprolog/examples/deck/uuid) — Can a random identifier be reproducible?
+- [Resource allocation with integer constraints](https://eyereasoner.github.io/eyeprolog/examples/deck/clpz-resource-allocation) — Which worker should do which job so the team finishes fast?
+- [Reusable built-ins](https://eyereasoner.github.io/eyeprolog/examples/deck/reusable-builtins) — How far do the bundled libraries take you before you write a rule?
+- [Risk-adjusted route selection](https://eyereasoner.github.io/eyeprolog/examples/deck/dijkstra-risk-path) — Is the cheapest route the best one when routes carry risk?
+- [Roads across France](https://eyereasoner.github.io/eyeprolog/examples/deck/graph) — Which cities can you reach by one-way roads?
+- [Route planning](https://eyereasoner.github.io/eyeprolog/examples/deck/route-planning) — How do I get to Nantes, and which way exactly?
+- [Scientific evidence graph](https://eyereasoner.github.io/eyeprolog/examples/deck/scientific-evidence-graph) — Decision
+- [Scoped negation as failure](https://eyereasoner.github.io/eyeprolog/examples/deck/snaf) — Is there a person Alice does not hate?
+- [Security incident correlation](https://eyereasoner.github.io/eyeprolog/examples/deck/security-incident-correlation) — Which alerts add up to a confirmed compromise?
+- [SEND + MORE = MONEY](https://eyereasoner.github.io/eyeprolog/examples/deck/send-more-money) — Which digits make this sum work?
+- [Service impact](https://eyereasoner.github.io/eyeprolog/examples/deck/service-impact) — When the payment service fails, what else goes down?
+- [Sizing an RC low-pass filter](https://eyereasoner.github.io/eyeprolog/examples/deck/electrical-rc-filter) — Which frequencies does this resistor and capacitor let through?
+- [Skolem functions](https://eyereasoner.github.io/eyeprolog/examples/deck/skolem-functions) — How do rules create new things with stable names?
+- [Socrates is mortal](https://eyereasoner.github.io/eyeprolog/examples/deck/socrates) — The oldest syllogism, as a program
+- [Software supply-chain vulnerability response](https://eyereasoner.github.io/eyeprolog/examples/deck/sbom-vulnerability-response) — Decision
+- [Spacecraft battery diagnosis](https://eyereasoner.github.io/eyeprolog/examples/deck/spacecraft-battery-diagnosis) — Is this battery heading for thermal runaway, and should we act?
+- [Stable marriage](https://eyereasoner.github.io/eyeprolog/examples/deck/stable-marriage) — Can everyone be paired so that no two people would rather run off together?
+- [Statistics summary](https://eyereasoner.github.io/eyeprolog/examples/deck/statistics-summary) — What are the mean, variance, and standard deviation of a small sample?
+- [Stirling and Bell numbers](https://eyereasoner.github.io/eyeprolog/examples/deck/stirling-bell-numbers) — In how many ways can a set be split into groups?
+- [Sudoku with integer constraints](https://eyereasoner.github.io/eyeprolog/examples/deck/clpz-sudoku-9x9) — Can constraints solve one of the hardest known Sudokus?
+- [Superdense coding](https://eyereasoner.github.io/eyeprolog/examples/deck/superdense-coding) — Can one shared qubit carry two classical bits?
+- [Symbiotic Knowledge Graphs with RDF, EyeProlog, and people](https://eyereasoner.github.io/eyeprolog/examples/deck/symbiotic-knowledge-graphs) — One idea, in plain language
+- [Symbolic derivatives](https://eyereasoner.github.io/eyeprolog/examples/deck/symbolic-derivative) — Can calculus rules be written as clauses?
+- [Symbolic Fast Fourier Transform](https://eyereasoner.github.io/eyeprolog/examples/deck/fast-fourier-transform) — What computation does an 8-point FFT actually perform?
+- [Term input and output](https://eyereasoner.github.io/eyeprolog/examples/deck/iso-term-io) — Can a program write Prolog terms to a file and read them back intact?
+- [Term tools](https://eyereasoner.github.io/eyeprolog/examples/deck/term-tools) — How does a program look inside a term?
+- [The diamond property](https://eyereasoner.github.io/eyeprolog/examples/deck/diamond-property) — When two paths split, can they meet again?
+- [The good cobbler](https://eyereasoner.github.io/eyeprolog/examples/deck/good-cobbler) — Can a statement about a statement be an ordinary term?
+- [The Nixon diamond](https://eyereasoner.github.io/eyeprolog/examples/deck/nixon-diamond) — What should a reasoner conclude when two good defaults disagree?
+- [The Pell equation](https://eyereasoner.github.io/eyeprolog/examples/deck/pell-equation) — Which whole numbers satisfy x² − 2y² = 1?
+- [The quadratic formula](https://eyereasoner.github.io/eyeprolog/examples/deck/quadratic-formula) — Where does a parabola cross zero?
+- [The Riemann hypothesis, as a finite check](https://eyereasoner.github.io/eyeprolog/examples/deck/riemann-hypothesis) — Do the zeros in this catalogue lie on the critical line?
+- [The shoelace formula](https://eyereasoner.github.io/eyeprolog/examples/deck/shoelace-polygon-area) — What is the area of this polygon?
+- [The subgroups of D3](https://eyereasoner.github.io/eyeprolog/examples/deck/d3-group) — Which sets of triangle symmetries form a group of their own?
+- [The Takeuchi function](https://eyereasoner.github.io/eyeprolog/examples/deck/takeuchi) — What does a tiny, wildly recursive function compute?
+- [The zebra puzzle](https://eyereasoner.github.io/eyeprolog/examples/deck/zebra) — Who drinks water, and who owns the zebra?
+- [Towers of Hanoi](https://eyereasoner.github.io/eyeprolog/examples/deck/hanoi) — How do you move a tower of three disks, one disk at a time?
+- [Trust flow with a provenance threshold](https://eyereasoner.github.io/eyeprolog/examples/deck/trust-flow-provenance-threshold) — Should a receiver accept this message?
+- [Trust-aware data flows](https://eyereasoner.github.io/eyeprolog/examples/deck/odrl-dpv-fpv-trust-flow) — May this data flow go ahead, given the policy and how much we trust the source?
+- [Type inference](https://eyereasoner.github.io/eyeprolog/examples/deck/type-inference) — What type does this program have?
+- [Universal and existential termination](https://eyereasoner.github.io/eyeprolog/examples/deck/universal-vs-existential-termination) — Does "it terminates" mean the first answer, or all of them?
+- [Vector similarity](https://eyereasoner.github.io/eyeprolog/examples/deck/vector-similarity) — How alike are two vectors?
+- [Vocabulary alignment](https://eyereasoner.github.io/eyeprolog/examples/deck/alignment-demo) — Which local vehicle concepts roll up to the reference "car"?
+- [Vulnerability impact](https://eyereasoner.github.io/eyeprolog/examples/deck/vulnerability-impact) — Which services are exposed to a vulnerable library?
+- [Web names](https://eyereasoner.github.io/eyeprolog/examples/deck/web-names) — Can web identifiers be ordinary Prolog atoms?
+- [Weighted interval scheduling](https://eyereasoner.github.io/eyeprolog/examples/deck/weighted-interval-scheduling) — Which non-overlapping jobs earn the most?
+- [Weighted release planning](https://eyereasoner.github.io/eyeprolog/examples/deck/clpb-weighted-planning) — Which features give the most value within the rules?
+- [Weighted routes from a to f](https://eyereasoner.github.io/eyeprolog/examples/deck/dijkstra) — Which routes through a small road network stay within a cost budget?
+- [Wolf, goat and cabbage](https://eyereasoner.github.io/eyeprolog/examples/deck/wolf-goat-cabbage) — How does a farmer cross the river without losing anything?
+- [Workplace compliance](https://eyereasoner.github.io/eyeprolog/examples/deck/workplace-compliance) — Which employees followed the end-of-shift policy?
