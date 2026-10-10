@@ -317,7 +317,9 @@ class Parser {
     this.filename = options.filename ?? '<input>';
     this.pos = 0;
     this.line = 1;
-    this.anonymous = 0;
+    // Anonymous variables are numbered through a whole text; a caller parsing
+    // one text in pieces continues the count.
+    this.anonymous = options.anonymousStart ?? 0;
     this.variables = new Map();
     this.sourceMetadata = options.sourceMetadata !== false;
     this.onWarning = typeof options.onWarning === 'function' ? options.onWarning : null;
@@ -346,8 +348,10 @@ class Parser {
     this.token = this.nextToken();
   }
   convertCharacter(character) {
-    if (this.parserFlagState.charConversion !== 'on' || !character) return character;
-    return this.parserFlagState.charConversions.get(character) ?? character;
+    const state = this.parserFlagState;
+    // Almost no text installs a conversion; skip the map lookup per character.
+    if (state.charConversions.size === 0 || state.charConversion !== 'on' || !character) return character;
+    return state.charConversions.get(character) ?? character;
   }
   rawPeek(offset = 0) {
     // The processor character set is an implementation-defined processor
@@ -1482,6 +1486,18 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
   let anonymous = 0;
   let chunk = '';
   let chunkStartLine = 1;
+  let operatorState = null;
+  // With source metadata, this path numbers clauses exactly as the general
+  // parser does: one number per clause and per counted directive, none for a
+  // query or a quad. Compact binary clauses carry no source, so they are not
+  // used then.
+  const trackSource = options.sourceMetadata === true;
+  const sourceFilename = options.filename ?? '<input>';
+  let clauseNumber = 0;
+  const numbered = (clause, line) => {
+    if (trackSource) clause.source = { filename: sourceFilename, line, clause: ++clauseNumber };
+    return clause;
+  };
 
   const cached = (cache, key, create) => {
     const existing = cache.get(key);
@@ -1491,22 +1507,19 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
     return value;
   };
 
-  // SIMPLE_NUMBER-matched text is already lexically valid Prolog number
-  // syntax, and this fast path deliberately leaves a numeric literal's
-  // spelling otherwise untouched (test/conformance/cases/arithmetic/
-  // 024_numeric_literal_readback.pl: decimal and exponent literals retain
-  // their lexical form here, so e.g. 6.02e23 must not become 6.02e+23).
-  // Two things still cannot be left as raw matched text, though: an integer
-  // is never left non-canonical anywhere else in the language (a leading
-  // zero, or the "-0" from issue #114, must collapse the same way the
-  // scanner's own adjacent-minus BigInt construction already does), and a
-  // float whose value is exactly zero must never print with a stray minus --
-  // this implementation deliberately never produces -0.0 (term.js
-  // numberTextFromDouble) -- without reformatting any non-zero float.
+  // A number is a value, not a spelling (ISO 7.1.3), so the fast path writes
+  // numbers exactly as the general parser does: an integer in canonical
+  // decimal (a leading zero or "-0" collapses, issue #114), and a float as the
+  // shortest text that reads back to the same double (term.js
+  // numberTextFromDouble), so 0.10 is 0.1 and 6.02e23 is 6.02e+23 whichever
+  // parser read the literal. A run therefore prints the same numbers with and
+  // without --proof.
   const canonicalFastNumberText = (text) => {
-    if (text.includes('.') || text.includes('e') || text.includes('E')) {
-      return (text.charCodeAt(0) === 45 && Number(text) === 0) ? text.slice(1) : text;
+    if (text.includes('.')) {
+      const value = Number(text);
+      return Number.isFinite(value) ? numberTextFromDouble(value) : text;
     }
+    if (text.includes('e') || text.includes('E')) return text;
     const first = text.charCodeAt(0);
     if (first !== 45 && (text.length === 1 || first !== 48)) return text;
     return BigInt(text).toString();
@@ -1826,15 +1839,46 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
     const simple = preparationConversionActive() ? null : parseSimple(text);
     if (simple) {
       reportClauseSingletonWarnings(simple, options.onWarning, options.filename ?? '<input>', sourceLine);
-      accept(simple);
+      accept(numbered(simple, sourceLine));
       return true;
     }
     try {
       const nestedWarning = typeof options.onWarning === 'function'
         ? (warning) => options.onWarning({ ...warning, line: warning.line + sourceLine - 1 })
         : null;
-      const parsed = new Parser(text, { ...options, sourceMetadata: false, onWarning: nestedWarning }).parseProgram();
-      for (const clause of parsed) accept(clause);
+      // One operator table serves every clause of this source: building it
+      // per clause dominated the parse of large generated programs, and an
+      // op/3 directive in one clause must govern the clauses after it anyway.
+      operatorState ??= options.operatorState ?? createParserOperatorState(
+        options.operatorDefinitions ?? [],
+        options.includeDefaultOperators !== false,
+        { isoStrict: options.isoStrict === true },
+      );
+      const parser = new Parser(text, {
+        ...options,
+        operatorState,
+        sourceMetadata: trackSource,
+        filename: sourceFilename,
+        onWarning: nestedWarning,
+        anonymousStart: trackSource ? anonymous : 0,
+      });
+      const parsed = parser.parseProgram();
+      if (trackSource) anonymous = parser.anonymous;
+      // The nested parser numbers lines and clauses from the start of this
+      // chunk; place them in the whole source.
+      let counted = 0;
+      for (const clause of parsed) {
+        if (trackSource && clause.source) {
+          const relative = clause.source.clause;
+          clause.source = { ...clause.source, line: clause.source.line + sourceLine - 1 };
+          if (relative != null) {
+            clause.source.clause = relative + clauseNumber;
+            if (relative > counted) counted = relative;
+          }
+        }
+        accept(clause);
+      }
+      clauseNumber += counted;
       return true;
     } catch (_) {
       return false;
@@ -1853,13 +1897,13 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
     contentEnd = trimRangeEnd(source, contentStart, contentEnd);
     if (contentStart < contentEnd && source.charCodeAt(contentStart) !== 37) {
       if (!chunk && source.charCodeAt(contentEnd - 1) === 46 && !preparationConversionActive()) {
-        if (emitFastBinaryRange(source, contentStart, contentEnd, lineNumber)) {
+        if (!trackSource && emitFastBinaryRange(source, contentStart, contentEnd, lineNumber)) {
           // The program builder accepted a compact binary clause directly.
         } else {
           const simple = parseFastRange(source, contentStart, contentEnd);
           if (simple) {
             reportClauseSingletonWarnings(simple, options.onWarning, options.filename ?? '<input>', lineNumber);
-            accept(simple);
+            accept(numbered(simple, lineNumber));
           } else {
             chunkStartLine = lineNumber;
             chunk = source.slice(lineStart, lineEnd) + '\n';

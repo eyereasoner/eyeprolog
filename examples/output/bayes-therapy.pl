@@ -10,7 +10,7 @@ expectedSuccess(oseltamivir, 0.28514101258814745).
 expectedSuccess(antihistamine, 0.10026891936485297).
 expectedSuccess(antibiotic, 0.1109525797960936).
 expectedSuccess(supportiveCare, 0.2915119539701381).
-expectedAdverse(paxlovid, 0.10).
+expectedAdverse(paxlovid, 0.1).
 expectedAdverse(oseltamivir, 0.08).
 expectedAdverse(antihistamine, 0.03).
 expectedAdverse(antibiotic, 0.07).

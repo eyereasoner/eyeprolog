@@ -6013,21 +6013,16 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
           const stdout = run(program, { goal }).stdout;
           assertEqual(stdout.split('\n')[0], expected, `${program.trim()}: ${goal}`);
         }
-        // The fast loader also deliberately retains a numeric literal's exact
-        // lexical spelling otherwise (test/conformance/cases/arithmetic/
-        // 024_numeric_literal_readback.pl): the zero-canonicalization above
-        // must not turn into a general reformatting pass that rewrites a
-        // non-zero float's notation.
-        assertEqual(
-          run('raw(a, 6.02e23).\n', { goal: 'raw(_, B), write_canonical(B), nl' }).stdout.split('\n')[0],
-          '6.02e23',
-          'non-zero exponent notation is preserved, not reformatted to 6.02e+23',
-        );
-        assertEqual(
-          run('raw(a, -1.0e-3).\n', { goal: 'raw(_, B), write_canonical(B), nl' }).stdout.split('\n')[0],
-          '-1.0e-3',
-          'non-zero negative exponent notation is preserved, not reformatted to -0.001',
-        );
+        // A float is a value, not a spelling (ISO 7.1.3, 7.10.5 c): the fast
+        // loader writes it as the general parser does, so a run prints the same
+        // number with and without --proof. A three-argument fact is outside the
+        // compact shape and so is read by the general parser.
+        for (const [literal, expected] of [['6.02e23', '6.02e+23'], ['-1.0e-3', '-0.001'], ['0.10', '0.1']]) {
+          const fast = run(`raw(a, ${literal}).\n`, { goal: 'raw(_, B), write_canonical(B), nl' }).stdout.split('\n')[0];
+          const general = run(`raw(a, b, ${literal}).\n`, { goal: 'raw(_, _, B), write_canonical(B), nl' }).stdout.split('\n')[0];
+          assertEqual(fast, expected, `${literal} through the fast loader`);
+          assertEqual(general, expected, `${literal} through the general parser`);
+        }
       },
     },
     {

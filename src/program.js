@@ -958,6 +958,19 @@ function buildProgramFromSources(sources, options) {
     const builder = new ProgramBuilder(options);
     if (loadSourcesIntoBuilder(builder, sources, options, 'hybrid')) return builder.finish();
   }
+  // With source metadata the compact parser still applies; it numbers clauses
+  // as the general parser does, and falls back to it for anything it cannot
+  // read. Strict ISO keeps the general parser throughout, and so does a text
+  // with a `?-` outside a comment: a quad's indented answer lines are layout
+  // the line-oriented compact parser does not read.
+  const hasQueries = sources.some((source) => {
+    const text = typeof source === 'string' ? source : source?.text ?? source?.source ?? '';
+    return /^[^%\n]*\?-/m.test(text);
+  });
+  if (options.sourceMetadata !== false && !hasModuleDirectives && !hasQueries && options.isoStrict !== true) {
+    const builder = new ProgramBuilder(options);
+    if (loadSourcesIntoBuilder(builder, sources, options, true)) return builder.finish();
+  }
 
   const builder = new ProgramBuilder(options);
   loadSourcesIntoBuilder(builder, sources, options, false);

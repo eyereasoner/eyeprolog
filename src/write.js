@@ -211,7 +211,18 @@ function operatorName(name) {
   return quoteAtom(name);
 }
 
+// Writers pass the same definitions array for every term of a run, so build
+// its lookup table once instead of once per written term.
+const operatorTables = new WeakMap();
+
 function operatorTable(definitions) {
+  if (!definitions) return buildOperatorTable(definitions);
+  let table = operatorTables.get(definitions);
+  if (!table) operatorTables.set(definitions, table = buildOperatorTable(definitions));
+  return table;
+}
+
+function buildOperatorTable(definitions) {
   const table = new Map();
   for (const definition of definitions ?? []) {
     if (!definition || definition.priority === 0) continue;

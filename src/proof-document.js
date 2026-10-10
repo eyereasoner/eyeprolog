@@ -36,8 +36,9 @@ export function checkedProofBlocks(program, claimed, { registry, proofDetail = '
   const roots = [];
   const unexplained = [];
   const questions = goals.filter((goal) => typeof goal !== 'string');
+  const groundProofs = new Map();
   for (const fact of claimed) {
-    const node = proofNodeFor(program, fact, { registry, proofDetail, solver, questions });
+    const node = proofNodeFor(program, fact, { registry, proofDetail, solver, questions, groundProofs });
     if (node) roots.push(node);
     else unexplained.push(fact);
   }

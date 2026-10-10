@@ -54,6 +54,10 @@ let liveSolver = null;
 // sets an explicit `maxDepth` gets that depth as a hard limit instead.
 let chainBeyondDepth = true;
 
+// Proofs of ground goals already found while explaining one document, keyed by
+// module and goal; null outside such a document.
+let groundProofs = null;
+
 function hostSolver(program, registry) {
   return liveSolver && liveSolver.program === program ? liveSolver : new Solver(program, { registry });
 }
@@ -177,6 +181,23 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
     }
     return;
   }
+  // A goal that is already ground binds nothing when proved, so which of its
+  // proofs is used cannot matter to the goals after it. Within one proof
+  // document its first proof is therefore recorded once and reused: a run
+  // whose answers share subderivations -- tabled trajectories, closures --
+  // no longer replays the shared part once per answer. This stays inside one
+  // generator: a replay nests a generator per level, and one more frame per
+  // level would overflow the host stack on deep derivations.
+  const memoKey = groundProofs && termIsGround(goal, env)
+    ? `${group.module}\u0000${termToString(goal, env, true)}`
+    : null;
+  if (memoKey) {
+    const known = groundProofs.get(memoKey);
+    if (known) {
+      yield { env, node: known };
+      return;
+    }
+  }
   // Explanation replay does not use the solver's answer tables, so its cycle
   // guard applies even when normal execution tables this predicate.
   if (activeVariant(goal, env, active)) return;
@@ -199,7 +220,7 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
       const substitutions = collectClauseSubstitutions(clause, freshHead, freshBody);
 
       if (freshBody.length === 0) {
-        yield {
+        const proved = {
           env: next,
           node: {
           raw: goal,
@@ -215,6 +236,11 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
             children: [],
           },
         };
+        if (memoKey) {
+          yield rememberGroundProof(memoKey, proved);
+          return;
+        }
+        yield proved;
         continue;
       }
 
@@ -224,7 +250,7 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
         for (const proved of proveGoalsAll(program, freshBody, next, depth + 1, maxDepth, registry, active, detail)) {
           active.pop();
           activePushed = false;
-          yield {
+          const result = {
             env: proved.env,
             node: {
           raw: goal,
@@ -237,6 +263,11 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
               children: proved.children,
             },
           };
+          if (memoKey) {
+            yield rememberGroundProof(memoKey, result);
+            return;
+          }
+          yield result;
           active.push({ goal, env });
           activePushed = true;
         }
@@ -470,6 +501,59 @@ function sourceMethod(clause, kind) {
     filename: source.filename ?? '<input>',
     clause: source.clause ?? ((clause.index ?? 0) + 1),
   };
+}
+
+// Built-in and library steps whose replay has no effect beyond its bindings:
+// arithmetic, comparison, term inspection, and pure list relations. Anything
+// else -- I/O, database updates, constraint stores, generated names -- keeps a
+// derivation from being reused across answers.
+const PURE_REPLAY_STEPS = new Set([
+  'true/0', 'is/2', '=:=/2', '=\\=/2', '</2', '>/2', '=</2', '>=/2',
+  '=/2', '\\=/2', '==/2', '\\==/2', '@</2', '@>/2', '@=</2', '@>=/2', 'compare/3',
+  'var/1', 'nonvar/1', 'atom/1', 'number/1', 'integer/1', 'float/1', 'atomic/1',
+  'compound/1', 'callable/1', 'ground/1', 'is_list/1',
+  'functor/3', 'arg/3', '=../2', 'copy_term/2', 'succ/2', 'plus/3',
+  'char_code/2', 'atom_codes/2', 'atom_chars/2', 'atom_length/2', 'atom_concat/3',
+  'sub_atom/5', 'number_codes/2', 'number_chars/2', 'atom_number/2',
+  'sort/2', 'msort/2', 'keysort/2', 'between/3', 'length/2',
+  'member/2', 'memberchk/2', 'append/3', 'append/2', 'reverse/2', 'nth0/3', 'nth1/3',
+  'last/2', 'select/3', 'sum_list/2', 'max_list/2', 'min_list/2', 'list_to_set/2',
+  'once/1', 'findall/3', 'forall/2', '\\+/1',
+]);
+
+// Settle a ground goal's first proof while its environment still holds every
+// binding inside it, and keep it for reuse when replaying it has no effects:
+// a proof that writes a stream or updates the database must perform those
+// effects again, so it is not recorded.
+function rememberGroundProof(key, proved) {
+  const node = settleProofNode(proved.node, proved.env);
+  if (replayIsPure(node)) groundProofs.set(key, node);
+  return { env: proved.env, node };
+}
+
+// The answer is cached on the node, so a deep derivation whose every level is
+// remembered asks it once per level rather than once per level per descendant.
+function replayIsPure(root) {
+  if (root.pureReplay !== undefined) return root.pureReplay;
+  const stack = [root];
+  let pure = true;
+  while (stack.length > 0) {
+    const node = stack.pop();
+    if (node !== root && node.pureReplay !== undefined) {
+      if (node.pureReplay) continue;
+      pure = false;
+      break;
+    }
+    const method = node.method;
+    if (method && typeof method === 'object' && (method.type === 'builtin' || method.type === 'library') &&
+        !PURE_REPLAY_STEPS.has(`${method.name}/${method.arity}`)) {
+      pure = false;
+      break;
+    }
+    for (const child of node.children ?? []) stack.push(child);
+  }
+  root.pureReplay = pure;
+  return pure;
 }
 
 function goalMethod(type, goal) {
@@ -946,12 +1030,18 @@ export function clauseNumbering(program) {
     offset += span;
   }
 
+  // Keyed by file, then by clause position: one string key per clause cost
+  // more than the numbering itself on programs with hundreds of thousands of
+  // clauses.
   const bySource = new Map();
   const byNumber = new Map();
   for (const clause of program.clauses ?? []) {
     if (!isProgramClause(clause) || isUnnumberedDeclaration(clause)) continue;
-    const number = (offsets.get(clause.source.filename) ?? 0) + clause.source.clause;
-    bySource.set(`${clause.source.filename}\u0000${clause.source.clause}`, number);
+    const { filename, clause: position } = clause.source;
+    const number = (offsets.get(filename) ?? 0) + position;
+    let numbers = bySource.get(filename);
+    if (!numbers) bySource.set(filename, numbers = new Map());
+    numbers.set(position, number);
     byNumber.set(number, { head: clause.head, body: clause.body ?? [] });
   }
   return { bySource, byNumber };
@@ -971,7 +1061,7 @@ export function isLibraryClause(clause) {
 }
 
 function clauseNumberFor(numbering, method) {
-  return numbering.bySource.get(`${method.filename}\u0000${method.clause}`) ?? null;
+  return numbering.bySource.get(method.filename)?.get(method.clause) ?? null;
 }
 
 // The conclusion a node contributes, which is how a step names what it used.
@@ -1125,6 +1215,10 @@ function settleProofNode(root, env) {
   const stack = [root];
   while (stack.length) {
     const node = stack.pop();
+    // A settled node was settled with its whole subtree; a remembered ground
+    // proof reached again from a deeper level need not be walked again.
+    if (node.settled) continue;
+    node.settled = true;
     if (node.raw) {
       node.goal = resolve(node.raw);
       if (node.method?.type === 'builtin' || node.method?.type === 'library') node.sourceHead = node.goal;
@@ -1210,6 +1304,7 @@ function settlingResolver(env) {
 export function proofNodeFor(program, goal, options = {}) {
   liveSolver = options.solver ?? null;
   chainBeyondDepth = options.maxDepth == null;
+  groundProofs = options.groundProofs ?? null;
   const maxDepth = options.maxDepth ?? 256;
   const registry = options.registry ?? getEyePrologRegistry();
   const env = options.env ?? new Env();
