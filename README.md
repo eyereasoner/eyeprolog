@@ -12,7 +12,7 @@ EyeProlog turns portable ISO Prolog programs into answers and inspectable proofs
   <strong>Click the cover to read <em>The Art of EyeProlog</em>.</strong>
 </p>
 
-The single implementation reference is [*The Art of EyeProlog*](the-art-of-eyeprolog.md).
+The single implementation reference is [*The Art of EyeProlog*](https://eyereasoner.github.io/eyeprolog/the-art-of-eyeprolog).
 It documents the language, built-ins, libraries, command line, JavaScript API,
 examples, proofs, conformance profile, and implementation.
 
@@ -65,18 +65,18 @@ printf 'human(socrates).\nmortal(X) :- human(X).\n' |
 - [The Art of EyeProlog](https://eyereasoner.github.io/eyeprolog/the-art-of-eyeprolog) — complete reference
 - [Why EyeProlog?](https://eyereasoner.github.io/eyeprolog/why-eyeprolog) — project scope and design
 - [ARC in EyeProlog](https://eyereasoner.github.io/eyeprolog/arc-in-eyeprolog) — answer, reason, check
-- [SPEC.md](SPEC.md) — the answer, proof and check format, and the seven conditions C1–C7 a proof check establishes
+- [SPEC.md](https://eyereasoner.github.io/eyeprolog/SPEC) — the answer, proof and check format, and the seven conditions C1–C7 a proof check establishes
 - [Playground](https://eyereasoner.github.io/eyeprolog/playground) — run EyeProlog in a browser
 - [Examples](examples) — runnable programs and checked output
-- [Example decks](examples/deck/README.md) — explainable RDF/Prolog scenarios with reproducible roundtrips
+- [Example decks](https://eyereasoner.github.io/eyeprolog/examples/deck/) — explainable RDF/Prolog scenarios with reproducible roundtrips
 - [Introduction to EyeProlog](https://eyereasoner.github.io/eyeprolog/examples/deck/introduction-to-eyeprolog) — short presentation deck for first-time audiences
 - [Symbiotic Knowledge Graphs](https://eyereasoner.github.io/eyeprolog/examples/deck/symbiotic-knowledge-graphs) — RDF ↔ Prolog heatwave-response demo for human/AI/KG co-evolution
 - [rdf-prolog-interchange](https://github.com/eyereasoner/rdf-prolog-interchange) — standalone RDF 1.2 ↔ ISO Prolog bridge used by the RDF examples
-- [RDF and Prolog: Two Standards-Based Legs](https://github.com/eyereasoner/rdf-prolog-interchange/blob/main/why-rdf-prolog.md) — why W3C RDF and ISO Prolog form the foundation
-- [ISO conformance review](test/conformance/ISO-COMPLIANCE.md) — supported Part 1 profile
-- [Latest Neumerkel conformity](test/conformance/NEUMERKEL-LATEST.md) — tracked result from the current live upstream inventory
-- [Conformance report](conformance-report.md) — generated executable conformance status, local corpus summary, and known deviations
-- [OpenRuleBench](openrulebench/README.md) — portable benchmark profile
+- [RDF and Prolog: Two Standards-Based Legs](https://eyereasoner.github.io/rdf-prolog-interchange/why-rdf-prolog) — why W3C RDF and ISO Prolog form the foundation
+- [ISO conformance review](https://eyereasoner.github.io/eyeprolog/test/conformance/ISO-COMPLIANCE) — supported Part 1 profile
+- [Latest Neumerkel conformity](https://eyereasoner.github.io/eyeprolog/test/conformance/NEUMERKEL-LATEST) — tracked result from the current live upstream inventory
+- [Conformance report](https://eyereasoner.github.io/eyeprolog/conformance-report) — generated executable conformance status, local corpus summary, and known deviations
+- [OpenRuleBench](https://eyereasoner.github.io/eyeprolog/openrulebench/) — portable benchmark profile
 ## RDF, Prolog, and symbiotic knowledge graphs
 
 EyeProlog can sit behind an RDF knowledge graph without inventing a private graph representation. [`rdf-prolog-interchange`](https://github.com/eyereasoner/rdf-prolog-interchange) converts RDF 1.2 datasets to ordinary `rdf(Subject, Predicate, Object, Graph)` facts, EyeProlog applies portable rules, and ground `rdf/4` results can be converted back to RDF.
@@ -86,8 +86,8 @@ The checked [Symbiotic Knowledge Graphs example](examples/symbiotic-knowledge-gr
 The same RDF → Prolog → RDF boundary is exercised by five additional checked scenarios: [cross-organization data sharing](https://eyereasoner.github.io/eyeprolog/examples/deck/cross-organization-data-sharing), [explainable EV-depot configuration](https://eyereasoner.github.io/eyeprolog/examples/deck/explainable-ev-depot-configuration), [operational incident response](https://eyereasoner.github.io/eyeprolog/examples/deck/operational-incident-response), [software supply-chain vulnerability response](https://eyereasoner.github.io/eyeprolog/examples/deck/sbom-vulnerability-response), and a [scientific evidence graph](https://eyereasoner.github.io/eyeprolog/examples/deck/scientific-evidence-graph). Together they cover policy decisions, reversible configuration reasoning, dependency-graph diagnosis, transitive SBOM exposure, and evidence aggregation with explicit disagreement.
 
 ## Performance
-EyeProlog does not carry a separate wall-clock benchmark harness. `npm test`'s own elapsed time, run across thousands of conformance, regression, and example programs, is the coarse performance indicator instead — a real slowdown shows up there. [OpenRuleBench](openrulebench/README.md) remains a dedicated, checked correctness-and-scale benchmark for the Datalog rule-engine profile specifically.
-For the project policy on post-ISO-standard and WG17 compatibility features such as digit separators, see [ISO/WG17 compatibility extensions](test/conformance/ISO-WG17-EXTENSIONS.md).
+EyeProlog does not carry a separate wall-clock benchmark harness. `npm test`'s own elapsed time, run across thousands of conformance, regression, and example programs, is the coarse performance indicator instead — a real slowdown shows up there. [OpenRuleBench](https://eyereasoner.github.io/eyeprolog/openrulebench/) remains a dedicated, checked correctness-and-scale benchmark for the Datalog rule-engine profile specifically.
+For the project policy on post-ISO-standard and WG17 compatibility features such as digit separators, see [ISO/WG17 compatibility extensions](https://eyereasoner.github.io/eyeprolog/test/conformance/ISO-WG17-EXTENSIONS).
 ## Development
 ```sh
 git clone https://github.com/eyereasoner/eyeprolog.git
@@ -100,6 +100,6 @@ The npm command list is deliberately small:
 - `npm test` (or `npm run test`): run the release gate, including live upstream conformity checks (WG17 syntax among them).
 - `npm run neumerkel`: re-fetch the upstream Neumerkel conformity sources and fail if the tracked report no longer matches them. The release gate reports that drift as a warning; this command makes it an error, so it answers "are we still current?" on its own.
 
-Use `npm test -- --offline` for a network-free local pass (this also skips the live-discovered WG17 syntax check, since it has no offline snapshot). Focused checks remain available directly, for example `node test/run-regression.mjs docs`; see [test runners](test/README.md). The automatic version hooks rebuild generated library and book files, run the release gate, refresh and stage conformance reports, and push the release. Detailed upstream report maintenance is documented in the [conformance guide](test/conformance/README.md).
+Use `npm test -- --offline` for a network-free local pass (this also skips the live-discovered WG17 syntax check, since it has no offline snapshot). Focused checks remain available directly, for example `node test/run-regression.mjs docs`; see [test runners](https://eyereasoner.github.io/eyeprolog/test/). The automatic version hooks rebuild generated library and book files, run the release gate, refresh and stage conformance reports, and push the release. Detailed upstream report maintenance is documented in the [conformance guide](https://eyereasoner.github.io/eyeprolog/test/conformance/).
 
 EyeProlog is released under the [MIT License](LICENSE.md).
