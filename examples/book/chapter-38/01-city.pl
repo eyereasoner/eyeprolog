@@ -1,5 +1,3 @@
-% From The Art of EyeProlog, Chapter 38.
-:- use_module(library(lists)).
-
+% From The Art of EyeProlog, Chapter 38 — Source text.
 city('München').
 message("café").

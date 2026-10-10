@@ -1,4 +1,4 @@
-% From The Art of EyeProlog, Chapter 27 — Accumulators and strengthened invariants.
+% From The Art of EyeProlog, Chapter 27 — Accumulators need stronger invariants.
 reverse_acc(List, Reversed) :-
   reverse_go(List, [], Reversed).
 

@@ -129,7 +129,7 @@ export function documentationSyncCases() {
           'the tables in this chapter',
           'The generated [`examples/book/`',
         ]) assertNotIncludes(book, backstage, `book avoids backstage prose: ${backstage}`);
-        assertIncludes(book, 'Chapters are numbered continuously across eleven parts, from Chapter 1 to Chapter 45.', 'reader-facing chapter count');
+        assertIncludes(book, 'Chapters are numbered continuously across ten parts, from Chapter 1 to Chapter 43.', 'reader-facing chapter count');
       },
     },
     {

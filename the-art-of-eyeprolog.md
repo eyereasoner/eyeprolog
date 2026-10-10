@@ -9,55 +9,53 @@ appropriate credit, link to the licence, and indicate changes.
 
 ---
 
-EyeProlog turns facts and rules into answers and inspectable proofs. This book is an
-original introduction to the habits of logic programming: describe a world,
-state the relationships that hold in it, and let unification and search connect
-the two.
+EyeProlog runs portable ISO Prolog programs and turns their facts and rules
+into answers and inspectable proofs. This book teaches logic programming with
+it: describe a world as relations, state the rules that connect them, and let
+unification and search find the answers.
 
-This book is also the reference for the EyeProlog implementation. EyeProlog is a
-standards-based reasoning system: programs use the documented and tested ISO
-Prolog profile.
-Chapters 38–40 define the supported ISO Prolog profile, predicate surface, libraries, and execution interface. Chapter 39 describes every supported built-in and library predicate, with compact contracts for all **533 distinct predicate indicators** in the normal EyeProlog surface; Chapter 40 documents command-line execution. The explanatory chapters give the reasoning and operational context needed to use those details correctly.
+This book is also the reference for the EyeProlog implementation.
+Chapters 38–40 define the supported ISO Prolog profile, every built-in and
+library predicate, and the command line; Chapter 41 states the standards and
+the limits of the implementation.
 
-Its subject is not syntax alone. A logic program has two inseparable aspects:
-the relation described by its clauses and the procedure induced when goals are
-selected and clauses are tried. The first tells us what answers are justified;
-the second tells us whether and how the machine will find them. Learning to
-program with EyeProlog means learning to move comfortably between these views.
+A logic program can be read in two ways: as a set of sentences that are true in
+a domain, and as a procedure that searches for proofs. The first reading says
+which answers are justified; the second says whether the machine will find
+them. Robert Kowalski summed this up as “algorithm = logic + control”. Most of
+the craft of Prolog lies in keeping the logic fixed while improving the
+control.
 
-EyeProlog implements a broad ISO Prolog profile with facts, clauses, terms, lists,
-control, arithmetic, dynamic predicates, operators, streams, and standard
-built-ins. Explicit
-tabling, explicit integrity checks, and proof output are implementation
-capabilities around that standards-based foundation. EyeProlog does not
-claim formal certification against every ISO processor edge case.
+## Getting started
 
-Standards are crucial because knowledge and rules often outlive the software
-that first processes them. Using ISO Prolog keeps programs teachable,
-inspectable, and portable across processors. EyeProlog aims to provide a compact
-implementation of that standard with explanations and practical host
-integration, not another proprietary rule language.
+EyeProlog requires Node.js 18 or newer. Check with:
 
-This places EyeProlog in a tradition that joins automated deduction, database
-querying, and programming. Jacques Herbrand's doctoral work made ground terms
-and ground instances central to proof theory; Robinson's later resolution
-principle turned unification and refutation into a general proof procedure;
-early Prolog showed that Horn clauses could also be executable programs;
-deductive databases emphasized finite relations and fixed points. EyeProlog
-borrows from all three traditions without pretending that they are identical.
-Its clauses are logical statements, its query execution is an ordered
-computation, and its proof terms make the connection between the two available
-for inspection.
+```sh
+node --version
+```
 
-That history explains a recurring theme of the book. Logic programming is not
-the claim that control disappears. It is the discipline of stating the
-relation clearly enough that control can be studied and improved separately.
-Robert Kowalski's phrase “algorithm = logic + control” names this separation;
-EyeProlog's focused surface makes it unusually easy to see in running examples.
+Upgrade an older runtime through a Node version manager or the
+[official Node.js download](https://nodejs.org/en/download). Then run
+EyeProlog without installing it:
 
-Complete EyeProlog code displays from the book are also available as files under
-[`examples/book/`](https://github.com/eyereasoner/eyeprolog/tree/main/examples/book/), grouped by chapter. From a source checkout
-with Node.js 18 or newer, run the CLI directly:
+```sh
+npx --yes eyeprolog
+```
+
+For a persistent command, install into a user-owned prefix and add its `bin`
+directory to your `PATH` in your shell startup file:
+
+```sh
+npm install --global --prefix "$HOME/.local" eyeprolog
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Do not use `sudo npm install`; npm's
+[EACCES guidance](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally/)
+recommends a Node version manager or a user-owned prefix instead.
+
+The first program says that Socrates is a man and that every man is mortal.
+From a source checkout, run it with:
 
 ```sh
 node bin/eyeprolog.js examples/socrates.pl
@@ -70,184 +68,61 @@ type(socrates, mortal).
 holds_result(test, true).
 ```
 
-A run answers in Prolog: each goal a query proved, with that answer's
-bindings applied. The output is an ordinary program, so it can be saved,
-loaded and queried like any other.
-
-Then ask for the derivations:
+The answers are themselves Prolog facts, so the output can be saved, loaded and
+queried like any other program. Now ask why they hold:
 
 ```sh
 node bin/eyeprolog.js --proof examples/socrates.pl
 ```
 
-To use the published package, first verify that `node --version` reports Node.js
-18 or newer. Upgrade an older runtime through a Node version manager or the
-[official Node.js download](https://nodejs.org/en/download). A current Linux
-distribution can still expose an older Node.js package.
+After the answers, the proof lists the program clauses as `clause/3` records
+and one `step/4` term per proved goal, naming the clause that justifies it, the
+variable bindings, and the subgoals it used:
 
-The package can be launched without a global installation:
-
-```sh
-npx --yes eyeprolog
+```text
+step(type(socrates, mortal), rule(2), ['X' = socrates], [type(socrates, man)]).
+step(type(socrates, man), fact(1), [], []).
+step(holds_result(test, true), rule(3), [], [type(socrates, mortal)]).
 ```
 
-For a persistent command without administrator access, install into a
-user-owned prefix:
+[SPEC.md](SPEC.md) specifies this format and the checks a proof checker
+performs on it.
 
-```sh
-npm install --global --prefix "$HOME/.local" eyeprolog
-export PATH="$HOME/.local/bin:$PATH"
-```
+If you would rather not install anything, paste the program into the
+[browser playground](https://eyereasoner.github.io/eyeprolog/playground). It
+runs the same engine and libraries as the command line; only file-system
+predicates and `include/1` need Node.
 
-Persist the `PATH` export in the appropriate shell startup file. Do not use
-`sudo npm install`; npm's
-[EACCES guidance](https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally/)
-recommends a Node version manager or a user-owned npm prefix.
+### Reading the code
 
-Readers who do not want to install anything can begin in the
-[browser playground](https://eyereasoner.github.io/eyeprolog/playground). Paste
-the source of `examples/socrates.pl` into the editor and run it. The playground
-and local CLI accept the same in-memory Prolog source and resolve the same
-standard modules. A program imports relations such as `append/3` and `member/2`
-with `use_module(library(lists))`. The page starts `src/playground-worker.js` as
-a dedicated ES-module worker for each run. Serve a
-local checkout over HTTP(S), rather than opening the page as a `file:` URL.
-Filesystem predicates and `include/1` are Node-only; URL and embedding examples
-require their documented host environment.
+- An `eyeprolog` block is Prolog source. Complete blocks are also available as
+  files under [`examples/book/`](https://github.com/eyereasoner/eyeprolog/tree/main/examples/book/),
+  grouped by chapter; a short block may rely on facts from the surrounding
+  text.
+- A `text` block shows output, a trace, or a data shape.
+- A `sh` or `js` block is a shell command or a JavaScript embedding example.
 
-The best way to read is beside a running interpreter. Before each run, predict
-the answer; after it, change one fact or query and explain the difference.
+The complete runnable programs live under
+[`examples/`](https://github.com/eyereasoner/eyeprolog/tree/main/examples/),
+with their outputs in `examples/output/`, their proofs in `examples/proof/`,
+and the results of checking those proofs in `examples/check/`.
 
-### Reading conventions
+Read beside a running interpreter. Before each run, predict the answer; after
+it, change one fact or query and explain the difference.
 
-Code displays serve three different purposes:
+### Where to start
 
-- an `eyeprolog` block is Prolog source accepted by EyeProlog; complete blocks also appear under
-  `examples/book/`, although a short block may rely on facts introduced in the
-  surrounding chapter;
-- a `text` block shows output, a trace, a data shape, or pseudocode and is not
-  necessarily accepted as EyeProlog input;
-- a `sh` or `js` block is a host command or embedding example.
-
-Top-level programs under [`examples/`](https://github.com/eyereasoner/eyeprolog/tree/main/examples/) are the complete runnable
-cases. Their exact outputs live under `examples/output/`, the proof of each
-under `examples/proof/`, and the result of checking that proof under
-`examples/check/`. Use `examples/book/` to copy a particular display and the
-top-level corpus for end-to-end experiments.
-
-### The promise of this book
-
-This book treats logic programming as a craft, not a collection of clever
-tricks. By the end, a reader should be able to:
-
-1. state a domain as relations whose ground instances have an unambiguous
-   meaning;
-2. read every clause both as a logical sentence and as a computation;
-3. design finite searches, justify termination, and recognize when a calling
-   mode is unsafe;
-4. construct programs from examples and invariants, then improve their control
-   without quietly changing their meaning;
-5. test conclusions, detect inconsistent inputs explicitly, and inspect proofs
-   as evidence; and
-6. connect a Prolog rule set to JavaScript without hiding the host boundary.
-
-That is the stake in the ground: a focused implementation of standard Prolog
-is enough to teach the large ideas when semantics, execution, and evidence
-remain visible together. The implementation is therefore part of the
-argument: the examples are executable programs, the reference chapters
-describe the running system, and proof terms remain available for
-inspection.
-
-### A working discipline
-
-Approach each example through the same six moves:
-
-1. **Sentence.** Say what one ground instance means.
-2. **Question.** Choose the bindings with which the relation will be called.
-3. **Prediction.** Write the expected answers before running the program.
-4. **Search.** Trace the first choice, the bindings it adds, and the next goal.
-5. **Evidence.** Inspect a proof and distinguish it from the failed search
-   branches that were explored.
-6. **Revision.** Change one fact, query, goal order, or representation and
-   explain what should remain invariant.
-
-This rhythm deliberately joins declarative reading, operational reading, and
-program construction. Readers new to logic programming can follow Parts I–III
-in order. Experienced Prolog programmers can begin with Chapters 3, 13, and
-17 to see how EyeProlog combines ordinary depth-first Prolog with explicit
-tabling, forward rules, and inspectable proofs.
-Chapter 41 gives further routes through the material.
-
-### When a run surprises you
-
-Do not change several clauses at once. Use this recovery loop:
-
-1. reduce the issue to the smallest ground question whose answer you dispute;
-2. confirm that every predicate in that question has one clear sentence;
-3. write the bindings available before each body goal from left to right;
-4. run with `--proof` if an unexpected answer succeeds;
-5. run with `--stats` or hand-trace the first branch if an expected answer is
-   missing or slow;
-6. preserve the discovery as a test before repairing the program.
-
-No output can mean a legitimate absence, suppression of a queried source fact,
-an unready built-in, or an unfinished search. Chapter 1 introduces source-fact
-suppression, Chapters 7 and 11 distinguish failure from printed output, and
-Chapter 32 develops the full debugging method.
-
-### Choose a route
-
-The book supports several paths; reading every chapter in order is not a test
-of seriousness.
-
-| Reader | Suggested route | What to postpone |
-| --- | --- | --- |
-| New to programming | Chapters 1–10, 11–12, 18–20, then Laboratories 1–4 | The formal parts of Chapter 3, embedding, and Parts V–VI |
-| Programmer new to logic | Parts I–II, Chapters 11–13 and 17–25, then Part VII | Detailed history and mathematical foundations on the first pass |
-| Experienced Prolog programmer | Chapters 3, 7, 11–13, 16–17, and 31–33 | Introductory syntax and list material |
-| Knowledge engineer | Chapters 7, 11–16, 25, 31–33, then Laboratories 9–12 | Symbolic mathematics unless it serves the domain |
-| Mathematics reader | Chapters 1–5, 19, and 26–30 | Embedding until an application needs it |
-| Instructor or study group | Parts I–III, one route through Part V or VI, then selected laboratories | Reference chapters until reference work begins |
-
-On a first pass, treat sections marked **Deeper foundations** as optional. They
-make the semantics precise but are not prerequisites for writing and running
-the next program.
-
-### The construction order
-
-The sequence follows the teaching architecture associated with *The Art of
-Prolog*: begin with the meaning of a relation, make the relation executable,
-study the control it induces, and then return to the same ideas at a larger
-scale through transformation, search, interpreters, and applications. Each
-part therefore ends by asking the reader to construct, test, or improve a
-program rather than merely recognize syntax. Reference material follows
-practice, laboratories turn the methods into work, and checkpoint notes close
-the loop with retrieval and diagnosis.
-
-Balance here does not mean that every chapter has the same length or the same
-number of pictures. A language catalog should be searchable; a construction
-chapter should be argumentative; a laboratory should leave an artifact. The
-recurring balance is instead between four readings of a program:
-
-| Reading | Question carried through the book | Typical evidence |
-| --- | --- | --- |
-| Meaning | What does each ground relation claim? | a domain sentence and examples |
-| Computation | How are answers actually found? | a trace, finite bound, or termination measure |
-| Construction | Why is the program shaped this way? | a worked refinement and rejected alternative |
-| Judgment | What has been established, and what remains assumed? | tests, proofs, counterexamples, and a trust boundary |
-
-Diagrams follow the same rule. Scenes introduce an intuition; structural
-diagrams expose a term, proof, or dependency; process diagrams guide a piece
-of work; maps help navigate reference and review. A diagram earns its place by
-making a relationship visible that prose alone would make easy to miss.
+Newcomers should read Parts I–III in order. Experienced Prolog programmers can
+start with Chapters 3, 11, 13 and 17, which show how EyeProlog adds explicit
+tabling, forward rules and proofs to ordinary depth-first Prolog. Parts V–VIII
+can be read in any order, and Part IX is reference material to consult as
+needed.
 
 ## Contents
 
-Chapters are numbered continuously across eleven parts, from Chapter 1 to Chapter 45.
+Chapters are numbered continuously across ten parts, from Chapter 1 to Chapter 43.
 
-### Part I — Relations
-
-Chapters 1–5
+**Part I — Relations**
 
 - [1. A program is a little theory](#1-a-program-is-a-little-theory)
 - [2. Terms, variables, and substitution](#2-terms-variables-and-substitution)
@@ -255,9 +130,7 @@ Chapters 1–5
 - [4. Recursion: describing reachability](#4-recursion-describing-reachability)
 - [5. Lists as relations](#5-lists-as-relations)
 
-### Part II — Search
-
-Chapters 6–10
+**Part II — Search**
 
 - [6. Arithmetic and finite generation](#6-arithmetic-and-finite-generation)
 - [7. Failure, negation, and quantification](#7-failure-negation-and-quantification)
@@ -265,9 +138,7 @@ Chapters 6–10
 - [9. Structured data, text, and contexts](#9-structured-data-text-and-contexts)
 - [10. From puzzles to models](#10-from-puzzles-to-models)
 
-### Part III — Trustworthy reasoning
-
-Chapters 11–16
+**Part III — Trustworthy reasoning**
 
 - [11. Queries, answers, and proofs](#11-queries-answers-and-proofs)
 - [12. Integrity checks as ordinary predicates](#12-integrity-checks-as-ordinary-predicates)
@@ -276,18 +147,14 @@ Chapters 11–16
 - [15. Explicit data boundaries](#15-explicit-data-boundaries)
 - [16. Embedding EyeProlog](#16-embedding-eyeprolog)
 
-### Part IV — The craft of logic programming
-
-Chapters 17–20
+**Part IV — The craft of logic programming**
 
 - [17. Logic and control](#17-logic-and-control)
 - [18. Constructing a program](#18-constructing-a-program)
 - [19. Correctness and termination](#19-correctness-and-termination)
 - [20. Improving a program](#20-improving-a-program)
 
-### Part V — Advanced relational design
-
-Chapters 21–25
+**Part V — Advanced relational design**
 
 - [21. Reading the computation](#21-reading-the-computation)
 - [22. Trees, languages, and symbolic evaluation](#22-trees-languages-and-symbolic-evaluation)
@@ -295,9 +162,7 @@ Chapters 21–25
 - [24. Designing finite search](#24-designing-finite-search)
 - [25. Case study: an auditable decision service](#25-case-study-an-auditable-decision-service)
 
-### Part VI — Mathematics made executable
-
-Chapters 26–30
+**Part VI — Mathematics made executable**
 
 - [26. A proof can be a computation](#26-a-proof-can-be-a-computation)
 - [27. Recursion is induction in motion](#27-recursion-is-induction-in-motion)
@@ -305,47 +170,30 @@ Chapters 26–30
 - [29. Search as experimental mathematics](#29-search-as-experimental-mathematics)
 - [30. What mathematics promises](#30-what-mathematics-promises)
 
-### Part VII — The reasoning laboratory
-
-Chapters 31–33
+**Part VII — The reasoning laboratory**
 
 - [31. Testing a theory](#31-testing-a-theory)
 - [32. Debugging by meaning, search, and proof](#32-debugging-by-meaning-search-and-proof)
 - [33. A pattern catalog for reasoning](#33-a-pattern-catalog-for-reasoning)
 
-### Part VIII — Standard Prolog in practice
-
-Chapters 34–37
+**Part VIII — Standard Prolog in practice**
 
 - [34. Control, exceptions, and grouped solutions](#34-control-exceptions-and-grouped-solutions)
 - [35. Reflective terms and atomic conversion](#35-reflective-terms-and-atomic-conversion)
 - [36. Dynamic predicates, directives, and operators](#36-dynamic-predicates-directives-and-operators)
 - [37. Streams and term I/O](#37-streams-and-term-io)
 
-### Part IX — Reference as practice
-
-Chapters 38–43
+**Part IX — Reference as practice**
 
 - [38. Language and ISO profile](#38-language-and-iso-profile)
 - [39. Predicate reference](#39-predicate-reference)
 - [40. Running EyeProlog: command line and corpus](#40-running-eyeprolog-command-line-and-corpus)
-- [41. Study paths, review, and further examples](#41-study-paths-review-and-further-examples)
-- [42. Standards, limits, and implementation boundaries](#42-standards-limits-and-implementation-boundaries)
-- [43. Glossary and notes for continued study](#43-glossary-and-notes-for-continued-study)
+- [41. Standards, limits, and implementation boundaries](#41-standards-limits-and-implementation-boundaries)
+- [42. Glossary and notes](#42-glossary-and-notes)
 
-### Part X — Laboratories
+**Part X — Laboratories**
 
-Chapter 44
-
-- [44. Twelve laboratories](#44-twelve-laboratories)
-
-### Part XI — Review
-
-Chapter 45
-
-- [45. Checkpoint notes and selected answers](#45-checkpoint-notes-and-selected-answers)
-
----
+- [43. Laboratories](#43-laboratories)
 
 # Part I — Relations
 
@@ -354,15 +202,10 @@ Chapter 45
   <figcaption>One ordinary scene contains many relations: who lives where, who is a parent, who attends school, and who owns the bicycle.</figcaption>
 </figure>
 
-We begin with connection rather than calculation. Facts place points in a
-relational world; variables draw threads between them; rules make one pattern
-follow from another.
-
 ## 1. A program is a little theory
 
-Logic programming begins with a change of emphasis. Instead of listing the
-steps that calculate an answer, write sentences that are true in the problem
-domain.
+Instead of listing the steps that compute an answer, a logic program states
+sentences that are true in a domain:
 
 ```eyeprolog
 parent(ada, byron).
@@ -370,21 +213,20 @@ parent(byron, clara).
 parent(clara, diego).
 ```
 
-Each line is a **fact**. `parent/2` is a relation: the name is `parent` and the
-arity is two. Arity matters. `parent/2` and `parent/3` are different predicates.
+Each line is a **fact**. `parent/2` is a relation with name `parent` and arity
+two; `parent/2` and `parent/3` would be different predicates.
 
-A host-supplied **query** selects the relation whose ground answers EyeProlog
-prints:
+A rule derives new sentences from old ones:
 
 ```eyeprolog
 child(Child, Parent) :- parent(Parent, Child).
 ```
 
+Ask for every `child/2` pair:
+
 ```sh
 eyeprolog --goal 'child(X, Y)' program.pl
 ```
-
-The answers are:
 
 ```text
 child(byron, ada).
@@ -392,95 +234,62 @@ child(clara, byron).
 child(diego, clara).
 ```
 
-EyeProlog distinguishes solutions found by the solver from answers printed by the
-CLI. A query such as `eyeprolog --goal 'parent(X, Y)' program.pl` can find the three source facts
-internally, but the normal CLI output suppresses answers that merely repeat
-source facts. Derived `child/2` answers are printed. Chapter 11 explains this
-output policy; it does not change what calls inside rules can prove.
+Nothing was copied through named slots. EyeProlog found substitutions for
+`Child` and `Parent` that made the body true and applied them to the head.
 
-The program did not copy values through named slots. It found substitutions
-for `Child` and `Parent` that made the rule body true, then applied those same
-substitutions to the head.
+The command line prints derived answers, not answers that merely repeat source
+facts: `--goal 'parent(X, Y)'` finds three solutions but prints nothing.
+Chapter 11 explains this output policy. It does not affect what rules can use.
 
-Before writing a relation, ask:
+### Relations have no direction
 
-1. What does one ground fact mean as a sentence?
-2. Which arguments are normally known when it is called?
-3. Is the relation finite in that calling pattern?
+A function has an input side and an output side. A relation is a set of
+tuples, and direction appears only when you ask a question. From the single
+relation `parent/2` you can ask for a person's parents, a person's children,
+whether two people are related, or every known pair. The program stays the
+same; only the pattern of known arguments changes.
 
-For `parent(Parent, Child)`, a ground fact reads naturally from left to right.
-Calling it with a parent enumerates children; calling it with a child enumerates
-parents; calling it open enumerates the finite database. A good relation has a
-clear sentence and useful modes.
-
-Facts are data, not commands. Clause order can affect search order, but a fact
-does not mean “do this now.”
-
-### Learning to see relations
-
-The shift from functions to relations takes practice. A function is normally
-introduced with a direction: put an input in one side and receive an output
-from the other. A relation begins with a set of tuples. Direction enters only
-when somebody asks a question.
-
-Take `parent/2`. The program does not store a procedure named “find children.”
-It stores pairs for which the relation holds. From that single relation, one
-may ask for a child's parents, a parent's children, whether two named people
-stand in the relation, or every known pair. The source text stays fixed while
-the binding pattern changes.
-
-This is why the wording of a predicate matters. Before adding a rule, read a
-ground instance aloud:
+So name and shape a relation by reading one ground instance aloud:
 
 > `parent(ada, byron)` means that Ada is a parent of Byron.
 
-Now replace one name at a time with a question:
+Then replace one argument at a time with a question: *For which `Child` is Ada
+a parent? Who is a parent of Byron?* If each question is a natural use of the
+same sentence, the relation is well shaped. If an argument means different
+things in different questions, split the concept before the ambiguity spreads
+into later rules.
 
-> For which `Child` is Ada a parent?
->
-> Who is a `Parent` of Byron?
->
-> Which `Parent`–`Child` pairs are known?
-
-If those questions feel like natural uses of one statement, the relation is
-probably well shaped. If each reading requires a different interpretation of
-an argument, split the concept before the ambiguity spreads into later rules.
+Facts are statements, not commands. Their order can affect the order of
+answers, but a fact never means “do this now”.
 
 **Exercise.** Add `grandparent/2` using two calls to `parent/2`. Query all
-grandparents, then only the grandparents of `diego`.
-
-**Checkpoint.** Before continuing, make sure you can (1) read
-`parent(ada, byron)` as a sentence, (2) explain what the two variables in
-`eyeprolog --goal 'child(X, Y)' program.pl` ask for, and (3) predict which output changes after adding
-`parent(diego, elena).`
+grandparents, then only those of `diego`. Predict which output changes after
+adding `parent(diego, elena).`
 
 ## 2. Terms, variables, and substitution
 
-Prolog programs accepted by EyeProlog are built from terms:
+Everything in a Prolog program is a term:
 
-- atom constants: `ada`, `accepted`, `'atom with spaces'`;
-- double-quoted character lists: `"sensor too hot"` (the default shorthand for
-  `[s,e,n,s,o,r,' ',t,o,o,' ',h,o,t]`);
+- atoms: `ada`, `accepted`, `'atom with spaces'`;
 - numbers: `42`, `-7`, `3.14159`, `1.2e3`;
 - variables: `X`, `Person`, `_temporary`;
 - compound terms: `point(3, 4)`, `reading(temp, 91)`;
-- lists: `[]`, `[red, green, blue]`, `[Head | Tail]`.
+- lists: `[]`, `[red, green, blue]`, `[Head | Tail]`;
+- double-quoted text: `"sensor too hot"`, by default a list of one-character
+  atoms.
 
-In normal mode, double-quoted character/code lists also support Trealla's
-right-splice notation. With `double_quotes(chars)`, `"ab"||Tail` is shorthand
-for `[a,b|Tail]`; with `double_quotes(codes)`, it denotes `[97,98|Tail]`. The
-splice is not available when `double_quotes(atom)` is active, and
-`--iso-strict` rejects it as an implementation-specific syntax extension.
+Atoms begin with a lowercase letter or are quoted; variables begin with an
+uppercase letter or an underscore. Each bare `_` is a fresh anonymous variable,
+while repeated occurrences of `_Name` or `X` denote the same variable. A
+variable is local to its clause.
 
-Normal-mode integer constants may use one underscore between adjacent digits,
-as in `1_000` or `0xCA_FE`. Layout, including comments and newlines, may follow
-the underscore before the next digit. Separators do not apply to floating-point
-fractions or exponents, and `--iso-strict` rejects them.
+Keep symbolic vocabulary as atoms (`ready`) and use character lists
+(`"ready"`) only when text must be taken apart relationally.
 
-Plain atom constants begin with a lowercase ASCII letter. Variables begin with
-an uppercase letter or underscore. The bare `_` is anonymous and every
-occurrence is fresh. `_Name` is a named variable; repeated occurrences refer to
-the same variable within its clause. Variables are local to a clause.
+Normal mode adds two conveniences that `--iso-strict` rejects: digit groups
+such as `1_000` or `0xCA_FE`, and the splice notation `"ab"||Tail`, which
+means `[a,b|Tail]` under `double_quotes(chars)` and `[97,98|Tail]` under
+`double_quotes(codes)`.
 
 ### Unification
 
@@ -491,22 +300,20 @@ reading(Sensor, 91)
 reading(temp, Value)
 ```
 
-They unify with `Sensor = temp` and `Value = 91`. Structure must agree
-recursively. `point(X, X)` unifies with `point(2, 2)` but not `point(2, 3)`.
-Functor and arity must agree.
+These unify with `Sensor = temp` and `Value = 91`. Functor and arity must match,
+and arguments are compared recursively: `point(X, X)` unifies with
+`point(2, 2)` but not with `point(2, 3)`.
 
 <figure>
   <img src="book-assets/unification.svg" alt="Two reading term trees align to produce bindings for Sensor and Value.">
   <figcaption>Unification walks corresponding branches of two term trees and records the bindings needed to make them identical.</figcaption>
 </figure>
 
-The picture is worth lingering over. Unification does not assign values in a
-one-way parameter list. It aligns two structures. A variable on either side
-may receive a binding; a nested pair of compounds causes the same comparison
-to continue recursively. The result shown is the most general substitution:
-it commits to exactly what structural agreement requires and nothing more.
+Unification is not assignment. A variable on either side may be bound, and the
+result is the *most general* substitution: it commits to exactly what
+agreement requires and nothing more.
 
-EyeProlog exposes unification as `=/2`:
+The built-in `=/2` performs unification:
 
 ```eyeprolog
 same_shape(Pair) :- (Pair = pair(X, X)).
@@ -517,100 +324,65 @@ eyeprolog --goal 'same_shape(pair(red, red))' program.pl
 eyeprolog --goal 'same_shape(pair(red, blue))' program.pl
 ```
 
-Only the first query succeeds. `\=/2` succeeds when two resolved terms are not
-structurally equal.
+Only the first succeeds. `\=/2` succeeds when two terms do not unify.
 
-Compound terms retain domain structure:
+Compound terms carry domain structure directly:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 measurement(battery_1, sample(17, volts(28.4), amps(12.1))).
 route(a, d, path([a, b, d], cost(9))).
 ```
 
-As a fact head, `measurement(...)` is an atomic formula. Nested terms are data.
-The same surface form serves both roles; context decides which.
+The outer `measurement(...)` is a statement; the nested `sample(...)` is data.
+The syntax is the same, and position decides the role.
 
-`ready` is an atom constant and `"ready"` is, by default, a proper list of
-one-character atoms. Keep symbolic vocabulary as atoms and use character lists
-when text must be inspected relationally. Quoted atoms remain atoms:
-
-```eyeprolog
-label(sensor_1, "Cabin temperature").
-web_name(sensor_1, '<https://example.org/sensor/1>').
-```
-
-**Exercise.** Write `diagonal/1`, which succeeds for `point(X, X)`. Then write
-`same_ends/1` for a three-element list whose first and last values agree.
-
-**Checkpoint.** Without running EyeProlog, decide whether each pair unifies:
-`point(X, X)` with `point(red, red)`, `point(X, X)` with
-`point(red, blue)`, and `[Head | Tail]` with `[a, b, c]`. Then run a small
-`=/2` query to check each prediction.
+**Checkpoint.** Without running anything, decide whether each pair unifies:
+`point(X, X)` with `point(red, red)`, `point(X, X)` with `point(red, blue)`,
+and `[Head | Tail]` with `[a, b, c]`. Then check with `=/2`. Write
+`diagonal/1`, which succeeds for `point(X, X)`.
 
 ## 3. Rules and their two readings
-
-The executable-clause idea emerged from work on automated theorem proving.
-Robinson's resolution principle supplied a general proof rule, while the
-development of Prolog specialized proof search around clauses that could be
-read as procedures. EyeProlog begins further downstream: it offers a compact
-definite-clause language rather than a general first-order theorem prover. The
-restriction buys a direct correspondence between a rule body and the
-subquestions used to establish its head.
 
 A rule has a head and a comma-separated body:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 eligible(Person) :-
   age(Person, Years),
   (Years >= 18),
   registered(Person).
 ```
 
-Read it declaratively: a person is eligible if the person has an age of at
-least 18 and is registered. Read it operationally: to solve the head, solve the
-body goals in their written dependency order, carrying bindings into later
-goals. EyeProlog normally selects from left to right. As a safe optimization, it
-may run a ready deterministic built-in filter early; such a filter cannot add
-alternative answers and already has the inputs its registered mode requires.
+Read it **declaratively**: a person is eligible if they have an age of at least
+18 and are registered. Read it **operationally**: to solve the head, solve the
+body goals from left to right, carrying each binding into the later goals.
 
-Both readings matter. The declarative reading checks the model. The operational
-reading helps make search finite and selective. Put a generator before a
-built-in that needs its input.
+Both readings matter, and they answer different questions. The declarative
+reading says what the program means and guards against an efficient program
+that answers the wrong question. The operational reading says how answers are
+found and guards against a correct specification that searches forever. Here,
+`age/2` must run before `Years >= 18`, because comparison needs a number:
+put a generator before a test that needs its input. (As a safe optimization,
+EyeProlog may run a deterministic built-in test early once its inputs are
+bound; that never adds answers.)
 
 <figure>
   <img src="book-assets/logic-and-control.svg" alt="One recursive path rule points to its logical and operational readings.">
   <figcaption>A clause is both a sentence in a theory and a recipe for reducing a question to subquestions.</figcaption>
 </figure>
 
-The two readings are not rivals. The logical reading prevents an efficient
-program from quietly answering the wrong question. The operational reading
-prevents a beautiful specification from wandering forever without producing
-an answer. Much of the craft in this book consists of keeping one reading
-steady while improving the other.
+Much of programming in Prolog is holding one reading steady while improving
+the other. Later chapters refer back to this distinction rather than repeating
+it.
 
-```eyeprolog
-
-:- use_module(library(lists)).
-
-adult(Person) :-
-  age(Person, Years),
-  (Years >= 18).
-```
-
-Multiple clauses express alternatives:
+Several clauses for the same head are alternatives:
 
 ```eyeprolog
 can_enter(Person) :- staff(Person).
 can_enter(Person) :- visitor(Person), escorted(Person).
 ```
 
-Helper predicates reveal the model and improve explanations:
+Helper predicates name a concept once, which makes both the rules and their
+proofs easier to read:
 
 ```eyeprolog
 high_score(Case) :-
@@ -622,104 +394,52 @@ status(Case, accepted) :- high_score(Case).
 reason(Case, "score meets threshold") :- high_score(Case).
 ```
 
-### Deeper foundations: Herbrand's move
+### Deeper foundations: the Herbrand world
 
-This section through “Meaning is not the search strategy” supplies the formal
-model behind the earlier examples. On a first practical reading, it is safe to
-continue at Chapter 4 and return here after writing a recursive relation.
+The declarative reading needs a precise answer to a simple question: what does
+a term denote? EyeProlog uses **Herbrand semantics**, named after Jacques
+Herbrand, whose 1930 thesis made ground terms and their instances central to
+proof theory. Robinson's resolution principle (1965) and the least-model
+semantics of van Emden and Kowalski built on that foundation. You can skip to
+Chapter 4 on a first reading.
 
-The terminology in the next section honors a remarkably early source. Jacques
-Herbrand developed the relevant ideas in his 1930 doctoral thesis,
-*Recherches sur la théorie de la démonstration* (“Investigations in proof
-theory”). His fundamental theorem connected first-order derivability with
-propositional reasoning over suitably chosen ground instances. In broad terms,
-quantified proof obligations could be studied through formulas obtained by
-substituting constructed terms for variables.
-
-That move supplied more than names. It made syntax usable as a mathematical
-universe: constants and function symbols generate ground terms, and atomic
-formulas over those terms provide a concrete space in which proofs can be
-analyzed. This viewpoint became foundational for automated theorem proving.
-Unification can be understood as finding substitutions that bring symbolic
-formulas together, while later proof procedures can search among clause
-instances without first assigning terms to an unrelated external domain.
-
-The historical distinctions matter. Herbrand did not invent Robinson's 1965
-resolution calculus, nor did his thesis state the later least-model semantics
-of logic programs in its modern form. Rather, his proof theory laid essential
-groundwork. Resolution supplied a powerful subsequent inference mechanism, and
-van Emden and Kowalski later gave definite logic programs their fixed-point and
-least-Herbrand-model account. EyeProlog sits downstream of this sequence:
-
-```text
-Herbrand: ground terms and instances as a proof-theoretic foundation
-  -> Robinson: resolution and unification as a proof procedure
-  -> logic programming: executable clauses and least-model semantics
-  -> EyeProlog: a focused Prolog implementation with inspectable derivations
-```
-
-Herbrand completed this work while still in his early twenties and died in
-1931. The scale of its later influence—in proof theory, automated deduction,
-and logic programming—is one reason the word *Herbrand* recurs throughout this
-book rather than appearing only as historical attribution.
-
-### The Herbrand world
-
-The declarative reading needs a precise answer to a deceptively simple
-question: what can a term denote? EyeProlog uses **Herbrand semantics**. Its
-universe contains exactly the ground terms that can be constructed from the
-program's atom constants, numbers, list constructors, and compound
-functors. There are no unnamed elements hiding behind the notation. A ground
-term denotes itself.
-
-This separates the **Herbrand universe**, whose members are terms such as
-`pat`, `3`, `[red, blue]`, and `ticket(alice)`, from the **Herbrand base**,
-whose members are ground atomic formulas such as `person(pat)` and
-`owns(alice, ticket(17))`. A term is not true or false merely by existing:
-`pat` is a possible argument, whereas `person(pat)` is a proposition that an
-interpretation may make true.
+The **Herbrand universe** contains exactly the ground terms that can be built
+from the program's atoms, numbers, lists and functors: `pat`, `3`,
+`[red, blue]`, `ticket(alice)`. A ground term denotes itself. The **Herbrand
+base** contains the ground atomic formulas over those terms, such as
+`person(pat)` or `owns(alice, ticket(17))`. A term is a possible argument; a
+formula is a claim that may be true or false.
 
 <figure>
   <img src="book-assets/herbrand-world.svg" alt="Ground terms form the Herbrand universe, ground formulas form the base, and justified formulas form the least model.">
   <figcaption>Terms provide the vocabulary; atomic formulas provide the possible claims; facts and rules select the least model.</figcaption>
 </figure>
 
-This three-level distinction answers several recurring questions. A newly
-constructed term does not automatically assert anything. A formula that can be
-written is not automatically true. And the model is not an arbitrary
-collection of convenient formulas: it is the smallest collection forced by
-the program. Keeping those levels separate makes symbolic data safe to inspect
-without confusing mention with assertion.
-
-A **Herbrand interpretation** is a set of ground atomic formulas regarded as
-true. A source fact contributes one such formula:
-
-```eyeprolog
-parent(pat, jan).
-```
-
-A rule stands for all of its ground instances. Thus:
+A rule stands for all its ground instances, so
 
 ```eyeprolog
 ancestor(X, Z) :- parent(X, Y), ancestor(Y, Z).
 ```
 
-says that for every substitution of `X`, `Y`, and `Z` by Herbrand terms, truth
-of both body formulas entails truth of the head formula. Variables in rules
-are implicitly universally quantified.
+says that for every substitution of Herbrand terms for `X`, `Y` and `Z`, if both
+body formulas are true, so is the head. Rule variables are implicitly
+universally quantified.
 
-The declarative meaning of a pure Prolog program is its **least Herbrand
-model**: the smallest interpretation containing every fact and closed under
-every rule. One mathematical way to obtain it is the immediate-consequence
-operation. Begin with the facts; add each ground rule head whose ground body is
-already true; repeat until reaching the least fixed point. This construction
-defines meaning. It does not prescribe that the implementation enumerate the
-model from the bottom up.
+The meaning of a pure program is its **least Herbrand model**: the smallest set
+of ground formulas that contains every fact and is closed under every rule.
+You can build it by starting from the facts and repeatedly adding the head of
+any ground rule instance whose body is already true, until nothing changes.
+That construction defines the meaning; it does not say that EyeProlog computes
+it bottom-up.
 
-### Why terms denote themselves
+### Terms denote themselves
 
-Herbrand semantics is a particular form of ordinary model theory, chosen
-because logic programs inspect and construct symbolic terms. Consider:
+In ordinary first-order logic, `alice` and `bob` might denote the same object,
+and `ticket(alice)` and `ticket(bob)` might too, unless extra axioms rule it
+out. In the Herbrand universe they differ by construction: distinct atoms are
+distinct terms, and compound terms are equal only when functor, arity and
+arguments are equal. Unification, output and proofs therefore all share one
+predictable notion of identity:
 
 ```eyeprolog
 different(alice, bob) :- (alice \= bob).
@@ -727,37 +447,17 @@ different(ticket(alice), ticket(bob)) :-
   (ticket(alice) \= ticket(bob)).
 ```
 
-In an unrestricted first-order interpretation, `alice` and `bob` could denote
-the same object unless a unique-name axiom forbids it. Even if they denote
-different objects, the interpretation of `ticket` need not be injective.
-Additional axioms would be required to show that `ticket(alice)` and
-`ticket(bob)` differ.
+This is a property of the notation, not a claim about the world. If `robert`
+and `bob` name the same person, say so with a domain relation such as
+`same_as(robert, bob)` or normalize both to one term. The runnable
+[`examples/herbrand-semantics.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/herbrand-semantics.pl)
+shows the distinction with its outputs and proof.
 
-In the Herbrand universe those terms differ by construction. Different atom
-constants are different terms; compound terms are free constructors and are
-identical only when functor, arity, and corresponding arguments are identical.
-Lists follow the same rule through `[]` and the internal `./2` constructor.
-Unification, read-back, witness construction, and proof explanations therefore
-share one predictable notion of identity.
+### Witnesses instead of hidden objects
 
-This is a property of the representation, not a claim that two names can never
-refer to one real-world entity. If `robert` and `bob` name the same person, say
-so with `same_as(robert, bob)` or normalize them to one canonical term. The
-Herbrand layer keeps names unambiguous; domain rules express equivalence.
-
-The runnable
-[`examples/herbrand-semantics.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/herbrand-semantics.pl) example and
-its normal and proof outputs make this distinction concrete.
-
-### Quantification and visible witnesses
-
-Variables range over Herbrand terms, not external records, pointers, or
-host-language objects. Variables in a selected goal are existential in the
-logic-programming sense: EyeProlog searches for substitutions that make the goal
-follow from the program.
-
-EyeProlog has no blank nodes or existential variables in rule heads. When a rule
-needs to name a consequent object, construct an explicit witness:
+Variables in a query are existential: EyeProlog searches for substitutions that
+make the goal follow. A rule head, however, cannot introduce an anonymous new
+object. When a rule needs to name one, construct an explicit witness term:
 
 ```eyeprolog
 has_parent(Child, parent_of(Child)) :-
@@ -767,34 +467,25 @@ registration(Student, Course, registration_of(Student, Course)) :-
   takes(Student, Course).
 ```
 
-The same inputs construct the same witness term; different inputs construct
-different terms. The witness is printable, queryable, and visible in a proof,
-rather than being an anonymous object created behind the program's back.
+The same inputs build the same witness, and different inputs build different
+ones. The witness is printable, queryable and visible in a proof.
 
-### Equality, unification, and the occurs check
+### The occurs check
 
-Equality in the pure Herbrand reading is syntactic identity after substitution.
-Operationally, unification discovers a substitution that makes terms
-identical. EyeProlog performs an occurs check whenever unification would bind a
-variable. It therefore uses finite-tree unification and rejects a binding when
-the variable occurs anywhere in the proposed value. For example, the body of this
-clause fails rather than constructing a cyclic term:
+EyeProlog performs the occurs check on every unification that binds a
+variable, so terms are always finite trees. This clause fails instead of
+building a cyclic term:
 
 ```eyeprolog
 cyclic_unification :- X = wrapper(X).
 ```
 
-The goal has to be written inside a clause of its own: ISO 7.4.3 forbids a
-Prolog text from supplying clauses for a built-in predicate, so a bare
-`(X = wrapper(X)).` in a program file is a clause for `(=)/2` and is rejected
-with *permission_error(modify, static_procedure, (=)/2)*.
+(The goal sits inside a clause because a bare `X = wrapper(X).` in a file
+would be a clause for the built-in `=/2`, which ISO forbids.)
 
-ISO classifies unifications whose outcome depends on an occurs check as
-subject-to-occurs-check (STO). EyeProlog's default remains the sound finite-tree
-behavior above. For diagnosis, EyeProlog additionally provides the
-implementation-specific flag `occurs_check`; setting it to `error` turns a
-normal unification that would otherwise fail because of the occurs check into
-a representation error:
+ISO calls such unifications *subject to occurs check* (STO). For diagnosis,
+setting the flag `occurs_check` to `error` turns a unification that fails only
+because of the occurs check into an error:
 
 ```eyeprolog
 :- set_prolog_flag(occurs_check, error).
@@ -803,71 +494,48 @@ sto_example :- X = wrapper(X).
 % error(representation_error(term), [])
 ```
 
-The ISO error mechanism wraps an error term together with an
-implementation-defined context term. For this implementation-specific STO
-diagnostic EyeProlog uses `representation_error(term)` and currently uses the
-empty list `[]` as that context. This reports that the cyclic result of a
-succeeding STO unification cannot be represented by EyeProlog's finite-tree
-term model, without exposing a non-standard `occurs_check/2` error term.
-
-The supported values are `true` (the default finite-tree behavior) and `error`
-(STO detection). EyeProlog deliberately does not provide `occurs_check=false`,
-because its term model does not construct cyclic terms. The ISO predicate
-`unify_with_occurs_check/2` is independent of the diagnostic flag: it continues
-to perform finite-tree unification and fails on `unify_with_occurs_check(X,
-wrapper(X))` even when `occurs_check` is `error`.
+The flag accepts `true` (the default) and `error`; there is no `false`, because
+EyeProlog never builds cyclic terms. `unify_with_occurs_check/2` ignores the
+flag and simply fails on `unify_with_occurs_check(X, wrapper(X))`.
 
 ### Meaning is not the search strategy
 
-EyeProlog's evaluator is goal-directed. It resolves selected goals against facts,
-rules, and built-ins using ordered conjunction, clause selection, indexing,
-tabling, and deterministic host operations. Written order defines the normal
-dataflow; a mode-ready deterministic built-in may be selected early as a pure
-filter. For the pure Horn-clause fragment, the answers it finds are intended to
-belong to the least Herbrand model. The evaluator is not, however, a complete
-bottom-up enumerator. Infinite generation or nonterminating recursion can
-prevent it from reaching a true answer.
+EyeProlog solves goals top-down: it selects a goal, tries matching clauses in
+order, and backtracks. For pure Horn clauses every answer it finds belongs to
+the least Herbrand model, but it may fail to find a true answer if the search
+runs into infinite recursion. Termination is a property of the procedure, not
+of the meaning; Chapters 13 and 19 deal with it.
 
-Built-ins extend the pure core. Relational built-ins such as `=/2`,
-`append/3`, and `member/2` are readily understood over Herbrand terms.
-Arithmetic, date handling, regular expressions, aggregation, `once/1`, and
-negation have additional operational definitions. They still consume and
-produce Prolog terms: `X is 2 + 3` binds `X` to the Herbrand number term `5`,
-not to an invisible host value.
-
-`\+ Goal` succeeds when the current finite search finds no solution for
-`Goal`; it does not insert a negative formula into the Herbrand model.
-User-defined negative dependencies should be stratified. In a stratified
-program, positive dependencies may remain in the same or a lower layer, while
-every negative dependency points strictly downward:
+Built-ins extend the pure core. `X is 2 + 3` binds `X` to the term `5`, and
+`\+ Goal` succeeds when a finite search finds no solution for `Goal`. Negation
+adds no negative facts to the model, so negative dependencies should be
+**stratified**: every negated predicate must be fully defined in a lower layer.
 
 ```eyeprolog
 closed(X) :- blocked(X).
 open(X) :- candidate(X), \+ closed(X).
 ```
 
-A cycle containing a negative edge is not stratified:
+A cycle through negation is not stratified:
 
 ```eyeprolog
 p(X) :- q(X).
 q(X) :- \+ p(X).
 ```
 
-The CLI reports such portability problems with `--warnings`. JavaScript
-embedders can inspect `stratifiedNegation`, `negationStratificationErrors`,
-`negationDependencies`, and per-group `negationStratum`; request eager analysis
-with `analyzeNegation`, reject it with `strictNegation`, or call
+`eyeprolog --warnings` reports such programs. JavaScript embedders can inspect
+`stratifiedNegation`, `negationStratificationErrors`, `negationDependencies`
+and per-group `negationStratum`, request the analysis with `analyzeNegation`,
+reject unstratified programs with `strictNegation`, or call
 `program.assertStratifiedNegation()`.
 
-**Checkpoint.** Read one rule twice: first as a sentence about all its ground
-instances, then as a left-to-right sequence of subquestions. Identify which
-body goal first binds each variable. If you took the practical route, defer
-Herbrand bases and interpretations without guilt; recursion is next.
+**Checkpoint.** Take one rule from this chapter. Read it once as a sentence
+about all of its ground instances and once as a sequence of subquestions, and
+say which body goal first binds each variable.
 
 ## 4. Recursion: describing reachability
 
-Recursive rules define an unbounded family of finite proofs. An ancestor is a
-parent, or a parent of an ancestor:
+An ancestor is a parent, or a parent of an ancestor:
 
 ```eyeprolog
 :- table ancestor/2.
@@ -880,80 +548,65 @@ ancestor(X, Z) :- parent(X, Y), ancestor(Y, Z).
 eyeprolog --goal 'ancestor(X, Y)' program.pl
 ```
 
-The first clause is the base case. The second reduces an ancestor question to a
-subquestion one edge farther through the graph. To design recursion, draw one
-proof, find the repeated subquestion, and ensure some path reaches a base case.
+The first clause is the base case. The second reduces a question to the same
+question one edge farther along. To design a recursion, draw one proof, find
+the repeated subquestion, and make sure every path can reach a base case.
 
-### Constructing the recursive argument
+A recursive program should carry the argument you would give on paper. For
+`ancestor/2`: the base case is one `parent/2` edge; each recursive call moves
+one vertex along the graph; and the program is finite because a finite graph
+has finitely many endpoint pairs. Note that progress here is not “the term gets
+smaller”. List recursion consumes a tail, arithmetic recursion decreases a
+number, graph recursion walks a finite relation. State the real reason the
+recursion stops.
 
-A recursive program should expose the same argument that would justify its
-result on paper. For `ancestor/2`, that argument has four parts:
+Clause order is a control preference: trying the direct edge first finds short
+proofs early but does not change which pairs are ancestors. Reordering the
+body of the recursive clause is different. `ancestor(Y, Z), parent(X, Y)`
+means the same thing, but asks an open recursive question before choosing an
+edge and may never terminate.
 
-| Design obligation | `ancestor/2` answer |
-| --- | --- |
-| Smallest supported case | one known `parent/2` edge |
-| Repeated question | whether the intermediate parent is an ancestor |
-| Progress | advance from `X` to the next vertex `Y` |
-| Finite reason | a finite graph gives finitely many endpoint pairs to table |
+### Cycles and tabling
 
-The progress column is deliberately not “the term gets smaller.” Structural
-recursion over a list usually consumes a tail; graph recursion moves through a
-finite relation; arithmetic recursion may decrease a number. State the actual
-well-founded argument for the intended mode instead of borrowing the language
-of a different recursion pattern.
-
-Clause order then expresses a control preference. Trying the direct edge first
-finds short proofs early, but it does not change which ancestor pairs the two
-clauses mean. Reversing the recursive clause's body is different: it asks an
-open recursive question before selecting an edge and may destroy the useful
-mode. Meaning and control must be reviewed separately.
-
-Real graphs contain cycles. Naive depth-first recursion can revisit a call
-forever. EyeProlog therefore supports explicit tabling with `:- table p/n.`.
-A table records answers for a declared recursive call, iterates cyclic calls to
-a fixed point, and reuses results. Predicates without a `table` declaration keep
-ordinary depth-first Prolog control; the program, not a heuristic, chooses when
-tabling is part of the operational contract.
+Real graphs have cycles, and plain depth-first recursion can revisit the same
+call forever. The declaration `:- table p/n.` makes EyeProlog record the
+answers of `p/n` calls, iterate recursive calls to a fixed point, and reuse
+the results. With `edge(a, b)`, `edge(b, c)` and `edge(c, a)`, the tabled
+query `reach(a, Y)` returns `b`, `c` and `a` and stops. Predicates without a
+`table` declaration keep ordinary Prolog control; the program decides where
+tabling applies.
 
 <figure>
   <img src="book-assets/recursion-tabling-railway.svg" alt="A railway network with a cycle and a ledger of routes already reached.">
   <figcaption>Recursive route questions may return to the same station. A table acts like a route ledger: new destinations are recorded and recurring questions reuse them.</figcaption>
 </figure>
 
-Tabling does not make every open relation finite. A rule that constructs
-ever-larger terms can still produce infinitely many distinct calls or answers.
-Keep the selected query and its generators finite.
+Tabling does not make every relation finite. A rule that builds ever larger
+terms still produces infinitely many distinct calls or answers.
 
-A relation can construct a witness:
+A relation can also build the evidence for its answer:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 path(X, Y, [X, Y]) :- edge(X, Y).
 path(X, Z, [X | Rest]) :-
   edge(X, Y),
   path(Y, Z, Rest).
 ```
 
-On cyclic graphs, track visited vertices and use ISO negation as
-`\+ member(Next, Visited)` to obtain finite simple paths rather than arbitrary walks.
+`ancestor/2` and `path/3` make different promises. There is at most one answer
+per pair of endpoints, but there can be infinitely many paths between them on a
+cyclic graph. Table the finite relation; bound the witness relation, for
+example by keeping a list of visited vertices and requiring
+`\+ member(Next, Visited)` so that only simple paths are built.
 
-Notice that `ancestor/2` and `path/3` make different promises. Endpoint
-reachability has at most one logical pair for each pair of vertices, whereas
-path construction may have many witnesses for the same endpoints. Table the
-finite relation you need; bound or simplify the richer witness relation. This
-distinction reappears in grammars, planning, proof search, and program analysis.
-
-**Checkpoint.** In the three-edge family from Chapter 1, predict the direct and
-indirect `ancestor/2` answers. Point to the base clause and recursive clause,
-then say what becomes smaller or moves closer to a known fact in one successful
-derivation.
+**Checkpoint.** For the family in Chapter 1, predict every `ancestor/2` answer.
+For one indirect answer, name the clauses used and say what moves closer to a
+known fact at each step.
 
 ## 5. Lists as relations
 
-`[a, b, c]` abbreviates nested cons cells. `[Head | Tail]` exposes one cell;
-`[]` is empty.
+`[a, b, c]` abbreviates nested pairs ending in `[]`, and `[Head | Tail]`
+exposes the first pair.
 
 <figure>
   <img src="book-assets/lists-train.svg" alt="Three railway carriages illustrate a list head and tail.">
@@ -970,11 +623,12 @@ joins([], Ys, Ys).
 joins([X | Xs], Ys, [X | Zs]) :- joins(Xs, Ys, Zs).
 ```
 
-Different modes give `joins/3` different uses. It can construct a concatenated
-list, enumerate every prefix/suffix split, or find a missing part. This is the
-practical meaning of a relational definition.
+Because `joins/3` is a relation, one definition serves several uses: with the
+first two arguments bound it concatenates; with only the third bound it
+enumerates every way to split a list; with the first and third bound it finds
+the missing suffix.
 
-Some algorithms carry explicit state through an accumulator:
+Some algorithms thread state through an accumulator:
 
 ```eyeprolog
 reverse_acc(List, Reversed) :- reverse_go(List, [], Reversed).
@@ -983,50 +637,16 @@ reverse_go([X | Xs], Acc, Reversed) :-
   reverse_go(Xs, [X | Acc], Reversed).
 ```
 
-No mutation occurs; every call receives a new term. EyeProlog also includes
-`member/2`, `append/3`, `select/3`, `nth0/3`, `reverse/2`, `length/2`,
-ISO `sort/2`, slicing helpers, and numeric summaries. Improper lists such as
-`[a | Tail]` are valid terms, but operations requiring a proper finite list
-fail unless the tail is `[]`.
+Nothing is mutated; each call receives a new term.
 
-**Checkpoint.** Trace `joins([a], [b, c], Whole)` by hand. Then reverse the
-question: bind `Whole` to `[a, b, c]` and predict all prefix/suffix splits.
-Finally explain why `[a | Tail]` is not yet known to be a proper finite list.
+The `lists` library provides the standard relations, including `member/2`,
+`append/3`, `select/3`, `nth0/3`, `reverse/2` and `length/2`, alongside ISO
+`sort/2`. A partial list such as `[a | Tail]` is a valid term whose length is
+not yet known; a relation that needs a proper list may enumerate possible tails
+or raise an instantiation error, so bind the tail first.
 
-## Part I summary
-
-Part I established the relational eye:
-
-- a program is a theory of ground sentences, not a sequence of assignments;
-- variables acquire meaning through consistent substitution;
-- unification connects a question to facts and rule heads by structure;
-- every rule has both a declarative and an operational reading;
-- recursion describes an unbounded family of finite proofs;
-- lists are inductive terms whose relations can support several modes.
-
-You should now be able to read a program aloud, predict a unifier, write base
-and recursive clauses, and explain why a list relation may construct as well
-as inspect its arguments. Carry forward one habit: begin with a meaningful
-ground instance, then ask which variables may safely replace which parts.
-
-### Historical note: clauses become a programming medium
-
-The ingredients of Part I were assembled across several traditions.
-First-order logic supplied variables, substitution, and quantified formulas.
-Herbrand made ground terms and ground instances central to proof theory.
-Robinson's 1965 resolution principle gave automated deduction a uniform,
-machine-oriented inference rule whose practical force depended on unification.
-
-Prolog emerged when these ideas met a natural-language project in Marseille in
-the early 1970s. Colmerauer and Roussel stress that the project did not begin
-as an abstract attempt to invent a programming language: the need to analyze
-French drove the development of executable clauses and their control. Lists
-then became more than containers. They naturally represented sentences,
-syntax, proof states, and sequences of goals. The familiar two-clause list
-program condenses a much older mathematical pattern—definition by constructors
-and structural induction—into executable form.
-
----
+**Checkpoint.** Trace `joins([a], [b, c], Whole)` by hand. Then bind `Whole` to
+`[a, b, c]`, leave the first two arguments open, and predict every split.
 
 # Part II — Search
 
@@ -1035,24 +655,15 @@ and structural induction—into executable form.
   <figcaption>A route is found by exploring alternatives, recognizing dead ends and cycles, and carrying a productive choice toward the destination.</figcaption>
 </figure>
 
-A theory may justify many conclusions, but an evaluator must still find them.
-This Part studies the finite domains, constraints, failure, and choice that
-turn a field of possibilities into a productive computation.
+A theory may justify many conclusions, but the machine still has to find them.
+This Part is about the finite domains, failure, and choice that turn a field of
+possibilities into a computation that ends.
 
 ## 6. Arithmetic and finite generation
 
-Arithmetic uses the standard `is/2` predicate, conventionally written with
-infix operator syntax:
-
-<figure>
-  <img src="book-assets/arithmetic-binding-flow.svg" alt="A finite generator binds a number before arithmetic computes a result and a comparison filters it.">
-  <figcaption>Arithmetic goals consume bindings rather than inventing them: generate a finite candidate, compute from ready inputs, then filter the ground result.</figcaption>
-</figure>
+Arithmetic is the standard `is/2` predicate, usually written infix:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 next(X, Y) :- (Y is X + 1).
 area_rectangle(W, H, Area) :- (Area is W * H).
 
@@ -1063,8 +674,9 @@ hypotenuse(A, B, C) :-
   (C is sqrt(C2)).
 ```
 
-Inputs must be bound to suitable numbers before a numeric function runs.
-Comparisons filter generated solutions:
+`is/2` evaluates its right side, so every variable there must already hold a
+number: `next(X, 4)` raises an instantiation error rather than finding `X = 3`.
+Comparisons are filters on values something else produced:
 
 ```eyeprolog
 safe_reading(Sensor, Value) :-
@@ -1073,18 +685,21 @@ safe_reading(Sensor, Value) :-
   (Value =< 80).
 ```
 
-`between(Low, High, Value)` enumerates an inclusive integer range or checks an
-already-bound value:
+`between(Low, High, Value)` is the usual generator. It enumerates the integers
+in the range, or merely checks a bound `Value`:
 
 ```eyeprolog
-:- use_module(library(lists)).
-
 square(N, Square) :-
   between(1, 10, N),
   (Square is N * N).
 ```
 
-Finite generators turn loops into searches. Recurrences need intended modes:
+<figure>
+  <img src="book-assets/arithmetic-binding-flow.svg" alt="A finite generator binds a number before arithmetic computes a result and a comparison filters it.">
+  <figcaption>Generate a finite candidate, compute from ready inputs, then filter the ground result.</figcaption>
+</figure>
+
+Recurrences work only in the direction they were written for:
 
 ```eyeprolog
 factorial(0, 1).
@@ -1095,27 +710,17 @@ factorial(N, F) :-
   (F is N * PF).
 ```
 
-The intended call direction belongs in the predicate's tests and surrounding
-documentation; it does not require executable metadata.
+`factorial(5, F)` gives `F = 120`; `factorial(N, 120)` raises an error at
+`N > 0`. Record the intended mode in tests and comments.
 
-**Checkpoint.** For every arithmetic goal above, mark which arguments must be
-numbers before the goal can run. Explain why `between/3` is a generator in
-`square/2` but merely a check when its third argument is already bound.
+**Checkpoint.** In `square/2`, which goal binds `N`? What happens if you swap
+the two body goals?
 
 ## 7. Failure, negation, and quantification
 
-A goal fails when no clause or built-in proves it under current bindings.
-Failure prunes that branch and search tries another choice.
-
-Failure is an operational event, not automatically a statement about the
-world. Turning failure into `\+ Goal` is justified only relative to the
-program and the current bindings. This is the **closed-world move** familiar
-from databases: for some bounded relation, what cannot be derived is treated
-as absent. It differs from the open-world stance common on the Web, where a
-missing claim may simply be unknown. Neither stance is universally right; the
-modeler must say which knowledge boundary is complete.
-
-`\+ Goal` succeeds when `Goal` has no solution:
+A goal fails when nothing proves it under the current bindings, and search
+backs up to the most recent choice. `\+ Goal` turns failure into a test: it
+succeeds exactly when `Goal` has no solution:
 
 ```eyeprolog
 allowed(User) :-
@@ -1123,60 +728,23 @@ allowed(User) :-
   \+ blocked(User).
 ```
 
-This means “blocked cannot be proved from this program,” not classical
-negation. Bind variables before negating. Putting `\+ blocked(User)` before
-`user(User)` asks whether there is no blocked user at all, not whether this
-particular user is unblocked.
+With `user(ann)`, `user(bob)`, and `blocked(bob)`, the query `allowed(U)` gives
+`allowed(ann)`. Swap the body goals and the query gives nothing: `\+ blocked(U)`
+with `U` unbound asks "is nobody blocked?", which is false. Bind variables
+before you negate them.
+
+`\+` means "cannot be proved from this program", not "is false". Reading one
+as the other is the **closed-world assumption**: right for a complete roster or
+configuration, wrong for open data where a missing fact may just be unknown.
+There, model the state you mean, such as `confirmed_absent(Item)`.
 
 <figure>
   <img src="book-assets/negation-guest-registry.svg" alt="A receptionist checks a complete guest registry against a blocked list.">
-  <figcaption>Absence becomes informative only inside a declared complete boundary: Clara is allowed because the event registry is complete and she is not on its blocked list.</figcaption>
+  <figcaption>Absence is informative only inside a boundary declared complete.</figcaption>
 </figure>
 
-For ordinary `\+/1`, negative dependencies should normally be stratified:
-compute a lower relation, then negate it from a higher layer. Use `--warnings`
-to report negative recursion:
-
-```sh
-eyeprolog --warnings program.pl
-```
-
-Some finite rule systems intentionally contain recursion through negation. In
-normal mode, EyeProlog provides explicit `tnot/1` for that case. When the
-reachable component is finite, function-free, and range-restricted Datalog,
-cycles through `tnot/1` are evaluated with the well-founded semantics (WFS)
-rather than ordinary negation-as-failure. WFS has three truth states: true,
-false, and undefined. A negative cycle may therefore leave the query
-undefined instead of forcing an arbitrary true/false choice.
-
-```eyeprolog
-move(a, b).
-move(b, a).
-win(X) :- move(X, Y), tnot(win(Y)).
-```
-
-Here neither `win(a)` nor `win(b)` is unconditionally established; both belong
-to the undefined part of the well-founded model. EyeProlog retains that
-undefined state internally, but it does not treat an undefined atom as a
-successful query answer, nor does it continue evaluating the rest of a
-conjunction as though that atom had succeeded.
-Use `wfs_truth/2` when the truth state itself is data:
-
-```text
-?- wfs_truth(win(a), Truth).
-   Truth = undefined.
-```
-
-The inspected goal must be ground. The predicate reports `true`, `false`, or
-`undefined`; reporting `undefined` is a successful result of `wfs_truth/2`, not
-a successful execution of the inspected goal.
-Direct calls to `tnot/1` must be ground. In WFS rules, variables occurring in
-the head or a negated literal must be range-restricted by positive body
-literals. Ordinary `\+/1` is unchanged, and strict ISO mode does not provide
-`tnot/1`.
-
-Universal checking needs no extension predicate: define the counterexample and
-negate it.
+Universal statements need no special predicate. "Every test in the suite
+passes" is "no test in the suite fails":
 
 ```eyeprolog
 all_tests_pass(Suite) :-
@@ -1187,32 +755,51 @@ failing_test(Suite) :-
   \+ passed(Test).
 ```
 
-Use negation where the knowledge boundary is closed: a complete roster,
-configuration, or finite result set. In open-world data, model explicit states
-such as `confirmed_absent` instead of deriving absence from silence.
+### Negation through recursion
 
-**Checkpoint.** Compare `user(User), \+ blocked(User)` with
-`\+ blocked(User), user(User)`. State the question each ordering asks and the
-completeness assumption needed before calling either result “allowed.”
+Ordinary `\+` should be stratified: compute a relation completely, then negate
+it from a higher layer. `eyeprolog --warnings program.pl` reports recursion
+through negation.
+
+Some finite rule systems need that recursion anyway. A game position is won if
+there is a move to a position that is not won:
+
+```eyeprolog
+move(a, b).
+move(b, a).
+win(X) :- move(X, Y), tnot(win(Y)).
+```
+
+Plain `\+` would loop here. EyeProlog's normal mode provides `tnot/1`, which
+evaluates such cycles under the **well-founded semantics**. When the component
+is finite, function-free, and range-restricted Datalog, every atom is `true`,
+`false`, or `undefined`. In this two-position cycle neither player can force a
+win, and `wfs_truth/2` says so:
+
+```text
+?- wfs_truth(win(a), Truth).
+   Truth = undefined.
+```
+
+Add `move(b, c)` and the cycle is broken: `win(c)` is false, `win(b)` true,
+`win(a)` false.
+
+An undefined atom is not an answer; the query `win(a)` prints nothing. The
+goal of `wfs_truth/2` must be ground, as must direct calls to `tnot/1`, and in
+WFS rules every variable in the head or under `tnot/1` must occur in a positive
+body literal. Strict ISO mode has no `tnot/1`; `\+/1` is unchanged.
+
+**Checkpoint.** In the three-position game, change `move(b, c)` to
+`move(c, b)` and predict the truth value of each `win/1` atom before running
+`wfs_truth/2`.
 
 ## 8. Collecting and choosing answers
 
-Finite aggregation asks about a solution set:
+Sometimes the question is about all the answers at once: how many, what total,
+which one is best. Given `edge(From, To, Cost)` facts:
 
 ```eyeprolog
 :- use_module(library(aggregate)).
-:- use_module(library(lists)).
-:- use_module(library(iso_ext)).
-
-findall(Template, Goal, List).
-countall(Goal, Count).
-sumall(Value, Goal, Sum).
-```
-
-```eyeprolog
-:- use_module(library(aggregate)).
-:- use_module(library(lists)).
-
 outgoing_costs(Node, Costs) :-
   findall(Cost, edge(Node, _, Cost), Costs).
 
@@ -1220,35 +807,19 @@ total_outgoing(Node, Total) :-
   sumall(Cost, edge(Node, _, Cost), Total).
 ```
 
-`findall/3` returns `[]` for no answers; counts and sums return zero.
+`findall/3` collects a list, `countall/2` counts solutions, and `sumall/3` adds
+them. On an empty search they return `[]`, `0`, and `0`. The inner goal is a
+search of its own, and it must be finite.
 
-Choose a collector from the question, not from convenience:
+Counting solutions is not the same as counting things. Two derivations can
+yield the same value; `findall/3` keeps both. When identity matters, collect
+the identifying term and remove duplicates with ISO `sort/2`. When the number of
+derivations matters, keep them.
 
-| Question | Result shape | Empty search |
-| --- | --- | --- |
-| Which witnesses were found? | `findall/3` returns a list | `[]` |
-| How many derivations succeeded? | `countall/2` returns an integer | `0` |
-| What is their numeric total? | `sumall/3` returns a number | `0` |
-| Which candidate has the least or greatest key? | `aggregate_min/5` or `aggregate_max/5` returns one candidate | failure |
-
-Counting solutions is not necessarily counting distinct domain objects: two
-proofs may resolve the visible value in the same way. When identity matters,
-collect the identifying template and deliberately canonicalize it with ISO
-`sort/2`; when derivation multiplicity matters, retain the duplicates. Making
-that decision explicit prevents a database-style summary from silently
-changing the question.
-
-<figure>
-  <img src="book-assets/aggregation-market.svg" alt="Market baskets with weights flow into count, sum, minimum, and maximum results.">
-  <figcaption>Aggregation temporarily treats a finite family of solutions as a collection: the same baskets can be counted, summed, or compared.</figcaption>
-</figure>
-
-Optimization can retain only a best solution:
+Optimization keeps only the best candidate:
 
 ```eyeprolog
 :- use_module(library(aggregate)).
-:- use_module(library(lists)).
-
 best_route(From, To, Route, Cost) :-
   aggregate_min(
     [CandidateCost, CandidateRoute],
@@ -1259,67 +830,57 @@ best_route(From, To, Route, Cost) :-
   ).
 ```
 
-The key `[Cost, Route]` supplies deterministic tie-breaking through term order.
-`aggregate_min/5` and `aggregate_max/5` fail when their goal has no answers.
-An aggregate opens a smaller query scope inside the surrounding proof, and its
-inner search must be finite.
+The key `[Cost, Route]` breaks ties deterministically by standard term order.
+Unlike the collectors, `aggregate_min/5` and `aggregate_max/5` *fail* when there
+are no candidates. That is the right behavior: "there is no route" should not be
+disguised as a route with an artificial cost.
 
-Keep candidate generation separate from choice. A relation such as
-`route/4` should explain which routes exist and how their costs arise;
-`best_route/4` states a policy over that finite relation. This separation lets
-the same candidates be inspected, counted, tested, or optimized without
-burying their meaning in a single committed search. It also makes an empty
-candidate set visible: “there is no route” is different from inventing a
-sentinel route with an artificial cost.
+<figure>
+  <img src="book-assets/aggregation-market.svg" alt="Market baskets with weights flow into count, sum, minimum, and maximum results.">
+  <figcaption>The same finite family of solutions can be listed, counted, summed, or compared.</figcaption>
+</figure>
 
-**Checkpoint.** For an empty route relation, predict the behavior of
-`findall/3`, `countall/2`, `sumall/3`, and `aggregate_min/5`. Then identify the
-finite generator that bounds each aggregate in a program of your own.
+Keep candidate generation (`route/4`) separate from choice (`best_route/4`).
+The candidates can then be listed, counted, tested, and optimized by different
+queries without rewriting the search.
+
+**Checkpoint.** With no `route/4` facts at all, predict the result of
+`findall/3`, `countall/2`, `sumall/3`, and `aggregate_min/5` over it.
 
 ## 9. Structured data, text, and contexts
 
-Term predicates decompose or construct general terms:
+Most of the time you know the shape of a term and match it directly. Generic
+code that must work on any term uses the ISO inspectors:
 
-<figure>
-  <img src="book-assets/context-data-boundary.svg" alt="Raw text becomes structured members inside one message context, which ordinary term traversal inspects without asserting those members globally.">
-  <figcaption>Normalize text into explicit structure at the boundary; inspecting a member inside one context does not turn it into an ambient fact.</figcaption>
-</figure>
-
-```eyeprolog
-functor(Term, Name, Arity).
-arg(Index, Term, Value).
-(Term =.. [Name | Arguments]).
+```text
+functor(Term, Name, Arity)
+arg(Index, Term, Value)
+Term =.. [Name | Arguments]
 ```
 
-`arg/3` uses one-based indexes. Prefer direct pattern matching when the shape
-is known; use inspection for generic transformations.
+`arg/3` counts from 1. `=..` converts between a term and a list of its name and
+arguments.
 
-Text is best normalized at the model boundary. The `library(strings)` module
-uses ISO-friendly atoms or proper lists of one-character atoms for its text
-arguments; newly produced text is an atom:
+Text should be turned into terms as soon as it enters the program, so the rules
+in the middle work on structure, not strings. `library(strings)` works on atoms
+or lists of one-character atoms, and returns atoms:
 
 ```eyeprolog
 :- use_module(library(strings)).
-:- use_module(library(lists)).
-
 normalized(Input, Words) :-
   trim(Input, Trimmed),
   lowercase(Trimmed, Lower),
   split(Lower, ' ', Words).
 ```
 
-Conversions include `number_string/2`, `atom_string/2`, and `term_string/2`.
-Pattern operations include `contains/2`, `matches/2`, and named-capture
-`matches/3`. Turn text into structured terms early and keep central rules
-relational. Double-quoted source notation follows the ISO `double_quotes` flag;
-it does not create a separate Prolog string type.
+The library also offers conversions such as `number_string/2` and
+`term_string/2`, and pattern tests such as `contains/2`, `matches/2`, and
+`matches/3` with named captures. Double-quoted source text follows the ISO
+`double_quotes` flag; there is no separate string type.
 
-Parenthesized comma terms can serve as context data:
+A comma term can carry a bundle of related data:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 message(event_17, (severity(high), source(sensor_3), reading(temp, 91))).
 
 context_member((Left, _right), Member) :- context_member(Left, Member).
@@ -1333,20 +894,19 @@ hot_event(Id) :-
   (Value > 80).
 ```
 
-`context_member/2` is an ordinary program relation: it walks a comma-context
-from left to right. When the member's shape is not known in advance, decompose
-it with `(Member =.. [Name | Arguments])`. Context members remain quoted data;
-inspecting them does not assert them as ambient facts.
+`hot_event(event_17)` succeeds. Notice what does *not* happen: `severity(high)`
+never becomes a fact of the program. It stays data inside one message, and
+`context_member/2` is an ordinary relation that walks it.
 
-**Checkpoint.** Distinguish the atomic formula `message(...)` from the nested
-data term `(severity(high), source(sensor_3), reading(temp, 91))`. Explain why
-`context_member/2` can inspect the latter without asserting `severity(high)`
-globally.
+<figure>
+  <img src="book-assets/context-data-boundary.svg" alt="Raw text becomes structured members inside one message context, which ordinary term traversal inspects without asserting those members globally.">
+  <figcaption>Normalize text into structure at the boundary; inspecting a member inside one context does not make it a fact.</figcaption>
+</figure>
 
 ## 10. From puzzles to models
 
-A robust finite search has three layers: generate candidates, constrain them,
-and present a concise answer.
+A finite search problem has three layers: generate candidates, constrain them,
+and report a witness. Coloring three mutually adjacent regions:
 
 ```eyeprolog
 color(red).
@@ -1368,28 +928,6 @@ answer(colors(A, B, C)) :- coloring(A, B, C).
 eyeprolog --goal 'answer(X)' program.pl
 ```
 
-Place cheap, selective constraints as soon as their inputs are bound. For
-state-transition problems, represent state and moves explicitly:
-
-```eyeprolog
-
-:- use_module(library(lists)).
-
-plan(State, State, _, []).
-plan(State, Goal, Seen, [Move | Moves]) :-
-  transition(State, Move, Next),
-  \+ member(Next, Seen),
-  plan(Next, Goal, [Next | Seen], Moves).
-```
-
-The visited list makes a finite state space explicit. EyeProlog is strongest when
-the result is a logical consequence with a compact witness: a path, matching,
-classification, schedule, proof, or bounded model. Mutable arrays and large
-numerical kernels generally belong in a host, with EyeProlog as the decision layer.
-
-For the coloring program, the six printed answers are the permutations of
-`red`, `green`, and `blue`:
-
 ```text
 answer(colors(red, green, blue)).
 answer(colors(red, blue, green)).
@@ -1399,51 +937,30 @@ answer(colors(blue, red, green)).
 answer(colors(blue, green, red)).
 ```
 
-**Checkpoint.** Label the generator, each constraint, and the final witness in
-the coloring program. Before changing it, predict how many answers remain if
-`A \= C` is removed; then run the program and account for every additional
-answer.
+Each test runs as soon as its inputs are bound: `A \= B` prunes before `C` is
+chosen. Moving the tests to the end gives the same answers after trying all 27
+combinations; on larger problems that is the difference between instant and
+hopeless.
 
-## Part II summary
+For state-transition problems, make the state and the moves explicit, and carry
+the states already visited:
 
-Part II turned relations into finite computations:
+```eyeprolog
+:- use_module(library(lists)).
 
-- arithmetic relations need their operational inputs bound;
-- generators state where finite candidates come from;
-- failure prunes a branch, while `\+/1` makes finite failure a closed-world
-  test;
-- recursion through negation is handled by `tnot/1` and the well-founded
-  semantics, whose undefined truth state is retained rather than forced;
-- aggregates turn a finite solution space into a list, count, sum, or optimum;
-- structured terms and contexts belong at explicit modeling boundaries;
-- puzzles become programs by separating generation, constraint, and witness.
+plan(State, State, _, []).
+plan(State, Goal, Seen, [Move | Moves]) :-
+  transition(State, Move, Next),
+  \+ member(Next, Seen),
+  plan(Next, Goal, [Next | Seen], Moves).
+```
 
-You should now be able to justify a query's finiteness, order goals by binding
-dependency, distinguish negation as failure from classical negation, and
-explain why optimization is search plus an ordering.
+The visited list makes the search finite: no state is entered twice on one
+path. EyeProlog is at its best when the answer has a small witness such as a
+path, schedule, or proof; numerical kernels belong in the host.
 
-### Historical note: control, databases, and finite failure
-
-Early Prolog made a decisive engineering choice: clauses would be tried in an
-order and subgoals would normally be selected left to right. That choice made
-logic executable, but also made control visible. A logically symmetric
-conjunction could behave asymmetrically when one order supplied a value and
-another asked arithmetic to run too soon.
-
-The meeting of logic programming and database research in the 1970s sharpened
-questions about finite relations, closed-world reasoning, and query
-evaluation. Keith Clark's 1978 account did not identify failure with
-unrestricted logical negation; it related negation as failure to a completed
-database reading. Later work on stratification disciplined negative
-dependencies. Aggregation continued the database lineage: a set of solutions
-could itself become data, provided the nested search was finite.
-
-These distinctions explain EyeProlog's conservative treatment. Negation and
-aggregation are powerful because they expose a bounded subcomputation. Their
-safety comes not from punctuation but from a mathematical argument about scope
-and termination.
-
----
+**Checkpoint.** Remove `(A \= C)` from `coloring/3` and predict the number of
+answers before running it. (There are twelve; account for the six new ones.)
 
 # Part III — Trustworthy reasoning
 
@@ -1452,277 +969,221 @@ and termination.
   <figcaption>Current, resistance, and temperature readings remain visible as independent premises for a thermal warning and safety action.</figcaption>
 </figure>
 
-An answer becomes useful when its grounds remain visible. Here reasoning is
-treated as an accountable structure: queries define the question, proofs retain
-support, integrity checks expose invalid states, and knowledge boundaries stay explicit.
+An answer is useful when you can see what it rests on. This Part covers proofs,
+integrity checks, termination, and the boundary between the logic program and
+the system that feeds it.
 
 ## 11. Queries, answers, and proofs
 
-EyeProlog goals are supplied by the host, for example
-`eyeprolog --goal 'child(X, Y)' program.pl`. EyeProlog prints ground answers, removes
-duplicates, and suppresses answers that merely repeat source facts. Answers
-are not inserted back into the running program.
+The host supplies the goals, for example
+`eyeprolog --goal 'child(X, Y)' program.pl`. EyeProlog prints the ground answers,
+removes duplicates, and leaves out answers that merely repeat source facts.
+Answers are never added back into the program.
 
-An answer and a derivation serve different audiences. An answer records *what*
-the theory supports; a derivation records *how this run supported it*. In
-mathematics that distinction resembles theorem versus proof. In data systems
-it resembles result versus provenance. The proof is not a substitute for
-valid source data or sound domain rules, but it makes both reviewable: a user
-can trace a decision to clauses, facts, bindings, and built-in operations
-instead of trusting an opaque status code.
-
-Use `--proof` or `-p` to add the derivations to the result document:
+Add `--proof` (or `-p`) and the output also says *why*:
 
 ```sh
 eyeprolog --proof examples/socrates.pl
 ```
 
-```eyeprolog
+```text
 type(socrates, mortal).
+holds_result(test, true).
 
 clause(1, type(socrates, man), true).
 clause(2, type(var('X'), mortal), type(var('X'), man)).
+clause(3, holds_result(test, true), type(socrates, mortal)).
 
 step(type(socrates, mortal), rule(2), ['X' = socrates], [type(socrates, man)]).
 step(type(socrates, man), fact(1), [], []).
+step(holds_result(test, true), rule(3), [], [type(socrates, mortal)]).
 ```
 
-A proof states what was concluded and then why: the claims first, then the
-`clause/3` records the derivations cite and one `step/4` fact per justified
-conclusion. Proof output is valid EyeProlog input and can be kept and checked
-later:
+The document has three layers. First come the claims, the same answers as
+before. Then the `clause/3` records the proof cites, numbered by position in the
+source file. Last, one `step/4` per conclusion:
+
+```text
+step(Conclusion, By, Bindings, Uses)
+```
+
+Read the first step as: `type(socrates, mortal)` holds by rule 2, with `X`
+bound to `socrates`, using the conclusion `type(socrates, man)`. That
+conclusion has its own step, citing fact 1. Each use is named by its
+conclusion, so you can read a proof downward from the claim without joining
+ids.
+
+`By` is `rule(N)` or `fact(N)` for a program clause, `builtin` for a built-in
+or bundled-library goal, `absent` for a completed `\+`, `collected` for a
+completed `findall/3`, and `asserted` for a clause added at run time. Because
+clauses are numbered by source position, `assert/1` and `retract/1` cannot
+change what a citation means.
+
+The document is flat. A resolution proof is a tree in which the same goal may
+be proved twice (as in `p(ok) :- q(1), q(1).`), but each conclusion gets exactly
+one step. Proofs grow with the number of distinct conclusions, not with the
+shape of the search. Turning on `--proof`, `--warnings`, or `--stats` never
+changes which answers are found.
+
+### Checking a proof
+
+A proof is valid EyeProlog input, so it can be saved and checked later:
 
 ```sh
 eyeprolog --proof examples/socrates.pl > socrates.why.pl
 eyeprolog --check-proof socrates.why.pl examples/socrates.pl
 ```
 
-The second command re-performs every inference the document records against
-the program; it does not search again for a proof. A changed source clause, a
-changed use, or a changed recorded binding makes the check fail. The seven
-conditions it establishes, C1 to C7, and the report it writes are specified in
-[SPEC.md](SPEC.md). Proof input is
-parsed as Prolog data rather than loaded as a program, so its terms cannot
-trigger directives while being checked.
+The checker does not search for a proof. It re-performs each recorded step
+against the clause it cites: the clause must exist, and with the recorded
+bindings it must yield exactly this conclusion from exactly these uses. Every
+claim needs a step, every use must resolve, and no conclusion may rest on
+itself. A `builtin` step cites no clause, so the checker recomputes it in a
+program that holds only the bundled libraries, and the result must agree.
+`absent`, `collected`, and `asserted` steps cannot be recomputed that way; they
+are reported as **trusted boundaries**.
 
-Enabling `--proof`, `--warnings`, or `--stats` must not change which answers
-are found.
+The report is itself a set of Prolog facts: one `condition/4` for each of the
+seven conditions C1–C7, the counts of verified, recomputed, and trusted steps,
+and a `verdict/1`. [SPEC.md](SPEC.md) specifies the format and the conditions.
+The proof file is read as data, never executed, so a hostile proof cannot run
+directives.
 
-A step has the shape `step(Conclusion, By, Bindings, Uses)`: what was
-concluded, the single term saying why it holds, the bindings that
-justification used as `'Name' = Value` pairs, and the conclusions it used.
-A use is named by its own conclusion rather than by an id to be joined back,
-which lets a proof be read downward from the claim.
+A run checks its own proof before printing it. If the solver found an answer
+that the explanation cannot reproduce, the step is recorded as `unproven`, the
+check fails, and the run reports an error instead of writing a proof that does
+not hold.
 
-A resolution proof is a tree in which the same goal may be proved more than
-once — the two `q(1)` subproofs of `p(ok) :- q(1), q(1).` are the plain case —
-but the *document* is flat: each conclusion gets one step, however many
-derivations reach it, and that step is the first one found. A proof therefore
-grows with the number of distinct conclusions, not with the shape of the
-search.
+A proof is also a design review: detours point at overgrown helpers, and a
+premise hidden inside a computed value should become a fact.
 
-`By` is `rule(N)` or `fact(N)` citing a `clause/3` record, or `builtin`,
-`absent` or `collected` for a built-in goal, a completed `\+` or a completed
-`findall/3`. A clause is numbered by its position in its own source file, not
-by its position in the running database, so `assert/1` and `retract/1` cannot
-move what a citation means; a clause asserted at run time is in no source file
-at all and is recorded as `asserted`. A bundled library's clauses are not the
-program's own, so a step through one is recorded as `builtin`;
-`--proof-detail expanded` still explains *through* a library predicate rather
-than stopping at it. Explanation data is outside the logical semantics of the
-input program: it describes the derivation but does not participate in finding
-it.
-
-Checking re-performs each step against the clause it cites: the clause must
-exist, its variables bound as the step recorded them must yield exactly this
-conclusion from exactly these uses, every claim must have a step, every use
-must resolve to a step or to a statement the program gives, and no conclusion
-may rest on itself. A `builtin` step derives from no clause, so reading the
-document cannot decide it; it is computed again instead, against a program
-holding the bundled libraries and no clause of the theory under proof, and
-must agree. `absent`, `collected` and `asserted` steps stay trusted: the first
-two range over the theory that recomputation deliberately excludes, and a
-clause asserted at run time is in no source file to check against. The report
-counts what was verified, what was recomputed, and what remains an obligation
-rather than folding them into an undifferentiated success. An
-answer the solver found but the explanation cannot reproduce is recorded as
-`unproven`, which makes the document fail its check -- and a run checks its
-own proof before writing it, so such a run fails with an error instead of
-writing a proof that does not hold.
-
-A second program can query these facts. Read a proof as an argument. If it
-contains irrelevant detours, improve the helpers. If a key premise is hidden
-inside an opaque value, model it as a fact. Designing for a good explanation
-often produces a better theory.
-
-**Checkpoint.** Run `examples/socrates.pl` once normally and once with
-`--proof`. Confirm that the ground answers are unchanged. In one proof,
-identify the queried goal, the rule that derived it, the source fact used, and
-the binding carried between them.
+**Checkpoint.** Edit `socrates.why.pl` so that the first step binds `'X'` to
+`plato`, and run the check again. Which condition fails?
 
 ## 12. Integrity checks as ordinary predicates
 
-Integrity conditions are ordinary relations that describe invalid input states:
+An integrity check is a relation whose answers are defects:
 
 ```eyeprolog
 invalid_probability(Disease, Probability) :-
   probability(Disease, Probability),
   (Probability > 1).
-```
 
-A host that requires validated input queries the integrity relation explicitly
-before it asks for domain decisions. This keeps the policy visible: the host may
-reject the input, report every defect, or continue in a diagnostic mode.
-
-`false/0` keeps its ISO meaning: it is a built-in goal that always fails. It is
-a protected static procedure, so `false.` and clauses of the form
-`false :- Body.` are rejected with
-`permission_error(modify, static_procedure)` rather than acquiring special
-pre-query behavior.
-
-<figure>
-  <img src="book-assets/integrity-check-control-panel.svg" alt="An explicit invalid-state query identifies conflicting engineering limits before operation.">
-  <figcaption>An integrity relation reports the invalid state; the host decides whether that state blocks later decisions.</figcaption>
-</figure>
-
-```eyeprolog
 invalid_assignment(Person, Role, Other) :-
   assigned(Person, Role),
   incompatible_roles(Role, Other),
   assigned(Person, Other).
 ```
 
-The logical reading is that the program can derive witnesses for an inadmissible
-combination. The operational response is outside the relation itself and remains
-an explicit host decision.
+There is nothing special about these predicates. A host that needs valid input
+queries them first, and then decides: reject the input, report every defect, or
+continue in a diagnostic mode. The policy stays visible in the host instead of
+being buried in the rules. Nothing runs implicitly before the supplied goals.
 
-### Designing an integrity relation
-
-Start with a sentence that must never be accepted, then translate its witnesses
-into positive, finite goals. “No person has two incompatible roles” becomes the
-relation above. A useful integrity check is:
-
-- **domain-specific:** it names an impossible or inadmissible state;
-- **finite:** its intended validation query can be checked completely;
-- **diagnostic:** its arguments identify the offending records; and
-- **explicit:** callers can choose whether to reject, report, or inspect defects.
-
-Four outcomes that can look like “failure” at a shell prompt have different
-meanings:
-
-| Outcome | Interpretation | Appropriate response |
-| --- | --- | --- |
-| query has no answer | this theory did not derive the selected goal | inspect data, rules, and closed-world assumptions |
-| integrity query has an answer | the supplied input contains a forbidden combination | repair, reject, or report the input |
-| resource ceiling is reached | the computation exceeded an operational budget | bound or redesign the search |
-| parser or type error | the program or call violates the language contract | correct the source or interface |
-
-Do not treat every undesirable business result as invalid input. A declined
-application, unavailable route, or negative test may be a perfectly valid
-answer of the theory. Reserve integrity relations for states whose witnesses
-must be handled before trusted downstream decisions.
-
-To see the explicit validation path, run:
+`examples/integrity-check.pl` shows the pattern end to end:
 
 ```sh
 eyeprolog examples/integrity-check.pl
 ```
 
-It prints the invalid-state witness and the resulting diagnostic status. Nothing
-runs implicitly before the supplied goals.
+```text
+invalid_state(stone, conflicting_colors).
+status(stone, invalid(conflicting_colors)).
+```
 
-**Checkpoint.** Explain the difference between an ordinary query with no answer
-and an integrity query that returns a defect. Write one invalid-state relation
-and one ordinary negative result that should remain query failure.
+To write one, start from a sentence that must never be accepted — "no person
+holds two incompatible roles" — and turn its counterexamples into positive,
+finite goals. Give the relation arguments that identify the offending records,
+so the answer is a diagnosis rather than a bare "no".
+
+<figure>
+  <img src="book-assets/integrity-check-control-panel.svg" alt="An explicit invalid-state query identifies conflicting engineering limits before operation.">
+  <figcaption>The integrity relation reports the invalid state; the host decides whether it blocks later decisions.</figcaption>
+</figure>
+
+Reserve integrity checks for states that must be handled before any decision is
+trusted. A declined application or an unreachable destination is usually a
+perfectly valid answer, not invalid input. Keep four outcomes apart:
+
+- **No answer:** the theory does not derive the goal. Check the data, the rules,
+  and any closed-world assumption.
+- **An integrity answer:** the input contains a forbidden combination.
+- **A resource limit:** the search exceeded its budget. It says nothing about
+  the answer.
+- **An error:** the program or the call violates the language contract.
+
+`false/0` keeps its ISO meaning: a built-in that always fails. Clauses for
+`false` are rejected with `permission_error(modify, static_procedure)`.
 
 ## 13. Termination, tabling, and performance
 
-Declarative clarity and operational care reinforce each other. Bind selective
-arguments early, keep generators finite, and make decreasing structure visible.
+Ordinary goals, including recursive calls, use depth-first resolution unless the source
+explicitly declares `:- table p/n.` That is standard Prolog, and it has a
+well-known failure mode: on a cyclic graph,
+
+```eyeprolog
+reach(X, Y) :- edge(X, Y).
+reach(X, Z) :- edge(X, Y), reach(Y, Z).
+```
+
+can ask `reach(a, Z)` again inside its own proof, forever.
 
 <figure>
   <img src="book-assets/termination-map.svg" alt="Three recursive call patterns: decreasing lists, finite tabled graph answers, and terms that grow without bound.">
-  <figcaption>Termination needs a specific argument: a decreasing measure or a finite tabled call-and-answer space; ever-growing terms satisfy neither.</figcaption>
+  <figcaption>Termination needs an argument: a decreasing measure, or a finite space of tabled calls and answers. Ever-growing terms have neither.</figcaption>
 </figure>
 
-Naive depth-first search can revisit the same recursive question indefinitely.
-Tabling changes the unit of work: a call pattern becomes a shared subproblem,
-its answers are remembered, and consumers reuse answers rather than expanding
-the same call again. This idea connects logic programming to memoization and
-dynamic programming, but tabling also has a semantic role: over a finite
-positive recursive domain, repeated rounds can compute the least fixed point.
-It is therefore especially natural for reachability, grammars, dependency
-analysis, and other recursive relations with overlapping subproblems.
+A `:- table reach/2.` declaration changes the unit of work. Each call pattern
+becomes a shared subproblem; its answers are stored, and a repeated call reuses
+them instead of recursing again. For finite positive recursion, the table is
+filled round by round until nothing new appears: the least fixed point. This
+is the natural tool for reachability, grammars, and dependency analysis.
 
-Ordinary goals, including recursive ones, use indexed depth-first resolution. Tabling is opt-in: declare a predicate with `:- table p/n.` when its
-recursive calls should share answers and cyclic calls should iterate toward a
-fixed point. For sufficiently large finite, function-free Datalog dependency
-cones rooted at an explicitly tabled predicate, EyeProlog may share one
-most-general relation table across call variants. This turns an open closure
-such as `tc(X, Y)` into one finite relation computation rather than many
-overlapping bound subcomputations; bound consumers can then use indexes over the
-stored answers. The declaration is the language-level choice; how a declared
-table is represented and indexed remains an engine optimization.
+Tabling is never applied automatically. Undeclared predicates keep ordinary
+depth-first control, so the source states when fixed-point execution is part of
+the contract. For large finite Datalog cones rooted at a tabled predicate, the
+engine may compute one shared most-general table and answer bound calls from
+its indexes; that is an optimization of the declared table, not a change in
+meaning.
 
-Recursive components with negative dependencies are not positive least-fixed-
-point problems. When such a component uses explicit `tnot/1` and satisfies the
-finite, range-restricted, function-free Datalog restrictions, EyeProlog instead
-computes the alternating fixed point of the well-founded semantics. Existing
-`\+/1` code remains ordinary negation-as-failure.
+Tabling repairs repeated questions, not unbounded ones. A rule that builds
+ever-larger terms makes infinitely many distinct calls, and a table cannot help.
+The usual causes of nontermination are:
 
-### Deeper implementation: how clause indexing stays semantic
+- a recursive call placed before the goals that bind its arguments;
+- terms that grow without bound;
+- an open arithmetic or mathematical query;
+- recursion through negation (use `tnot/1`, Chapter 7);
+- path enumeration without a visited set.
 
-This section explains why an optimization does not change clause meaning.
-Readers focused on modeling may skip to the statistics command and return when
-performance or implementation portability becomes relevant.
+The fixes are the same each time: bind the query more strongly, add a finite
+domain, track visited states, or expose an argument that decreases.
 
-Every predicate group keeps compact indexes for scalar values in each argument
-position. Index keys include the scalar type, so `7`, `'7'`, and `"7"` remain
-distinct even though their printed payload is the same. A clause whose indexed
-head argument is a variable or structured term
-stays in a fallback set, and the selected candidates are merged back into
-source order before unification. An index narrows where to look; it never
-decides whether a clause matches.
+### Measuring work
 
-For groups of at least ten clauses, a call with several bound scalar arguments
-may cause a wider combined index to be built on demand. The admission policy
-rejects indexes with too many variable fallbacks or too little expected
-speedup, and requires a combined index to improve substantially over the best
-single-argument index. These choices are performance details: removing every
-index should change running time, not answers or clause order.
-
-Authors choose query modes, finite domains, visited-state representations,
-negation strata, and witness size. They normally do not choose the engine's
-search strategy.
-
-Inspect counters without changing answer output:
+`--stats` prints counters to standard error and leaves the answers unchanged:
 
 ```sh
 eyeprolog --stats examples/observability-log-correlation.pl
 ```
 
-The reported counters include completed goal lists, calls to the goal solver
-and single-goal solver, unification attempts, maximum depth and goal-list size,
-deterministic built-in successes and failures, and table fixed-point rounds.
-WFS execution additionally reports `wfs_fixpoint_rounds` and
-`wfs_undefined_answers`. The latter counts undefined atoms encountered while
-resolving query goals; it is an execution statistic, not a declaration
-that those atoms are true. All statistics describe work performed, not logical
-truth. Compare counters only across equivalent queries and the same
-implementation version.
+The counters (solver calls, unifications, depth, table and
+`wfs_fixpoint_rounds`, `wfs_undefined_answers`, memory) measure work, not
+truth; compare them only across equivalent queries on one EyeProlog version.
 
-Common sources of nontermination are recursive calls made before constraints,
-ever-growing terms, infinite open mathematical queries, negative cycles, and
-path enumeration without a visited set. Repair the model by strengthening the
-query, adding a finite domain, tracking states, or exposing a decreasing
-argument.
+### Deeper implementation: clause indexing
 
-**Checkpoint.** Classify three recursive calls: one justified by a decreasing
-list, one by finitely many tabled graph answers, and one that constructs terms
-without bound. State why the first two may terminate and why tabling does not
-repair the third.
+Each predicate keeps indexes on scalar values in each argument position. The
+key includes the type, so `7`, `'7'`, and `"7"` stay distinct. Clauses whose
+indexed argument is a variable or a compound stay in a fallback set, and the
+candidates are merged back into source order before unification. For
+predicates with ten or more clauses, a call with several bound arguments may
+build a combined index on demand, if it pays for itself.
 
-### Forward rules and Prolog execution
+An index decides where to look, never whether a clause matches. Removing every
+index would change running time, not answers or their order.
+
+### Forward rules
 
 EyeProlog normal mode also accepts `:+` at priority 1200 as an `xfx` operator.
 A source term
@@ -1731,69 +1192,36 @@ A source term
 Conclusion :+ Premise.
 ```
 
-is a forward rule. When a loaded program contains such rules and no explicit
-top-level goal overrides them, the engine loads `library(eyelet)` and invokes its
-Prolog closure driver. The driver inspects `:+/2` clauses structurally, prepares
-state predicates for updates, repeatedly solves premises against the current
-program, asserts novel conjuncts from successful conclusions, and continues until
-no new conclusion is added. Query-only programs take a single-pass fast path
-because they cannot grow the closure.
+is a forward rule. When a program contains forward rules and no goal is given,
+the engine loads `library(eyelet)` and runs its closure driver: solve each
+premise against the current program, assert the new conjuncts of each
+conclusion, and repeat until a round adds nothing.
 
-Two conclusions have control meaning. `true :+ Goal` is a query and prints each
-distinct successful instance of `Goal`. `false :+ Goal` is an integrity fuse:
-on success EyeProlog prints `fuse(Goal)` and returns halt status 2. Variables
-that occur only in an ordinary derived conclusion are existential and become
-`sk_0`, `sk_1`, and so on; a derived conclusion that is itself a `:+` rule keeps
-its variables universal. The driver uses an explicit changed marker to repeat
-only productive rounds. `stable(Level)` raises the requested closure level and
-succeeds once that level has been reached. `becomes(From, To)` performs linear
-state replacement and prepares existing user predicates for mutation, so an
-EyeProlog source does not need a separate `dynamic/1` declaration merely to use
-that state with `becomes/2`.
+Two conclusions are special. `true :+ Goal` is a query; it prints each distinct
+instance of `Goal`. `false :+ Goal` is an integrity fuse; if `Goal` succeeds,
+EyeProlog prints `fuse(Goal)` and exits with status 2. Variables that appear
+only in a derived conclusion are existential and become `sk_0`, `sk_1`, and so
+on. `stable(Level)` waits for a closure level, and `becomes(From, To)` replaces
+state linearly without a separate `dynamic/1` declaration.
 
-The `:+` reasoning algorithm is therefore Prolog code in `src/lib/eyelet.pl`, not
-a second JavaScript implementation. The remaining JavaScript references have
-non-semantic roles: the parser declares the normal-profile operator, program
-analysis scans forward-rule premises for dependency/autoload planning, execution
-bootstraps the private `eyelet:eyelet_run/3` entry point, and two private library
-adapters bridge database mutability and answer/fuse events to the host. Those
-adapters are not part of the strict ISO registry or the public `library(eyelet)`
-export surface.
+The driver is Prolog, in `src/lib/eyelet.pl`, not a second engine written in
+JavaScript. From JavaScript, `run()` selects forward mode when no `goal` or
+`goals` option is given; `hasForwardRules(program)` and
+`executeForwardRules(program, solver, callbacks)` are available for finer
+control. Strict ISO mode removes the `:+` operator.
 
-The JavaScript convenience `run()` function selects this forward mode when no
-explicit `goal` or `goals` option is supplied. Advanced embedders can inspect a
-parsed program with `hasForwardRules(program)` and invoke
-`executeForwardRules(program, solver, callbacks)` directly. Strict ISO mode
-removes the `:+` operator and does not execute this extension.
+Resource limits are never answers. Normal execution has no implicit depth
+limit; if an embedder sets `maxDepth` and a search exceeds it, EyeProlog raises
+`resource_error(depth_limit)` rather than quietly failing the branch.
 
-Resource bounds are never logical answers. Normal execution has no implicit
-depth limit. If an embedder explicitly supplies `maxDepth` and the search
-exceeds it, EyeProlog raises `resource_error(depth_limit)` instead of silently
-turning that branch into failure. Tabling is never selected implicitly: ordinary
-recursive predicates retain standard depth-first Prolog control, and only a
-source-level `:- table p/n.` declaration opts a predicate into fixed-point tabled
-execution.
+**Checkpoint.** Classify three recursive calls: one over a shrinking list, one
+over a finite cyclic graph, one that builds `s(s(...))` terms without bound.
+Which terminate without tabling, which with it, and which with neither?
 
 ## 14. Knowledge engineering
 
-A maintainable theory separates:
-
-- source facts: measurements, records, and asserted relationships;
-- helpers: normalization, classifications, and reachability;
-- decisions: `status/2`, `action/2`, `risk/2`, and `reason/2`;
-- integrity relations: predicates that return diagnostic invalid-state witnesses;
-- outputs: focused host-supplied goals.
-
-<figure>
-  <img src="book-assets/knowledge-engineering-workflow.svg" alt="Source facts pass through normalization and domain concepts into a decision and proof.">
-  <figcaption>A maintainable theory moves in visible layers from observations to decisions, while the proof preserves the route back to evidence.</figcaption>
-</figure>
-
-Prefer positive domain concepts. Use negation only across a closed boundary.
-Represent confidence, alternative worlds, and provenance explicitly rather
-than hiding them in rule order.
-
-An evidence-backed diagnosis can separate physics from policy:
+A battery overheats when resistive heating exceeds a limit *and* the measured
+temperature confirms it. Written as rules:
 
 ```eyeprolog
 heating(Battery, Watts) :-
@@ -1813,38 +1241,40 @@ thermal_warning(Battery) :-
 action(Battery, isolate_and_cool) :- thermal_warning(Battery).
 ```
 
-Physics, limits, redundant sensing, and policy become distinct proof steps. See
-`examples/spacecraft-battery-diagnosis.pl` for a complete case.
+Each layer is a separate predicate, so each becomes a separate step in the
+proof: physics (`heating/2`), evidence from two independent sensors
+(`thermal_warning/1`), and policy (`action/2`). A reviewer can dispute the
+threshold without touching the physics, or replace the policy without
+re-deriving the warning. `examples/spacecraft-battery-diagnosis.pl` is the
+complete case.
 
-Test theories with successful derivations, expected failures, boundary values,
-duplicate paths, contradictory inputs, and proof premises. The repository's
-conformance cases, example goldens, and proof goldens demonstrate these levels.
+<figure>
+  <img src="book-assets/knowledge-engineering-workflow.svg" alt="Source facts pass through normalization and domain concepts into a decision and proof.">
+  <figcaption>A theory moves in visible layers from observations to decisions, and the proof keeps the route back to the evidence.</figcaption>
+</figure>
 
-**Checkpoint.** Draw four columns for the battery example: source, physical
-concept, decision, and integrity. Place each predicate in a column, then list
-the measurements and policy thresholds that a proof cannot authenticate by
-itself.
+The same layering works for most theories:
+
+- **source facts:** measurements, records, asserted relationships;
+- **helpers:** normalization, classification, reachability;
+- **decisions:** `status/2`, `action/2`, `risk/2`;
+- **integrity relations:** witnesses of invalid input (Chapter 12);
+- **outputs:** the goals the host asks.
+
+Prefer positive concepts, negate only across a closed boundary, and keep
+confidence and provenance as data, not rule order.
+
+**Checkpoint.** Which facts in the battery example can a proof *not*
+authenticate? (Hint: where do the numbers come from?)
 
 ## 15. Explicit data boundaries
 
-EyeProlog deliberately keeps external integration outside the reasoning core.
-An embedder validates input, converts it to ordinary Prolog terms and clauses,
-and then asks the solver a focused goal. This keeps parsing a business format,
-authenticating a source, and deriving a conclusion as three separate jobs.
+A proof shows that a conclusion follows from the clauses it was given. It cannot
+show that those clauses were true, that a sensor was calibrated, or that a file
+was authentic. That is the host's job, and EyeProlog keeps it there: the host
+validates input, converts it to Prolog terms, and asks a focused goal.
 
-A boundary should make four decisions visible:
-
-- which external values are accepted;
-- how they map to finite Prolog terms;
-- which predicates the imported clauses may define; and
-- which resource limits apply to the resulting query.
-
-### A boundary in four steps
-
-Suppose a host receives one JSON temperature record. The host, not the logic
-program, owns the JSON syntax and the decision to trust that record. A narrow
-adapter can validate the record, map its values into a deliberately small
-Prolog vocabulary, construct the theory, and ask one bounded question:
+Here is a host receiving one JSON temperature record:
 
 ```js
 import { run } from 'eyeprolog';
@@ -1881,36 +1311,30 @@ const result = run(reasoningSource(record), {
 console.log(result.stdout);
 ```
 
-The allow-list makes interpolation safe here: the external sensor identifier
-can become only one of two known Prolog atoms, and the temperature must be a
-finite number in an accepted range. General text must be encoded with a
-well-tested term constructor or serializer rather than inserted into source.
-The generated program defines only `reading/2` and the fixed domain rule; the
-host supplies the goal and ceilings explicitly.
+Four separate claims are being made, each with its own owner:
 
-This small example exposes four different claims:
+1. **Parse:** the bytes are valid JSON (the host's parser).
+2. **Validate:** the sensor is known and the temperature is in range (the
+   adapter).
+3. **Convert:** those values denote exactly these Prolog terms (the adapter).
+4. **Derive:** the reading satisfies `thermal_alert/1` (EyeProlog, with a proof).
 
-| Stage | Claim and owner |
-| --- | --- |
-| Parse | the bytes are valid JSON — host parser |
-| Validate | the record has an accepted sensor and temperature — adapter |
-| Convert | the accepted values denote these exact Prolog terms — adapter |
-| Derive | the supplied reading satisfies `thermal_alert/1` — EyeProlog proof |
+The allow-list is what makes string interpolation safe here: the sensor name
+can only become one of two known atoms, and the temperature must be a finite
+number. General text must go through a term constructor or serializer, never
+straight into source. The resource options cap the work an untrusted input can
+cause.
 
-The proof procedure can explain how supplied clauses support an answer. It
-cannot prove that a file, database, sensor, or remote service was trustworthy.
-That responsibility stays with the host application.
-
-**Checkpoint.** Choose one external record used by an application. State what
-the host validates, the Prolog term it constructs, the goal it asks, and the
-resource limit that prevents an untrusted input from consuming unbounded work.
+**Checkpoint.** For one record your application receives, write down what the
+host validates, the term it builds, the goal it asks, and the limit that bounds
+the work.
 
 ## 16. Embedding EyeProlog
 
-The JavaScript API exposes a convenience runner and lower-level types:
+The JavaScript API has a convenience runner and lower-level types:
 
 ```js
-import { run, Program, Solver, parseGoalText } from 'eyeprolog';
+import { run } from 'eyeprolog';
 
 const result = run(`
 answer(ok) :- ok = ok.
@@ -1919,21 +1343,26 @@ console.log(result.stdout);
 console.log(result.stats);
 ```
 
-The first `console.log` prints `answer(ok).` followed by a newline. The second
-prints numeric work counters; those counters describe this run rather than an
-additional logical answer.
+The first line prints `answer(ok).` and a newline; the second prints the work
+counters for this run.
 
-`run/2` accepts source text or an already parsed `Program`. Its options include
-`proof` (with `why` and `explain` as aliases), `proofDetail` (`abstract` or
-`expanded`), `maxDepth`, `maxInferences`, `maxMemoryBytes`, `solutionLimit`, a
-custom `registry`, and `strictNegation` or `analyzeNegation`. It returns
-`stdout`, the solver's numeric `stats`, and a nullable `haltCode`; it does not
-write to the process streams.
+`run()` accepts source text or an already parsed `Program`. Its options include
+`proof` (aliases `why` and `explain`), `proofDetail` (`abstract` or `expanded`),
+`maxDepth`, `maxInferences`, `maxMemoryBytes`, `solutionLimit`, a custom
+`registry`, and `strictNegation` or `analyzeNegation`. It returns `stdout`, the
+numeric `stats`, and a nullable `haltCode`, and never writes to the process
+streams.
 
-For applications that exchange proofs independently of answer output, the same
-module exposes `proofCertificate(program, goal, options)`,
-`proofCertificatesFromText(text, program)`, and
-`verifyProof(program, certificate, options)`:
+When `run` receives an already parsed `Program`, bundled-library imports needed
+only by its goals are added before solving, as they are when source text is
+parsed. The autoload index covers every exported predicate in the bundled
+`src/lib/` modules. Pass `autoload: false` to keep only explicitly imported
+predicates.
+
+### Proof certificates
+
+Applications that exchange proofs separately from answers can use
+`proofCertificate`, `proofCertificatesFromText`, and `verifyProof`:
 
 ```js
 import {
@@ -1953,24 +1382,20 @@ const received = proofCertificatesFromText(made.text, program)[0];
 console.log(verifyProof(program, received).ok); // true
 ```
 
-`proofCertificate` returns both the ordinary `why/2` text and a JSON-serializable
-certificate object. `verifyProof` walks the supplied certificate rather than
-asking the solver to find another proof; its `trusted` array lists every builtin
-or abstract-library boundary that was assumed while checking it. Passing
-`proofDetail: 'expanded'` exposes bundled Prolog-library clauses in the
-certificate and therefore reduces library-level trust boundaries to the
-built-ins those clauses ultimately use.
+`proofCertificate` returns both the proof text and a JSON-serializable
+certificate. `verifyProof` walks the certificate instead of searching again; its
+`trusted` array lists every built-in or library boundary it assumed. With
+`proofDetail: 'expanded'`, bundled-library clauses appear in the certificate, so
+the remaining trust shrinks to the built-ins those clauses use.
 
-When `run` receives an already parsed `Program`, bundled-library imports
-needed only by its host-supplied goals are added to that Program before solving,
-just as they are while source text is parsed. The autoload index covers every
-exported predicate in the bundled `src/lib/` modules. Pass `autoload: false`
-when the Program must retain only explicitly imported predicates.
+### Programs and solvers
 
-For applications that inspect or prepare a theory before running it, use
-`Program` directly:
+To inspect or prepare a theory before running it, use `Program` and `Solver`
+directly:
 
 ```js
+import { Program, Solver, parseGoalText } from 'eyeprolog';
+
 const source = `
 edge(a, b).
 edge(b, c).
@@ -1994,140 +1419,105 @@ const solver = new Solver(program, {
 });
 ```
 
-The limits are safety ceilings, not logical declarations. Reaching the depth,
-inference, or solution ceiling may truncate search; it does not prove that no
-further answer exists. Reaching `maxMemoryBytes` instead raises
-`resource_error(memory)`, because continuing until the JavaScript engine's hard
-heap limit would let the host abort before Prolog could report an exception. At
-the `Solver` API boundary, `solutionLimit` is opt-in: if it is omitted, ordinary
-solving and child searches that inherit the solver limit do not stop after a
-fixed number of solutions. This matters for re-executable goals such as
-`repeat/0` and for library relations such as `call_nth/2`; an implementation
-safety threshold must not turn a still re-executable search into logical
-failure. Embedders that need a finite answer budget should pass `solutionLimit`
-explicitly.
+Programs report stratification through `stratifiedNegation`,
+`negationStratificationErrors`, and `assertStratifiedNegation()`.
 
-Variable term order is deliberately scoped rather than stored as a permanent
-property of a variable. ISO 13211-1 section 7.2.1 leaves the order of two
-distinct variables implementation dependent and requires constancy only while
-a sorted list is being created. EyeProlog therefore chooses a local variable
-ranking for an ordinary term comparison, while `sort/2`, `keysort/2`, and the
-sorting step of `setof/3` share one ranking for the duration of that single
-sorted-list operation. No process-global variable registry or creation ordinal
-is retained or exposed through later comparisons.
+The limits are safety ceilings, not logic. Reaching the depth, inference, or
+solution limit may cut a search short; it never proves that no further answer
+exists, so report it as an incomplete computation. At the `Solver` boundary
+`solutionLimit` is opt-in: without it, re-executable goals such as `repeat/0`
+and relations such as `call_nth/2` are never turned into failure by an internal
+threshold.
 
-EyeProlog periodically checks detectable JavaScript heap use and keeps a quarter
-of the applicable host heap ceiling in reserve so the solver can unwind and report
-`resource_error(memory)` before a fatal host out-of-memory abort. When Node is
-started with `--max-old-space-size`, the guard compares that old-generation
-ceiling with V8's non-young heap spaces; short-lived new-generation allocations
-therefore do not cause a false resource error. Embedders may
-replace that automatically derived soft ceiling with `maxMemoryBytes`; setting
-it to `Infinity` disables the proactive check. Environments that do not expose
-heap use cannot provide the proactive check. Host capacity failures that V8
-reports as `Map maximum size exceeded` or `Set maximum size exceeded` are also
-normalized at the solver boundary instead of leaking a JavaScript `RangeError`.
-ISO 13211-1 leaves the resource atom implementation dependent. EyeProlog uses
-`memory` for a finite host allocation/capacity ceiling and reserves the
-`finite_memory` spelling for the distinct convention where no finite amount of
-memory could complete the computation. After a recoverable memory error, the
-solver keeps a bounded recovery window while the failed search unwinds so the
-host can collect released query terms. The same solver can then run later
-queries; this recovery does not resume the query that exhausted its limit.
+Memory is guarded separately. EyeProlog periodically checks JavaScript heap use
+and keeps a quarter of the host heap ceiling in reserve, so it can unwind and
+raise `resource_error(memory)` before the host aborts. Under
+`--max-old-space-size`, the guard compares against V8's old-generation spaces,
+so short-lived allocations do not trigger it. `maxMemoryBytes` overrides the
+derived ceiling; `Infinity` disables the check. V8 capacity errors such as
+`Map maximum size exceeded` are also reported as `resource_error(memory)`. ISO
+leaves the resource name implementation dependent; EyeProlog uses `memory` for
+a finite host ceiling and reserves `finite_memory` for computations that no
+finite amount of memory could finish. After a memory error the same solver can
+run later queries, but the exhausted query is not resumed.
 
-The iterative solver keeps active-call frames only where they are semantically
-needed for cut scope or recursive variant guards. Bundled-library helpers whose
-callable dependency region is cut-free and which need no recursive variant
-guard therefore do not copy a growing active-call sequence at every step.
-Under the normal EyeProlog registry, the bundled Prologue `length/2` also has a
-scoped iterative execution path: named lists are counted or constructed without
-recursive interpreter frames, and an anonymous list is not materialized because
-its binding cannot be observed. A newly constructed fixed-length suffix starts
-as a lazy compact skeleton and expands one ordinary `./2` cell at a time when
-unification, another list predicate, or answer readback inspects it. This is a
-storage optimization, not a distinct Prolog term or list semantics. Embedders
-that inspect the JavaScript term model can recognize this representation with
-`CompactListTerm`, `isCompactList`, and `compactListLength`, or construct one
-with `compactVariableList`. For open-ended `length(List, N)` generation, each generated spine is known not
-to contain the caller's dereferenced tail variable. The bundled path passes that
-proof through the normal unifier, sharing the same proven-nonoccurrence mechanism
-as first-use clause variables instead of maintaining a predicate-specific raw
-binding shortcut. It still reserves recovery headroom proportional to the
-retained spine, so a finite heap limit is raised inside the `length/2` search as
-a catchable `resource_error(memory)` rather than allowing an outer solver frame
-to encounter the limit first.
+Treat remote source as executable logic. EyeProlog has no arbitrary host-call
+primitive, but search alone can consume CPU and memory, so set depth, solution,
+input-size, and time limits.
 
-The same proven-nonoccurrence mechanism has a conservative source-level form for freshly renamed
-clauses. A singleton variable in the clause head, or a variable that has not
-appeared in the head or any earlier body goal and occurs exactly once in a
-direct `=/2` goal, cannot already be a subterm of the value it is about to
-receive. EyeProlog marks only that binding as locally fresh and skips its occurs
-traversal. A repeated variable such as the `X` in `X = f(X)`, a variable already
-seen earlier in the clause, and `unify_with_occurs_check/2` all keep the normal
-finite-tree check. The solver also treats such a first-use equality as a
-source-order barrier for its deterministic-goal scheduling, so the freshness
-proof cannot be invalidated by moving a later goal ahead of it. This recovers
-much of the classic WAM-family "local variable" optimization for DCG tail
-variables without introducing a WAM local/global stack distinction into the
-JavaScript term model.
+### Deeper implementation: execution details
 
-For grammar execution, `phrase/2` passes its fixed final remainder `[]` directly
-into the expanded grammar. Besides matching the two-argument contract, this
-avoids repeatedly trying an empty production against a temporary output
-variable. `phrase/3` still uses a private final-output variable and delays its
-last unification, preserving the existing steadfast treatment of its explicit
-third argument. The ordinary `length/2` clauses remain the authoritative module
-definition and are used unchanged by the ISO-only registry and whenever delays
-or finite-domain constraints require their normal wake-up points.
+These details affect speed and memory, never answers.
+
+**Variable order.** ISO 13211-1 section 7.2.1 leaves the order of two distinct
+variables implementation dependent and requires it to stay constant only while
+one sorted list is built. EyeProlog ranks variables locally for each comparison,
+and `sort/2`, `keysort/2`, and the sort inside `setof/3` share one ranking for
+the duration of that operation. No global variable ordinal exists.
+
+**Active-call frames.** The iterative solver keeps active-call frames only where
+cut scope or recursive variant guards need them, so cut-free library helpers do
+not copy a growing frame sequence at every step.
+
+**Compact lists.** In the normal registry, the bundled `length/2` counts or
+builds named lists without recursive interpreter frames, and does not
+materialize an anonymous list at all. A new fixed-length list starts as a lazy
+compact skeleton that expands one `./2` cell at a time when something inspects
+it. It is a storage optimization, not a different kind of term. Embedders that
+inspect the JavaScript term model can recognize it with `CompactListTerm`,
+`isCompactList`, and `compactListLength`, or build one with
+`compactVariableList`. `length/2` still reserves memory headroom in proportion
+to the list, so a heap limit is raised inside its search as a catchable
+`resource_error(memory)`.
+
+**Fresh variables.** A variable that first appears in a direct `=/2` goal, or a
+singleton head variable, cannot already occur in the value it receives, so
+EyeProlog skips the occurs traversal for that binding only. `X = f(X)`, a
+variable seen earlier in the clause, and `unify_with_occurs_check/2` keep the
+full check. Such a first-use equality also acts as an ordering barrier for
+deterministic-goal scheduling. This recovers much of the classic WAM "local
+variable" optimization for DCG tails without a WAM stack layout.
+
+**Grammars.** `phrase/2` passes its final remainder `[]` straight into the
+expanded grammar. `phrase/3` keeps a private output variable and unifies its
+third argument last, which keeps it steadfast. The ordinary `length/2` clauses
+remain the definition used by the ISO-only registry and whenever delays or
+finite-domain constraints need their wake-up points.
 
 ### Implementation boundary
 
-The source layout mirrors the language boundary while keeping the JavaScript
-runtime flat under `src/`. `src/iso.js` remains the stable ISO facade and
-built-in registry; arithmetic evaluation lives in `src/iso-arithmetic.js`, and
-processor control/error classes live in `src/errors.js`. `src/dcg.js`
-implements the shared Part 3-oriented grammar-rule and dynamic-body expansion
-without depending back on the ISO registry. This keeps the low-level syntax and
-error layers acyclic while preserving the existing `src/iso.js` exports.
+The JavaScript runtime is flat under `src/`:
 
-`src/cleanup.js` is an execution-layer sibling of the solver. It installs
-lifecycle-aware closing of protected builtin iterators from the supported API
-and CLI entry paths and registers `call_cleanup/2` and
-`setup_call_cleanup/3` for the normal EyeProlog profile. The standard-library
-layer does not import the solver back through this module, preserving the
-acyclic source graph.
+- `src/iso.js` is the stable ISO facade and built-in registry; arithmetic is in
+  `src/iso-arithmetic.js` and error classes in `src/errors.js`.
+- `src/dcg.js` implements grammar-rule and dynamic-body expansion without
+  depending on the ISO registry.
+- `src/cleanup.js` closes protected built-in iterators and registers
+  `call_cleanup/2` and `setup_call_cleanup/3` for the normal profile.
+- `src/program.js` is the `Program` facade and module loader; analysis
+  (recursion, Datalog, WFS, stratification) lives in `src/program-analysis.js`
+  and clause indexes in `src/program-indexing.js`. Hot execution paths stay in
+  `src/solver.js`.
+- `src/lib/` holds the bundled libraries as ordinary Prolog modules, registered
+  for `library(Name)` by `src/standard-library.js` in Node and the browser.
+- `src/playground-worker.js` runs the same program and module loader in a
+  browser worker.
 
-Program preparation follows the same pattern. `src/program.js` remains the
-`Program` facade and source/module loader. Static recursion, Datalog, WFS, and
-negation-stratification analysis is isolated in `src/program-analysis.js`,
-while compact-clause representation and conservative candidate indexes live in
-`src/program-indexing.js`. The solver consumes those same indexes directly;
-large execution fast paths deliberately remain in `src/solver.js` rather than
-being split through extra strategy objects or callbacks. Architectural cleanup
-is required to preserve performance as well as semantics.
+`src/ARCHITECTURE.md` records the layering rules, and a regression test
+rejects JavaScript import cycles.
 
-Focused files under `src/lib/` contain the portable extensions, with
-`src/lib/lists.pl` supplying common list relations. They are ordinary Prolog modules using EyeProlog's documented module compatibility
-surface, organized like Trealla's `library/` and registered for
-`library(Name)` by `src/standard-library.js` in Node and the browser. The
-browser entry point `src/playground-worker.js` uses that same program and
-module-loading path in a dedicated worker. `src/ARCHITECTURE.md` records the
-layering and dependency rules, and the architecture regression rejects
-JavaScript import cycles.
-
-Normal CLI, JavaScript, `Solver`, proof replay, and the browser playground use
-the same module loader. A library is added to a `Program` only when its source
-uses `use_module/1` or `use_module/2`; exported predicates are imported into the
-calling module and private predicates remain module-local. Advanced embedders
-and conformance tests can select `getStrictIsoRegistry()` together with
-`isoStrict: true` for the Part 1 + Corrigenda strict surface. All paths share
-the parser, term representation, solver, streams, and proof machinery.
+The CLI, the JavaScript API, `Solver`, proof checking, and the playground share
+one parser, term representation, solver, stream layer, module loader, and
+proof machinery. A library joins a `Program` only through `use_module/1` or
+`use_module/2` (or autoloading); exported predicates are imported and private
+ones stay module-local. `getStrictIsoRegistry()` with `isoStrict: true` selects
+the strict Part 1 + Corrigenda surface.
 
 ### Extending the built-in registry
 
-An embedder can start from the default EyeProlog registry and add a host relation. A
-handler is a generator over environments. It should clone before binding and
-yield only environments in which its result unifies:
+An embedder can add a host relation to the default registry. A handler is a
+generator over environments: clone, bind, and yield only the environments in
+which the call succeeds.
 
 ```js
 import {
@@ -2159,72 +1549,14 @@ answer(X) :- host_status(service, X).
 `, { registry, goal: 'answer(X)' });
 ```
 
-Only mark a built-in deterministic when it can produce at most one environment
-for a call. An unmarked suspended iterator is conservatively an untried
-continuation: the solver never resumes it merely to discover whether a later
-answer will succeed. An iterator that knows its remaining search positions may
-provide `hasPendingAlternatives()`, updated before each yield, to remove its
-resume frame exactly when no position remains. This method reports pending
-search, not the existence of a future successful answer. A mode-sensitive
-extension can additionally provide `ready`,
-`fallbackWhenNotReady`, and `shouldUse` metadata. This metadata affects
-dispatch and safe early filtering, so it belongs to the extension's contract.
-
-The ISO `false/0` built-in always fails, and source clauses that attempt to
-define it raise `permission_error(modify, static_procedure)`. Programs expose stratification diagnostics through
-`stratifiedNegation`, `negationStratificationErrors`, and
-`assertStratifiedNegation()`.
-
-Treat remote source as executable logic. Although EyeProlog has no arbitrary host
-call primitive, search can consume CPU and memory. Embedders should impose
-appropriate depth, solution, input-size, and time limits.
-
-Those ceilings are operational safeguards. If one is reached, report an
-incomplete computation rather than turning truncation into a negative domain
-conclusion.
-
-## Part III summary
-
-Part III moved from obtaining answers to trusting them:
-
-- a query selects a question; a proof records one successful justification;
-- an explicit integrity query identifies input that a host may reject;
-- explicit `table` declarations compute fixed points for selected positive recursion;
-- explicit `tnot/1` gives eligible finite Datalog components well-founded,
-  three-valued negation without changing ordinary `\+/1`;
-- indexing and ready filters improve control without changing intended meaning;
-- knowledge engineering separates sources, concepts, decisions, and reasons;
-- explicit host boundaries divide input validation from logical derivation;
-- embedding keeps host authority outside the proof procedure.
-
-You should now be able to distinguish proof trees from search trees, state what
-an integrity query establishes, explain the finite-answer argument behind tabling, and name
-which trust duties remain outside the solver.
-
-### Historical note: from answers to accountable inference
-
-The least-model semantics developed by van Emden and Kowalski in 1976 connected
-definite programs to a mathematical fixed point: repeatedly add supported
-ground consequences until nothing new appears. Tabled logic programming later
-turned fixed-point ideas into a goal-directed technique that shares recursive
-calls and accumulates answers. EyeProlog's explicit positive tabling is smaller
-than the general systems in that literature, but inherits their central
-insight: remembering a recursive question can change termination without
-changing what the relation says. For finite Datalog with recursion through
-explicit `tnot/1`, EyeProlog also uses the alternating-fixed-point account of
-the well-founded semantics so a negative cycle may remain undefined instead of
-being collapsed into ordinary negation-as-failure.
-
-In parallel, deductive databases asked where facts come from and how derived
-claims retain provenance. EyeProlog adopts the expectation that conclusions
-should be inspectable while implementing a focused ISO Prolog profile.
-
-The historical lesson is architectural. A proof procedure can attest that a
-conclusion follows from supplied clauses. It cannot authenticate a database,
-calibrate a sensor, or authorize a request. Systems became more trustworthy
-when those boundaries became named rather than implicit.
-
----
+Mark a built-in `deterministic` only if it yields at most one environment. An
+unmarked iterator is treated as a possible further choice, and the solver never
+resumes it just to find out. An iterator that knows its remaining positions can
+provide `hasPendingAlternatives()`, updated before each yield, so its choice
+point is dropped as soon as nothing is left. Mode-sensitive extensions can also
+supply `ready`, `fallbackWhenNotReady`, and `shouldUse` metadata, which affect
+dispatch and early filtering and are therefore part of the extension's
+contract.
 
 # Part IV — The craft of logic programming
 
@@ -2233,71 +1565,56 @@ when those boundaries became named rather than implicit.
   <figcaption>Craft moves repeatedly between the real domain, the relations on paper, executable clauses, answers, and proofs.</figcaption>
 </figure>
 
-This Part turns from implementation features to habits of construction. A good
-program rarely arrives whole; it is discovered through examples, corrected by
-invariants, and refined without losing sight of the relation it is meant to express.
+Good programs are rarely typed top to bottom. They are found through examples,
+held in shape by invariants, and improved without losing the relation they
+express. This part is about those habits.
 
 ## 17. Logic and control
 
-The central pleasure—and central difficulty—of logic programming is that a
-short definition plays two roles. Consider:
+Two clauses, two readings:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 path(X, Y) :- edge(X, Y).
 path(X, Z) :- edge(X, Y), path(Y, Z).
 ```
 
-As logic, the clauses say that every edge is a path and that an edge followed
-by a path is a path. As control, they tell the solver to try a direct edge
-first, then choose an outgoing edge and continue from its endpoint.
+As logic, every edge is a path, and an edge followed by a path is a path. As
+control, the solver tries a direct edge first, then picks an outgoing edge and
+continues from its endpoint. Kowalski's 1979 slogan "algorithm = logic +
+control" names the split: the logic fixes which answers are admissible, the
+control decides which are explored, in what order, at what cost. Ideally you
+can improve the second without touching the first. In practice, modeful
+built-ins and incomplete search mean you reason about both.
 
-This distinction is one of logic programming's oldest and most durable design
-ideas. The logical component describes admissible answers; the control
-component determines which consequences are explored, in what order, and with
-what resource cost. A change in indexing, goal order, or tabling policy should
-ideally preserve the first while improving the second. In practice, modeful
-built-ins and incomplete searches mean that programmers must reason about both.
-
-It is useful to write the relation first as a sentence:
+So write the sentence first:
 
 > `path(X, Y)` holds when there is a finite sequence of edges from `X` to `Y`.
 
-That sentence is independent of clause order. It is the specification against
-which examples and counterexamples can be judged. Only then ask procedural
-questions: which argument will normally be known, which goal generates a
-finite set, and which recursive call is smaller or already tabled?
+That sentence does not mention clause order, and it is what examples and
+counterexamples are judged against. Only then ask the procedural questions:
+which argument is usually known, which goal generates a finite set, and which
+recursive call is smaller or already tabled.
 
-### The same relation, a different computation
+### Same meaning, different computation
 
-Conjunction is logically commutative, but its textual order guides search.
-These two rules have the same intended ground consequences:
+Conjunction is commutative in logic, not in search. These two rules mean the
+same thing:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 adult(Person) :- person(Person), age(Person, Age), (Age >= 18).
 
 adult(Person) :- (Age >= 18), age(Person, Age), person(Person).
 ```
 
-The first is executable in the natural open mode because `person/1` and
-`age/2` bind values before `>=/2` inspects them. The second asks a comparison
-to operate on unbound variables and fails. Logical equivalence therefore does
-not imply equivalent behavior for a goal-directed interpreter with modeful
-built-ins.
+The first works with `Person` unbound: `person/1` and `age/2` bind values
+before `>=/2` compares them. The second reaches `>=/2` with `Age` unbound and
+raises `instantiation_error`. Logical equivalence does not give equivalent
+behaviour once built-ins have modes.
 
-Clause order also gives a search order. Put simple and common proofs where
-they can be found cheaply, provided doing so does not starve a necessary base
-case. A recursive clause that calls itself before consuming input is a warning:
+Recursion that calls itself before consuming anything is the classic control
+bug:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 % Poor control: recursion starts before one list cell is exposed.
 bad_member(X, List) :- bad_member(X, Rest), (List = [_ | Rest]).
 ```
@@ -2311,96 +1628,57 @@ item(X, [_ | Rest]) :- item(X, Rest).
 
 ### Modes are part of the design
 
-A predicate has one logical meaning but may support several useful calling
-patterns. `append(Prefix, Suffix, Whole)` can:
+`append(Prefix, Suffix, Whole)` has one meaning and several useful calling
+patterns. With the first two arguments known it concatenates; with `Whole`
+known it enumerates the finitely many splits. With all three free it is
+useless as a generator, because there are infinitely many lists. Note the
+intended modes next to a predicate — `append(+,+,-)`, `append(-,-,+)` — as
+documentation; the marks are not Prolog syntax. A rule that calls a helper
+outside its promised mode can stay logically plausible while becoming
+operationally useless.
 
-- construct `Whole` when the first two arguments are known;
-- remove a known prefix;
-- enumerate every split of a known finite list.
+### Proof trees and search trees
 
-It is not a useful generator when all three arguments are free: there are
-infinitely many lists. Before accepting a predicate design, make a small mode
-table:
-
-| Call | Intended use | Finite? |
-| --- | --- | --- |
-| `append(+,+,-)` | concatenate | yes |
-| `append(-,-,+)` | enumerate splits | yes |
-| `append(-,-,-)` | generate all triples | no |
-
-The `+` and `-` marks are documentation, not supported Prolog syntax.
-
-A mode is a promise about calls, not a replacement for the relation's meaning.
-When a rule calls a helper outside its promised mode, the program may remain
-logically plausible while becoming operationally useless.
-
-### Search trees and proof trees
-
-A proof tree contains only the successful choices supporting one answer. A
-search tree also contains failed alternatives and repeated attempts. Proof
-output shows the former; performance counters give clues about the latter.
-Confusing the two leads to a common surprise: a tiny proof may have required a
-large search.
+A proof tree holds only the successful choices behind one answer. A search
+tree also holds every failed alternative and repeated attempt. `--proof` shows
+the first; `--stats` hints at the second. That is why a tiny proof can hide a
+large search, and why removing a dead branch can make a program much faster
+without changing its proof at all.
 
 <figure>
   <img src="book-assets/proof-and-search.svg" alt="A compact successful proof tree beside a larger search tree containing failures and repeated branches.">
   <figcaption>The proof explains why an answer holds; the search tree explains the work needed to discover that proof.</figcaption>
 </figure>
 
-The distinction also explains why explanations are not performance profiles.
-Removing a failed branch can make a program dramatically faster without
-changing the final `why/2` term. Conversely, introducing a well-named helper
-may make a proof longer on paper while making it far clearer to a reader.
+When a program is slow, sketch the first few levels of its search tree: the
+selected goal, the clauses that match it, the bindings each produces, and the
+calls that repeat. The sketch usually shows a generator that is too broad or a
+test placed too late.
 
-When a program is slow, sketch the first few levels of its search tree. Mark:
-
-1. the selected leftmost goal;
-2. the clauses or built-ins that can solve it;
-3. bindings produced by each choice;
-4. the next selected goal;
-5. branches that repeat a previous call.
-
-This exercise often reveals that the model is sound but a generator is too
-broad, a constraint is too late, or a witness carries needless alternatives.
-
-**Checkpoint.** Take one clause and write two notes beside it: its ground
-meaning and its intended mode. Reorder two body goals, predict whether the
-answer set, termination, first answer, or proof shape changes, and only then
-run the variant.
+**Checkpoint.** Swap two body goals in a rule of your own. Before running it,
+predict whether the answer set, termination, first answer, or proof shape
+changes.
 
 ## 18. Constructing a program
-
-A good logic program is rarely discovered by typing clauses from top to
-bottom. It is constructed by moving between examples, relations, and
-invariants.
 
 <figure>
   <img src="book-assets/program-construction-loop.svg" alt="A program is constructed by cycling from a ground sentence through examples, representation, invariants, clauses, answers, and proofs.">
   <figcaption>Construction begins with meaning and examples, chooses a representation that exposes an invariant, and lets surprising answers send the design back to the right layer.</figcaption>
 </figure>
 
-### Begin with ground sentences
+### Begin with a ground sentence
 
-Suppose packages must be routed through compatible hubs. Start with sentences
-that contain no variables:
+Parcels must be routed through compatible hubs. Start without variables:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 routeable(parcel_7, hub_north).
 ```
 
-Decide exactly what that sentence claims. Does it mean the parcel can enter
-the hub, can leave it, or can complete an entire route through it? Ambiguity in
-a ground sentence becomes ambiguity in every rule built on it.
-
-Now name the evidence:
+What does it claim — that the parcel can enter the hub, leave it, or complete
+a route through it? An ambiguous ground sentence makes every rule built on it
+ambiguous. Once the meaning is fixed, name the evidence:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 routeable(Parcel, Hub) :-
   destination_zone(Parcel, Zone),
   serves(Hub, Zone),
@@ -2408,15 +1686,14 @@ routeable(Parcel, Hub) :-
   accepts(Hub, Class).
 ```
 
-The variables express the joins already present in the English explanation.
-No variable should appear merely because “a value might be needed later.”
-Every repeated variable asserts identity; every distinct variable permits
-difference.
+The shared variables are the joins already present in the English. A repeated
+variable asserts identity; a variable that appears only "in case it is needed
+later" asserts nothing and should go.
 
-### Invent examples before recursion
+### Examples before recursion
 
-For a recursive relation, write the smallest positive example, the next larger
-positive example, and a near miss. For list prefixes:
+For a recursive relation, write the smallest positive case, the next one, and
+a near miss:
 
 ```text
 prefix([], [a,b])          true
@@ -2424,21 +1701,20 @@ prefix([a], [a,b])         true
 prefix([b], [a,b])         false
 ```
 
-The empty example suggests the base clause. Comparing the second example with
-a smaller one suggests removing a matching head from both lists:
+The empty case is the base clause. Comparing the second with a smaller one
+suggests stripping a matching head from both lists:
 
 ```eyeprolog
 prefix([], _).
 prefix([X | Xs], [X | Ys]) :- prefix(Xs, Ys).
 ```
 
-This is a general construction method: find a measure that becomes smaller,
-preserve the invariant while reducing it, and state directly the case where
-no reduction is needed.
+That is the general method: find something that shrinks, keep the invariant
+while shrinking it, and state the case where nothing needs to shrink.
 
-### Separate generate, test, and describe
+### Generate, then test
 
-Finite combinatorial programs become easier to read when their jobs are
+Finite combinatorial programs read better when generating and testing are
 separate:
 
 ```eyeprolog
@@ -2450,103 +1726,64 @@ compatible_pair(A, B) :-
   candidate_pair(A, B),
   (A \= B),
   \+ conflict(A, B).
-
-answer(pair(A, B)) :- compatible_pair(A, B).
 ```
 
-`candidate_pair/2` states the domain. `compatible_pair/2` states the
-constraints. `answer/1` controls presentation. The split is not bureaucratic:
-it makes the closed domain visible, gives negation bound arguments, and makes
-proofs say whether a step generated or rejected a choice.
+`candidate_pair/2` makes the closed domain visible and guarantees that `\=`
+and `\+` see bound arguments. Proofs then say whether a step generated or
+rejected a choice. The final clause may interleave the tests with the
+generators for speed; the conceptual split survives.
 
-For performance, tests may be interleaved as soon as their inputs are ready:
+### Representations follow the questions
 
-```eyeprolog
-compatible_pair(A, B) :-
-  person(A),
-  person(B),
-  (A \= B),
-  \+ conflict(A, B).
-```
+A graph can be `edge/2` facts, a list of edge terms, or part of a state term.
+Facts suit indexed lookup and proof provenance; a list suits a private,
+changing graph passed through recursion; a compound state term suits
+transitions that replace several components at once. Whatever you choose, do
+not pack structure into strings and re-parse it throughout the theory. Parse
+once at the boundary: `address(City, PostalCode)` can be unified, inspected,
+and explained.
 
-The conceptual separation remains even when the final clause is compact.
-
-### Choose representations by the operations they support
-
-The same domain can be represented in many ways. A graph may be edge facts, a
-list of edge terms, or a context. Ask which questions dominate:
-
-- Separate `edge/2` facts suit indexed relational lookup and proof provenance.
-- A list suits passing a private, changing graph through a recursive helper.
-- A compound state term suits transitions that replace several components.
-- A comma context suits inspecting a small record whose fields are themselves
-  structured assertions.
-
-Do not encode structure into strings and then recover it throughout the
-theory. Parse once at the boundary. A term such as
-`address(City, PostalCode)` can be unified, inspected, and explained; a string
-containing the same data needs repeated procedural parsing.
-
-### Grow a theory through layers
-
-Large rule sets benefit from a dependency direction:
+### Grow in layers
 
 ```text
 source facts → normalized facts → domain concepts → decisions → answers
 ```
 
-Negation should normally point in the same direction, from a higher layer to a
-complete lower layer. Cycles among positive domain concepts may be tabled;
-cycles through negation usually signal that the concepts have not been given
-a stable meaning.
+Point negation down this stack, at a complete lower layer. Cycles among
+positive concepts can be tabled; a cycle through negation usually means a
+concept has no stable meaning yet. Add one representative query per layer as
+you go, so a silent failure in normalization shows up before the final
+decision predicate does.
 
-At every layer, add one representative query. Do not wait for the final
-decision predicate to discover that normalization silently failed. Small
-queries are the logic-programming counterpart of inspecting intermediate
-values, but they retain the declarative vocabulary of the model.
-
-**Checkpoint.** Before writing rules for a small domain of your own, record
-three positive ground examples, one near miss, the intended query mode, and a
-candidate finite generator. If the ground sentences are ambiguous, revise the
-predicate names before introducing variables.
+**Checkpoint.** For a domain of your own, write three positive ground
+examples, one near miss, and the intended query mode before writing any rule.
 
 ## 19. Correctness and termination
-
-Testing examples is necessary, but a reusable relation deserves a stronger
-argument. Two questions should be asked separately:
 
 <figure>
   <img src="book-assets/correctness-obligations.svg" alt="Overlapping circles for partial correctness, completeness, and termination meet at a dependable operational contract.">
   <figcaption>Partial correctness, completeness, and termination are independent promises; a dependable intended call needs all three.</figcaption>
 </figure>
 
-1. **Partial correctness:** if the program returns an answer, is it justified?
-2. **Completeness:** for the intended finite calls, can it find every answer
-   required by the specification?
+Tests sample a relation; an argument covers it. Ask three separate questions:
 
-For `prefix/2`, partial correctness follows from the clauses by induction. The base clause
-returns only the empty prefix. The recursive clause adds the same head to a
-smaller valid prefix, so the result remains a prefix. Completeness follows in
-the opposite direction: every nonempty prefix shares its first element with
-the whole list, and removing that element yields a smaller prefix problem
-covered by the recursive clause.
+1. **Partial correctness:** is every returned answer justified?
+2. **Completeness:** for intended calls, is every required answer found?
+3. **Termination:** do intended calls finish?
 
-This informal induction is often enough. State the property, justify each base
-clause, assume recursive calls satisfy it, and show that each recursive clause
-preserves it.
+For `prefix/2`, both of the first two follow by induction. The base clause
+returns only the empty prefix; the recursive clause adds the same head to a
+smaller valid prefix, so the result is still a prefix. Conversely, every
+nonempty prefix shares its first element with the list, and removing it leaves
+a smaller prefix problem that the recursive clause covers. That is usually
+enough: justify each base clause, assume the recursive calls are right, and
+show each recursive clause preserves the property.
 
-### Termination needs its own argument
+### Termination needs its own measure
 
-A correct relation may still fail to return. For ordinary structural recursion,
-identify a well-founded measure:
-
-- length of the remaining list;
-- a nonnegative integer that decreases;
-- number of unvisited states in a finite graph;
-- size of a syntax tree.
-
-The measure must decrease before the recursive call in the intended mode. For
-factorial, `N` decreases while remaining a nonnegative integer:
+Name a quantity that strictly decreases before each recursive call in the
+intended mode and cannot decrease forever: list length, a nonnegative integer,
+unvisited states, tree size. For factorial it is `N`:
 
 ```eyeprolog
 factorial(0, 1).
@@ -2557,33 +1794,24 @@ factorial(N, F) :-
   (F is N * PF).
 ```
 
-Reordering the subtraction after the recursive call preserves a mathematical
-equation but destroys the termination argument.
+Move the subtraction after the recursive call and the equation still holds,
+but the measure is gone.
 
-Tabling changes the argument for graph recursion. A cyclic `path/2` call can
-terminate when the program has only finitely many distinct tabled calls and
-answers. The measure is then not necessarily smaller at each edge; finiteness
-comes from exhausting a finite answer space. Tabling cannot rescue a rule that
-constructs `s(s(s(...)))` without bound.
+Tabled graph recursion terminates differently. Nothing need shrink at each
+edge; termination comes from a finite number of distinct calls and answers.
+Tabling cannot rescue a rule that builds `s(s(s(...)))` without bound.
 
-### Negation and aggregation require bounded subsearch
+### Negation and aggregation need bounded subsearch
 
-`\+ Goal` and aggregates ask the engine to settle a nested search. Their
-meaning is usable only when that search can finish. Before
-writing:
+`\+ Goal` and aggregates must settle a nested search before answering. Before
+writing `\+ disqualified(Person)`, make sure `Person` is bound and
+`disqualified/1` finishes for it. Before collecting routes, decide which
+finite family you mean: simple routes, routes under a cost, and so on.
 
-```eyeprolog
-\+ disqualified(Person)
-```
+### Integrity is not failure
 
-check that `Person` is bound and that `disqualified/1` has a finite search for
-that value. Before collecting routes, decide whether only simple routes, only
-routes below a cost, or some other finite family is intended.
-
-### Integrity is not merely failure
-
-Ordinary failure says that one attempted proof did not work. An explicit
-integrity relation can instead return the evidence for an invalid state:
+Failure says one attempted proof did not work. An integrity relation returns
+the evidence that the input itself is wrong:
 
 ```eyeprolog
 invalid_limits(Name, Low, High) :-
@@ -2592,44 +1820,34 @@ invalid_limits(Name, Low, High) :-
   (Low > High).
 ```
 
-This distinction matters operationally and socially. A failed eligibility
-query may be a legitimate negative result. A successful `invalid_limits/3`
-query identifies contradictory limits; the host can then stop decisions until
-the input is repaired.
+A failed eligibility query may be a legitimate "no". A successful
+`invalid_limits/3` query means the host should stop deciding until the data is
+repaired.
 
-**Checkpoint.** For one recursive relation, state three claims separately:
-partial correctness, completeness in one intended mode, and termination in
-that mode. Give the invariant supporting the first two and the decreasing
-measure or finite table supporting the third.
+**Checkpoint.** For one recursive relation of your own, state its invariant and
+its termination measure in one sentence each.
 
 ## 20. Improving a program
 
-Program improvement begins with observation, not cleverness. Preserve a set of
-representative answers and proofs, collect solver statistics, and change one
-structural choice at a time.
+Improvement starts with observation: keep representative answers and proofs,
+collect `--stats`, and change one thing at a time.
 
-### Strengthen calls before adding machinery
+### Ask a better question first
 
-The most effective improvement is often a better question. Prefer
-`route(brussels, Destination)` to a completely open enumeration if the
-application already knows its origin. Put selective, indexed relations early
-enough to bind arguments for later work. Avoid constructing a large witness
-when the caller needs only existence.
-
-Compare:
+The cheapest optimization is a more specific call. Ask
+`route(brussels, Destination)` instead of an open enumeration when the origin
+is known. Put selective relations early so they bind arguments for later
+goals. Don't build a witness when the caller needs only existence:
 
 ```eyeprolog
 connected(X, Y) :- path_with_nodes(X, Y, _).
 ```
 
-with a direct reachability relation that tables pairs. The first may enumerate
-many distinct paths to establish one fact; the second records the fact itself.
-Keep the witness-producing relation for callers that truly need a path.
+This may enumerate many distinct paths to establish one fact. A tabled
+reachability relation records the pair itself; keep the path-producing
+relation for callers that actually need a path.
 
-### Introduce helpers that express invariants
-
-Inlining every condition creates wide clauses with repeated work. A helper can
-name a stable concept:
+### Name invariants with helpers
 
 ```eyeprolog
 within_thermal_limits(Battery) :-
@@ -2638,14 +1856,14 @@ within_thermal_limits(Battery) :-
   (T =< Max).
 ```
 
-The gain is not just reuse. Proofs now contain a domain statement, and later
-changes to the limit policy have one home. Choose helpers that add vocabulary;
-avoid names such as `step2/3` that merely expose an implementation sequence.
+The helper puts a domain statement into every proof that uses it and gives
+the limit policy one home. Prefer helpers that add vocabulary; `step2/3` adds
+none.
 
-### Move invariant work outward
+### Hoist invariant work
 
-If a recursive call repeatedly computes a value that does not change, compute
-it once and pass the result:
+If every recursive step recomputes the same value, compute it once and pass it
+in:
 
 ```eyeprolog
 search(Request, Answer) :-
@@ -2653,77 +1871,25 @@ search(Request, Answer) :-
   search_normalized(Normalized, initial_state, Answer).
 ```
 
-This resembles loop-invariant code motion in procedural programming, but the
-relational formulation is explicit: the helper's arguments show exactly which
-values vary from step to step.
+The helper's arguments then show exactly which values change from step to
+step.
 
-### Preserve meaning while changing control
+### Check that the meaning survived
 
-Reordering goals, adding a helper, or specializing a predicate should preserve
-the intended ground answers. Verify that with:
+After reordering goals or specializing a predicate, rerun positive examples,
+expected failures, boundary values, cyclic data, and duplicate derivations,
+and compare proof premises, not just printed conclusions. A change that alters
+which proof is found first also changes `once/1`, tie-breaking aggregates, and
+explanations, even when the answer set is identical. If callers depend on
+those, they are part of the contract.
 
-- ordinary positive examples;
-- cases expected to fail;
-- duplicate derivations;
-- boundary numeric values;
-- cyclic data;
-- proof premises, not only printed conclusions.
+Finally, resist generality nobody needs. A predicate that supports three modes
+can be harder to terminate, explain, and index than two simple predicates with
+clear contracts. Generalize when the second real use appears.
 
-An optimization that changes which proof is found first may affect `once/1`,
-tie-breaking aggregates, and explanation shape even when the answer set is
-unchanged. Treat those observable choices as part of the calling contract
-whenever users depend on them.
-
-### Know when to stop
-
-Not every relation should be made maximally general. A three-mode predicate can
-be harder to terminate, explain, and index than two simple predicates with
-clear contracts. Generalize when a real second use appears. The art lies in
-keeping the logical idea visible while giving it enough control to run well.
-
-**Checkpoint.** Save representative answers, one proof, and solver statistics
-for a program. Make exactly one control change, rerun all three views, and
-classify every difference as intended, harmless but observable, or a
-regression.
-
-## Part IV summary
-
-Part IV treated logic programming as a discipline of construction:
-
-- write the relation's sentence before choosing its control;
-- record intended modes and finite uses;
-- begin with ground examples and invent recursion from one proof;
-- choose representations by the operations and invariants they expose;
-- argue correctness, completeness, and termination separately;
-- improve programs by strengthening calls and naming invariants;
-- preserve answers while reviewing observable proof or ordering changes.
-
-You should now be able to construct a theory from examples, state a termination
-measure, refactor a helper without losing meaning, and recognize when greater
-relational generality has no practical use.
-
-### Historical note: logic plus control
-
-Kowalski's 1979 formulation “algorithm = logic + control” gave a durable name
-to the dual reading developed here. The logic component specifies knowledge;
-control determines how it is used. The slogan did not claim that control was
-unimportant. It argued that control can often be improved while meaning stays
-steady, and that programs become easier to reason about when the two are
-distinguished.
-
-The craft tradition of Prolog grew around this tension. Goal ordering,
-accumulators, generate-and-test, and representation change were never merely
-interpreter tricks. At their best they were transformations justified by
-invariants and modes. Sterling and Shapiro made construction and improvement
-central to *The Art of Prolog*, showing that declarative clarity and
-procedural competence mature together.
-
-EyeProlog keeps ISO cut, but Chapter 34 disciplines it: it commits only within
-the clause that contains it, never across a disjunction branch or a
-meta-call's own boundary, and it is presented as a last resort next to
-`once/1` and if-then-else. That discipline changes the techniques but not the
-problem: authors must still turn a true relation into a productive computation
-and say what was preserved.
+**Checkpoint.** Make exactly one control change to a program and classify each
+difference in answers, proofs, and `--stats` as intended, harmless but
+observable, or a regression.
 
 # Part V — Advanced relational design
 
@@ -2732,37 +1898,11 @@ and say what was preserved.
   <figcaption>Advanced design keeps meaning at the center while search is inspected, syntax is represented, control is transformed, and decisions remain auditable.</figcaption>
 </figure>
 
-The earlier parts introduced the supported Prolog profile and the habits needed to use it
-safely. This part stays longer with whole computations. It asks how to inspect
-a search tree, represent languages and evaluators as relations, transform a
-correct program without losing its meaning, and organize a decision system
-whose conclusions remain auditable.
-
-EyeProlog supplies the Part 1 control, dynamic-database, operator, and I/O
-facilities together with its normal-profile module forms `module/2`,
-`use_module/1`, `use_module/2`, `meta_predicate/1`, and `Module:Goal`. The
-requirements clarified by the 2013 ISO/IEC 13211-2 module amendment are covered
-by a dedicated release-gated suite, including public imports through
-`ensure_loaded/1` and caller-module qualification of `:` meta-arguments. The
-unchanged remainder of Part 2 is still treated as a compatibility surface, not
-as a claim of complete ISO/IEC 13211-2:2000 conformance. Definite-clause grammar notation is
-also part of the normal profile, though the running examples have avoided it so far;
-Chapter 22 introduces it explicitly rather than assuming it. The examples still prefer
-explicit domain relations, state, and syntax trees where that makes assumptions easier to
-inspect.
+This part works with whole computations: tracing a search, treating languages
+and evaluators as relations, transforming correct programs, and building a
+decision service whose conclusions can be audited.
 
 ## 21. Reading the computation
-
-A query is not solved in one leap. It is reduced to goals, each goal is matched
-against candidate clauses, and each successful match contributes bindings and
-new subgoals. The computation has two kinds of branching:
-
-- an **and** step, because every goal in a rule body must succeed;
-- an **or** step, because any matching clause may establish a goal.
-
-This and–or structure is the operational counterpart of the program's logical
-structure. A conjunction asks for several supporting claims; multiple clauses
-offer alternative justifications.
 
 ```eyeprolog
 parent(ada, byron).
@@ -2777,13 +1917,11 @@ ancestor(X, Z) :- parent(X, Y), ancestor(Y, Z).
 eyeprolog --goal 'ancestor(ada, Who)' program.pl
 ```
 
-For `ancestor(ada, Who)`, the first clause asks
-`parent(ada, Who)` and produces `Who = byron`. The second clause asks two
-questions in sequence. `parent(ada, Y)` first binds `Y = byron`; the remaining
-call is therefore `ancestor(byron, Who)`. That call repeats the choice between
-a direct-parent proof and a longer proof.
-
-The three answers occupy increasing depths of one proof family:
+The query branches two ways. An **or** step chooses between the two clauses;
+an **and** step requires every goal in the chosen body. The first clause asks
+`parent(ada, Who)` and yields `byron`. The second asks `parent(ada, Y)`, binds
+`Y = byron`, and leaves `ancestor(byron, Who)` — the same choice one generation
+down. The three answers sit at increasing depths of one proof family:
 
 ```text
 ancestor(ada, byron)
@@ -2802,20 +1940,15 @@ ancestor(ada, diego)
       parent(clara, diego)
 ```
 
-Drawing even a partial tree exposes errors that are hard to see in source
-alone: a variable that should have been shared, a recursive call that did not
-consume input, or a generator placed after the test that needs its output.
-
 <figure>
   <img src="book-assets/and-or-binding-trace.svg" alt="An ancestor query branches between clauses while a binding ledger shows Y becoming byron and flowing into the remaining recursive goal.">
   <figcaption>Search alternates between choices and conjunctions; substitutions flow forward, while failure returns to the latest unfinished choice.</figcaption>
 </figure>
 
-### Substitutions accumulate
+### Bindings flow forward
 
-A substitution is a set of bindings carried through the remaining goals.
-Bindings are not local return values. If the first goal binds a variable, every
-later occurrence of that variable sees the same term:
+A binding is not a local return value. Once a goal binds a variable, every
+later occurrence sees the same term:
 
 ```eyeprolog
 grandparent(X, Z) :-
@@ -2823,30 +1956,20 @@ grandparent(X, Z) :-
   parent(Y, Z).
 ```
 
-Solving `grandparent(ada, Z)` begins with `parent(ada, Y)`. Once that goal
-binds `Y` to `byron`, the second goal is the selective
-`parent(byron, Z)`.
-
-Repeated variables impose equality through unification:
+After `parent(ada, Y)` binds `Y = byron`, the second goal is the selective
+`parent(byron, Z)`. A repeated variable in a head or goal is an equality built
+into the pattern:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 loop_edge(Node) :- edge(Node, Node).
 ```
 
-This does not find an arbitrary edge and compare its endpoints later. The
-shared variable makes equal endpoints part of the pattern being matched.
+This does not fetch an arbitrary edge and compare its endpoints afterwards; it
+only matches edges whose endpoints already unify.
 
 ### Failure rewinds choices, not facts
 
-Suppose a later goal fails:
-
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 eligible(Person) :-
   applicant(Person),
   age(Person, Age),
@@ -2854,65 +1977,46 @@ eligible(Person) :-
   verified(Person).
 ```
 
-Failure of `verified(Person)` rejects the current combination of bindings.
-Search may return to another `age/2` fact or another applicant clause. It does
-not retract source facts or erase answers already printed. Backtracking is
-better understood as exploring alternatives than as undoing the world.
+If `verified(Person)` fails, the current combination of bindings is rejected
+and search resumes at the latest open choice — another `age/2` fact, another
+applicant. Nothing in the program is retracted, and answers already printed
+stay printed. Backtracking explores alternatives; it does not undo the world.
 
-### Variants, cycles, and tables
+### Variants and tables
 
-Recursive graph search can encounter the same logical subquestion through
-different paths. Calls that differ only in variable names are **variants**:
-`path(a, X)` and `path(a, Y)` pose the same pattern. Positive recursive groups
-can table such patterns, share their answers, and stop a cycle from expanding
-the same question forever.
-
-The table does not prove termination for every recursive program. If each call
-constructs a larger pattern, then the calls are not variants:
+`path(a, X)` and `path(a, Y)` differ only in variable names; they are
+**variants** and pose the same question. Tabling shares their answers and
+stops a cycle from re-asking forever. It cannot help when every call is new:
 
 ```eyeprolog
 grows(X) :- grows(wrapper(X)).
 ```
 
-`grows(A)`, `grows(wrapper(A))`, and
-`grows(wrapper(wrapper(A)))` are distinct calls. Remembering them does not
-make their number finite.
+`grows(A)`, `grows(wrapper(A))`, `grows(wrapper(wrapper(A)))` are distinct
+calls, and remembering them does not make them finitely many.
 
-### A practical tracing discipline
+### Tracing by hand
 
-When a query surprises you, write down:
-
-1. the selected goal;
-2. its current resolved arguments;
-3. the candidate clause;
-4. the unifier produced by the head;
-5. the new body goals;
-6. the point to which failure would return.
-
-Compare that hand trace with `--proof` for a successful answer and `--stats`
-for the amount of search. Proofs explain one successful derivation; statistics
-summarize work across successful and failed branches. Neither is a complete
-trace, but together they usually locate the modeling issue.
+When a query surprises you, write down for each step the selected goal, its
+current arguments, the matching clause, the unifier, the new body goals, and
+where failure would return. Compare with `--proof` for one successful answer
+and `--stats` for the total work. Neither is a full trace, but together they
+usually locate the problem.
 
 **Exercises.**
 
-1. Draw the and–or tree for `ancestor(byron, Who)`.
-2. Add a second parent of `clara` and identify where the tree branches.
-3. Write a cyclic `edge/2` graph and compare reachability answers with the
-   table rounds reported by `--stats`.
-4. Construct a recursive rule whose call grows a list on every step. Explain
-   why variant tabling does not make its call space finite.
-
-**Checkpoint.** Hand-trace one successful answer and one failed branch using
-the six-item tracing discipline. Compare the successful trace with `--proof`
-and the total work with `--stats`; state one fact that each view omits.
+1. Draw the and–or tree for `ancestor(byron, Who)`, then add a second parent
+   of `clara` and mark where it branches.
+2. Write a cyclic `edge/2` graph, table `path/2`, and compare its answers with
+   the table rounds reported by `--stats`.
+3. Write a recursive rule whose call grows a list each step and explain why
+   tabling does not make it finite.
 
 ## 22. Trees, languages, and symbolic evaluation
 
-Compound terms are finite trees. A functor labels an internal node and its
-arguments are the children. Lists are one familiar tree encoding, but syntax,
-plans, types, circuits, formulas, and organizational structures can all be
-represented directly.
+Compound terms are finite trees: the functor labels a node, the arguments are
+its children. Lists are one tree encoding; syntax, plans, formulas, and
+circuits can be represented just as directly.
 
 ```eyeprolog
 tree(
@@ -2922,28 +2026,23 @@ tree(
 ).
 ```
 
-A structural relation follows the representation:
+A structural relation follows the shape:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 tree_member(X, tree(X, _, _)).
 tree_member(X, tree(_, Left, _)) :- tree_member(X, Left).
 tree_member(X, tree(_, _, Right)) :- tree_member(X, Right).
 ```
 
-The clauses say where a member may occur. They also define a search order:
-root, then left subtree, then right subtree. If only membership matters, that
-order is an implementation choice. If a caller uses `once/1`, it becomes
-observable.
+The clauses also fix a search order — root, left, right. For membership the
+order is invisible; under `once/1` it becomes observable.
 
 <figure>
   <img src="book-assets/syntax-relations.svg" alt="One expression tree is inspected as data, evaluated to a value, and rewritten to another syntax tree with an explicit environment.">
   <figcaption>A compound term remains persistent data; different relations inspect, evaluate, or rewrite it according to the question being asked.</figcaption>
 </figure>
 
-### Transforming a tree
+### Relating two trees
 
 ```eyeprolog
 mirror(empty, empty).
@@ -2955,19 +2054,15 @@ mirror(
   mirror(Right, MirroredRight).
 ```
 
-Read forward, `mirror/2` constructs a mirror. With both trees ground, it
-verifies the relationship. In some partially bound modes it can fill missing
-structure. The rule does not mutate a tree; it relates two persistent terms.
+Called forward, `mirror/2` builds a mirror; with both trees ground, it checks
+one. Nothing is mutated; the rule relates two persistent terms. Its
+correctness argument is structural induction: the empty tree is its own
+mirror, and if both recursive calls are right, so is the rebuilt node.
 
-The representation exposes an invariant: mirroring preserves every node value
-and exchanges left and right at every level. It also suggests a structural
-induction. The empty tree is its own mirror; if both recursive calls are
-correct, the constructed parent is correct.
+### A definite clause grammar
 
-### A standard definite clause grammar
-
-ISO/IEC TS 13211-3 definite clause grammar rules describe a sequence while the
-processor supplies the pair of difference-list arguments used for execution:
+Grammar rules (ISO/IEC TS 13211-3) describe sequences; the processor adds the
+two list arguments that thread the input through:
 
 ```eyeprolog
 sentence --> noun_phrase, verb_phrase.
@@ -2990,21 +2085,16 @@ complete_sentence(Words) :- phrase(sentence, Words).
 eyeprolog --goal 'complete_sentence([the, robot, helps, a, scientist])' program.pl
 ```
 
-The expansion of `sentence//0` is an ordinary `sentence/2` relation: its first
-extra argument is the sequence before parsing and its second is the suffix.
-Composition shares the suffix from `noun_phrase//0` with the input to
-`verb_phrase//0`. `phrase/2` requires complete consumption; `phrase/3` exposes
-the remaining sequence.
+`sentence//0` expands to an ordinary `sentence/2`: input before, suffix after.
+`noun_phrase//0` hands its leftover input to `verb_phrase//0`. `phrase/2`
+demands that everything is consumed; `phrase/3` returns the rest. A grammar is
+also a search program, so a recursive grammar called with unbound `Words` can
+generate sentences without end. It needs the same mode and termination
+thinking as any other recursion.
 
-The same relation can be a bounded generator when vocabulary and output length
-are constrained by surrounding relations. An unconstrained
-`complete_sentence(Words)` call can generate sentences of unbounded length if
-the grammar is recursive. A grammar is also a search program, so its intended
-modes need the same termination analysis as other recursive relations.
+### An evaluator
 
-### Interpreting an expression
-
-Syntax trees separate the expression from the act of evaluating it:
+Keep the expression separate from evaluating it:
 
 ```eyeprolog
 evaluate(number(N), N).
@@ -3027,15 +2117,12 @@ eyeprolog --goal 'evaluate(
   )' program.pl
 ```
 
-The value is `14`. More importantly, the proof follows the syntax tree: two
-literal evaluations support one multiplication and one addition.
-
-An extension can add variables and an explicit environment:
+The value is `14`, and the proof follows the syntax tree: two literal
+evaluations support a multiplication, which supports the addition. Variables
+need an environment, passed explicitly as data rather than held in global
+state:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 lookup(Name, [binding(Name, Value) | _], Value).
 lookup(Name, [_ | Rest], Value) :- lookup(Name, Rest, Value).
 
@@ -3043,13 +2130,12 @@ evaluate(variable(Name), Environment, Value) :-
   lookup(Name, Environment, Value).
 ```
 
-Passing the environment as data avoids hidden global state. Shadowing is
-determined by list order and should be documented as part of `lookup/3`.
+List order decides shadowing; say so in the contract of `lookup/3`.
 
-### Rewriting symbolic expressions
+### Rewriting
 
-Evaluation collapses syntax to a value. Rewriting preserves syntax while
-replacing one form with an equivalent or preferred form:
+Evaluation collapses syntax into a value. Rewriting keeps syntax and replaces
+one form with an equivalent one:
 
 ```eyeprolog
 simplify(add(number(0), X), X).
@@ -3062,42 +2148,24 @@ simplify(add(A, B), add(SA, SB)) :-
   simplify(B, SB).
 ```
 
-Overlapping rules can produce several answers. That may be desirable when
-exploring equivalent forms, but a normalizer needs a strategy and termination
-measure. A rule that expands `X` to `add(X, number(0))` reverses the first
-simplification and permits unbounded rewriting.
+Overlapping rules give several answers — useful for exploring equivalent
+forms, but a normalizer needs a strategy and a measure. Add the reverse of the
+first rule, expanding `X` into `add(X, number(0))`, and rewriting never stops.
 
 **Exercises.**
 
 1. Define `tree_size/2` and `tree_height/2`.
-2. Extend the grammar with adjectives while preserving the input/suffix
-   contract.
-3. Add subtraction to the evaluator and state which arguments must be ground.
-4. Define constant folding for `add(number(A), number(B))`.
-5. Explain why individually sensible rewrite rules may fail to terminate when
-   repeatedly combined.
-
-**Checkpoint.** For one compound term, label the object-language syntax, the
-EyeProlog relation that inspects it, and the environment or state used to interpret
-it. Then identify a rewrite pair that would create a cycle if both directions
-were enabled.
+2. Add adjectives to the grammar and subtraction to the evaluator.
+3. Define constant folding for `add(number(A), number(B))`.
 
 ## 23. Transforming programs
 
-Program transformation changes clauses while attempting to preserve an
-intended relation. The useful question is not merely “does the new version
-run?” but “for which calls does it preserve answers, termination, answer
-order, and explanations?”
-
-Four transformations recur in logic programs:
-
-- **unfolding** replaces a call by the bodies of its defining clauses;
-- **folding** names a repeated conjunction with a helper relation;
-- **specialization** fixes known arguments and removes irrelevant choices;
-- **accumulation** carries a partial result through recursion.
-
-Each can improve control or reveal structure. Each can also change modes,
-duplicate work, or alter proof shape.
+A transformation rewrites clauses while trying to keep the relation. The real
+question is not whether the new version runs but for which calls it preserves
+answers, termination, answer order, and explanations. Four transformations
+recur: **unfolding** replaces a call by the bodies of its clauses;
+**folding** names a repeated conjunction; **specialization** fixes known
+arguments; an **accumulator** carries a partial result through recursion.
 
 <figure>
   <img src="book-assets/program-transformation-workbench.svg" alt="An original relation branches into unfolding, folding, specialization, and accumulation, then all four return to a shared contract comparison.">
@@ -3106,12 +2174,7 @@ duplicate work, or alter proof shape.
 
 ### Unfolding and folding
 
-Start with:
-
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 adult(Person) :-
   recorded_age(Person, Age),
   adult_age(Age).
@@ -3122,26 +2185,18 @@ adult_age(Age) :- (Age >= 18).
 Unfolding `adult_age/1` gives:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 adult(Person) :-
   recorded_age(Person, Age),
   (Age >= 18).
 ```
 
-For this deterministic helper, the ground answers are unchanged. The shorter
-proof loses the named concept `adult_age/1`, however. That loss may be
-undesirable in an auditable policy even if execution becomes slightly cheaper.
-If a helper has several clauses, unfolding produces one caller clause for each
-alternative. If it is recursive, unrestricted unfolding may never finish.
+The answers are unchanged, but the proof has lost the concept `adult_age/1` —
+a real loss in an auditable policy. A helper with several clauses unfolds into
+several caller clauses; a recursive one may unfold forever.
 
-Folding moves in the other direction. Suppose decisions repeat:
+Folding goes the other way. Two rules repeat a condition:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 can_board(Person) :-
   registered(Person),
   identity_checked(Person),
@@ -3155,12 +2210,9 @@ can_enter_lounge(Person) :-
   lounge_pass(Person).
 ```
 
-Name the shared concept:
+Name it:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 traveler_in_good_standing(Person) :-
   registered(Person),
   identity_checked(Person),
@@ -3175,33 +2227,29 @@ can_enter_lounge(Person) :-
   lounge_pass(Person).
 ```
 
-The helper is valuable because it has a stable meaning, not merely because
-three lines became one. It creates one place to state and test the closed-world
-assumption behind `\+ suspended(Person)`.
+The gain is not three lines saved. The closed-world assumption behind
+`\+ suspended(Person)` now has one place to be stated and tested.
 
-### Specializing a relation
+### Specialization
 
-A general transport database may use:
-
-```eyeprolog
-connection(Mode, From, To, Cost).
-```
-
-An application that only plans rail journeys can define:
+A rail planner over a general `connection(Mode, From, To, Cost)` relation can
+define:
 
 ```eyeprolog
 rail_connection(From, To, Cost) :-
   connection(rail, From, To, Cost).
 ```
 
-This wrapper establishes a stronger contract and gives indexing a bound first
-argument. Deeper specialization can precompute invariant classifications or
-remove irrelevant branches. Keep the general relation as the specification
-against which specialized answers are compared.
+The wrapper states a stronger contract and gives indexing a bound first
+argument. Deeper specialization precomputes invariant classifications or drops
+irrelevant branches. Keep the general relation as the specification the
+specialized one is checked against.
 
-### Accumulators and modes
+This idea runs deep. In the 1970s Futamura observed that specializing an
+interpreter to a fixed source program yields a compiled program; partial
+evaluation of logic programs grew from the same unfold-fold-specialize toolkit.
 
-A direct list sum performs work after recursion:
+### Accumulators change modes
 
 ```eyeprolog
 sum_numbers([], 0).
@@ -3210,7 +2258,7 @@ sum_numbers([X | Xs], Sum) :-
   (Sum is X + Rest).
 ```
 
-An accumulator makes the partial sum explicit:
+With an accumulator, the partial sum becomes an argument:
 
 ```eyeprolog
 sum_numbers_acc(List, Sum) :- sum_from(List, 0, Sum).
@@ -3221,62 +2269,39 @@ sum_from([X | Xs], Accumulator, Sum) :-
   sum_from(Xs, Next, Sum).
 ```
 
-For a ground numeric list, both versions return the same sum. They do not have
-identical relational behavior in every mode. The accumulator version requires
-each intermediate addition to be ready on the way down. State the intended
-mode instead of claiming unconditional equivalence.
+On a ground numeric list both return the same sum. They are not the same
+relation in every mode: the accumulator version needs each element ready on
+the way down. Claim equivalence for the intended mode, not unconditionally.
 
-### A transformation checklist
+### Comparing versions
 
-Before replacing one definition with another, record:
-
-1. the intended ground relation;
-2. supported binding patterns;
-3. a termination measure for each supported pattern;
-4. whether duplicates and answer order matter;
-5. whether callers inspect proof structure;
-6. representative positive, negative, and boundary queries.
-
-Then compare both versions. `--stats` can show fewer calls or unifications, but
-performance evidence comes after semantic evidence. A faster program that
-silently drops a mode is a different program. Predicate and inference counts are
-also not reliable substitutes for elapsed time: one expensive host call can cost
-more than thousands of cheap Prolog calls. Repository-level performance work
-watches `npm test`'s own elapsed time across the whole corpus rather than a
-dedicated wall-clock benchmark harness.
+Before replacing a definition, write down its intended relation, supported
+modes, termination measure, whether duplicates and answer order matter, and
+whether callers read its proofs. Compare semantics first, then cost. `--stats`
+counts calls and unifications, but counts are not time: one expensive host
+call can outweigh thousands of cheap ones. A faster program that silently
+drops a mode is a different program.
 
 **Exercises.**
 
 1. Unfold a two-clause helper and count the resulting caller clauses.
-2. Fold repeated validation conditions in two rules of your own.
-3. Specialize a generic graph relation for one edge type.
-4. Compare direct and accumulator-based length relations in several modes.
-5. Find a transformation that preserves answers but changes the first proof
-   selected by `once/1`.
-
-**Checkpoint.** Choose one original and transformed relation. Compare their
-answer sets in both directions over a finite domain, then separately compare
-termination, answer order, duplicates, proof shape, and solver statistics.
+2. Compare direct and accumulator-based list length in several modes.
+3. Find a transformation that keeps the answer set but changes the first proof
+   that `once/1` selects.
 
 ## 24. Designing finite search
 
-Nondeterminism is not randomness. A nondeterministic relation defines several
-legitimate continuations, and search systematically explores them. The design
-problem is to make useful alternatives complete while keeping their number
-finite and their order productive.
+Nondeterminism is not randomness. A nondeterministic relation has several
+legitimate continuations, and search explores them systematically. The design
+task is to keep the useful ones, make their number finite, and put the
+productive ones first.
 
 <figure>
   <img src="book-assets/finite-search-funnel.svg" alt="A funnel narrows six generated worker-task candidates through ready constraints into four witnesses before ordering the survivors.">
   <figcaption>Finite search is designed from the top down: bound generation, prune with ready constraints, preserve the witness, then order only the survivors.</figcaption>
 </figure>
 
-### Generate, constrain, describe
-
-A clear search program often has three layers:
-
-1. generate a candidate from a finite domain;
-2. constrain the candidate;
-3. describe or score the surviving witness.
+### Generate and constrain
 
 ```eyeprolog
 worker(ada).
@@ -3301,18 +2326,17 @@ assignment(Worker, Task) :-
 eyeprolog --goal 'assignment(Worker, Task)' program.pl
 ```
 
-`worker/1` and `task/1` make the search space explicit. `qualified/2` is both a
-constraint and a selective relation. If the application knows the task,
-calling `assignment(Worker, repair)` avoids generating irrelevant task values.
+`worker/1` and `task/1` make the search space explicit and finite;
+`qualified/2` prunes it. A caller that knows the task asks
+`assignment(Worker, repair)` and never generates the other task.
 
 ### Search over states
 
-A state-space problem needs a state term, a finite move relation, a goal test,
-a policy for repeated states, and a witness representation. A simple graph
-path carries visited nodes:
+A state-space search needs a state term, a finite move relation, a goal test,
+a policy for repeated states, and a witness. Here the visited list is both the
+repeat policy and the witness:
 
 ```eyeprolog
-
 :- use_module(library(lists)).
 
 simple_path(From, To, Path) :-
@@ -3326,36 +2350,26 @@ walk(From, To, Visited, Path) :-
   walk(Next, To, [Next | Visited], Path).
 ```
 
-The visited list makes the witness finite on a finite graph. It also changes
-the question from arbitrary walks to simple paths. That is a modeling choice,
-not merely an optimization. A caller asking for repeated stops needs another
-bound, such as maximum steps or cost.
+On a finite graph this terminates — but it also changes the question from
+walks to simple paths. That is a modeling decision, not an optimization. A
+caller who wants repeated stops needs a different bound, such as a step or
+cost limit.
 
-### Existence, one witness, and all witnesses
+### Existence, one witness, all witnesses
 
-These questions have very different costs:
-
-```eyeprolog
-
-:- use_module(library(lists)).
-
-reachable(From, To).
-once(simple_path(From, To, Path)).
-findall(Path, simple_path(From, To, Path), Paths).
+```text
+reachable(From, To)                                 one pair; table it
+once(simple_path(From, To, Path))                   stops at the first path
+findall(Path, simple_path(From, To, Path), Paths)   may be exponential
 ```
 
-Reachability needs only a pair and is a good candidate for tabling. One path
-may stop after the first witness. All simple paths may be exponentially
-numerous even though the graph is finite. Choose the weakest result that meets
-the caller's need.
+All three are finite on a finite graph, and their costs differ enormously.
+Ask for the weakest result that meets the caller's need.
 
 ### Optimization is search plus an order
 
-An optimal answer requires a finite candidate relation and a comparison key:
-
 ```eyeprolog
 :- use_module(library(aggregate)).
-:- use_module(library(lists)).
 
 best_plan(Request, Plan, Cost) :-
   aggregate_min(
@@ -3367,75 +2381,53 @@ best_plan(Request, Plan, Cost) :-
   ).
 ```
 
-The structured key makes ties deterministic. It does not reduce the candidate
-space: `aggregate_min/5` must settle the nested search before knowing the
-minimum. For a large problem, strengthen `candidate_plan/3` or use a
-domain-specific dynamic program instead of assuming aggregation performs
-branch-and-bound.
+The key `[Cost, Plan]` breaks ties deterministically. It does not shrink the
+search: `aggregate_min/5` enumerates every candidate before it knows the
+minimum. It is not branch-and-bound. For a large problem, strengthen
+`candidate_plan/3` or write a domain-specific dynamic program.
 
-### Fairness and depth-first search
+### Depth-first is not fair
 
-Depth-first clause search can become trapped in an infinite branch before
-reaching a later finite proof. Base cases should be reachable before recursive
-expansion, and recursive steps should consume a finite resource or enter a
-finite table. When neither is possible, the query is outside the practical
-contract of the relation.
-
-Multiple clauses normally mean that any or all may yield legitimate answers.
-`once/1` turns the first success into a don't-care choice: later alternatives
-are intentionally discarded. Use it only when selection order is an accepted
-part of the specification.
+Depth-first search can disappear into an infinite branch before reaching a
+finite proof further along. Put reachable base cases before recursive
+expansion, and make each recursive step consume a finite resource or enter a
+finite table. `once/1` turns the first success into a deliberate choice; use
+it only when that order is part of the specification.
 
 **Exercises.**
 
 1. Add skills and time slots to the assignment example.
-2. Modify `simple_path/3` to return accumulated cost.
-3. Compare reachability, one path, and all paths on a diamond-shaped graph.
-4. Give a finite candidate relation for which `aggregate_min/5` still performs
-   an impractically large search.
-5. Construct a recursive first clause that starves a valid later base clause,
-   then repair its control.
-
-**Checkpoint.** Write down the size of a candidate space before running its
-search. Name the generator, the earliest ready constraint, the witness, and
-the ordering used for optimization. If the size cannot be bounded, the design
-is not yet ready for aggregation.
+2. Make `simple_path/3` return an accumulated cost.
+3. Write a recursive first clause that starves a valid later base clause, then
+   repair it.
 
 ## 25. Case study: an auditable decision service
 
-This case study develops a small access decision from prose to an executable,
-explainable theory. The purpose is the sequence of design decisions that turns
-informal requirements into maintainable relations.
+This chapter turns a small access policy from prose into an explainable
+theory.
 
 <figure>
   <img src="book-assets/auditable-decision-service.svg" alt="Versioned source facts and policy pass integrity checks and reasoning to produce a decision with a replayable proof bundle.">
   <figcaption>An auditable service keeps source and theory versions attached to the premises, blocks invalid input at an integrity gate, and returns the decision with replayable provenance.</figcaption>
 </figure>
 
-### Requirements and questions
+### The requirements
 
-A research facility says:
+A research facility says: a person may enter a zone when their badge is
+active, the badge grants the zone's clearance, their training is current, and
+they are not suspended. Contradictory badge records invalidate the service.
+Every permit must be traceable to source facts.
 
-- a person may enter a zone when their badge is active;
-- the badge must grant the zone's required clearance;
-- required training must be current;
-- an explicit suspension blocks entry;
-- contradictory badge records invalidate the decision service;
-- every permit should carry a reason traceable to source facts.
+The prose leaves questions open. Is the suspension list complete? Is missing
+training a denial or unknown? Can someone hold two active badges? Which clock
+defines "current"? A rule engine cannot answer these; it can only make the
+chosen answers precise.
 
-Before coding, identify ambiguities. Is the badge registry complete? Is missing
-training evidence a denial or unknown? Can a person have several active badges?
-Which clock determines “current”? A rule engine cannot remove these choices;
-it can only make the chosen answers precise.
+### Sources and concepts
 
-### Source and concept layers
-
-Represent observations without embedding decisions:
+Record observations, not decisions:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 person(ada).
 badge(b17, ada).
 badge_status(b17, active).
@@ -3444,16 +2436,11 @@ zone_requires(clean_room, laboratory).
 training_valid(ada, clean_room).
 ```
 
-The badge identifier remains explicit. Collapsing it into
-`active_badge(ada)` would hide the record used as evidence and make conflicting
-records harder to detect.
-
-Build vocabulary that reads like the policy:
+Keeping the badge identifier explicit matters. `active_badge(ada)` would hide
+the record used as evidence and make conflicting records harder to see. Then
+build vocabulary that reads like the policy:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 active_badge(Person, Badge) :-
   badge(Badge, Person),
   badge_status(Badge, active).
@@ -3466,13 +2453,9 @@ prepared_for(Person, Zone) :-
   training_valid(Person, Zone).
 ```
 
-Each helper has one responsibility. A proof of `cleared_for/2` names both the
-badge clearance and zone requirement rather than burying their join in a wide
-decision clause.
+### The closed-world choice
 
-### Closed-world choice
-
-If the suspension list is authoritative and complete, absence can be used:
+If the suspension list is authoritative and complete, absence is evidence:
 
 ```eyeprolog
 in_good_standing(Person) :-
@@ -3480,16 +2463,13 @@ in_good_standing(Person) :-
   \+ suspended(Person).
 ```
 
-If it is incomplete, this rule is unsound as policy. Replace it with a positive
-source claim such as `standing(Person, good)`. The difference is an agreement
-about the knowledge boundary, not a matter of syntax.
+If it is incomplete, this rule is unsound policy; require a positive fact such
+as `standing(Person, good)` instead. The difference is an agreement about
+what the data covers, not a matter of syntax.
 
-### Decision, reasons, and proof
+### Decision and reason
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 permit(Person, Zone) :-
   active_badge(Person, Badge),
   cleared_for(Badge, Zone),
@@ -3502,16 +2482,14 @@ reason(Person, Zone, badge_and_training_verified) :-
 
 ```sh
 eyeprolog --goal 'permit(Person, Zone)' program.pl
-eyeprolog --goal 'reason(Person, Zone, Reason)' program.pl
+eyeprolog --proof --goal 'permit(Person, Zone)' program.pl
 ```
 
-`reason/3` supplies a stable user-facing summary. With `--proof`, the same
-answer carries its detailed derivation. These are complementary: the reason is
-domain vocabulary, while the proof records actual clauses and bindings.
+`reason/3` is a stable summary in domain vocabulary. `--proof` gives the
+derivation: the actual clauses and bindings. Users read the first; auditors
+check the second.
 
 ### Integrity before decisions
-
-Contradictory badge states are exposed by an explicit validation relation:
 
 ```eyeprolog
 incompatible_status(active, revoked).
@@ -3523,94 +2501,40 @@ invalid_badge_status(Badge, Status, Other) :-
   badge_status(Badge, Other).
 ```
 
-This result does not say that one permit failed. It identifies input that is
-unfit for a trusted decision. The host can query `invalid_badge_status/3` before
-permit goals, alongside checks for a badge assigned to two people or a zone
-with incompatible clearance definitions.
+An answer here does not mean a permit failed. It means the input is unfit for
+a trusted decision. The host queries it — together with checks for a badge
+held by two people or a zone with conflicting clearances — before any permit
+goal.
 
 ### Tests are policy examples
 
-A useful test set includes an ordinary permit, missing training, suspension,
-insufficient clearance, duplicate derivations, contradictory status, and a
-proof showing the exact badge and training facts.
-
-Boundary examples reveal requirements. If a person has two valid badges,
-should there be one permit with two derivations or two permit terms containing
-the badge? `permit(Person, Zone)` chooses one ground decision with potentially
-several proofs. If badge identity belongs in the answer, define
-`permit(Person, Zone, Badge)`.
+Test an ordinary permit, missing training, suspension, insufficient
+clearance, contradictory status, and a proof that names the exact badge and
+training facts. Boundary cases expose requirements: with two valid badges,
+`permit(Person, Zone)` yields one decision with two proofs. If the badge
+belongs in the answer, the relation should be `permit(Person, Zone, Badge)`.
 
 ### Embedding and audit
-
-Authenticate source systems in the host, convert records to EyeProlog facts, run
-the theory, and store the answer with its proof and input version. The solver
-can explain logical support; it cannot attest that a badge database was current
-or a training provider trustworthy.
 
 ```text
 authenticated source snapshot
   -> normalized EyeProlog facts
-  -> checked theory
+  -> integrity checks
   -> permit and reason
   -> proof referencing clauses and facts
 ```
 
-When policy changes, preserve old inputs, theory versions, and proofs so a past
-decision can be reconstructed under the rules that actually governed it.
+The host authenticates sources and converts records to facts; EyeProlog
+derives and explains; the host stores the answer with its proof and the input
+and theory versions. The solver can explain logical support. It cannot attest
+that the badge database was current. Keep old inputs, theories, and proofs, so
+a past decision can be reconstructed under the rules that governed it.
 
 **Exercises.**
 
-1. Add time-bounded training using explicit dates and `difference/3`.
+1. Add time-bounded training using explicit dates and `difference/3` from `library(dates)`.
 2. Model `denial/3` without assuming every failed permit has the same reason.
-3. Add a two-person escort rule and identify duplicate-proof cases.
-4. Write an integrity relation for badges assigned to multiple people.
-5. Define the validation the host must perform before supplying badge facts.
-6. Run the case with `--proof` and decide which helpers improve the explanation.
-
-**Checkpoint.** Reconstruct one permit decision from a preserved source
-snapshot, theory version, answer, and proof. Mark which step authenticates the
-source, which checks integrity, which derives the decision, and which merely
-stores evidence for later audit.
-
-## Part V summary
-
-Part V followed whole computations rather than isolated features:
-
-- and–or trees expose conjunction, alternatives, failure, and repeated calls;
-- explicit syntax trees support grammars, evaluators, and symbolic rewriting;
-- unfolding, folding, specialization, and accumulators transform control under
-  stated invariants;
-- finite search needs a declared space, pruning argument, witness, and fairness
-  expectation;
-- an auditable service layers sources, concepts, integrity, decisions, reasons,
-  embedding, and proof retention.
-
-You should now be able to trace substitutions through several goals, represent
-an object language without confusing it with the surrounding Prolog syntax, justify a bounded
-program transformation, and design a reconstructable decision theory.
-
-### Historical note: interpreters, transformation, and the art tradition
-
-Logic programming became a laboratory for symbolic programming because its
-principal data—terms, clauses, substitutions, and proof trees—could be
-represented with the same structures used for ordinary domains.
-Meta-interpreters made resolution itself a program topic; grammar rules made
-language recognition relational; partial evaluation showed how a general
-relation could be specialized when part of its input was known.
-
-Futamura's work in the 1970s gave partial evaluation a striking interpretation:
-specializing an interpreter with respect to a source program can produce a
-compiled form. Logic-program transformation developed related practices of
-unfolding, folding, and specialization. The inheritance for EyeProlog is not a
-promise that every classic transformation is built in. It is the demand that a
-transformation name its invariant and preserve a stated answer contract.
-
-*The Art of Prolog* joined computation, construction, nondeterminism, grammars,
-interpreters, transformation, and applications into a sustained account of
-craft. Part V pays tribute to that breadth through EyeProlog's explicit subset:
-syntax is data, state is an argument, and audit evidence remains visible.
-
----
+3. Write an integrity relation for a badge assigned to two people.
 
 # Part VI — Mathematics made executable
 
@@ -3619,186 +2543,80 @@ syntax is data, state is an argument, and audit evidence remains visible.
   <figcaption>Formal clauses form a bridge: definitions and invariants become computations that return witnesses, counterexamples, and inspectable proofs.</figcaption>
 </figure>
 
-This Part is a route, not a prerequisite for the reasoning laboratory. For a
-short practical path, read Chapters 26, 27, and 29, then continue at Chapter
-31. Read Chapters 28 and 30 as well when representation, formal scope, and the
-limits of computation are central to your purpose.
+A logic program works because parts of mathematical reasoning can be written
+as finite symbols, transformed by explicit rules, and checked step by step.
+EyeProlog is not a theorem prover or a computer algebra system, but its small
+fragment of logic makes the old mathematical acts visible: a clause defines a
+class, a variable is an unknown, a helper relation is a lemma, two clauses are
+a case split, recursion is induction, a binding is a witness, and a proof term
+is the argument. This Part follows that correspondence and marks where it
+stops.
 
-Mathematics appears throughout this book as subject matter: arithmetic,
-combinatorics, graphs, geometry, algebra, statistics, and physical models. But
-its deeper presence is structural. A logic program is possible because parts
-of mathematical reasoning can be represented as finite symbols, transformed
-by explicit rules, and checked step by step.
-
-In that qualified sense, the history of logic programming belongs inside the
-history of mathematics. It inherits the mathematician's old practices of
-definition, proof, construction, abstraction, and counterexample. It also
-inherits the twentieth century's harder questions. What counts as a formal
-proof? What is an effective procedure? Which truths follow from a finite set
-of axioms? Which questions cannot be decided by any uniform mechanical method?
-
-EyeProlog inherits a small, practical fragment of that tradition. It is not a
-foundation for all mathematics, a computer algebra system, or an interactive
-theorem prover. Its definite clauses cover only a disciplined fragment of logic.
-Precisely because the fragment is small, however, one can see the ancient
-mathematical acts inside the running machine:
-
-| Mathematical act | EyeProlog form | Operational consequence |
-| --- | --- | --- |
-| Define a class | facts and clauses | enumerate its instances |
-| Introduce an unknown | a variable | seek a substitution |
-| Use a lemma | call a helper relation | open a subgoal |
-| Split into cases | multiple clauses | create alternatives |
-| Perform induction | base and recursive clauses | reduce to smaller calls |
-| Construct a witness | bind an output term | return evidence, not only truth |
-| Refute a universal guess | search for a counterexample | one answer is enough |
-| Check consistency | an explicit integrity query | reject or report invalid input |
-| Explain a conclusion | a proof term | expose the successful derivation |
-
-The table is a correspondence, not an identity. A mathematical proof and an
-EyeProlog execution answer different questions unless the encoding between them is
-itself justified. This Part develops both the power and the limit of the
-correspondence.
+For a short route, read Chapters 26, 27, and 29, then continue at Chapter 31.
 
 ## 26. A proof can be a computation
 
-For most of mathematical history, an algorithm and a proof could live close
-together without being regarded as the same kind of object. Euclid's
-algorithm computes a greatest common divisor, while Euclid's propositions
-justify why the procedure works. A geometrical construction produces an
-object, while an argument establishes that it has the required properties.
-The distinction remains useful, but modern logic revealed increasingly exact
-connections among a proposition, its proof, and the construction carried by
-that proof.
-
-<figure>
-  <img src="book-assets/proof-as-computation.svg" alt="An existential query passes through theory and proof search, producing both a ground object witness and a derivation witness.">
-  <figcaption>A successful existential query returns an object that satisfies the claim and a derivation that explains why the theory licenses that object.</figcaption>
-</figure>
-
-Logic programming enters through one particular connection. A definite clause
-
-```eyeprolog
-mortal(X) :- human(X).
-```
-
-is at once an implication-like statement and an instruction for reducing the
-question `mortal(socrates)` to the subquestion `human(socrates)`. A successful
-derivation does not merely return `true`; it records a sequence of justified
-reductions and the substitutions that made them fit.
-
-### From axioms to effective procedure
-
-The route was neither straight nor inevitable. A compact historical spine is:
-
-1. **Axiomatization.** Nineteenth- and early-twentieth-century mathematics
-   sharpened the demand that assumptions and inference rules be stated
-   explicitly. Hilbert's program made formal proof and consistency central
-   mathematical subjects.
-2. **Limits of formal systems.** Gödel showed that sufficiently expressive,
-   effectively axiomatized consistent systems cannot capture every
-   arithmetical truth within themselves. Formalization acquired proven limits,
-   not merely engineering difficulties.
-3. **Effective calculability.** Church and Turing gave exact, extensionally
-   equivalent accounts of effective computation and established that some
-   decision problems have no general algorithm.
-4. **Ground instances.** Herbrand connected quantified first-order statements
-   to finite combinations of ground instances. The terms used to instantiate
-   variables became central proof objects.
-5. **Machine-oriented inference.** Robinson's resolution principle combined
-   clauses and unification into a small general proof mechanism.
-6. **Logic as a programming language.** Prolog specialized these ideas into an
-   executable discipline, and the least-model and fixed-point semantics of
-   van Emden and Kowalski explained how definite programs denote their ground
-   consequences.
-
-Each step narrowed one ambiguity while uncovering another. Formal syntax made
-proofs mechanically inspectable, but Gödel marked the boundary of formal
-completeness. Models of computation made “algorithm” exact, but Church and
-Turing marked the boundary of decidability. Resolution made inference uniform,
-but a proof procedure still needed control: selection order, clause order,
-termination discipline, and eventually tabling.
-
-Logic programming is therefore not the historical triumph of machinery over
-mathematics. It is one result of mathematics becoming reflective about its own
-methods.
-
-### Answers are existential witnesses
-
-Consider a relation for a Pythagorean triple:
+Ask for Pythagorean triples with sides up to 20:
 
 ```eyeprolog
 :- use_module(library(between), [between/3]).
-:- use_module(library(lists)).
 
 triple(A, B, C) :-
   between(1, 20, A),
   between(A, 20, B),
   between(B, 20, C),
-  (AA is A * A),
-  (BB is B * B),
-  (Sum is AA + BB),
-  (Sum is C * C).
+  (C * C =:= A * A + B * B).
 ```
 
 ```sh
 eyeprolog --goal 'triple(A, B, C)' program.pl
 ```
 
-The open query asks an existential question over a finite domain: find values
-for which the equation holds. Each printed ground answer is a witness. The
-substitution is not an incidental side effect; it is the computational content
-of the existential claim.
-
-A verifier and a generator are logically close but operationally different.
-If `A`, `B`, and `C` are already known, the arithmetic goals check a candidate.
-If they are unknown, the bounded `between/3` calls create candidates first.
-The equation alone does not tell a mode-sensitive evaluator where numbers
-should come from.
-
-This is an important distinction between mathematical existence and
-executable witness production. A classical proof may establish that something
-exists without furnishing an efficient construction. An EyeProlog query produces
-a witness only when its clauses and control actually reach one.
-
-### Proof objects and proof checking
-
-The normal answer
-
-```eyeprolog
-
-:- use_module(library(lists)).
-
+```text
 triple(3, 4, 5).
+triple(5, 12, 13).
+triple(6, 8, 10).
+triple(8, 15, 17).
+triple(9, 12, 15).
+triple(12, 16, 20).
 ```
 
-states the result. Proof output adds the successful chain of facts, rule uses,
-built-ins, and bindings. That evidence supports three different activities:
+The query is an existential claim: *there are* `A`, `B`, and `C` in range with
+`A² + B² = C²`. Each answer does more than say "true". It hands back the
+object that makes the claim true. The substitution is the computational
+content of the existence statement.
 
-- **rechecking:** verify that every step follows from the supplied theory and
-  built-in contract;
-- **auditing:** identify which premises were actually used;
-- **explanation:** translate a derivation into domain reasons a person can
-  inspect.
+### Witnesses need a source
 
-These activities must not be conflated. A derivation can be mechanically valid
-but pedagogically obscure. It can be clear but depend on an untrustworthy
-source fact. It can be valid in the implemented arithmetic but fail to express
-the intended physical quantity. Proof output makes scrutiny possible; it does
-not perform all scrutiny on the reader's behalf.
+With all three arguments bound, the same clause only checks a candidate. With
+them unbound, the bounded `between/3` goals supply candidates and the
+comparison filters them. The equation by itself says nothing about where
+numbers come from.
 
-### The least model as mathematical closure
+That is the gap between mathematical existence and executable witness. A
+classical proof may show that something exists without saying how to build
+it. An EyeProlog query produces a witness only when its clauses and control
+actually reach one.
 
-For a definite program, begin with its ground facts. Repeatedly add every
-ground rule head whose ground body is already satisfied. The least fixed point
-of this operation is the least Herbrand model.
+### Proofs as evidence
 
-For
+Run the same goal with `--proof` and each answer carries its derivation: the
+facts, rules, built-in calls, and bindings that produced it. That record
+supports three distinct activities:
+
+- **rechecking** that every step follows from the theory and the built-in
+  contracts;
+- **auditing** which premises were actually used;
+- **explaining** the conclusion in terms a person can follow.
+
+These are different jobs. A derivation can be valid and unreadable, readable
+and built on a bad source fact, or correct for floating-point arithmetic and
+wrong for the physical quantity it was meant to model. Proof output makes
+scrutiny possible; it does not do the scrutiny for you.
+
+### The least model as closure
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 edge(a, b).
 edge(b, c).
 
@@ -3806,51 +2624,46 @@ path(X, Y) :- edge(X, Y).
 path(X, Z) :- edge(X, Y), path(Y, Z).
 ```
 
-the closure first contains the two edges, then the corresponding direct paths,
-then `path(a, c)`. No unsupported path is added. Bottom-up closure and
-goal-directed proof search approach the same declarative meaning from opposite
-directions: one asks what follows globally, the other asks what is needed for
-this goal.
+Start from the facts and repeatedly add every rule head whose body is already
+satisfied. The first round adds `path(a, b)` and `path(b, c)`; the second adds
+`path(a, c)`; the third adds nothing. That fixed point is the least Herbrand
+model, and it is what the program means. Goal-directed search reaches the same
+meaning from the other side: it asks only what this particular goal needs.
 
-Explicit tabling makes the connection visible. A table for a declared recursive
-component grows monotonically with newly discovered answers until no rule adds
-another. The implementation is performing a local, demand-driven fixed-point
-calculation.
+A tabled predicate makes the connection concrete. Its table grows with each
+new answer until no rule adds another — a local, demand-driven fixed-point
+computation.
 
-There is an important lifetime distinction between a table that is needed to
-finish one fixed point and a cache of tables retained for possible later reuse.
-DCG nonterminals are ordinary predicates after expansion, so they are depth-first
-unless their expanded predicate indicator is explicitly tabled. Untabled
-list-tail DCGs such as `... --> [_], ...` therefore run directly with standard
-Prolog control. For an explicitly tabled grammar invoked through `phrase/2-3`,
-EyeProlog instead uses a separate invocation-keyed table scope rather than
-retaining tables for unrelated input sequences — a declared table remains a
-conscious source-level choice.
+### Where the idea came from
+
+The path to logic programming ran through mathematics examining its own
+methods. Hilbert made formal proof and consistency mathematical subjects.
+Gödel showed that sufficiently expressive consistent systems cannot prove
+every arithmetical truth. Church and Turing made "effective procedure" exact
+and proved that some decision problems have no algorithm. Herbrand reduced
+quantified statements to ground instances, Robinson turned unification into a
+uniform inference rule, and van Emden and Kowalski gave definite programs
+their least-model meaning. Each step made one idea precise and exposed a new
+limit; resolution, in particular, still needed control — selection order,
+clause order, and eventually tabling.
 
 **Exercises.**
 
-1. Run the triple program with one, two, and three arguments bound. Compare the
-   logical question, answer set, and search size.
-2. Add a primitive-triple test by rejecting triples whose three values share a
-   divisor. State exactly which finite generators make the negation safe.
-3. Inspect `examples/fundamental-theorem-arithmetic.pl`. Separate the witness
-   it constructs from the property it verifies.
-4. Draw the fixed-point stages for a four-edge graph containing one cycle.
-5. Find a proof whose machine form is correct but whose helper names make it a
-   poor human explanation.
+1. Run `triple/3` with one, two, and three arguments bound. Compare the
+   question asked, the answers, and the amount of search.
+2. Keep only primitive triples by rejecting those whose sides share a divisor.
+   Which generators make the negation safe?
+3. In `examples/fundamental-theorem-arithmetic.pl`, separate the witness it
+   constructs from the property it verifies.
+4. Draw the fixed-point rounds for a four-edge graph with one cycle.
 
-**Checkpoint.** For one printed mathematical answer, state the existential
-claim witnessed by its bindings, the finite domain that made search effective,
-and the separate argument—if any—that justifies a universal theorem.
+**Checkpoint.** For one printed answer, state the existential claim its
+bindings witness, the finite domain that made search possible, and what
+further argument a universal theorem would need.
 
 ## 27. Recursion is induction in motion
 
-Recursion and mathematical induction are not identical, but they are natural
-partners. Induction justifies a statement for every object generated by a
-finite construction. Recursion defines a result by following that same
-construction toward smaller objects.
-
-For natural numbers represented as `z`, `s(z)`, `s(s(z))`, and so on:
+Represent natural numbers as `z`, `s(z)`, `s(s(z))`, and so on:
 
 ```eyeprolog
 natural(z).
@@ -3860,80 +2673,63 @@ plus(z, Y, Y).
 plus(s(X), Y, s(Z)) :- plus(X, Y, Z).
 ```
 
-The clauses for `plus/3` say:
+The two `plus/3` clauses are the textbook definition of addition: zero plus
+`Y` is `Y`, and the successor of `X` plus `Y` is the successor of `X` plus
+`Y`. Run backwards, the same clauses split a number into summands:
 
-- adding zero to `Y` produces `Y`;
-- adding the successor of `X` to `Y` produces the successor of the result of
-  adding `X` to `Y`.
+```sh
+eyeprolog --goal 'plus(X, Y, s(s(z)))' program.pl
+```
 
-Operationally, the first argument decreases by one constructor until it reaches
-`z`. Mathematically, the clauses mirror a recursive definition. To prove a
-property of `plus/3` for all Peano naturals, induction on that first argument is
-the obvious proof shape.
+```text
+plus(z, s(s(z)), s(s(z))).
+plus(s(z), s(z), s(s(z))).
+plus(s(s(z)), z, s(s(z))).
+```
+
+To prove something about `plus/3` for every natural number, induct on the
+first argument: the base clause is the base case, the recursive call is the
+induction hypothesis, and the rule head is the conclusion it preserves.
 
 <figure>
   <img src="book-assets/recursion-induction-ladder.svg" alt="Parallel ladders align a base clause with an induction base case, a recursive call with the induction hypothesis, and the rule head with the preserved conclusion; a separate box states the decreasing termination measure.">
   <figcaption>Recursion and induction can share a structural skeleton, but termination still requires its own well-founded decreasing measure.</figcaption>
 </figure>
 
-### Three obligations, not one
+### Correctness is not termination
 
-A recursive mathematical program invites three separate arguments:
+Induction shows that every answer is right. It does not show that the search
+finishes. Chapter 19 separates the three claims — partial correctness,
+completeness for a mode, and termination — and they apply here unchanged.
 
-1. **Partial correctness:** if the relation returns an answer, does the answer
-   satisfy the intended specification?
-2. **Completeness for the intended mode:** if an answer satisfies the
-   specification, will this program find it?
-3. **Termination:** will search finish for calls in the intended mode?
+For `plus(+,+,-)` the termination measure is the number of `s/1` wrappers on
+the first argument. Every recursive call removes one, and natural numbers
+have no infinite descending chain. "It seems to get smaller" is not an
+argument; a measure into a well-founded set, decreasing on every recursive
+branch, is.
 
-They are logically independent. A program can terminate and return the wrong
-answer. It can return only correct answers while missing some. It can describe
-the correct relation and still diverge before producing it.
+### Data shapes give you the induction
 
-For `plus(+,+,-)`, a termination measure is the number of `s/1` constructors in
-the first argument. Every recursive call strictly decreases that natural
-number. The measure is well-founded: there is no infinite descending sequence
-of natural numbers.
-
-That last sentence is the mathematical heart of a termination proof.
-“It seems to get smaller” is not enough. Name a set with no infinite descent,
-give a measure into that set, and show strict decrease on every recursive
-branch.
-
-### Structural induction and data design
-
-Lists carry their induction principle in their syntax:
-
-- base object: `[]`;
-- constructor: `[Head | Tail]`.
-
-A relation following that structure is easy to reason about:
+Lists carry their induction principle in their constructors: `[]` and
+`[Head | Tail]`. A relation that follows them is easy to prove correct:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 list_length([], 0).
 list_length([_ | Tail], N) :-
   list_length(Tail, M),
   (N is M + 1).
 ```
 
-To prove that `list_length(List, N)` returns the number of cells in a finite
-proper list, prove the empty case, then assume the claim for `Tail` and prove
-it for `[Head | Tail]`. The recursive program and inductive proof share a
-skeleton because both respect the same constructors.
+Prove the empty case, assume the claim for `Tail`, prove it for
+`[Head | Tail]`. Program and proof share a skeleton because both follow the
+same constructors.
 
-Representation can either expose or obscure this skeleton. A syntax tree built
-from `number/1`, `plus/2`, and `times/2` supports structural recursion directly.
-A flat token string requires parsing before the same argument becomes visible.
-Good representations do not merely save code; they make invariants and proof
-principles available.
+Representation decides whether that skeleton is available. An expression tree
+built from `number/1`, `plus/2`, and `times/2` supports structural recursion
+directly; a flat token list must be parsed first. Good representations make
+the proof principle visible, not just the code shorter.
 
-### Accumulators and strengthened invariants
-
-An accumulator often improves control but makes the induction hypothesis more
-subtle:
+### Accumulators need stronger invariants
 
 ```eyeprolog
 reverse_acc(List, Reversed) :-
@@ -3944,563 +2740,335 @@ reverse_go([X | Xs], Acc, Reversed) :-
   reverse_go(Xs, [X | Acc], Reversed).
 ```
 
-The useful invariant is not merely “`Reversed` is the reverse of `Xs`.” It is:
+"`Reversed` is the reverse of `Xs`" is false for `reverse_go/3` and cannot be
+proved by induction. The statement that works is stronger:
 
 > `reverse_go(Xs, Acc, Reversed)` holds when `Reversed` is the reverse of
-> `Xs` placed before `Acc`.
+> `Xs` followed by `Acc`.
 
-Strengthening the statement makes the recursive step provable. This is a
-classic mathematical move: a theorem that is too weak to support induction is
-generalized until the induction hypothesis contains what the next step needs.
-Program transformation and proof discovery meet at the invariant.
+This is the mathematician's standard move: when a theorem is too weak to carry
+its own induction, generalize it until the hypothesis contains what the next
+step needs. Program transformation and proof discovery meet at the invariant.
 
-### Tabling changes the termination argument
+### Tabling changes the argument
 
-Ordinary structural recursion terminates by decreasing a term. Graph
-reachability on a cyclic finite graph has no such simple decrease: following
-an edge can return to an earlier vertex. Tabling supplies a different
-well-founded argument.
+On a cyclic graph, following an edge can lead back to a vertex already seen,
+so no term gets smaller. Tabled reachability terminates for a different
+reason: a finite graph has finitely many ground `path/2` answers, the table
+only grows, and each productive round adds an answer it did not have.
+Termination comes from a finite answer space, not from structural descent.
 
-If the graph has finitely many vertices, then there are finitely many possible
-ground `path/2` answers. A table only grows; each productive iteration adds a
-previously unseen answer; therefore only finitely many productive iterations
-are possible. Termination follows from finiteness of the answer space rather
-than structural descent of each call.
-
-The proof also states its boundary. If rules construct terms of unbounded
-depth, the set of possible calls or answers may be infinite, and tabling no
-longer supplies a finite bound.
+The argument also states its own limit. If rules build terms of unbounded
+depth, the space of calls or answers is infinite and tabling no longer bounds
+it.
 
 **Exercises.**
 
-1. State partial correctness, completeness, and termination claims for
-   `plus(+,+,-)` separately.
-2. Define multiplication over Peano naturals and give its decreasing measure.
-3. Prove the strengthened `reverse_go/3` invariant on paper.
-4. Compare the termination arguments for list membership and cyclic graph
-   reachability.
-5. Study `examples/peano-calculus.pl` and identify where the data constructors
-   determine the available induction.
+1. Define multiplication on Peano naturals and give its decreasing measure.
+2. Prove the strengthened `reverse_go/3` invariant on paper.
+3. Compare the termination arguments for list membership and for reachability
+   on a cyclic graph.
+4. In `examples/peano-calculus.pl`, find where the data constructors determine
+   the available induction.
 
-**Checkpoint.** Align one recursive program with an inductive argument: base
-clause with base case, recursive call with induction hypothesis, and rule head
-with the preserved conclusion. Then give the independent termination measure.
+**Checkpoint.** Line up one recursive program with its induction proof — base
+clause and base case, recursive call and hypothesis, head and conclusion —
+then give a separate termination measure.
 
 ## 28. Algebra, symmetry, and representation
 
-Algebra studies operations by the laws they satisfy rather than by the material
-of the objects being operated on. Logic programming has a similar appetite
-for structure. Unification ignores the private identity of a variable name and
-asks whether two terms have a common instance. A relational program often
-works over lists, trees, graphs, substitutions, or group elements because the
-clauses depend only on their constructors and laws.
+Unification solves equations between terms:
 
-### Unification is structural equation solving
-
-The goal
-
-```eyeprolog
-(pair(X, f(Y)) = pair(g(a), f(b))).
+```text
+?- pair(X, f(Y)) = pair(g(a), f(b)).
+X = g(a), Y = b.
 ```
 
-decomposes into structural equations. The outer functors and arities agree,
-so corresponding arguments must agree; the resulting substitution is
-`X = g(a)` and `Y = b`.
+The outer functors and arities agree, so the arguments must agree pairwise.
+But unification works in the *free* term algebra: distinct constructors are
+always different, and two terms are equal only if they have the same shape.
+It knows nothing of commutativity, so `2 + 3 = 3 + 2` fails even though both
+evaluate to 5.
 
-This resembles algebraic equation solving, but unification is more specific.
-It operates in the free term algebra: different constructors are distinct,
-and two constructed terms agree only when their outer symbols and corresponding
-arguments agree. It does not know, unless clauses or built-ins say so, that
-`X is 2 + 3` and `X is 3 + 2` express a commutative operation.
+Keep two kinds of equality apart:
 
-The distinction prevents a common conceptual error:
+- **syntactic equality** — identical structure, decided by unification;
+- **domain equality** — equal by the laws of the domain, which needs
+  normalization or a decision procedure.
 
-- **syntactic equality** comes from identical term structure or unification;
-- **domain equality** may require mathematical laws, normalization, or a
-  decision procedure.
-
-For polynomials, matrices, groups, or sets, choosing a canonical representation
-can turn some domain equalities into syntactic equalities. But the
-normalization algorithm then carries a proof obligation: equivalent objects
-must normalize alike, and normalization must not identify inequivalent ones.
+A canonical representation turns some domain equalities into syntactic ones.
+For polynomials, sets, or fractions that is often the right design, but the
+normalizer then owes a proof: equivalent objects must normalize alike, and
+inequivalent ones must not.
 
 ### Symmetry reduces search
 
-Suppose a triangle is represented by three side lengths. Searching all
-permutations repeats the same geometric object six times. Ordering the sides
-removes the symmetry:
+A triangle given by three side lengths can be listed in six orders. Generate
+only the ordered one:
 
 ```eyeprolog
 :- use_module(library(between), [between/3]).
-:- use_module(library(lists)).
 
 triangle(A, B, C) :-
   between(1, 20, A),
   between(A, 20, B),
   between(B, 20, C),
-  (Sum is A + B),
-  (Sum > C).
+  (A + B > C).
 ```
 
-The constraints `A =< B =< C` select one representative from each permutation
-class. This is more than a performance trick. It is a quotient-like move:
-identify descriptions related by a symmetry, then search canonical
-representatives.
+Because `A =< B =< C`, each triangle appears once. This is more than a speedup.
+It picks one representative from each permutation class — a quotient. Much of
+mathematics advances by choosing the right equivalence: fractions with equal
+cross-products, graphs up to renaming, formulas up to variable renaming. A
+logic program must decide which distinctions belong to the problem and which
+are accidents of notation.
 
-Mathematics repeatedly advances by finding the right equivalence relation.
-Fractions are identified when cross-products agree; graphs may be identified
-up to renaming; group presentations may denote isomorphic structures; logical
-formulas may be identified up to variable renaming. Logic programs must decide
-which distinctions belong to the problem and which are artifacts of notation.
+### Relations expose inverse problems
 
-### Relations reveal inverse problems
-
-A function privileges one direction. An equation or relation contains several:
-
-```eyeprolog
-
-:- use_module(library(lists)).
-
-rectangle(W, H, Area) :- (Area is W * H).
-```
-
-When `W` and `H` are already bound, this relation may verify an area or calculate
-it from width and height. With a finite generator it can also search for
-factorizations:
+A function runs one way. A relation can be asked in several:
 
 ```eyeprolog
 :- use_module(library(between), [between/3]).
-:- use_module(library(lists)).
 
 integer_rectangle(Area, W, H) :-
   between(1, Area, W),
   between(W, Area, H),
-  (Area is W * H).
+  (Area =:= W * H).
 ```
 
 ```sh
 eyeprolog --goal 'integer_rectangle(24, W, H)' program.pl
 ```
 
-The relational view makes inverse questions conceptually ordinary, even when
-the implementation still needs an explicit finite direction. Mathematics has
-long moved between direct and inverse problems: multiply versus factor,
-evaluate versus interpolate, evolve a system versus infer its initial state.
-A relational vocabulary lets both questions share a specification where their
-common structure genuinely permits it.
+```text
+integer_rectangle(24, 1, 24).
+integer_rectangle(24, 2, 12).
+integer_rectangle(24, 3, 8).
+integer_rectangle(24, 4, 6).
+```
 
-### Composition, homomorphism, and reusable laws
+Multiply versus factor, evaluate versus interpolate, simulate versus infer
+the initial state: mathematics constantly moves between direct and inverse
+problems. A relation lets both share one specification, provided some
+argument supplies a finite direction for search — here, `between/3`.
 
-Well-designed relations compose because variables carry outputs from one
-statement into another. Mathematical structure tells us what composition
-should preserve.
+### Laws as testable relations
 
-If a mapping is claimed to preserve an operation, write the preservation law
-as a testable relation. For a symbolic mapping `image/2` and operation
-`combine/3`:
+If a mapping is meant to preserve an operation, write the law as a relation.
+For a mapping `image/2` and an operation `combine/3`:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 preserves_combine(X, Y) :-
   combine(X, Y, XY),
   image(X, IX),
   image(Y, IY),
   image(XY, IXY),
-  combine(IX, IY, CombinedImages),
-  (IXY = CombinedImages).
+  combine(IX, IY, IXY).
 ```
 
-Over a finite carrier, define a relation for a violating pair and use ISO
-`\+/1` to ask whether that counterexample relation has any answer. Over an
-infinite carrier, finite testing is evidence, not proof. The algebraic law must
-instead follow from definitions or a stronger proof system.
+Over a finite carrier, define a relation for a violating pair and ask with
+`\+/1` whether it has any answer. Over an infinite carrier, finite testing is
+evidence, not proof.
 
-The examples `d3-group.pl`, `matrix-noncommutativity.pl`,
-`group-inverse-uniqueness.pl`, and
-`composition-of-injective-functions-is-injective.pl` show different roles:
-computing a finite operation table, finding a counterexample to commutativity,
-proving uniqueness from axioms, and composing preserved properties.
+The examples cover the main roles: `d3-group.pl` computes a finite operation
+table, `matrix-noncommutativity.pl` refutes commutativity with one pair,
+`group-inverse-uniqueness.pl` proves uniqueness from axioms, and
+`composition-of-injective-functions-is-injective.pl` composes preserved
+properties.
 
-### Representation is a mathematical commitment
+### Representation is a commitment
 
-Representing a rational number as `fraction(N, D)` raises immediate questions:
-may `D` be zero, must signs be normalized, and are `fraction(1, 2)` and
-`fraction(2, 4)` identical or merely equivalent? These are not serialization
-details. They determine the equality relation, the search space, and the
-meaning of every later proof.
-
-Before selecting a representation, state:
-
-1. its valid inhabitants;
-2. its equivalence relation;
-3. whether it has a canonical form;
-4. the operations that must be efficient;
-5. the induction or decomposition principle it exposes.
-
-That checklist joins abstract algebra, data modeling, and program design.
+Writing a rational number as `fraction(N, D)` raises questions at once. May
+`D` be zero? Are signs normalized? Are `fraction(1, 2)` and `fraction(2, 4)`
+the same term or merely equivalent? These are not serialization details: they
+fix the equality relation, the search space, and the meaning of every later
+proof. Before choosing a representation, state its valid values, its
+equivalence, whether it has a canonical form, which operations must be fast,
+and which induction it exposes.
 
 **Exercises.**
 
-1. Modify the triangle generator to enumerate only primitive Pythagorean
-   triples and explain every removed symmetry.
-2. Give two representations of an undirected edge. Compare their equality and
+1. Give two representations of an undirected edge. Compare their equality and
    indexing behavior.
-3. Design a normalized rational representation and write integrity relations for
-   invalid denominators and noncanonical zero.
-4. Use `examples/d3-group.pl` to test identity, inverses, and associativity.
+2. Design a normalized rational representation and write integrity relations
+   for a zero denominator and a noncanonical zero.
+3. Use `examples/d3-group.pl` to check identity, inverses, and associativity.
    Which checks are exhaustive, and why?
-5. Find a matrix counterexample showing that multiplication is not
-   commutative. Explain why one witness refutes a universal law.
 
-**Checkpoint.** Pick a domain value with two possible representations. State
-whether EyeProlog regards them as structurally equal, whether the domain regards
-them as equivalent, and which normalization or explicit relation connects the
-two notions.
+**Checkpoint.** Take a value with two possible representations. Say whether
+EyeProlog treats them as structurally equal, whether the domain treats them as
+equivalent, and what connects the two.
 
 ## 29. Search as experimental mathematics
 
-Mathematicians do not prove only by moving forward from axioms. They calculate
-small cases, draw figures, search for patterns, try extreme examples, and hunt
-for counterexamples. Computation greatly enlarges this experimental practice.
-Logic programming contributes a particularly transparent form: generate a
-finite mathematical world, state the property relationally, and ask for
-witnesses or failures.
-
-<figure>
-  <img src="book-assets/bounded-experimental-math.svg" alt="A universal conjecture is tested over a declared finite box; a found counterexample refutes it globally, while exhaustion gives only bounded evidence.">
-  <figcaption>Finite search is asymmetric: one valid counterexample defeats a universal claim, while finding none establishes only the explicitly bounded statement.</figcaption>
-</figure>
-
-### Examples suggest; proofs compel
-
-The first values of a sequence can suggest a recurrence. Exhaustive search up
-to a bound can destroy a false conjecture. Neither establishes a universal
-theorem over an unbounded domain.
-
-This boundary can be written directly:
+Mathematicians compute small cases, look for patterns, and hunt for
+counterexamples long before they prove anything. Logic programming makes that
+experiment transparent: generate a finite world, state the property as a
+relation, and ask for witnesses or failures.
 
 ```eyeprolog
 :- use_module(library(between), [between/3]).
-:- use_module(library(lists)).
 
 counterexample_to_odd_square(N) :-
   between(1, 100, N),
-  (1 is N mod 2),
-  (Square is N * N),
-  (Remainder is Square mod 2),
-  (Remainder \= 1).
+  (N mod 2 =:= 1),
+  ((N * N) mod 2 =\= 1).
 ```
 
 ```sh
 eyeprolog --goal 'counterexample_to_odd_square(N)' program.pl
 ```
 
-No answer means only that no counterexample was found in the generated range
-under the implemented arithmetic. The theorem that every odd integer has an
-odd square needs an algebraic argument valid for an arbitrary integer:
-`(2k+1)^2 = 2(2k^2+2k)+1`.
+The run prints nothing. That means only that no odd number from 1 to 100 has
+an even square under the implemented arithmetic. The theorem for every odd
+integer needs algebra: `(2k+1)² = 2(2k²+2k)+1`.
 
-By contrast, if the claim concerns exactly the integers from 1 through 10,000,
-the finite exhaustive search can be a proof—provided the generator is complete,
-the predicate expresses the property correctly, and the arithmetic
-implementation is trusted.
+<figure>
+  <img src="book-assets/bounded-experimental-math.svg" alt="A universal conjecture is tested over a declared finite box; a found counterexample refutes it globally, while exhaustion gives only bounded evidence.">
+  <figcaption>Finite search is asymmetric: one valid counterexample defeats a universal claim, while finding none establishes only the explicitly bounded statement.</figcaption>
+</figure>
 
-### One counterexample has asymmetric power
+### The asymmetry of counterexamples
 
-A universal statement falls to one valid counterexample. This makes finite
-search especially valuable for criticism. Testing associativity over random
-inputs offers evidence; finding one triple where associativity fails settles
-the negative question.
+Search is weak at confirming and strong at refuting. No answer over a bounded
+range is evidence. One answer refutes a universal claim outright.
+`examples/matrix-noncommutativity.pl` multiplies two fixed 2×2 matrices both
+ways and gets different results; that single pair settles that matrix
+multiplication is not commutative.
 
-```eyeprolog
-noncommuting_pair(A, B) :-
-  matrix(A),
-  matrix(B),
-  matrix_multiply(A, B, AB),
-  matrix_multiply(B, A, BA),
-  (AB \= BA).
-```
-
-The example need not explain every failure of commutativity. Its existence is
-enough to refute the universal claim. This asymmetry between confirmation and
-refutation is one reason constraint solving, model finding, and property-based
-testing are so productive.
+When the claim itself is bounded — "for every integer from 1 to 10,000" —
+exhaustive search is a proof, provided the generator is complete, the
+predicate says what is meant, and the arithmetic is trusted.
 
 ### Finite model exploration
 
-A finite structure consists of a finite carrier and interpretations of its
-operations and relations. EyeProlog can enumerate candidates, apply axioms as
-filters, and return models or countermodels. The method is mathematically
-serious because the scope is explicit.
+A finite structure is a finite carrier plus interpretations of its operations.
+EyeProlog can enumerate candidate tables, apply axioms as filters, and return
+models or countermodels. For three elements a binary operation has nine
+entries and 3⁹ possible tables. The axioms prune them: closure keeps outputs
+in the carrier, an identity fixes a whole row and column, commutativity ties
+mirrored cells, associativity checks triples.
 
-For a carrier of three named elements, a binary operation table has nine
-entries. Searching all possible tables is finite but large. Algebraic laws can
-prune partial or complete candidates:
+The order of those filters is itself mathematics. A strong law applied to
+partial tables collapses the search; the same law applied after full
+generation merely rejects thousands of finished candidates.
 
-- closure restricts every output to the carrier;
-- an identity fixes an entire row and column;
-- commutativity identifies mirrored entries;
-- associativity checks triples;
-- inverse requirements constrain remaining cells.
+### Count before you optimize
 
-The order of these constraints is operational mathematics. A strong law
-applied early may collapse the search space; the same law applied after full
-generation merely rejects enormous numbers of candidates.
+Search cost is usually a counting problem first. `n` alternatives at each of
+`k` positions give `nᵏ` leaves; ignoring a symmetry multiplies them; a
+constraint checked on partial choices removes whole subtrees. So before
+reordering goals or adding indexes, ask:
 
-### Combinatorics is the anatomy of search
+> What objects are being counted, and when do two branches denote the same
+> object?
 
-Search complexity is often a counting problem before it is a programming
-problem. If a choice has `n` alternatives at each of `k` positions, naive
-generation contains `n^k` leaves. If order does not matter, permutations may
-be redundant. If partial choices already violate a constraint, pruning saves
-an entire subtree.
+Otherwise the optimization may only speed up the production of duplicates.
+`clpz-n-queens.pl`, `send-more-money.pl`, `integer-partitions.pl`,
+`stirling-bell-numbers.pl`, and `weighted-interval-scheduling.pl` show
+different shapes of choice: permutations, digit assignments, recursive
+decompositions, set partitions, and ordered optimization. (The N-queens
+example searches at four queens; its eight-queens goal checks a known
+solution against the same model.)
 
-This is why combinatorial examples are not toys. `clpz-n-queens.pl` exposes
-the classic N-queens search through finite-domain constraints -- genuinely
-searched at four queens; its eight-queens goal instead checks a known witness
-against the same model, without searching for it. Together with `send-more-money.pl`,
-`integer-partitions.pl`, `stirling-bell-numbers.pl`,
-and `weighted-interval-scheduling.pl`, they show different geometries of
-choice: permutations, digit assignments, recursive decompositions, set
-partitions, and ordered optimization.
+### Numerical models
 
-For each search program, ask a mathematical question before a performance
-question:
-
-> What objects are being counted, and when do two execution branches denote
-> the same mathematical object?
-
-Only after answering that should one add indexing, reorder goals, or introduce
-an accumulator. Otherwise the program may optimize accidental multiplicity.
-
-### Numerical models and epistemic humility
-
-The scientific examples combine logical rules with floating-point
-calculations. `beam-deflection.pl`, `orbital-transfer-design.pl`,
-`competitive-enzyme-kinetics.pl`, and `least-squares-regression.pl` encode
-mathematical models of physical or statistical relationships.
-
-A correct derivation inside such a model establishes a conditional:
-
-> given these measurements, equations, units, approximations, and thresholds,
-> this conclusion follows under the implementation's numeric semantics.
-
-It does not establish that the sensor was calibrated, the model applies in
-this regime, omitted variables are negligible, or a floating-point result is
-an exact real number. The proof boundary should name these conditions rather
-than conceal them.
+`beam-deflection.pl`, `orbital-transfer-design.pl`,
+`competitive-enzyme-kinetics.pl`, and `least-squares-regression.pl` combine
+rules with floating-point models. A derivation inside such a model proves a
+conditional: *given* these measurements, equations, units, approximations, and
+thresholds, the conclusion follows under the implementation's numeric
+semantics. It does not show that the sensor was calibrated, that the model
+applies in this regime, or that a float is an exact real. Name those
+conditions alongside the result.
 
 **Exercises.**
 
 1. Turn a familiar universal conjecture into a bounded counterexample search.
-   State what a failure to find an answer does and does not prove.
-2. Estimate the naive search space of `send-more-money.pl`, then identify each
-   constraint that removes branches.
-3. Use `examples/stirling-bell-numbers.pl` to connect a recurrence with the
-   combinatorial objects it counts.
-4. Design a finite carrier and search for a noncommutative operation with an
+   State what an empty result does and does not prove.
+2. Estimate the naive search space of `send-more-money.pl`, then identify the
+   constraint that removes the most branches.
+3. Search a three-element carrier for a noncommutative operation with an
    identity.
-5. Choose one scientific example and list every premise outside pure logic:
-   measurements, units, empirical law, approximation, and numeric behavior.
+4. For one scientific example, list every premise that is not pure logic.
 
-**Checkpoint.** Label a computation as one of: witness construction,
-counterexample, exhaustive finite-model check, bounded evidence, or numerical
-model evaluation. Write one sentence stating exactly what its success proves
-and what its failure leaves open.
+**Checkpoint.** Label a computation as witness construction, counterexample,
+exhaustive finite check, bounded evidence, or numerical model evaluation. In
+one sentence each, say what its success proves and what its failure leaves
+open.
 
 ## 30. What mathematics promises
 
-Mathematics earns unusual trust because it makes its conditions inspectable.
-Once definitions, axioms, and inference rules are fixed, a valid proof does
-not negotiate with status, rhetoric, fashion, or desire. The conclusion either
-follows by the accepted rules or it does not.
-
-That is perhaps the precise sense in which mathematics does not cheat us. It
-does not promise that our premises describe the world. It promises that we can
-ask whether the conclusion follows from them.
-
-### Conditional certainty
-
-Every theorem is conditional, even when the conditions have become culturally
-invisible:
+Mathematics does not promise that premises describe the world. It promises
+that one can check whether a conclusion follows from them. An EyeProlog
+answer has the same shape as a theorem:
 
 ```text
-axioms + definitions + inference rules
-  -> theorem
+axioms + definitions + inference rules       -> theorem
+source facts + clauses + built-in semantics  -> ground answer + proof
 ```
 
-Every trustworthy EyeProlog conclusion has the same broad shape:
+The proof disciplines the arrow. It cannot vouch for the premises just by
+using them.
 
-```text
-source facts + clauses + built-in semantics + execution assumptions
-  -> ground answer + proof
-```
+### Four layers of trust
 
-The arrows are where rigor lives. A proof disciplines the transition from
-premises to conclusion. It cannot authenticate the premises merely by using
-them.
-
-This yields four layers of trust:
-
-1. **Source trust:** are facts authentic, current, complete enough, and
-   represented with the correct units and identity?
-2. **Model trust:** do the predicates and rules express the intended domain?
-3. **Engine trust:** do parsing, unification, built-ins, tabling, and proof
-   generation implement the stated standards profile?
-4. **Derivation trust:** does this answer have a valid proof from this exact
+1. **Sources:** are the facts authentic, current, complete enough, and in the
+   right units?
+2. **Model:** do the predicates and rules say what the domain means?
+3. **Engine:** do parsing, unification, built-ins, tabling, and proof output
+   behave as the documented profile says?
+4. **Derivation:** does this answer have a valid proof from this exact
    theory?
 
-Explicit integrity relations expose contradictions and invalid states inside the supplied
-theory. Conformance tests address the implementation. Proof output addresses
-the derivation. Provenance, signatures, calibration, peer review, and domain
-validation address other layers. No single mechanism replaces the rest.
+Integrity relations catch contradictions inside the theory. Conformance tests
+cover the engine. Proof checking covers the derivation. Provenance, signatures,
+calibration, and domain review cover the rest. No single mechanism replaces
+the others.
 
-### The dignity of a counterexample
+### Limits are part of the result
 
-Mathematics corrects itself through definitions and counterexamples. A false
-conjecture is not rescued by the beauty of its statement. One legitimate
-counterexample has standing against a thousand confirming cases.
-
-Logic programming should preserve this culture. Write negative tests before
-the theory becomes emotionally expensive. Search boundary cases. Ask for
-forbidden states. Turn domain invariants into queryable integrity relations. Keep the failed model that
-forced a redesign.
-
-A knowledge system becomes trustworthy not when it never changes, but when it
-can say:
-
-- what it assumed;
-- what followed;
-- which evidence was used;
-- which counterexample broke the former rule;
-- when the theory changed; and
-- which past conclusions belonged to which version.
-
-This is mathematical honesty translated into engineering practice.
-
-### The limits are part of the truth
-
-Gödel, Church, and Turing did not diminish mathematics by proving limits.
-They made informal hopes precise enough to refute. There is no complete
-effective method that settles every sufficiently expressive mathematical
-question. No amount of faster hardware turns an undecidable general problem
-into a decidable one.
-
-EyeProlog has smaller, immediate limits:
+Gödel, Church, and Turing did not weaken mathematics by proving limits; they
+made vague hopes precise enough to refute. EyeProlog has smaller, everyday
+limits, and a trustworthy tool states them:
 
 - some relations have infinitely many answers;
-- depth-first search may pursue an unproductive branch;
-- mode-sensitive built-ins are not omnidirectional equations;
+- depth-first search can follow an unproductive branch forever;
+- mode-sensitive built-ins are not equations that run in every direction;
 - negation as failure is not classical negation;
-- floating-point arithmetic is not exact real arithmetic;
-- tabling terminates only when the relevant call and answer spaces stabilize;
-- proof output explains successful derivations, not every failed search path;
-- the language cannot prove arbitrary metatheorems about its own programs.
+- floating-point arithmetic is not real arithmetic;
+- tabling terminates only when the call and answer spaces are finite;
+- a proof explains the derivation that succeeded, not the branches that
+  failed.
 
-Naming these limits is not an apology. A trustworthy formal tool states the
-edge of its guarantee.
+A counterexample deserves standing against any number of confirming cases.
+Write the negative tests before the theory becomes expensive to change, keep
+the failed model that forced a redesign, and record which conclusions came
+from which version of the theory.
 
-### Mathematics as a style of care
-
-The deepest lesson is methodological. Mathematics asks us to separate:
-
-- a name from its definition;
-- an example from a proof;
-- existence from construction;
-- a theorem from its converse;
-- syntax from semantics;
-- equality from resemblance;
-- local evidence from a universal claim;
-- correctness from termination;
-- the model from the world.
-
-Those separations are exactly what good logic programming requires. A predicate
-must have a sentence. A recursive clause must have an invariant and a
-termination argument. A finite search must declare its domain. An aggregate
-must have a bounded subsearch. A decision must retain its premises. A proof
-must remain attached to the theory version that licensed it.
-
-The result is not certainty about everything. It is something more useful:
-certainty whose boundary is visible.
-
-### A final program-reading ritual
-
-Before trusting an EyeProlog conclusion, ask:
+### Before trusting a conclusion
 
 1. What does the ground answer say in the domain?
-2. Which facts and rules support it?
-3. Which facts came from outside the theory?
-4. Which built-ins contribute extra semantics?
-5. Was the search domain finite, and why?
-6. Could goal or clause order hide an answer?
-7. Does negation mean absence of proof or an explicit opposite?
-8. What invariant justifies each recursive relation?
-9. What counterexample would overturn the model?
-10. Can the result be reconstructed under the same source and theory version?
-
-That ritual captures the discipline. State a small theory. Ask a precise question. Let the machine search. Inspect the witness. Challenge the premises. Preserve the proof.
+2. Which facts and rules support it, and which facts came from outside?
+3. Which built-ins add semantics of their own?
+4. Was the search finite, and why?
+5. Does any negation mean "not proved" where "false" was intended?
+6. What counterexample would overturn the model?
 
 **Exercises.**
 
-1. Take one policy example and classify every dependency under the four layers
-   of trust.
-2. Write a conclusion that is logically valid from false premises. Explain why
-   proof checking alone cannot repair it.
-3. Add version and provenance facts to a scientific example and make them
-   visible in its explanation.
-4. Find one claim in your own program for which tests provide evidence but not
-   proof. State the missing universal argument.
-5. Write a one-page “trust contract” for an embedded EyeProlog service: accepted
-   sources, model scope, numeric assumptions, resource bounds, proof retention,
-   and known limits.
+1. Classify every dependency of one policy example under the four layers of
+   trust.
+2. Write a conclusion that is valid from false premises, and explain why proof
+   checking cannot repair it.
+3. Write a one-page trust contract for an embedded EyeProlog service: accepted
+   sources, model scope, numeric assumptions, resource bounds, proof
+   retention, and known limits.
 
-**Checkpoint.** Take one strong conclusion and prefix it with every condition
-on which it depends: source authenticity, model scope, built-in semantics,
-finite search, theory version, and derivation validity. If the qualified claim
-still matters, the model has earned its confidence honestly.
-
-## Part VI summary
-
-Part VI placed logic programming inside the longer history of mathematics:
-
-- a ground answer can carry the witness of an existential claim;
-- definite-program closure connects proof search with least-model semantics;
-- recursive definitions and inductive proofs often share a constructor
-  skeleton;
-- correctness, completeness, and termination are independent obligations;
-- unification solves equations in a free term algebra, not every domain;
-- symmetry and canonical form remove representational duplicates;
-- finite search is experimental mathematics whose scope must be stated;
-- formal certainty is conditional on sources, models, engines, and rules.
-
-You should now be able to distinguish computation from proof, bounded evidence
-from a universal theorem, syntactic equality from mathematical equivalence, and
-valid derivation from trustworthy premises.
-
-### Historical note: mathematics examines its own methods
-
-This arc begins before electronic computing. Hilbert's program made formal
-proof and consistency mathematical objects. Gödel established limits for
-sufficiently expressive effective axiomatic systems. Church and Turing made
-effective calculability precise enough to prove that some general decision
-problems have no algorithm. Herbrand and Robinson supplied ideas that became
-central to automated first-order deduction.
-
-Logic programming belongs to this history because it operationalizes a
-restricted proof discipline. It does not erase the limit results or turn every
-existence proof into an efficient witness generator. It gives a small region
-where propositions, substitutions, proof steps, and computations can be
-inspected together.
-
-The deeper inheritance is a style of honesty. Mathematics advanced by proving
-not only more statements but also where methods fail, separating truth,
-provability, decidability, and computation. EyeProlog's finite bounds, mode
-restrictions, search risks, and trust boundaries belong inside its account for
-the same reason: limits are part of the result, not fine print.
-
----
+**Checkpoint.** Prefix one strong conclusion with every condition it depends
+on: source authenticity, model scope, built-in semantics, finite search,
+theory version, and derivation validity. If the qualified claim still
+matters, the model has earned its confidence.
 
 # Part VII — The reasoning laboratory
 
@@ -4509,373 +3077,235 @@ the same reason: limits are part of the result, not fine print.
   <figcaption>A theory becomes dependable through a repeated laboratory cycle: predict, test, inspect the search and proof, then revise one assumption at a time.</figcaption>
 </figure>
 
-The final craft is experimental without being careless. A logic programmer
-works like a mathematician at a blackboard and an engineer at a test bench:
-state a claim precisely, derive consequences, seek counterexamples, measure the
-computation, and preserve enough evidence for another person to repeat the
+This Part adds no language features. It is about keeping a theory correct
+while it changes: testing it, debugging it, and recognizing the designs that
 work.
-
-The reasoning laboratory turns these ideas into a daily discipline. It adds no new language feature; it shows how to make theories survive change.
 
 ## 31. Testing a theory
 
-A conventional unit test often presents an input to a function and compares
-one returned value with an expected value. A relational program needs a wider
-test vocabulary. One call may have several answers, no answer, duplicate
-proofs, or different useful modes. Correctness includes the answer set, the
-absence of forbidden answers, the shape of witnesses, and the finiteness of
-the intended search.
+A unit test usually compares one returned value with one expected value. A
+relation needs more: a call can have several answers, none, duplicates, or
+several useful modes. Its contract covers the answer set, the absence of
+forbidden answers, the shape of witnesses, and the finiteness of the search.
 
 <figure>
   <img src="book-assets/relational-test-spectrum.svg" alt="A public relation is surrounded by tests for meaning, supported modes, finite properties, metamorphic changes, integrity, proofs, and scale.">
   <figcaption>A relational contract has several observable surfaces; examples, mode tests, bounded properties, metamorphic checks, integrity cases, proofs, and scale checks protect different promises.</figcaption>
 </figure>
 
-### Begin with a semantic test table
+### Start with a table in domain language
 
-Before writing test code, make a table in domain language:
-
-| Case | Given | Question | Expected | Why this case matters |
+| Case | Given | Question | Expected | Why |
 | --- | --- | --- | --- | --- |
 | direct | `edge(a,b)` | path from `a` to `b`? | yes | base clause |
 | composed | `a→b→c` | path from `a` to `c`? | yes | recursive clause |
 | absent | disconnected `d` | path from `a` to `d`? | no | false positive |
-| cycle | `c→a` | all destinations from `a`? | finite set | tabling or visited state |
-| reflexive | no explicit loop | path from `a` to `a`? | design choice | relation boundary |
+| cycle | `c→a` | all destinations from `a`? | finite set | tabling or visited set |
+| reflexive | no loop edge | path from `a` to `a`? | design choice | relation boundary |
 
-The last row is especially valuable. Many bugs are not implementation mistakes
-but unresolved meanings. Does a path require at least one edge, or may it be
-empty? No test framework can choose the definition for you.
+The last row matters most. Many bugs are not coding mistakes but meanings
+nobody settled. Does a path need at least one edge? No test framework can
+decide that for you.
 
 ### Positive and negative observers
 
-Queries naturally record positive expectations:
-
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 edge(a, b).
 edge(b, c).
 
 path(X, Y) :- edge(X, Y).
 path(X, Z) :- edge(X, Y), path(Y, Z).
+
+no_path_to_d :-
+  \+ path(a, d).
 ```
 
 ```sh
-eyeprolog --goal 'path(a, b)' program.pl
-eyeprolog --goal 'path(a, c)' program.pl
+eyeprolog --goal 'path(a, X)' --goal no_path_to_d program.pl
 ```
 
-To make an expected absence visible, define a finite observer:
-
-```eyeprolog
-unexpected_path :-
-  path(a, d).
-
-expected_absence :-
-  \+ unexpected_path.
+```text
+path(a, b).
+path(a, c).
+no_path_to_d.
 ```
 
-```sh
-eyeprolog --goal 'expected_absence' program.pl
-```
+The first goal pins down the answer set; the second turns an expected absence
+into a visible success. Both are ground or finite questions. `no_path_to_d`
+does not assert that classical negation holds; it records that this finite
+theory derives no such path. For a small example, the golden output file is
+the executable specification of the expected answers.
 
-This is a test over a ground, terminating goal. It does not turn negation as
-failure into classical negation; it records that this finite theory derives no
-such path.
-
-For a reusable package, prefer a dedicated test program that loads or reproduces
-the relevant theory and declares only test queries. For a small example, the
-golden answer file is an executable specification of the expected answer set.
-
-### Test the relation from more than one mode
-
-Suppose `append/3` is intended both to concatenate and to split:
+### Test every supported mode
 
 ```sh
 eyeprolog --goal 'append([a, b], [c], Whole)' program.pl
 eyeprolog --goal 'append(Prefix, Suffix, [a, b])' program.pl
 ```
 
-The first call should construct one list. The second should enumerate three
-splits. Testing only the first mode would miss a regression in relational
-generality; testing the completely open mode would request an infinite
-relation and prove little beyond the absence of a useful bound.
-
-For every public predicate, record:
-
-1. the principal mode;
-2. any secondary supported modes;
-3. modes that are meaningful but intentionally unsupported;
-4. calls expected to be finite;
-5. calls whose answer order is part of the observable contract.
-
-Keep this design close to the clauses in comments or tests, and exercise each
-supported call pattern directly.
+The first call builds one list; the second must enumerate three splits.
+Testing only the first misses a regression in relational generality. Testing
+the fully open call asks for an infinite relation and proves little. For each
+public predicate, record its principal mode, any secondary modes, meaningful
+modes that are deliberately unsupported, and which calls must be finite.
 
 ### Properties over finite domains
 
-Examples test selected points. A finite generated property tests every point
-in a declared scope:
+Examples test points. A bounded property tests every point in a declared
+range:
 
 ```eyeprolog
 :- use_module(library(between), [between/3]).
-:- use_module(library(lists)).
-
-double(N, D) :- (D is N + N).
 
 double_is_even(N) :-
-  double(N, D),
-  (0 is D mod 2).
+  (0 =:= (N + N) mod 2).
 
-bounded_double_law :-
-  \+ bounded_double_counterexample.
-
-bounded_double_counterexample :-
+bounded_double_counterexample(N) :-
   between(-100, 100, N),
   \+ double_is_even(N).
+
+bounded_double_law :-
+  \+ bounded_double_counterexample(_).
 ```
 
-```sh
-eyeprolog --goal 'bounded_double_law' program.pl
-```
-
-This is exhaustive for the 201 generated integers, not for all integers.
-Naming the predicate `bounded_double_law/0` keeps the scope honest.
-
-Useful finite properties include:
-
-- round trips: parse then render, or encode then decode;
-- preservation: normalization keeps the represented value;
-- idempotence: normalizing twice equals normalizing once;
-- symmetry: an undirected adjacency relation works in both directions;
-- invariants: every generated plan state is safe;
-- agreement: a simple reference relation and an optimized relation return the
-  same bounded answer set.
+That is exhaustive for 201 integers and nothing more; the name says so.
+Useful bounded properties include round trips (parse then render), idempotence
+(normalizing twice equals once), symmetry, invariants on every generated
+state, and agreement between a simple reference relation and an optimized
+one.
 
 ### Metamorphic tests
 
-Sometimes the correct answer is hard to list, but a controlled change has a
-predictable effect. These are metamorphic tests.
+When the right answer is hard to list, a controlled change may still have a
+predictable effect. Adding an isolated vertex should not change existing
+reachability. Scaling every edge cost by a positive constant should not change
+the cheapest route. Reordering source facts should not change the answer set,
+only its order. These tests check an invariant across runs rather than one
+frozen output, which makes them well suited to guarding optimizations.
 
-If an isolated graph vertex is added, existing reachability answers should not
-change. If every edge cost is multiplied by a positive constant, the cheapest
-route should retain the same vertices. If the order of source facts changes,
-the set of logical answers should remain unchanged even if their discovery
-order changes.
+### Answers, proofs, and integrity
 
-A metamorphic test states a relation between runs. It is particularly useful
-for optimizations because it checks a preserved invariant rather than one
-frozen implementation trace.
+An answer golden asks whether the conclusions changed; a proof golden asks
+whether their support changed. A new proof may be welcome after introducing a
+clearer helper — or may reveal that a decision now rests on an unintended
+fact. Review proof goldens; never regenerate them blindly. Use answer goldens
+broadly and proof goldens where provenance is part of the product.
 
-### Proof regression and answer regression
+Keep three outcomes distinct:
 
-An answer golden asks, “Did the public conclusions change?” A proof golden
-asks, “Did their supporting derivations change?”
+- an ordinary query with no answer: the goal was not established;
+- an integrity query that succeeds: the input violates a forbidden condition;
+- a `--warnings` report of unstratified negation: execution proceeds, but the
+  program has crossed a semantic and portability boundary.
 
-Proof changes may be desirable after introducing a clearer helper. They may
-also reveal that a decision now depends on an unintended fact. Treat proof
-goldens as reviewed evidence, not snapshots updated automatically whenever a
-test fails.
-
-Use answer regression broadly. Use proof regression selectively where
-provenance, explanation, or policy accountability is part of the product.
-
-### Test failures, integrity results, and warnings
-
-Three outcomes carry different meanings:
-
-- an ordinary query has no answer: the relation did not establish that goal;
-- an integrity query succeeds: the supplied input violates a forbidden condition;
-- `--warnings` reports unstratified negation: execution may proceed, but the
-  program crosses a portability and semantic boundary.
-
-A mature suite covers all three. Include malformed source in parser tests,
-inconsistent source in integrity-query tests, and semantically dubious dependency cycles
-in warning tests.
-
-### A release-quality test matrix
-
-Before releasing a theory or embedded service, cover:
+### A minimum test matrix
 
 | Dimension | Minimum evidence |
 | --- | --- |
 | Meaning | one positive, one absent, and one boundary case per public relation |
-| Modes | every documented mode; explicit rejection or warning for unsafe uses |
-| Recursion | base case, multi-step case, cycle, and termination argument |
-| Search | smallest witness, competing witnesses, ties, and empty domain |
-| Negation | ground success, ground failure, and stratification check |
-| Aggregation | empty, singleton, duplicates, and deterministic tie handling |
-| Integrity | each invalid state is detected and valid input is not misclassified |
-| Proof | representative derivation with source premises visible |
+| Modes | every documented mode; a clear rejection for unsupported ones |
+| Recursion | base case, multi-step case, cycle, termination argument |
+| Search | smallest witness, competing witnesses, ties, empty domain |
+| Negation | ground success, ground failure, stratification |
+| Aggregation | empty, singleton, duplicates, tie handling |
+| Integrity | each invalid state detected; valid input not flagged |
+| Proof | one representative derivation with source premises visible |
 | Scale | a case large enough to expose indexing or table behavior |
-| Reproducibility | fixed time, source version, stable fixtures, and clean output |
 
 **Exercises.**
 
-1. Build the semantic test table for `ancestor/2`, including a cycle and a
-   disputed reflexive case.
+1. Build the domain-language test table for `ancestor/2`, including a cycle and
+   the disputed reflexive case.
 2. Write bounded commutativity and associativity tests for a finite operation
-   table. Explain why one is cheaper.
-3. Create a metamorphic test for a route planner.
-4. Choose one proof golden and identify changes that should be accepted versus
-   changes that should block a release.
-5. Design a test that distinguishes “no answer” from “invalid input theory.”
+   table. Which is cheaper, and why?
+3. Write a metamorphic test for a route planner.
+4. Design a test that tells "no answer" apart from "invalid input".
 
-**Checkpoint.** Assemble a minimum release matrix for one public relation:
-positive, absent, boundary, alternate mode, recursive or cyclic, integrity, proof,
-and scale cases. State which expected outputs should be exact goldens.
+**Checkpoint.** Fill in the test matrix for one public relation and say which
+expected outputs should be exact goldens.
 
 ## 32. Debugging by meaning, search, and proof
 
-Debugging a logic program is difficult when every symptom is described as
-“the query failed.” Failure can mean the fact is absent, a variable was bound
-too early, a built-in ran outside its mode, a negative goal saw an unintended
-answer, recursion did not reach its base case, or the original relation was
-misstated.
+"The query failed" is not a diagnosis. Failure can mean a missing fact, a
+variable bound too early, a built-in called outside its mode, a negation that
+saw an unintended answer, recursion that never reaches its base case, or a
+relation that was misstated from the start. Look through four lenses, in
+order:
 
-Use four views in a fixed order:
-
-1. **meaning:** what should a ground instance say?
-2. **bindings:** what is known before each goal?
-3. **search:** which alternatives are explored, repeated, or pruned?
-4. **proof:** which successful premises support the observed answer?
+1. **Meaning:** what should a ground instance say?
+2. **Bindings:** what is known before each goal?
+3. **Search:** which alternatives are explored, repeated, or pruned?
+4. **Proof:** which premises support the answer you got?
 
 <figure>
   <img src="book-assets/debugging-four-lenses.svg" alt="A disputed ground query passes through four diagnostic lenses—meaning, bindings, search, and proof—before the repaired invariant is preserved as a regression.">
   <figcaption>Each debugging lens answers a different question; begin with meaning, move outward only as needed, and preserve the lesson as an executable check.</figcaption>
 </figure>
 
-### Reduce to the smallest disputed ground question
+### Shrink to one ground question
 
-Do not begin with an open query that prints hundreds of answers. Name one
-conclusion that is missing or surprising:
+Don't start from an open query that prints hundreds of answers. Name one
+conclusion that is missing or wrong, such as `eligible(alex)`, and expand only
+the clause meant to prove it. If you can't say what the ground question should
+answer, stop debugging code and fix the domain sentence.
 
-```sh
-eyeprolog --goal 'eligible(alex)' program.pl
-```
-
-Then expand only the clause intended to prove it. Replace broad generators
-with the relevant ground facts. A small ground question removes accidental
-branching and makes every failed subgoal discussable.
-
-If the ground question is itself ambiguous, stop debugging the implementation.
-Rewrite the domain sentence first.
-
-### Follow bindings from left to right
-
-Consider:
+### Follow bindings left to right
 
 ```eyeprolog
-
-:- use_module(library(lists)).
+age(alex, 19).
 
 eligible(Person) :-
   (Age >= 18),
   age(Person, Age).
 ```
 
-The intended mathematics is easy to recognize, but `>=/2` sees an unbound
-`Age`. Write a binding ledger:
+```sh
+eyeprolog --goal 'eligible(alex)' program.pl
+```
+
+```text
+eyeprolog: error(instantiation_error)
+```
+
+The comparison runs before anything binds `Age`. A binding ledger shows it
+immediately:
 
 | Before goal | Goal | Bindings produced |
 | --- | --- | --- |
-| none | `Age >= 18` | none; not ready |
-| — | `age(Person,Age)` | never productively reached |
+| `Person = alex` | `Age >= 18` | none; `Age` unbound, error |
+| — | `age(Person, Age)` | never reached |
 
-Reordering the goals repairs the operational mode:
+Swap the goals so `age/2` binds `Age` first, and the clause works. For longer
+bodies, the ledger reveals more than rereading the source. Record structure as
+well as values: a variable may be bound to a partial list or a compound term
+with open variables inside.
 
-```eyeprolog
+### Symptoms and first moves
 
-:- use_module(library(lists)).
+- **No answers.** Check the predicate name and arity. Ground one expected
+  answer and find a clause whose head matches it. Walk the body with a ledger.
+  Check that each arithmetic, string, list, and term built-in has its inputs.
+  Check that a negation is not too early and that a base clause is reachable.
+- **Too many answers.** Pick the answer that violates the domain sentence and
+  read its proof for the first overbroad premise. Look for a missing join —
+  two variables where one shared variable was meant.
+- **Right answers, wrong order.** Inspect clause and generator order, and any
+  `once/1` or tie-breaking that makes order observable.
+- **Nontermination.** Name the intended finite domain. Find the recursive call
+  and its decreasing measure, or the finite tabled space. Move selective
+  generators and ready filters earlier. Look for terms that grow on every call.
+- **A surprising proof.** Confirm the answer itself is intended, then find the
+  earliest premise that should not be there.
 
-eligible(Person) :-
-  age(Person, Age),
-  (Age >= 18).
-```
+### Compare with a reference
 
-For a clause with five goals, the ledger is often more revealing than staring
-at the source. Record structures as well as scalar bindings: a variable may be
-bound to an improper list or a compound term whose inner variables remain
-open.
-
-### Use a symptom atlas
-
-**No answers**
-
-- Confirm the queried predicate name and arity.
-- Ground one expected answer and locate a clause whose head unifies with it.
-- Walk the body with a binding ledger.
-- Check readiness of arithmetic, string, list, and term built-ins.
-- Inspect whether a negative goal is too early.
-- Verify that a base clause is reachable.
-
-**Too many answers**
-
-- State which answer violates the domain sentence.
-- Find its proof and identify the first overbroad premise.
-- Look for missing joins: the same conceptual entity may use two variables
-  where one shared variable was intended.
-- Check whether a closed-world assumption was omitted.
-- Decide whether duplicate answers or duplicate proofs are the real issue.
-
-**Right answers, wrong order**
-
-- Inspect clause order and generator order.
-- Identify `once/1` or aggregate tie-breaking that makes order observable.
-- Do not confuse order-sensitive behavior with declarative completeness.
-
-**Nontermination or explosive search**
-
-- Name the intended finite domain.
-- Identify the recursive call and its decreasing measure, or the finite tabled
-  call/answer space.
-- Move selective generators and ready filters earlier.
-- Check for terms that grow on every recursive call.
-- Run with `--stats` and compare one controlled revision at a time.
-
-**A surprising proof**
-
-- Verify that the answer itself is intended.
-- Find the earliest source premise that should not have participated.
-- Distinguish a misleading helper name from a semantically wrong clause.
-- Check whether two source versions or contexts were accidentally combined.
-
-### Create diagnostic relations
-
-Temporary helpers can expose intermediate concepts:
-
-```eyeprolog
-
-:- use_module(library(lists)).
-
-candidate_debug(Person, Age) :-
-  age(Person, Age).
-
-adult_debug(Person, Age) :-
-  candidate_debug(Person, Age),
-  (Age >= 18).
-```
-
-```sh
-eyeprolog --goal 'candidate_debug(Person, Age)' program.pl
-eyeprolog --goal 'adult_debug(Person, Age)' program.pl
-```
-
-Once the fault is understood, either remove the helper or rename it as a
-permanent domain concept. Do not leave `debug2/3` archaeology in a theory whose
-proofs people must read.
-
-### Compare specification and implementation
-
-For a bounded domain, write a deliberately simple reference relation and
-compare it with the optimized one. The reference may be slow; its purpose is
-clarity.
+Temporary relations expose intermediate concepts. A stronger version of the
+same idea is differential testing: write a deliberately simple reference
+relation over a bounded domain and look for disagreement with the optimized
+one.
 
 ```eyeprolog
 :- use_module(library(between), [between/3]).
-:- use_module(library(lists)).
 
 reference_square(N, S) :-
   between(0, 20, N),
@@ -4890,111 +3320,72 @@ disagreement(N, S) :-
   \+ optimized_square(N, S).
 ```
 
-```sh
-eyeprolog --goal 'disagreement(N, S)' program.pl
-```
-
-A complete equivalence check needs both directions and must account for
-duplicates if proof multiplicity matters. Within a finite domain, differential
-testing is a powerful guard during program transformation.
+A full equivalence check needs the other direction as well. Within a finite
+domain, this is the best guard you have while transforming a program. Once a
+fault is understood, delete temporary helpers or promote them to real domain
+concepts; `debug2/3` does not belong in a theory whose proofs people read.
 
 ### Read statistics as questions
 
-`--stats` reports work, not meaning. A high solution count may be necessary or
-may indicate a generator that should be constrained. Many table hits may show
-effective reuse; many distinct table entries may reveal an argument that
-prevents calls from sharing table entries. On the Node CLI it also reports current heap use,
-non-young/old-generation use, the amount currently compared with the memory
-guard, resident-set size, and the soft and hard memory ceilings in bytes. These
-memory figures are printed even when execution ends by raising a Prolog error.
+`--stats` reports work, not meaning. Many solutions may be necessary or may
+point to a generator that should be constrained. Many table hits show reuse;
+many distinct table entries may show an argument that keeps calls from
+sharing. On the Node CLI it also reports heap use, the amount counted against
+the memory guard, resident-set size, and the soft and hard memory ceilings,
+even when the run ends in a Prolog error.
 
-`--stats` is an end-of-run summary. For a deliberately non-terminating or very
-long computation, call the EyeProlog extension `statistics/0` at the points
-where a live snapshot is useful. For example, a long-running loop can include
-`statistics` as one of its goals, as in `loop :- work, statistics, loop.`
+`--stats` summarizes at the end. For a long or deliberately non-terminating
+computation, call the EyeProlog extension `statistics/0` where a live snapshot
+helps, as in `loop :- work, statistics, loop.` `statistics/2` gives the program
+one value, for example `statistics(memory_guard_used_bytes, Used)`; with an
+unbound key it enumerates all of them, and an unknown key raises a
+`domain_error` for `statistics_key`. Neither is available under
+`--iso-strict`.
 
-`statistics/0` writes the current solver counters and memory figures
-immediately to the current output stream. `statistics/2` makes an individual
-value available to the program, for example
-`statistics(memory_guard_used_bytes, Used)`. With an unbound first argument it
-enumerates the available statistic keys and values. An atom that is not an
-available key raises `domain_error(statistics_key, Key)` rather than silently
-failing. These predicates are EyeProlog observability extensions and are not
-available under `--iso-strict`.
+Compare statistics only across runs with the same query, data, and answer
+contract. A faster program that loses answers is not an optimization.
 
-Compare statistics only between runs with the same query, data, and observable
-answer contract. A faster program that silently loses answers is not an
-optimization.
+### Keep the lesson
 
-### Preserve the failure that taught you
-
-Every repaired defect should leave behind one of:
-
-- a new positive or negative case;
-- an integrity regression;
-- a documented mode and tests for that call pattern;
-- a bounded property;
-- a proof golden;
-- a comment stating a non-obvious invariant.
-
-Otherwise the repository remembers the repair but forgets the reason.
+Every repaired defect should leave something behind: a new positive or
+negative case, an integrity regression, a documented mode, a bounded property,
+a proof golden, or a comment stating the invariant that was violated.
+Otherwise the repository remembers the fix and forgets the reason.
 
 **Exercises.**
 
-1. Deliberately misorder a numeric filter and diagnose it with a binding
-   ledger.
-2. Introduce a missing-variable join into a two-relation rule. Use the proof of
-   one false positive to locate it.
-3. Create a recursive term-growing rule, then state why tabling cannot make its
+1. Introduce a missing join into a two-relation rule, then use the proof of a
+   false positive to find it.
+2. Write a term-growing recursive rule and explain why tabling cannot make its
    answer space finite.
-4. Compare statistics before and after moving an invariant calculation out of
+3. Compare `--stats` before and after moving an invariant calculation out of a
    recursion.
-5. Write a bidirectional bounded equivalence check for two list relations.
 
-**Checkpoint.** Preserve one defect as a regression. Record the smallest
-disputed ground question, expected answer, first incorrect binding or search
-choice, repaired invariant, and test that would fail if the defect returned.
+**Checkpoint.** Turn one defect into a regression: the smallest disputed
+ground question, the expected answer, the first wrong binding or search
+choice, the repaired invariant, and the test that fails if it returns.
 
 ## 33. A pattern catalog for reasoning
 
-A pattern is not a copied code fragment. It is a recurring arrangement of
-meaning, representation, and control that solves a named design problem. The
-following patterns collect constructions that are especially useful in practice.
+A pattern is a recurring arrangement of meaning, representation, and control
+that solves a named problem. Choose one when its problem is present, not
+because the code looks similar.
 
 <figure>
   <img src="book-assets/pattern-selection-map.svg" alt="Six recurring design symptoms point to patterns for meaning, tabling, closed boundaries, finite search, proof-carrying answers, and canonical representation.">
   <figcaption>Choose a pattern by the design problem and its consequence, not by superficial code shape; each pattern coordinates meaning, representation, modes, and control.</figcaption>
 </figure>
 
-### Pattern 1: Ground sentence first
+**1. Ground sentence first.** When argument order and meaning start to drift,
+write one representative ground fact and read it aloud before adding
+variables. `assigned_badge(alex, badge_17).` makes argument roles reviewable.
 
-**Problem:** a predicate's argument order and meaning drift while rules are
-being written.
-
-**Form:** write one representative ground fact and read it aloud before adding
-variables.
-
-```eyeprolog
-
-:- use_module(library(lists)).
-
-assigned_badge(alex, badge_17).
-```
-
-**Consequence:** argument roles become reviewable; modes and indexes can be
-discussed against a stable sentence.
-
-### Pattern 2: Normalize at the boundary
-
-**Problem:** spelling, aliases, units, or source-specific terms leak into every
-domain rule.
-
-**Form:** retain source facts, derive one canonical vocabulary, and make core
-rules depend only on the normalized layer.
+**2. Normalize at the boundary.** Keep source spellings, aliases, and units out
+of domain rules. Retain the source facts, derive one canonical vocabulary, and
+make the core rules depend only on it:
 
 ```eyeprolog
 :- use_module(library(strings)).
-:- use_module(library(lists)).
 
 source_role(person_7, 'Doctor').
 
@@ -5003,20 +3394,15 @@ canonical_role(Person, clinician) :-
   lowercase(Text, doctor).
 ```
 
-**Consequence:** adapters change independently from policy; proofs still trace
-back to source data.
+Adapters can change without touching policy, and proofs still trace back to
+the source.
 
-### Pattern 3: Generate, constrain, describe
-
-**Problem:** a search relation mixes candidate production, pruning, and
-explanation until none can be reasoned about separately.
-
-**Form:** generate a finite candidate, apply the cheapest selective constraints
-in dependency order, then construct a witness or reason.
+**3. Generate, constrain, describe.** Produce a finite candidate, apply the
+cheapest selective constraints in dependency order, then build the witness or
+reason:
 
 ```eyeprolog
 :- use_module(library(between), [between/3]).
-:- use_module(library(lists)).
 
 chosen_pair(pair(X, Y), reason(sum_is_ten)) :-
   between(0, 10, X),
@@ -5024,36 +3410,13 @@ chosen_pair(pair(X, Y), reason(sum_is_ten)) :-
   (10 is X + Y).
 ```
 
-**Consequence:** the search domain and each pruning step are visible.
+**4. Carry the witness.** A yes/no relation that did the work of finding a
+path should return the path. Add an argument for the path, assignment,
+schedule, or evidence (see `path/3` in Chapter 4). Witness size and duplicate
+witnesses then become explicit design questions.
 
-### Pattern 4: Carry the witness
-
-**Problem:** a Boolean-like conclusion proves existence but loses the object
-needed for explanation or later computation.
-
-**Form:** add a structured output containing the path, assignment, schedule, or
-evidence summary.
-
-```eyeprolog
-
-:- use_module(library(lists)).
-
-path(X, Y, [X, Y]) :- edge(X, Y).
-path(X, Z, [X | Rest]) :-
-  edge(X, Y),
-  path(Y, Z, Rest).
-```
-
-**Consequence:** answers become constructive; witness size and duplicate paths
-become explicit design concerns.
-
-### Pattern 5: Bound absence
-
-**Problem:** the domain needs a negative conclusion, but absence is meaningful
-only after a complete finite search.
-
-**Form:** bind the subject and finite scope before `\+/1`; isolate the
-closed-world step behind a clearly named predicate.
+**5. Bound absence.** Bind the subject and the finite scope before `\+/1`, and
+give the closed-world step one named home:
 
 ```eyeprolog
 unregistered(Person) :-
@@ -5061,45 +3424,32 @@ unregistered(Person) :-
   \+ registered(Person).
 ```
 
-**Consequence:** the closed-world assumption has one reviewable home. It must
-not be mistaken for an explicit fact that the person is not registered.
+This is not an explicit fact that the person is unregistered; the name and
+the bound domain make that visible.
 
-### Pattern 6: Explicit state transition
-
-**Problem:** planning or interpretation appears to require mutable state.
-
-**Form:** represent the old and new states as terms related by an action.
+**6. Explicit state transition.** Instead of mutable state, relate an old
+state, an action, and a new state:
 
 ```eyeprolog
 step(state(Room, outside), enter(Room), state(Room, inside)).
 ```
 
-**Consequence:** histories are ordinary lists, transitions can be queried, and
-the state representation exposes invariants.
+Histories become ordinary lists and invariants become queries over states.
 
-### Pattern 7: Fixed-point closure
-
-**Problem:** reachability, inheritance, or dataflow revisits the same finite
-subquestions.
-
-**Form:** state the positive recursive relation directly and let eligible
-components be tabled.
+**7. Fixed-point closure.** For reachability, inheritance, and dataflow, state
+the positive recursive relation directly and table it. Termination then rests
+on a finite call and answer space, not on pretending the graph is acyclic.
 
 ```eyeprolog
+:- table depends/2.
+
 depends(X, Y) :- direct_dependency(X, Y).
 depends(X, Z) :- direct_dependency(X, Y), depends(Y, Z).
 ```
 
-**Consequence:** termination rests on a finite call and answer space, not on
-pretending the graph is acyclic.
-
-### Pattern 8: Proof façade
-
-**Problem:** low-level helper clauses produce technically correct but
-unreadable explanations.
-
-**Form:** introduce stable domain concepts and a small public decision relation
-whose premises are meaningful reasons.
+**8. Proof façade.** When helper clauses make proofs unreadable, introduce
+named domain concepts and a small public decision relation whose premises
+read as reasons:
 
 ```eyeprolog
 within_limit(Device) :-
@@ -5111,39 +3461,20 @@ status(Device, safe) :-
   within_limit(Device).
 ```
 
-**Consequence:** internal calculations remain available, while the successful
-proof reads in domain vocabulary.
-
-### Pattern 9: Integrity before inference
-
-**Problem:** contradictory or impossible input would make ordinary conclusions
-misleading.
-
-**Form:** encode forbidden combinations as ordinary relations with diagnostic
-arguments.
+**9. Integrity before inference.** Encode forbidden combinations as ordinary
+relations with diagnostic arguments, so a caller can list every defect before
+asking for decisions:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 invalid_badge_assignment(Badge, PersonA, PersonB) :-
   assigned_badge(PersonA, Badge),
   assigned_badge(PersonB, Badge),
   (PersonA \= PersonB).
 ```
 
-**Consequence:** callers can collect every defect, and a host that requires
-validated input can query this relation before it requests trusted decisions.
-The rejection policy remains explicit rather than being hidden in clause-head
-syntax.
-
-### Pattern 10: Version the evidence boundary
-
-**Problem:** an answer can be reproduced only if its facts, rules, and external
-semantics are known.
-
-**Form:** retain source snapshot, theory version, adapter version, and relevant
-clock or numeric assumptions beside the proof.
+**10. Version the evidence.** Keep the source snapshot, theory version, and
+numeric assumptions beside the proof, so an old decision can be reconstructed
+under the theory that made it rather than rerun under today's:
 
 ```eyeprolog
 theory_version("2026-07-24").
@@ -5151,169 +3482,82 @@ source_snapshot("telemetry-0042").
 numeric_model(ieee_754_double).
 ```
 
-**Consequence:** an old decision can be reconstructed under the system that
-actually made it rather than silently rerun under today's theory.
-
 ### Anti-patterns
 
-**The unbounded open generator.** A relation is queried with every argument
-free even though its mathematical extension is infinite.
+- **The unbounded open query:** every argument free over an infinite
+  relation.
+- **The premature test:** a mode-sensitive built-in or negation before the
+  goals that bind its inputs.
+- **The accidental Cartesian product:** two variables for what should be one
+  entity.
+- **The mega-clause:** normalization, search, policy, and explanation in one
+  rule with no named concepts.
+- **The witness eraser:** a relation that finds a path and returns only `yes`.
+- **The silent closed world:** failure used as falsity with no stated scope.
+- **The proof-hostile helper:** names like `step3/2` or `tmp/4`.
+- **Optimization by answer loss:** `once/1` or early aggregation that changes
+  the answer contract to win a benchmark.
+- **The timeless decision:** conclusions with no record of the theory version
+  that produced them.
 
-**The premature test.** A mode-sensitive built-in or negative goal appears
-before the goals that bind its inputs.
-
-**The accidental Cartesian product.** Two goals use different variables for
-what should be the same entity.
-
-**The opaque mega-clause.** One rule performs normalization, search, policy,
-and explanation with no named intermediate concepts.
-
-**The Boolean witness eraser.** A relation returns only `yes` after doing the
-work needed to construct a useful path or reason.
-
-**The silent closed world.** Failure to derive a fact is used as its opposite
-without documenting finite scope and completeness assumptions.
-
-**The proof-hostile helper.** Names such as `step3/2` or `tmp/4` expose an
-implementation sequence instead of a domain idea.
-
-**The optimization by answer loss.** `once/1`, early aggregation, or reordered
-search makes a benchmark faster by changing the public answer contract.
-
-**The floating theorem.** A numerical result is described as mathematically
-exact without naming units, approximation, or host floating-point behavior.
-
-**The timeless decision.** Sources and rules change, but conclusions retain no
-snapshot or theory version.
-
-### Selecting patterns
-
-Patterns compose. A robust decision service often uses:
-
-```text
-normalize at the boundary
-  -> generate, constrain, describe
-  -> carry the witness
-  -> proof façade
-  -> integrity before inference
-  -> version the evidence boundary
-```
-
-Do not apply every pattern mechanically. A three-fact teaching example does
-not need six architectural layers. Introduce a pattern when its named problem
-is present, and keep the smallest theory that makes meaning and control clear.
+Patterns compose; a decision service typically normalizes at the boundary,
+generates and constrains, carries witnesses, presents a proof façade, checks
+integrity, and versions its evidence. A three-fact example needs none of
+that. Use the smallest set of patterns the problem actually calls for.
 
 **Exercises.**
 
-1. Find three patterns and two anti-patterns in an existing large example.
-2. Refactor an opaque rule into boundary, concept, and decision layers; compare
-   proofs before and after.
-3. Add witness carrying to a Boolean reachability relation and analyze the new
-   duplicate-answer behavior.
-4. Replace a silent closed-world decision with a named bounded-absence helper.
-5. Write a versioned evidence envelope for the Chapter 25 decision service.
+1. Find three patterns and two anti-patterns in one of the large examples.
+2. Refactor an opaque rule into boundary, concept, and decision layers, and
+   compare the proofs before and after.
+3. Write a versioned evidence envelope for the Chapter 25 decision service.
 
-**Checkpoint.** Select the smallest set of patterns that solves a real problem
-in one theory. For every selected pattern, name the pressure that justifies
-it; remove any layer that exists only because the catalog made it available.
-
-## Part VII summary
-
-Part VII made theory development repeatable:
-
-- semantic test tables settle meanings before test mechanics;
-- positive, absent, boundary, cycle, and scale cases cover different risks;
-- bounded properties and metamorphic relations test more than selected points;
-- answer and proof goldens protect different contracts;
-- binding ledgers diagnose readiness and accidental joins;
-- debugging moves from meaning to bindings, search, and proof;
-- named patterns connect recurring problems to reusable relational forms;
-- every repaired defect should leave a case, invariant, integrity check, or explanation.
-
-You should now be able to design a release-quality test matrix, reduce a
-surprising result to one ground question, compare a reference relation with an
-optimized relation, and recognize productive patterns and anti-patterns.
-
-### Historical note: executable specifications learn to remember
-
-Logic programs have long stood between specification and implementation. That
-made testing both easier and subtler: a ground clause could serve as an
-example, yet a relation might have several modes and an answer set rather than
-one returned value. Testing practice absorbed ideas from theorem proving,
-database validation, software regression, and property-oriented testing.
-
-The repository form of this practice is historically significant in its quiet
-way. A theory, exact answer file, proof file, conformance corpus, and version
-tag preserve not only a program but expectations about its meaning. Regression
-tests make old decisions reviewable; property tests seek counterexamples;
-metamorphic tests state what remains invariant across controlled change.
-
-Patterns complete the cycle by naming recurring design knowledge. Sterling and
-Shapiro's craft-oriented presentation helped establish that expertise lives in
-constructions and transformations, not syntax alone. The reasoning laboratory
-extends that attitude into maintenance: prediction, execution, evidence, and
-revision form one method, and the failure that taught a lesson becomes
-executable memory.
+**Checkpoint.** For one real theory, pick the smallest set of patterns that
+solves its problem and name the pressure that justifies each.
 
 # Part VIII — Standard Prolog in practice
 
 <figure>
   <img src="book-assets/part-8-standard-prolog.svg" alt="A standards workbench connects an ISO Prolog manual to control, term, state, operator, and stream instruments.">
-  <figcaption>The broader ISO profile is a practical workbench: relational term operations remain at its center while control, mutable state, and I/O are introduced at explicit boundaries.</figcaption>
+  <figcaption>Relational term operations stay at the center; control, mutable state, and I/O enter at explicit boundaries.</figcaption>
 </figure>
 
-The supported ISO Prolog profile includes processor-facing facilities that
-become important in reusable libraries, language tools, long-running
-applications, and file boundaries. Earlier chapters use its relational core;
-this part makes control, reflection, state, operators, and streams explicit.
-For Part 1 portability work, EyeProlog also provides a strict core mode:
-`--iso-strict` on the CLI or `isoStrict: true` in the JavaScript API restricts
-the language/runtime surface to ISO/IEC 13211-1:1995 plus Technical Corrigenda
-1–3. The processor character set is an implementation-defined choice shared by
-normal and strict profiles: EyeProlog uses Unicode scalar values U+0000..U+10FFFF
-excluding surrogates, with the scalar value as the collating-sequence integer.
-Strict mode restricts implementation-specific language facilities, but it does
-not narrow this processor-defined character repertoire. Isolation and error cases live in `test/conformance/cases/iso/`.
-The examples here compose those operations into programs worth changing and
-rerunning.
+Libraries, language tools and programs that touch files need more than the
+relational core: control, reflection, state, operators and streams. Term
+inspection and atomic conversion are still relations. Cut, database updates
+and stream operations are not, so keep them at named boundaries.
 
-These facilities do not all have the same declarative character. Term
-inspection and atomic conversion are relations. Cut commits to an operational
-choice. Dynamic updates and stream operations change solver-owned state. Use
-the pure relation when it expresses the problem; introduce control or effects
-at a named boundary.
+`--iso-strict` on the CLI, or `isoStrict: true` in the JavaScript API, limits
+the language to ISO/IEC 13211-1:1995 plus Technical Corrigenda 1–3. Both modes
+use the same processor character set: Unicode scalar values U+0000..U+10FFFF
+without surrogates, collated by scalar value. Isolated and error cases live in
+`test/conformance/cases/iso/`.
 
 ## 34. Control, exceptions, and grouped solutions
-
-The control predicates accept goals as arguments. `call/1` invokes a callable
-term, and `call/2-8` appends arguments to a callable closure. The expanded goal
-runs in the current search continuation, so a direct goal and its meta-called
-form expose the same remaining alternatives; the meta-call still establishes
-its own cut boundary. `once/1` keeps its first solution, and `!/0` commits
-within the clause that contains it. If-then-else commits to the first successful
-condition:
-
-<figure>
-  <img src="book-assets/iso-control-board.svg" alt="A goal passes through choice and exception recovery before finite solutions enter findall, bagof, and setof collectors.">
-  <figcaption>Control narrows or redirects search; collection then gives a finite solution stream a deliberate list or grouping shape.</figcaption>
-</figure>
 
 ```eyeprolog
 travel_status(From, To, Status) :-
   (route(From, To) -> Status = connected ; Status = disconnected).
 ```
 
-`once(Goal)` is a local request for one solution. Cut is lower level: it
-discards alternatives created since entry into the current predicate call.
-The two can produce the same first answer without expressing the same control
-boundary. Keep cut close to the choice it documents and test the complete
-answer set before and after introducing it. A cut executed inside a predicate
-called by one disjunction branch remains local to that predicate: if the branch
-later fails, `Left ; Right` must still try `Right`. This also holds when a
-cut-bearing validation helper is called from a branch driven by a generator
-such as `between/3`: the helper's own cut still stays local to it.
+<figure>
+  <img src="book-assets/iso-control-board.svg" alt="A goal passes through choice and exception recovery before finite solutions enter findall, bagof, and setof collectors.">
+  <figcaption>Control narrows or redirects search; collection gives a finite solution stream a list or grouping shape.</figcaption>
+</figure>
 
-Exceptions separate an exceptional call from ordinary logical failure:
+If-then-else commits to the first solution of its condition. `call/1` runs a
+goal held in a variable, and `call/2-8` add arguments to a closure; a
+meta-call is its own cut boundary. `once(Goal)` keeps one solution of `Goal`,
+while cut discards every alternative created since the current predicate was
+entered. A cut inside a predicate called from one branch of `Left ; Right`
+stays local to that predicate, so if the branch later fails, `Right` is still
+tried. Keep cuts next to the choice they document, and compare the full answer
+set before and after adding one.
+
+### Exceptions
+
+A missing route is an ordinary negative answer and should fail. A call the
+caller cannot interpret should throw:
 
 ```eyeprolog
 require_route(From, To) :-
@@ -5327,82 +3571,57 @@ checked_route(From, To, Result) :-
   ).
 ```
 
-The catcher is unified with the thrown term. A matching recovery goal runs in
-the environment at the `catch/3` boundary; unrelated exceptions continue
-outward. Prefer failure for an expected negative answer, such as a route that
-does not exist. Throw when a caller cannot safely interpret the computation,
-for example malformed input or an unavailable required resource. ISO
-instantiation, type, domain, permission, representation, and evaluation errors
-follow this same exception path.
+The catcher is unified with the thrown term; on a match the recovery goal runs
+in the environment of the `catch/3` call, and other exceptions continue
+outward. ISO instantiation, type, domain, permission, representation and
+evaluation errors travel the same way.
 
-Normal EyeProlog also provides `call_cleanup(Goal, Cleanup)` and
-`setup_call_cleanup(Setup, Goal, Cleanup)`. Cleanup is run exactly once when the
-protected search completes deterministically, is exhausted, is cut or otherwise
-pruned, top-level answer enumeration is abandoned, or an exception unwinds the
-search. `setup_call_cleanup/3` runs Setup once and installs Cleanup only after
-Setup succeeds. On cut or ordinary pruning Cleanup sees the current Goal
-bindings; on exception unwind the Goal bindings have been removed and Cleanup
-sees the Setup environment. When a deterministic protected goal runs Cleanup
-before yielding, substitutions produced by a successful Cleanup are included in
-that answer. Cleanup failure is ignored, and an exception already being
-propagated takes precedence over a cleanup exception. Nested cleanups run
-inside-out. These two controls are EyeProlog extensions and are absent from
-`--iso-strict`.
+Normal mode also has `call_cleanup(Goal, Cleanup)` and
+`setup_call_cleanup(Setup, Goal, Cleanup)`, which `--iso-strict` omits.
+`Cleanup` runs exactly once, whether the goal finishes deterministically, is
+exhausted, is cut, is abandoned at the top level or throws. It is installed
+only after `Setup` succeeds. After a cut it sees the goal's bindings; after an
+exception, only those of `Setup`. If a deterministic goal runs `Cleanup`
+before answering, the cleanup's bindings are part of the answer. Cleanup
+failure is ignored, an exception already in flight beats a cleanup exception,
+and nested cleanups run inside-out.
 
-Collection also makes search boundaries explicit. `findall/3` returns one list
-and existentially closes variables that occur only in its goal. `bagof/3`
-instead creates a group for each binding of a free variable and fails when
-there are no solutions. `setof/3` has the same grouping rule, then sorts and
-deduplicates each group. The `^/2` notation marks a goal variable existential:
+### Grouped solutions
+
+`findall/3` returns one list. `bagof/3` returns one list per binding of the
+goal's free variables and fails when there are none; `setof/3` also sorts and
+removes duplicates. `Var^Goal` hides a variable from grouping:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 regional_total(Region, Total) :-
   bagof(Amount, Seller^sale(Region, Seller, Amount), Amounts),
   sum_amounts(Amounts, Total).
 ```
 
-Here `Region` deliberately remains free and produces one answer per region;
-`Seller` is hidden from grouping. This distinction matters whenever a
-collection unexpectedly arrives as several answers.
+This gives one total per region. Without `Seller^` it would give one per
+region and seller, which is the usual reason a collection arrives as several
+answers instead of one.
 
-Integer arithmetic has similarly precise choices. `//` truncates the quotient
-toward zero, while Corrigendum 2's `div` takes the mathematical floor. With a
-positive divisor, `mod` returns a nonnegative modulo while `rem` keeps the
-dividend's sign. For `-7` and `3`, `//` is `-2`, `div` is `-3`, and the two
-remainders are `2` and `-1`. Bitwise conjunction, disjunction, exclusive-or,
-complement, and shifts require integers.
+### Integer arithmetic
 
-Run the focused examples:
+Integer division has two roundings. For `-7` and `3`, `//` truncates to `-2`
+and `div` floors to `-3`; `mod` gives `2` and `rem` gives `-1`. Bitwise
+operations and shifts require integers.
 
-- [`iso-control-and-errors.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-control-and-errors.pl)
-  covers `call/1`, `once/1`, cut, if-then-else, and recovery;
-- [`iso-grouped-solutions.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-grouped-solutions.pl)
-  contrasts the three collectors and inspects a source clause; and
-- [`iso-integer-arithmetic.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-integer-arithmetic.pl)
-  makes division and bit-operation results visible.
+The examples
+[`iso-control-and-errors.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-control-and-errors.pl),
+[`iso-grouped-solutions.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-grouped-solutions.pl)
+and
+[`iso-integer-arithmetic.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-integer-arithmetic.pl)
+run each of these side by side.
 
-**Checkpoint.** Explain why `bagof(Amount, sale(Region, Seller, Amount), X)`
-groups on both `Region` and `Seller`, then write the existential qualification
-that groups only on `Region`. Name one expected absence that should fail and
-one broken precondition that should throw.
+**Checkpoint.** Name one absence in a route planner that should fail and one
+broken precondition that should throw.
 
 ## 35. Reflective terms and atomic conversion
 
-Ordinary pattern matching should remain the first choice when term shape is
-known. Reflective predicates are valuable when the shape itself is input:
-generic walkers, schema checkers, interpreters, and source transformations.
-
-<figure>
-  <img src="book-assets/iso-term-prism.svg" alt="One structured event term fans out into functor, argument, univ-list, variable, ordering, character, and code views.">
-  <figcaption>A term is not mutated by reflection: standard relations expose its structure, ordering, or lexical representation for a particular question.</figcaption>
-</figure>
-
-`functor/3` relates a term to its name and arity. `arg/3` selects a one-based
-argument. `=../2`—traditionally called *univ*—relates a term to a list whose
-head is the functor and whose tail contains the arguments:
+When the shape of a term is itself the input, as in walkers, schema checkers
+and interpreters, reflect on it:
 
 ```eyeprolog
 term_shape(Term, shape(Name, Arity, Arguments)) :-
@@ -5410,54 +3629,39 @@ term_shape(Term, shape(Name, Arity, Arguments)) :-
   (Term =.. [Name | Arguments]).
 ```
 
-In a construction mode, `functor/3` creates a term with fresh arguments and
-`=../2` rebuilds a term from a proper list. Their ISO errors are useful
-guardrails: an unknown functor name, negative arity, partial univ list, or
-uninstantiated required argument is not silently treated as failure.
+<figure>
+  <img src="book-assets/iso-term-prism.svg" alt="One structured event term fans out into functor, argument, univ-list, variable, ordering, character, and code views.">
+  <figcaption>Reflection does not change a term; it exposes its structure, ordering, or spelling.</figcaption>
+</figure>
 
-`copy_term/2` preserves sharing inside a term while replacing its variables
-with fresh ones. `term_variables/2` returns each distinct variable in
-first-occurrence order. Identity predicates make the distinction observable:
-`==/2` tests whether two resolved terms are identical without binding them;
-`\==/2` is its negation. `=/2` still performs unification, while
-`unify_with_occurs_check/2` explicitly rejects cyclic bindings.
+`functor/3` relates a term to its name and arity, `arg/3` picks a one-based
+argument, and `=../2` ("univ") relates a term to the list of its functor and
+arguments. Run backwards, they build terms. A missing name, negative arity or
+partial list raises an error instead of failing quietly.
 
-The standard term-order family—`compare/3`, `@</2`, `@=</2`, `@>/2`, and
-`@>=/2`—compares terms without evaluating arithmetic. Do not replace
-`3 + 4 < 8` with `3 + 4 @< 8`: the former evaluates numbers and the latter
-orders syntax.
+`copy_term/2` renames variables apart and keeps their sharing.
+`term_variables/2` lists distinct variables in order of first occurrence.
+`==/2` and `\==/2` test identity without binding; `unify_with_occurs_check/2`
+rejects cyclic bindings explicitly. `compare/3` and `@<`, `@=<`, `@>`, `@>=`
+order terms without evaluating them: `3 + 4 < 8` compares numbers, and
+`3 + 4 @< 8` compares syntax.
 
-Atomic conversion predicates expose reversible representations:
+At text boundaries, `atom_concat/3` joins or splits atoms, `sub_atom/5`
+relates an atom to a fragment and its position, `atom_chars/2`,
+`atom_codes/2` and `char_code/2` convert to characters or codes, and
+`number_chars/2` and `number_codes/2` parse and render numbers. `'λ'` is an
+atom; with the default flag, `"λ"` is the list `['λ']`.
 
-- `atom_concat/3` joins an atom or solves a sufficiently instantiated split;
-- `sub_atom/5` relates a source to before, length, after, and fragment;
-- `atom_chars/2` and `atom_codes/2` use character atoms or Unicode codes;
-- `char_code/2` converts one character; and
-- `number_chars/2` and `number_codes/2` parse or render ISO numbers.
-
-These are atom relations, distinct from the EyeProlog library predicates whose
-historical names contain `string`. Quoted atoms such as `'λ'` remain atoms;
-with the default flag, `"λ"` denotes the character list `['λ']`.
-
+See
 [`iso-reflective-terms.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-reflective-terms.pl)
-walks through shape, rebuilding, fresh copying, variables, and order.
-[`iso-atomic-conversion.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-atomic-conversion.pl)
-demonstrates both conversion directions and every three-character sub-atom of
-`eyeprolog`.
+and
+[`iso-atomic-conversion.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-atomic-conversion.pl),
+which lists every three-character sub-atom of `eyeprolog`.
 
-**Checkpoint.** Given `pair(X, X)`, predict the variable list before and after
-`copy_term/2`. Then explain why `atom_codes/2` belongs at a text boundary
-rather than throughout a domain theory.
+**Checkpoint.** Given `pair(X, X)`, predict `term_variables/2` before and
+after `copy_term/2`.
 
 ## 36. Dynamic predicates, directives, and operators
-
-A dynamic predicate is a mutable clause store owned by one solver run. Declare
-it before updates:
-
-<figure>
-  <img src="book-assets/iso-state-operator-console.svg" alt="Initialization and assertions establish an ordered dynamic task queue beside an operator declaration that parses readable syntax into an ordinary reports term.">
-  <figcaption>Dynamic predicates change solver-local clause order; operator declarations change how subsequent source is parsed. Both effects are explicit and ordered.</figcaption>
-</figure>
 
 ```eyeprolog
 :- dynamic(task/2).
@@ -5467,31 +3671,32 @@ prepare_queue :-
   assertz(task(check_network, normal)).
 ```
 
-`asserta/1` inserts at the beginning and `assertz/1` at the end. `retract/1`
-removes the first unifying clause and can be retried for later matches.
-`abolish/1` removes a dynamic procedure. `clause/2` inspects accessible
-clauses, while `current_predicate/1` enumerates or tests predicate indicators.
-Static and private built-in procedures are protected by permission errors.
+<figure>
+  <img src="book-assets/iso-state-operator-console.svg" alt="Initialization and assertions establish an ordered dynamic task queue beside an operator declaration that parses readable syntax into an ordinary reports term.">
+  <figcaption>Database updates change solver-local clause order; operator declarations change how later source is parsed.</figcaption>
+</figure>
 
-Updates are ordered effects, not pure logical conclusions, and they are not
-undone by ordinary backtracking: later goals observe a changed database. Each
-update invalidates cached tabled and ground-chain answers, and rule changes
-refresh recursion and negation analysis before later goals continue. Keep them
-in a narrow lifecycle layer.
-The queue example performs setup in `initialization/1`, so query order does not
-determine its state:
+`asserta/1` adds a clause at the front and `assertz/1` at the end.
+`retract/1` removes the first matching clause and retries for later ones, and
+`abolish/1` removes a dynamic procedure. `clause/2` and `current_predicate/1`
+inspect the program. Changing a static or built-in procedure raises a
+permission error.
+
+Backtracking does not undo updates, so later goals see the changed database.
+Each update invalidates cached tabled and ground-chain answers, and a rule
+change refreshes the recursion and negation analysis. Run setup from an
+initialization goal so the state does not depend on query order:
 
 ```eyeprolog
 :- initialization(prepare_queue).
 ```
 
-Initialization runs after preparation and before host queries. `include/1`
-expands a source file in place; `ensure_loaded/1` loads the same designation at
-most once. `multifile/1` and `discontiguous/1` document permitted clause
-layout. Prolog flags and character conversions are also solver-scoped and
-should be set deliberately near the boundary that relies on them.
+Initialization goals run after the program is prepared and before host
+queries. `include/1` expands a file in place, and `ensure_loaded/1` loads it at
+most once. `multifile/1` and `discontiguous/1` permit clause layouts. Flags
+and character conversions are per solver.
 
-Operators offer readable syntax without adding a new data model:
+### Operators
 
 ```eyeprolog
 :- op(600, xfx, reports).
@@ -5499,60 +3704,37 @@ Operators offer readable syntax without adding a new data model:
 sensor_7 reports temperature.
 ```
 
-The fact is exactly `reports(sensor_7, temperature)`. Priority determines
-binding strength, and `fx`, `fy`, `xf`, `yf`, `xfx`, `xfy`, and `yfx`
-determine position and associativity. `current_op/3` inspects the table;
-`op(0, Specifier, Name)` removes a definition. Because declarations affect
-parsing of subsequent text, place them before their first use. ISO argument
-syntax also permits an atom that is currently an operator to appear directly
-as a functional argument or list element, so forms such as
-`current_op(Priority, Specifier, :-)` and `[:-,-]` are valid without quoting
-or parenthesizing those operator atoms. A current operator atom may likewise
-be the complete content of parentheses or curly brackets: `(+)` denotes the
-atom `+`, and `{*}` denotes the curly term `{}(*)`. Term output observes the
-same context rules: with `quoted(true)`, an operator atom is not quoted merely
-because it occurs as a functional argument, list element, or sole curly-bracket
-content. Thus `writeq({*})` emits `{*}`, `writeq([:-,-])` emits `[:-,-]`, and
-`writeq(f(;,'|',';;'))` emits `f(;,'|',';;')`; the bar stays quoted because
-ISO treats the unquoted `|` token as a list separator rather than an atom.
+The fact is exactly `reports(sensor_7, temperature)`. Priority sets binding
+strength, and `fx`, `fy`, `xf`, `yf`, `xfx`, `xfy` and `yfx` set position and
+associativity. A declaration affects only later text; `current_op/3`
+inspects the table and `op(0, Specifier, Name)` removes an entry.
 
-The ISO initial operator table also
-contains `?-` at priority 1200 with specifier `fx`, so
-`current_op(1200, fx, ?-)` succeeds. EyeProlog's embedded quad syntax permits
-an optional label before the query marker (`Label ?- Query.`); supporting that
-syntax additionally exposes `?-` at priority 1200 with specifier `xfx` as an
-implementation-specific operator. Consequently
-`current_op(Priority, Specifier, ?-)` enumerates both definitions. At top level in the normal EyeProlog profile, the quad marker is recognized
-from the parsed `?-/1` or `?-/2` term rather than from one privileged surface
-spelling. Thus `Label ?- Query.`, `?-(Label, Query).`, mixed forms such as
-`?-((Label), Query).`, quoted-functor notation, and a parenthesized whole
-`(?-(Label, Query)).` denote the same quad when followed by indented answer
-descriptions. `Label` itself is parsed with the ordinary Prolog term grammar:
-there is no quad-specific comma or metadata syntax. The runner requires the
-resulting first argument to be ground; if it is not, that quad is reported as
-`BAD_ID` and later quads are still processed. In `--iso-strict` mode this quad
-interpretation is disabled, and `?-/2` remains ordinary Prolog term syntax.
+An operator atom may appear bare as an argument, list element, or the whole
+content of parentheses or braces: `current_op(P, S, :-)`, `[:-,-]`, `(+)` and
+`{*}` are all valid. `writeq/1` follows the same rule, so `writeq({*})`
+writes `{*}` and `writeq(f(;,'|',';;'))` writes `f(;,'|',';;')`. The bar stays
+quoted because an unquoted `|` is a list separator.
 
-Run [`iso-dynamic-database.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-dynamic-database.pl)
-for an explicitly stateful queue and
-[`iso-operators.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-operators.pl)
-to see custom notation decomposed back into an ordinary term.
+ISO declares `?-` as prefix operator 1200 `fx`. Because EyeProlog's embedded
+quads allow `Label ?- Query.`, it also declares `?-` as 1200 `xfx`, and
+`current_op(P, S, ?-)` returns both. In normal mode a quad is recognized from
+the parsed `?-/2` term, so `?-(Label, Query).` and other spellings of the same
+term work too. The label is an ordinary term and must be ground; a non-ground
+label is reported as `BAD_ID` and later quads still run. Under
+`--iso-strict`, `?-/2` is plain term syntax.
 
-**Checkpoint.** State the final clause order after one `asserta/1` and two
-`assertz/1` calls. Then rewrite one custom-operator fact in canonical
-functor notation and verify it with `=../2`.
+See
+[`iso-dynamic-database.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-dynamic-database.pl)
+and
+[`iso-operators.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-operators.pl).
+
+**Checkpoint.** Give the clause order after one `asserta/1` and two
+`assertz/1` calls.
 
 ## 37. Streams and term I/O
 
-Streams are handles to ordered input or output. `open/4` adds options to the
-basic `open/3`: text or binary type, alias, repositioning, and end-of-file
-action. Always close a nonstandard stream, including exceptional paths in
-application code.
-
-<figure>
-  <img src="book-assets/iso-stream-roundtrip.svg" alt="A structured event is written with a terminating period to a text stream, read back as a term, and followed to end of file.">
-  <figcaption>A term round trip has visible lifecycle obligations: open the right stream type, write readable syntax with a period, read in order, observe end state, and close.</figcaption>
-</figure>
+To write a term another Prolog can read back, open a text stream, write
+canonical syntax, end with a period and always close:
 
 ```eyeprolog
 write_event(Path, Event) :-
@@ -5566,206 +3748,155 @@ write_event(Path, Event) :-
   ).
 ```
 
-In normal mode, `setup_call_cleanup/3` is the preferred lifecycle boundary for
-resources such as streams: `close(Stream)` still runs if the protected work
-fails, throws, is cut, or its remaining alternatives are abandoned. Strict ISO
-mode does not provide this EyeProlog extension.
+<figure>
+  <img src="book-assets/iso-stream-roundtrip.svg" alt="A structured event is written with a terminating period to a text stream, read back as a term, and followed to end of file.">
+  <figcaption>Open the right stream type, write readable syntax with a period, read in order, observe the end, and close.</figcaption>
+</figure>
 
-The period is essential when another Prolog processor will read the result as
-a term. `write/1-2` uses readable conventional syntax, `writeq/1-2` quotes
-where needed, and `write_canonical/1-2` exposes canonical structure. Dotted
-graphic atoms do not need quotes merely because they contain a period:
-`writeq(./*)`, `writeq(.*)`, and `writeq(...*)` output `./*`, `.*`, and `...*`
-respectively. ISO term output uses only the separator characters needed by the
-syntax, so functional arguments, list elements, and operator applications are
-emitted compactly when no lexical ambiguity would arise. For example,
-`writeq([a,b])` outputs `[a,b]` and `writeq(1+2)` outputs `1+2`; a separator is
-still retained where adjacent graphic tokens would otherwise merge, as in
-`a+ -b`.
-`write_term/2-3` supports `quoted/1`, `ignore_ops/1`, `numbervars/1`, and
-`variable_names/1`. Normal mode additionally accepts the EyeProlog extension
-`double_quotes(true|false)`: `true` lets eligible character/code lists use the
-current `double_quotes` representation. Proper character/code lists can therefore be written
-as `"text"`. A proper list whose final segment contains at least two characters/codes
-uses that representation for the suffix, so `[A,b,c,d,e,f]` is written as
-`[A|"bcdef"]`. A partial list such as `[a,b|Tail]` is written as `"ab"||Tail`.
-This representation choice is independent of `ignore_ops/1`: with
-`ignore_ops(true)`, operator terms use functional notation while an explicitly
-requested character/code list remains double quoted. Thus
-`write_term(f("ab",a+b),[quoted(true),ignore_ops(true),double_quotes(true)])`
-emits `f("ab",+(a,b))`. Reversing the two options has the same effect. Strict
-ISO mode rejects this implementation-specific write option. Normal mode also accepts the
-implementation-specific boolean `spacing(true|false)` option: `false` emits
-only separators required to avoid lexical ambiguity, while `true` adds
-conventional layout around operators. For example,
-`write_term(1+1,[spacing(false)])` emits `1+1` and
-`write_term(1+1,[spacing(true)])` emits `1 + 1`. The REPL always follows
-the minimal-separator rule, so `X=1*1` is displayed as `X = 1*1`, while a
-separator is retained in `X = a+ -b` because the adjacent graphic tokens would
-otherwise merge. Strict ISO mode rejects both extension options.
+`open/4` adds options to `open/3`: type, alias, repositioning and end-of-file
+action. In strict mode, which lacks `setup_call_cleanup/3`, close streams on
+every path yourself.
 
-Character operations are `get_char`, `peek_char`, `put_char`, `get_code`,
-`peek_code`, and `put_code`; byte streams use the corresponding byte
-predicates. Peeking does not advance the position. Mixing byte operations with
-a text stream, or text operations with a binary stream, raises a permission
-error rather than guessing an encoding.
+`write/1-2` writes readable syntax, `writeq/1-2` adds quotes where needed, and
+`write_canonical/1-2` ignores operators. Output uses only the separators the
+syntax needs: `writeq([a,b])` writes `[a,b]` and `writeq(1+2)` writes `1+2`,
+but `a+ -b` keeps its space so the tokens do not merge. A graphic atom with a
+period, such as `./*`, needs no quotes.
 
-`read/1-2` reads the next term. `read_term/2-3` can also return all variables,
-source variable names, and singletons. The metadata contains variables, so a
-program normally validates or transforms it before placing it in a ground
-query answer. Every read operation creates a fresh variable set: a source name
-such as `X` in two separately read terms does not alias either the caller's `X`
-or the variable named `X` by the other read. Within one read term, repeated
-occurrences and the variables returned through its metadata still share as
-written. `stream_property/2` exposes mode, type, alias, position, and
-end state. `current_input/1`, `current_output/1`, `set_input/1`, and
-`set_output/1` manage defaults shared by nested goals.
+`write_term/2-3` takes `quoted/1`, `ignore_ops/1`, `numbervars/1` and
+`variable_names/1`. Normal mode adds two options that strict mode rejects:
 
-End of file is a state transition, not merely a character. With
-`eof_action(eof_code)`, term input yields `end_of_file`, character input yields
-`end_of_file`, and code or byte input yields `-1`; `at_end_of_stream/1`
-tests the position. Repeated input after the end follows the selected
-`eof_action`.
+- `double_quotes(true)` writes character and code lists as `"text"`. A list
+  whose last segment has two or more characters is written `[A|"bcdef"]`, and
+  a partial list `[a,b|Tail]` as `"ab"||Tail`. The option combines with
+  `ignore_ops(true)`, so
+  `write_term(f("ab",a+b),[quoted(true),ignore_ops(true),double_quotes(true)])`
+  writes `f("ab",+(a,b))`.
+- `spacing(true)` adds conventional spaces around operators, so
+  `write_term(1+1,[spacing(true)])` writes `1 + 1`; `spacing(false)`, the
+  default, writes `1+1`. The REPL always uses minimal spacing.
 
+`get_char`, `peek_char`, `put_char` and their code forms work on text streams,
+and the byte predicates on binary streams. Mixing them raises a permission
+error instead of guessing an encoding. `read/1-2` reads the next term, and
+`read_term/2-3` can also return its variables, their source names and its
+singletons. Every read makes fresh variables: an `X` in one read term shares
+nothing with an `X` anywhere else. `stream_property/2` reports a stream's mode,
+type, alias, position and end state, and `set_input/1` and `set_output/1`
+change the defaults.
+
+With `eof_action(eof_code)`, reading at the end returns `end_of_file` for terms
+and characters and `-1` for codes and bytes; `at_end_of_stream/1` tests for
+it.
 [`iso-term-io.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-term-io.pl)
-writes a temporary fixture, reads its terms in order, checks variable metadata,
-and observes end of stream. The file lives under `/tmp`; running the example
-does not modify the checkout.
+writes a fixture under `/tmp`, reads it back and observes the end of the
+stream.
 
-**Checkpoint.** Write a term round trip and name where quoting, the terminating
-period, stream type, and close operation matter. Explain why a stream side
-effect belongs outside the central relation that decides what the term means.
-
-## Part VIII summary
-
-The supported ISO facilities make EyeProlog suitable for more than closed rule
-files:
-
-- control predicates delimit choices and exception recovery;
-- collectors distinguish flat, grouped, and canonicalized answer sets;
-- reflective predicates treat term structure as data;
-- atomic conversions provide standard lexical boundaries;
-- dynamic predicates and directives manage explicit solver-local state;
-- operators change notation while preserving ordinary term structure; and
-- streams connect terms to ordered text or binary I/O.
-
-Chapters 38–40 state the supported profile, list every registered predicate,
-and document the command line; the conformance corpus fixes success, failure,
-mode, and error behavior. Use this part for working practice and those chapters
-for exact reference.
+**Checkpoint.** Why does `write_event/2` belong outside the relation that
+decides what an event means?
 
 ### Historical note: the practical language becomes portable
 
-By the late 1970s and 1980s, Prolog had spread from its Marseille origins into
-several implementation traditions. The Edinburgh and DECsystem-10 lineage in
-particular helped establish a practical programming vocabulary around ordered
-control, term inspection, dynamic clauses, operators, and streams. These
-facilities made Prolog useful far beyond theorem-proving examples, but
-differences between systems also made portability a recurring concern.
-
-ISO/IEC 13211-1:1995 gave that accumulated practice a common core. It did not
-freeze the language: constraints, modules, tabling, coroutining, and other
-facilities continued to develop in implementations and later standardization
-work. What the standard supplied was a stable shared account of ordinary Prolog
-terms, control, state, errors, and I/O against which extensions could be named.
+In the late 1970s and 1980s Prolog spread from Marseille into several
+implementation traditions. The Edinburgh and DECsystem-10 lineage settled the
+practical vocabulary of ordered control, term inspection, dynamic clauses,
+operators and streams, and the differences between systems made portability a
+lasting concern. ISO/IEC 13211-1:1995 gave that practice a common core, against
+which later constraints, modules, tabling and coroutining could be named as
+extensions.
 
 # Part IX — Reference as practice
 
-Reference is useful only when the route into it is clear. Begin with the task
-in hand: Chapter 38 answers what source means, Chapter 39 helps select a
-predicate, and Chapter 40 turns a file into observable evidence. Chapters
-41–43 then support study design, boundary decisions, and precise vocabulary.
-The long catalogs are meant to be entered locally, not memorized linearly.
-
-<figure>
-  <img src="book-assets/reference-navigation.svg" alt="A task map routes language, predicate, and execution questions into Chapters 38 to 40, then onward to study paths, boundaries, and vocabulary in Chapters 41 to 43.">
-  <figcaption>Enter the reference through a concrete question. The first three chapters answer how to read, choose, and run; the next three help place that answer in a course, a boundary, and a shared vocabulary.</figcaption>
-</figure>
+Enter the reference with a question. Chapter 38 says what source means,
+Chapter 39 helps you choose a predicate, and Chapter 40 turns a file into
+answers and proofs and points to further examples. Chapter 41 states the
+standards and implementation boundaries, and Chapter 42 collects notes and
+vocabulary. Look things up as needed; there is no need to read them straight
+through.
 
 ## 38. Language and ISO profile
 
-The normative strict-core baseline is ISO/IEC 13211-1:1995, as corrected by
-Technical Corrigenda 1:2007, 2:2012, and 3:2017. The post-N289 WG17/STC
-working draft is used as defect-discovery input, not as an unpublished fourth
-Corrigendum. The 2026-08-23 draft through items #73-#76 is tracked by
-`test/conformance/STC-DRAFT-STATUS.md`; where a proposal changes published
-semantics, such as #75's conditional power-underflow proposal, strict mode keeps
-the licensed baseline until the change is standardized or explicitly adopted as
-a compatibility extension. Normal EyeProlog additionally provides a practical
-module interface aligned with later WG17 module amendment work and a
-definite-clause-grammar profile following ISO/IEC TS 13211-3. The requirements
-clarified by the 2013 Part 2 amendment have a dedicated executable coverage
-ledger; the unchanged remainder of Part 2 and the Part 3 profile are documented
-and tested compatibility surfaces rather than complete clause-by-clause
+The strict-core baseline is ISO/IEC 13211-1:1995, as corrected by Technical
+Corrigenda 1:2007, 2:2012 and 3:2017. The post-N289 WG17/STC working draft is
+used to find defects, not treated as an unpublished fourth Corrigendum.
+`test/conformance/STC-DRAFT-STATUS.md` tracks the 2026-08-23 draft through
+items #73-#76. Where a proposal changes published semantics, such as #75's
+conditional power-underflow proposal, strict mode keeps the published
+baseline until the change is standardized or adopted as a compatibility
+extension.
+
+Normal EyeProlog adds a module interface aligned with later WG17 module
+amendment work and a definite clause grammar profile following ISO/IEC TS
+13211-3. The requirements clarified by the 2013 Part 2 amendment have their
+own executable coverage ledger. The rest of Part 2 and the Part 3 profile are
+documented and tested compatibility surfaces, not clause-by-clause
 certifications.
 
-Normal-mode Prolog source accepted by EyeProlog is UTF-8. `%` starts a line
-comment and `/* ... */` delimits a block comment. Plain atoms begin with a
-lowercase ASCII letter. Variables begin with uppercase or underscore. The bare
-`_` is fresh each time. Single quotes delimit quoted atoms; double quotes use
-ISO double-quoted-list notation. Integers, decimals, scientific notation,
-binary/octal/hexadecimal integers, and character-code constants are accepted.
-Normal mode additionally accepts digit-separated integer constants such as
-`1_000` and `0xCA_FE`, with optional layout after the underscore, and the
-Trealla-compatible `"text"||Tail` right-splice for double-quoted `chars`/`codes`
-lists; strict ISO mode accepts neither syntax extension.
+### Source text
 
-The processor character set is shared by normal and `--iso-strict` modes because
-Part 1 makes it implementation defined rather than an extension boundary.
-EyeProlog's PCS (processor character set) is the Unicode scalar repertoire. Printable ASCII keeps the Part
-1 lexical classes; Unicode letters extend alphanumeric name syntax, Unicode
-white-space characters are layout, and remaining non-ASCII symbols/punctuation
-are extended graphic characters. Character-code and collation values are the
-corresponding Unicode scalar integers. Quoting remains available for any atom
-spelling that should not depend on an extended lexical class:
+Normal-mode source is UTF-8. `%` starts a line comment and `/* ... */` a block
+comment. Plain atoms begin with a lowercase ASCII letter; variables begin with
+an uppercase letter or underscore, and each bare `_` is fresh. Single quotes
+delimit quoted atoms, and double quotes use ISO double-quoted-list notation.
+Integers, decimals, scientific notation, binary, octal and hexadecimal
+integers, and character-code constants are accepted. Normal mode also accepts
+digit-separated integers such as `1_000` and `0xCA_FE` (layout may follow the
+underscore) and the Trealla-compatible `"text"||Tail` splice for `chars` and
+`codes` lists. Strict ISO mode accepts neither extension.
+
+The processor character set is the same in normal and `--iso-strict` modes,
+because Part 1 leaves it implementation defined. EyeProlog's PCS (processor
+character set) is the Unicode scalar repertoire. Printable ASCII keeps the
+Part 1 lexical classes. Unicode letters extend alphanumeric names, Unicode
+white space is layout, and the remaining non-ASCII symbols and punctuation are
+extended graphic characters. Character codes and collation values are the
+Unicode scalar integers. Quote any atom whose spelling should not depend on an
+extended lexical class:
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 city('München').
 message("café").
 ```
 
-Inside a quoted atom, a single quote is doubled: `'don''t'`. EyeProlog follows
-the ISO quoted-character grammar rather than accepting arbitrary backslash
-escapes. The symbolic control escapes are `\a`, `\b`, `\r`, `\f`, `\t`,
-`\n`, and `\v`; the meta characters backslash, single quote, double quote, and
-back quote may be escaped after a backslash; and numeric octal or hexadecimal
-escapes are terminated by a backslash. For example, `'\7\'` and `'\x7\'`
-both denote the alert character. Forms such as `\c`, `\d`, `\e`, `\u`, `\.`
-and `\ ` are not ISO quoted-character escapes and are syntax errors.
+Inside a quoted atom, a single quote is doubled: `'don''t'`. Escapes follow
+the ISO quoted-character grammar:
 
-A literal layout character other than ordinary space is not a quoted
-character. In particular, a literal tab or newline inside quotes is a syntax
-error. A quoted token can cross a line boundary only through a continuation
-escape: a backslash immediately followed by the newline, which contributes no
-character to the atom. The NUL character is written readably as `'\0\'`;
-digits `8` and `9` are not octal digits, so forms such as `'\8\'` are syntax
-errors. `writeq/1` uses octal escapes for other non-symbolic control characters,
-for example ESC is written as `'\33\'`. Double-quoted lists use the same
-quoted-character rules. Whitespace is insignificant between tokens, and a `%`
-comment continues to the end of its line. Doubling the active delimiter is
-also accepted inside either quoted form, so `""` inside double-quoted notation
-denotes one literal double quote character.
+- the symbolic control escapes are `\a`, `\b`, `\r`, `\f`, `\t`, `\n` and
+  `\v`;
+- backslash, single quote, double quote and back quote may follow a backslash;
+- octal and hexadecimal escapes end with a backslash, so `'\7\'` and `'\x7\'`
+  both denote the alert character;
+- `\c`, `\d`, `\e`, `\u`, `\.` and `\ ` are not ISO escapes and are syntax
+  errors.
+
+A literal layout character other than space, such as a tab or newline, is not
+allowed inside quotes. A quoted token crosses a line only through a
+continuation escape: a backslash followed directly by the newline, which adds
+no character. NUL is written `'\0\'`. `8` and `9` are not octal digits, so
+`'\8\'` is a syntax error. `writeq/1` writes other non-symbolic control
+characters as octal escapes; ESC is `'\33\'`. Double-quoted lists use the
+same rules. Doubling the active delimiter works in both quoted forms, so `""`
+inside double quotes is one double-quote character. Whitespace between tokens
+is insignificant.
 
 Graphic tokens use the characters `#$&*+-./<=>?@^~\`; `!` and `;` are solo
-atoms. A colon is the Part 2 module qualification operator in `Module:Goal`;
-normal mode predeclares it, while `--iso-strict` does not include it in the
-Part 1 initial operator table. Quote an atom whose name itself contains a colon.
-Unquoted angle-bracket IRIs are not syntax.
+atoms. A colon is the Part 2 module qualification operator in `Module:Goal`.
+Normal mode predeclares it; `--iso-strict` does not, since it is not in the
+Part 1 operator table. Quote an atom whose name contains a colon. Unquoted
+angle-bracket IRIs are not syntax.
 
-A `/*` sequence opens a block comment only when it begins a token; inside a
-maximal graphic token the slash and star remain atom characters. Graphic tokens
-are formed maximally before a period can be recognized as the terminating full
-stop. Consequently, interactive input `*.` or `./*.` is not yet a complete term:
-the period is part of the graphic atom and the reader waits for a separate
-terminating full stop. Thus `./*. .` reads the atom `./*.` and consumes the
-second period as the terminator.
+`/*` opens a block comment only at the start of a token; inside a graphic
+token the slash and star are atom characters. Graphic tokens are formed
+maximally before a period can count as the end of a clause. So `*.` or `./*.`
+typed at the prompt is not yet a complete term: the period belongs to the
+atom, and the reader waits for a separate full stop. `./*. .` reads the atom
+`./*.` and takes the second period as the terminator.
 
-In the grammar below, `{ x }` means zero or more repetitions of `x`, `[ x ]`
-means that `x` is optional, and parentheses group alternatives. These marks
-describe the grammar; they are not characters written in EyeProlog source.
+### Grammar
+
+Below, `{ x }` means zero or more repetitions of `x`, `[ x ]` means optional
+`x`, and parentheses group alternatives. These marks are not EyeProlog source
+characters.
 
 ```text
 program             ::= { clause }
@@ -5791,66 +3922,66 @@ variable-start      ::= uppercase-letter | "_"
 name-continue       ::= uppercase-letter | lowercase-letter | digit | "_"
 ```
 
-Zero-arity compounds such as `ready()` are unsupported; use `ready`. Every
-clause ends in a period. The grammar above gives the canonical term shapes.
-The initial operator table contains the following ISO-style operators, all
-lowered to ordinary compound terms:
+Zero-arity compounds such as `ready()` are not supported; write `ready`. Every
+clause ends in a period. The initial operator table contains these operators,
+all read as ordinary compound terms:
 
-- prefix: ISO `?-`, `\+`, unary `+`, unary `-`, and `\`;
-- control: `,`, `;`, and `->`;
+- prefix: ISO `?-`, `\+`, unary `+`, unary `-` and `\`;
+- control: `,`, `;` and `->`;
 - normal Part 2 module profile: `:` at priority 600 (`xfy`) and
-  `meta_predicate` at priority 1150 (`fx`) so the amendment's directive spelling
-  such as `:- meta_predicate run(:).` parses directly; these are not predeclared
-  by `--iso-strict`;
-- quad syntax extension: `?-` is also a priority-1200 `xfx` operator so a
+  `meta_predicate` at priority 1150 (`fx`), so the amendment's spelling
+  `:- meta_predicate run(:).` parses directly; `--iso-strict` does not
+  predeclare these;
+- quad syntax extension: `?-` is also a priority-1200 `xfx` operator, so a
   label may precede a quad query;
 - grammar rules: `-->` and the Part 3 alternative `|`;
 - unification and comparison: `=`, `\=`, `==`, `\==`, `@<`, `@=<`, `@>`,
-  `@>=`, `is`, `=:=`, `=\=`, `<`, `=<`, `>`, and `>=`;
+  `@>=`, `is`, `=:=`, `=\=`, `<`, `=<`, `>` and `>=`;
 - arithmetic: `+`, `-`, `*`, `/`, `//`, `div`, `mod`, `rem`, `/\`, `\/`,
-  `<<`, `>>`, `**`, and `^`.
+  `<<`, `>>`, `**` and `^`.
 
-`op/3` directives and runtime calls define or remove prefix, infix, and postfix
-operators using the ISO `fx`, `fy`, `xf`, `yf`, `xfx`, `xfy`, and `yfx`
-specifier classes. Variables cannot occur in functor or predicate position.
-Parentheses around one term
-denote that term; parentheses around two or more comma-separated terms
-construct a right-associated `','/2` term. In goal position it is conjunction;
-in data position it remains inspectable data.
+`op/3`, as a directive or a call, defines or removes prefix, infix and postfix
+operators with the ISO specifiers `fx`, `fy`, `xf`, `yf`, `xfx`, `xfy` and
+`yfx`. Variables cannot stand in functor or predicate position. Parentheses
+around one term denote that term; around two or more comma-separated terms
+they build a right-associated `','/2` term, which is conjunction in goal
+position and plain data elsewhere.
+
+### Meaning and execution
 
 The pure definite-clause fragment has a Herbrand reading: ground terms denote
 themselves, predicates denote sets of ground atomic formulas, variables have
-clause scope, and unification is structural. The implementation performs
-first-order finite-tree unification with an occurs check. An attempt to bind a
-variable to a term containing that same variable fails.
+clause scope, and unification is structural. Unification is first-order
+finite-tree unification with an occurs check: binding a variable to a term
+that contains it fails.
 
 An **atom constant** such as `pat` is a term. An **atomic formula** such as
-`parent(pat, jan)` is a proposition that may be a fact, rule head, or goal.
-The same surface form, `parent(pat, jan)`, may also be compound data when nested inside
-another term; its role comes from context. Predicate identity includes arity,
-so `edge/2` and `edge/3` are different predicates.
+`parent(pat, jan)` is a proposition that may be a fact, rule head or goal.
+Nested inside another term, the same text is compound data; context decides
+the role. Predicate identity includes arity, so `edge/2` and `edge/3` are
+different predicates.
 
-Execution is goal-directed rather than complete bottom-up saturation. Goals in
-a body normally run from left to right; the solver may select a ready
-deterministic built-in early as a pure filter. Ordinary user-defined calls,
+Execution is goal-directed, not bottom-up saturation. Body goals normally run
+left to right, though the solver may run a ready deterministic built-in early
+as a pure filter. Ordinary user-defined calls,
 including recursive calls, use depth-first resolution unless the source
-explicitly declares `:- table p/n.`. `\+/1` is negation as failure, not
-classical negation; the separate `tnot/1` extension provides well-founded
+explicitly declares `:- table p/n.`. An explicitly tabled grammar invoked
+through `phrase/2-3` gets a separate invocation-keyed table scope, so tables are
+not retained across unrelated input sequences. `\+/1` is negation as failure,
+not classical negation; the separate `tnot/1` extension provides well-founded
 semantics for eligible finite Datalog components.
 
-EyeProlog supports cut, operator declarations, dynamic database updates, grouped
-solutions, exceptions, flags, initialization and inclusion directives, and
-standard stream and term I/O. Normal mode additionally provides lifecycle-aware
-`call_cleanup/2` and `setup_call_cleanup/3`; these cleanup controls are
-EyeProlog extensions and are excluded by `--iso-strict`. Normal mode also
-adds the documented module compatibility surface and a Part 3-oriented DCG
-profile.
+EyeProlog supports cut, operator declarations, dynamic database updates,
+grouped solutions, exceptions, flags, initialization and inclusion directives,
+and standard stream and term I/O. Normal mode adds `call_cleanup/2` and
+`setup_call_cleanup/3`, which `--iso-strict` excludes, the module
+compatibility surface, and a Part 3-oriented DCG profile.
 
 ### Module compatibility profile
 
-A module gives predicate identity one more component: module name, predicate
-name, and arity. The first directive in a module source names the module and
-lists its public predicates:
+A module adds one component to predicate identity: module name, predicate name
+and arity. The first directive of a module source names the module and its
+public predicates:
 
 ```text
 % colors.pl
@@ -5860,10 +3991,9 @@ tone(blue).
 hidden(module_private).
 ```
 
-Another source can import all exports or select particular indicators. An
-unqualified call first uses a predicate local to the calling module and then an
-import; a local definition therefore stays distinct from a same-named private
-predicate elsewhere.
+Another source imports all exports or selected indicators. An unqualified call
+uses a predicate local to the calling module first and then an import, so a
+local `hidden/1` stays distinct from the private one in `colors`:
 
 ```text
 :- use_module('colors.pl', [tone/1]).
@@ -5873,21 +4003,20 @@ answer(Tone, Hidden) :- tone(Tone), hidden(Hidden).
 qualified(ok) :- colors:tone(blue).
 ```
 
-Imports such as `use_module(library(lists))` and
-`use_module(library(strings))` resolve the bundled modules in Node and the
-browser. Atom source designations such as
+`use_module(library(lists))` and `use_module(library(strings))` resolve the
+bundled modules in Node and the browser. Atom designations such as
 `'colors.pl'` resolve relative to the importing file in Node. `use_module/1`
-imports every export; `use_module/2` imports only its indicator list, including
-an empty list when only qualified calls are wanted. `Module:Goal` selects a
-module explicitly. Repeated module loads are idempotent, while conflicting
-imports and requests for predicates that a module does not export are errors.
+imports every export; `use_module/2` imports only the listed indicators, and
+an empty list imports nothing when only qualified calls are wanted.
+`Module:Goal` selects a module explicitly. Loading a module again has no
+effect. Conflicting imports and imports of unexported predicates are errors.
 
 ### Part 3-oriented definite clause grammars
 
-A grammar rule `Head --> Body.` is prepared as an ordinary predicate with two
-additional difference-list arguments. Parameterized nonterminals retain their
-written arguments, so `token(Type)//1` is implemented by `token/3`.
-Nonterminal indicators can be exported and imported through modules:
+A grammar rule `Head --> Body.` becomes an ordinary predicate with two extra
+difference-list arguments. A parameterized nonterminal keeps its written
+arguments, so `token(Type)//1` is implemented by `token/3`. Nonterminal
+indicators can be exported and imported:
 
 ```text
 :- module(vocabulary, [word//1]).
@@ -5895,10 +4024,10 @@ Nonterminal indicators can be exported and imported through modules:
 word(noun) --> [robot] | [scientist].
 ```
 
-The supported grammar constructs include terminal lists, `[]`, sequencing with
-comma, alternatives with `;` or `|`, if-then-else, embedded goals `{Goal}`,
-`call//1`, `phrase//1`, and `!//0`. Semicontexts provide look-ahead by restoring
-terminals to the remaining sequence:
+Grammar bodies may use terminal lists, `[]`, sequencing with a comma,
+alternatives with `;` or `|`, if-then-else, embedded goals `{Goal}`,
+`call//1`, `phrase//1` and `!//0`. A pushback (semicontext) looks ahead by
+returning terminals to the remaining sequence:
 
 ```eyeprolog
 look_ahead(X), [X] --> [X].
@@ -5906,27 +4035,29 @@ look_ahead(X), [X] --> [X].
 
 `phrase(+Body,?Sequence)` accepts or generates a complete sequence.
 `phrase(+Body,?Sequence,?Rest)` leaves `Rest` unconsumed and is steadfast in
-that argument. A variable body raises `instantiation_error`; a non-callable
-body raises `type_error(callable)`. EyeProlog elects to perform the optional
-terminal-sequence checks of the ISO/IEC TS 13211-3 working draft, 8.18.1.3 g and h.
-It consistently reports `type_error(list, Culprit)` for invalid input in both
-arities and invalid remainder in `phrase/3`, including improper lists.
-Variables, proper lists, and partial lists pass these checks. Validation
-precedes grammar execution; an otherwise valid failing grammar does not
-suppress the diagnostic. Dedicated regressions enforce this policy separately
-from the portable quads, which accept both checking and non-checking outcomes. See
-[`ISO-PART3.md`](test/conformance/ISO-PART3.md), which also records that the
-2023-08-14 working draft specifies `type_error(terminal_sequence, Culprit)` for
-this condition.
+that argument. A variable body raises `instantiation_error`, and a
+non-callable body raises `type_error(callable)`.
+
+EyeProlog performs the optional terminal-sequence checks of the ISO/IEC TS
+13211-3 working draft, 8.18.1.3 g and h. It reports
+`type_error(list, Culprit)` for an invalid sequence in both arities and for an
+invalid remainder in `phrase/3`, including improper lists. Variables, proper
+lists and partial lists pass. The check runs before the grammar, so a failing
+grammar does not hide the error. Dedicated regressions enforce this choice,
+while the portable quads accept both checking and non-checking outcomes.
+[`ISO-PART3.md`](test/conformance/ISO-PART3.md) records that the 2023-08-14
+working draft specifies `type_error(terminal_sequence, Culprit)` for this
+case.
+
+Part 3 leaves `\+//1` and standalone `->//2` implementation dependent.
+EyeProlog's `\+ Body` tests from the current state without consuming input,
+and `->//2` threads the state produced by the condition into the then-branch.
 
 #### A bidirectional expression grammar
 
-DCGs become more useful when the grammar produces a structured term rather than
-merely accepting a token list. The checked
 [`dcg-expression-language.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dcg-expression-language.pl)
-example implements a small arithmetic language in both directions. Its parser
-respects precedence and left associativity while constructing an abstract syntax
-tree:
+parses arithmetic into a syntax tree with correct precedence and left
+associativity, using an accumulator instead of left recursion:
 
 ```text
 expression(AST) -->
@@ -5940,139 +4071,121 @@ additive_tail(Left, AST) -->
 additive_tail(AST, AST) --> [].
 ```
 
-The accumulator removes left recursion without moving parsing into JavaScript.
-A second DCG walks the AST in the other direction and emits only the parentheses
-needed to preserve its structure. The example therefore exercises parsing,
-semantic actions, nonterminal-to-nonterminal state hand-off, generation,
-backtracking, `phrase/3` remainder handling, and AST-to-token-to-AST
-round-tripping. The checked answers are in
-[`examples/output/dcg-expression-language.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dcg-expression-language.pl).
+A second grammar prints the tree back to tokens with only the parentheses it
+needs, and the checked answers in
+[`examples/output/dcg-expression-language.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dcg-expression-language.pl)
+confirm the round trip.
 
 #### Deep sequence hand-off
 
-`library(dcgs)` provides the common `... //0` helper, which describes an
-arbitrary number of input elements. It is not part of ISO Part 3, but it is a
-useful interoperability and stress-test relation. A compact hand-off test is:
+`library(dcgs)` provides `... //0`, which matches any number of elements. It
+is not in ISO Part 3. In a grammar such as
 
 ```text
 a --> ..., epsilon.
 epsilon --> [].
 ```
 
-Here the remaining sequence is repeatedly passed from `... //0` to another
-nonterminal. For a finite compact list, EyeProlog can scan the arbitrary
-sequence iteratively instead of consuming one ordinary solver depth level per
-list cell. If the continuation is structurally proven to be a zero-width
-identity grammar such as `epsilon//0`, the hand-off can be continued without
-constructing a fresh general clause-resolution frame at every suffix. The list
-spine is still traversed; this is a control/allocation optimization rather than
-an O(1) semantic shortcut.
-
-The optimization is deliberately narrow. `phrase(..., Sequence, Rest)` still
-enumerates the valid remainders, open or non-compact inputs retain ordinary
-relational behavior, and grammars that can consume or constrain the remainder
-are not treated as identity continuations. `time/1` can be used in normal mode
-to measure such runs; its inference counter records solver-level inferences and
-does not count every internal step of an optimized scanner.
-
-Part 3 leaves `\+//1` and standalone `->//2` implementation dependent.
-EyeProlog uses non-consuming negation (`\+ Body` tests from the current state)
-and threads the state produced by the condition into the then-grammar.
+the remaining sequence is handed from `... //0` to another nonterminal at
+every suffix. For a finite compact list, EyeProlog scans iteratively instead
+of using one solver depth level per cell, and when the continuation is
+provably a zero-width identity such as `epsilon//0` it skips building a
+resolution frame per suffix. The list is still traversed. Open or non-compact
+inputs, and continuations that consume or constrain the remainder, keep
+ordinary behavior, and `phrase/3` still enumerates every remainder. The
+inference count of `time/1` covers solver-level inferences, not the scanner's
+internal steps.
 
 ### Directives and protected built-ins
 
-`false/0` is the ISO always-failing built-in. It is protected as a static
-procedure, so source clauses headed by `false` are rejected instead of being
-interpreted as directives or integrity constraints.
+`false/0` is the ISO always-failing built-in. It is a protected static
+procedure, so a source clause with head `false` is rejected, not read as a
+directive or integrity constraint.
 
-Standard directives include `dynamic/1`, `multifile/1`, `discontiguous/1`,
+The standard directives are `dynamic/1`, `multifile/1`, `discontiguous/1`,
 `op/3`, `char_conversion/2`, `initialization/1`, `include/1`,
 `ensure_loaded/1`, `module/2`, `use_module/1`, `use_module/2`,
-`meta_predicate/1`, and `set_prolog_flag/2`. Initialization goals run once
-after program preparation and before host queries. Included text is expanded
-in place; repeated `ensure_loaded/1` designations are loaded once.
+`meta_predicate/1` and `set_prolog_flag/2`. Initialization goals run once,
+after the program is prepared and before host queries. Included text is
+expanded in place, and a repeated `ensure_loaded/1` designation loads once.
 
 Normal output contains only ground query answers, one term and period at a
-time. Source facts are not echoed as new conclusions, and duplicate answers
-are suppressed. Answers are not asserted back into the running program.
-Supported output syntax is designed to be readable as Prolog input accepted by EyeProlog.
+time. Source facts are not echoed as conclusions, duplicate answers are
+suppressed, and answers are not asserted back into the program. Supported
+output syntax reads back as EyeProlog input.
 
 #### Explicit tabling and recursion planning
 
-The program loader analyzes predicate dependencies and recursion so the solver
-can choose semantics-preserving indexes and fast paths. That analysis does
-**not** decide whether a predicate is tabled. Ordinary predicates—including
-recursive ones—use indexed, depth-first Prolog resolution unless their source
-explicitly declares `:- table p/n.`.
+The loader analyzes predicate dependencies and recursion so the solver can
+choose indexes and fast paths that preserve meaning. That analysis does
+**not** decide tabling. Ordinary predicates, recursive ones included, use
+indexed depth-first resolution unless the source declares `:- table p/n.`.
 
-An explicitly tabled positive recursive predicate is coordinated through an
-answer table: recurring calls consume answers already found, new answers are
-recorded, and evaluation continues toward a fixed point. For eligible large,
-finite, function-free Datalog components, EyeProlog may represent that declared
-table as one shared most-general relation or an indexed least model. For other
-declared tables the engine may infer structurally bound input positions to
-improve table reuse. These are implementation choices inside an explicit table
-declaration; they never opt an undeclared predicate into tabling.
+A tabled positive recursive predicate is evaluated through an answer table:
+recurring calls consume answers already found, new answers are recorded, and
+evaluation continues to a fixed point. For eligible large, finite,
+function-free Datalog components, EyeProlog may represent a declared table as
+one shared most-general relation or an indexed least model. For other declared
+tables it may infer structurally bound input positions to improve reuse. These
+choices happen inside an explicit declaration; they never table an undeclared
+predicate.
 
-Ordinary `\+/1` remains ISO-style negation as failure. The separate `tnot/1`
-extension explicitly requests well-founded evaluation for eligible finite,
-range-restricted Datalog dependencies. `wfs_truth/2` reports the three-valued
-state of a ground callable as `true`, `false`, or `undefined`. Strict ISO mode
-exposes none of `table`, `tnot/1`, or `wfs_truth/2`.
+Ordinary `\+/1` remains ISO negation as failure. `tnot/1` requests
+well-founded evaluation for eligible finite, range-restricted Datalog
+dependencies, and `wfs_truth/2` reports the three-valued state of a ground
+callable as `true`, `false` or `undefined`. Strict ISO mode has no `table`,
+`tnot/1` or `wfs_truth/2`.
 
 #### Query execution
 
-The host-supplied goal must be callable and may contain constants or variables.
-An unbound goal raises `instantiation_error`; a non-callable goal raises
-`type_error(callable)`. A program without a supplied goal prints no normal
-answers. The host:
+A host-supplied goal must be callable and may contain constants or variables.
+An unbound goal raises `instantiation_error`, and a non-callable goal raises
+`type_error(callable)`. A program run without a goal prints no normal answers.
+The host:
 
 1. parses all inputs into one program;
 2. collects source facts and host-supplied goals;
 3. runs initialization goals;
 4. solves each supplied goal;
-5. retains only ground answers;
-6. removes answers identical to source facts and suppresses duplicates;
-7. prints each answer and, only when requested, its `why/2` explanation.
+5. keeps only ground answers;
+6. drops answers identical to source facts and suppresses duplicates;
+7. prints each answer and, only when requested, its proof.
 
-Goal selection affects host execution rather than the program's logical meaning.
-One goal's answers are not asserted for later goals, although explicitly
-declared tables may be reused during the solver run. For stable output, queries for
-known predicates are grouped by the source order in which their predicate
-groups first appear; goals within one group retain their supplied order.
-Queries for predicates with no group follow the known groups.
+Goal selection changes what the host runs, not what the program means. One
+goal's answers are not asserted for later goals, though declared tables may be
+reused within the run. For stable output, goals for known predicates are
+grouped in the source order of their predicate groups, keeping the supplied
+order within a group. Goals for predicates with no group come last.
 
 ## 39. Predicate reference
 
 EyeProlog's normal predicate surface has two layers: **129 core registry indicators** and **404 distinct non-ISO library or normal-extension indicators**. Because `phrase/2` and `phrase/3` occur in both layers, their union contains **533 distinct predicate indicators**.
 
-Core predicates are available without a library import. Bundled libraries add reusable relations for collections, constraints, graphs, text, time, cryptography, files, and other domains. Interoperability notes identify the subset shared with Trealla and Scryer, and the complete alphabetical reference gives one compact contract for every indicator.
+Core predicates need no import. Bundled libraries add relations for collections, constraints, graphs, text, time, cryptography, files, and other domains. The interoperability notes identify the subset shared with Trealla and Scryer, and the alphabetical reference at the end gives one compact contract per indicator.
 
 ### Notation and conventions
 
-The call patterns below use `+` for an argument that must be sufficiently
-instantiated, `-` for a result normally produced by the call, and `?` for an
-argument that may be supplied or returned. These are principal operational
-modes, not a separate mode system enforced by the parser. A call described as
-*semidet* succeeds at most once; a *nondet* call may yield further answers on
-backtracking. Unless stated otherwise, checking a result that does not unify
-simply fails.
+Call patterns use `+` for an argument that must be sufficiently instantiated,
+`-` for a result normally produced by the call, and `?` for an argument that
+may be supplied or returned. These are principal modes, not a mode system the
+parser enforces. A *semidet* call succeeds at most once; a *nondet* call may
+yield more answers on backtracking. Unless stated otherwise, a supplied result
+that does not unify simply fails.
 
-Built-in dispatch is authoritative and built-in procedures cannot be modified
-through the dynamic database predicates. Source clauses with the same indicator
-do not replace a built-in implementation. `clause/2` and `op/3` are the two
-dispatch exceptions: when a program defines a source predicate with that same
-indicator, EyeProlog uses the source clauses. `false/0` is stricter still and is
-rejected as a source-clause head. Portable programs should avoid every such
-collision because other Prolog systems commonly reject it while loading.
+Built-in dispatch is authoritative: built-ins cannot be modified through the
+dynamic database, and source clauses with the same indicator do not replace
+them. `clause/2` and `op/3` are the exceptions: a program that defines a source
+predicate with either indicator gets its own clauses. `false/0` is stricter
+still and is rejected as a clause head. Portable programs should avoid every
+such collision, since other Prolog systems commonly reject it at load time.
 
 ### Core registry
 
-EyeProlog's default registry contains the built-ins in its ISO compatibility
+The default registry contains the built-ins of EyeProlog's ISO compatibility
 profile. Where ISO/IEC 13211-1:1995 defines a predicate, EyeProlog uses its
-standard predicate indicator; the registry also includes the later or common
-compatibility predicates identified below. Arithmetic is expressed through
-`is/2` rather than output arguments on arithmetic predicates. The registry
+standard indicator; the registry also includes the later or common
+compatibility predicates listed below. Arithmetic is expressed through `is/2`,
+not through output arguments on arithmetic predicates. The registry
 contains 129 name/arity entries across 100 names.
 
 #### Core registry at a glance
@@ -6100,97 +4213,91 @@ contains 129 name/arity entries across 100 names.
 #### Control, search, and exceptions
 
 - **`true`** — Succeeds once without binding variables.
-- **`fail`, `false`** — Always fail. `false/0` is provided as a compatibility alias and is also forbidden as a source-clause head.
-- **`!`** — Commits to choices made since entry into the current predicate invocation. It does not erase alternatives belonging to an enclosing caller.
+- **`fail`, `false`** — Always fail. `false/0` is a compatibility alias and is forbidden as a clause head.
+- **`!`** — Commits to choices made since entry into the current predicate invocation; it does not erase alternatives of an enclosing caller.
 - **`call(+Goal)`** — Calls an atom or compound goal. An unbound argument raises *instantiation_error*; another non-callable term raises *type_error(callable)*.
 - **`call(+Closure,?Arg,...)`** — `call/2` through `call/8` append their extra arguments to an atom or compound closure, as specified by Corrigendum 2.
-- **`\+(+Goal)`** — Negation as finite failure. It succeeds once when `Goal` has no solution and never exports bindings made while testing `Goal`. Bind variables needed by the test first.
-- **`once(+Goal)`** — Returns only the first solution of `Goal`, or fails when there is none.
-- **`repeat`** — Produces an unbounded sequence of successes; normally paired with a test, cut, exception, or `halt/0`.
+- **`\+(+Goal)`** — Negation as finite failure. Succeeds once when `Goal` has no solution and never exports bindings made while testing it. Bind the variables the test needs first.
+- **`once(+Goal)`** — Returns only the first solution of `Goal`, or fails.
+- **`repeat`** — Succeeds without limit; normally paired with a test, cut, exception, or `halt/0`.
 - **`Left ; Right`** — Enumerates `Left`, then `Right`, restoring the incoming environment between branches. A cut inside a called predicate cannot discard the other branch.
-- **`If -> Then`** — Commits to the first solution of `If` and runs `Then`; it does not provide an else branch by itself.
-- **`(If -> Then ; Else)`** — Runs `Then` from the first solution of `If`, otherwise runs `Else`. Alternatives of `If` are discarded.
-- **`catch(+Goal,?Catcher,+Recovery)`** — Runs `Goal`; on a matching thrown ball or `PrologError`, unifies it with `Catcher` and calls `Recovery`. Runtime errors are exposed as *error(Formal,eyeprolog)*.
-- **`throw(+Ball)`** — Throws a copied nonvariable term. An unbound ball raises `instantiation_error`.
-- **`halt`, `halt(+Status)`** — Stops the processor with status `0` or the supplied integer. The JavaScript API reports the status without terminating its host process.
+- **`If -> Then`** — Commits to the first solution of `If` and runs `Then`; there is no else branch.
+- **`(If -> Then ; Else)`** — Runs `Then` from the first solution of `If`, otherwise `Else`. Alternatives of `If` are discarded.
+- **`catch(+Goal,?Catcher,+Recovery)`** — Runs `Goal`; on a matching thrown ball or `PrologError`, unifies it with `Catcher` and calls `Recovery`. Runtime errors appear as *error(Formal,eyeprolog)*.
+- **`throw(+Ball)`** — Throws a copy of a nonvariable term. An unbound ball raises `instantiation_error`.
+- **`halt`, `halt(+Status)`** — Stops the processor with status `0` or the given integer. The JavaScript API reports the status without terminating its host process.
 
-`;/2` recognizes an `->/2` term on its left and implements the ISO
-if-then-else commitment described above. Cuts and committed conditions are
-operational controls; use ordinary relations when all alternatives should
-remain observable.
+`;/2` recognizes an `->/2` term on its left and implements ISO if-then-else
+commitment. Cuts and committed conditions are control; use ordinary relations
+when all alternatives should stay observable.
 
 #### Definite clause grammar processing
 
-- **`phrase(+Body,?Sequence)`** — Parses or generates `Sequence` with a Part 3 grammar body and requires complete consumption.
-- **`phrase(+Body,?Sequence,?Rest)`** — Parses or generates a prefix described by `Body` and unifies `Rest` with the unconsumed terminal sequence. The final unification is delayed so the third argument is steadfast.
+- **`phrase(+Body,?Sequence)`** — Parses or generates `Sequence` with a Part 3 grammar body, requiring complete consumption.
+- **`phrase(+Body,?Sequence,?Rest)`** — Parses or generates a prefix described by `Body` and unifies `Rest` with the unconsumed remainder. The final unification is delayed so the third argument is steadfast.
 
-Grammar rules are expanded during program preparation and therefore appear to
-the solver as ordinary predicates with two extra arguments. Dynamic grammar
-bodies passed to `phrase/2-3` use the same expansion rules. This includes
-module qualification and the caller module used by embedded or meta-called
-nonterminals.
+Grammar rules are expanded during program preparation, so the solver sees
+ordinary predicates with two extra arguments. Grammar bodies passed to
+`phrase/2-3` at run time use the same expansion, including module qualification
+and the caller module of embedded or meta-called nonterminals.
 
 #### Unification, type tests, and term order
 
-- **`?Left = ?Right`** — Unifies two terms and returns the resulting bindings. EyeProlog rejects direct and indirect cyclic bindings.
-- **`unify_with_occurs_check(?Left,?Right)`** — Performs occurs-check-safe unification. Because ordinary EyeProlog unification is already cycle-safe, it has the same successful bindings as `=/2`.
-- **`?Left \= ?Right`** — Succeeds only when the terms cannot unify at call time. It is a test, not a delayed disequality constraint.
-- **`subsumes_term(+General,+Specific)`** — Tests one-sided syntactic unification without binding either argument. Variables in `Specific` remain unchanged.
-- **`?Left == ?Right`, `?Left \== ?Right`** — Test term identity or non-identity without binding variables. Two distinct unbound variables are not identical.
-- **`var(?Term)`, `nonvar(?Term)`** — Test whether the dereferenced term is or is not an unbound variable.
-- **`atom(?Term)`, `integer(?Term)`, `float(?Term)`, `number(?Term)`** — Test the corresponding scalar category. Integer values retain arbitrary precision; finite noninteger numeric values are floats.
-- **`atomic(?Term)`, `compound(?Term)`, `callable(?Term)`, `ground(?Term)`, `acyclic_term(?Term)`** — Test for an ISO atomic term, a compound, a callable atom/compound, a term containing no unbound variables, or a finite acyclic term. A default double-quoted value is a list and is therefore compound unless it is empty.
-- **`compare(?Order,+Left,+Right)`** — Unifies `Order` with `<`, `=`, or `>` according to standard term order. A supplied order must be one of those atoms.
-- **`Left @< Right`, `Left @=< Right`, `Left @> Right`, `Left @>= Right`** — Compare terms without arithmetic evaluation or bindings. These calls are semidet.
+- **`?Left = ?Right`** — Unifies two terms. EyeProlog rejects direct and indirect cyclic bindings.
+- **`unify_with_occurs_check(?Left,?Right)`** — Occurs-check-safe unification. Because ordinary unification is already cycle-safe, it succeeds with the same bindings as `=/2`.
+- **`?Left \= ?Right`** — Succeeds only when the terms cannot unify at call time. A test, not a delayed disequality.
+- **`subsumes_term(+General,+Specific)`** — Tests one-sided unification without binding either argument.
+- **`?Left == ?Right`, `?Left \== ?Right`** — Test identity or non-identity without binding. Two distinct unbound variables are not identical.
+- **`var(?Term)`, `nonvar(?Term)`** — Test whether the dereferenced term is an unbound variable.
+- **`atom(?Term)`, `integer(?Term)`, `float(?Term)`, `number(?Term)`** — Test the scalar category. Integers have arbitrary precision; finite noninteger values are floats.
+- **`atomic(?Term)`, `compound(?Term)`, `callable(?Term)`, `ground(?Term)`, `acyclic_term(?Term)`** — Test for an atomic term, a compound, a callable atom or compound, a term without unbound variables, or a finite acyclic term. A default double-quoted value is a list, hence compound unless empty.
+- **`compare(?Order,+Left,+Right)`** — Unifies `Order` with `<`, `=`, or `>` by standard term order. A supplied order must be one of those atoms.
+- **`Left @< Right`, `Left @=< Right`, `Left @> Right`, `Left @>= Right`** — Compare terms without evaluation or binding. Semidet.
 - **`sort(+List,?Sorted)`** — Sorts by standard term order and removes identical duplicates.
-- **`keysort(+Pairs,?Sorted)`** — Stably sorts `Key-Value` pairs by key without removing duplicates.
+- **`keysort(+Pairs,?Sorted)`** — Stably sorts `Key-Value` pairs by key, keeping duplicates.
 
-For ISO terms, the standard term order is variables, numbers, atoms, then compounds;
-compound terms compare by arity, functor, and arguments. Within the numeric
-category, floats precede integers; floats compare by finite numeric value and
-integers compare exactly. ISO leaves the ordering of two distinct variables
-implementation dependent, subject to stability while a sorted list is being
-created. EyeProlog assigns a creation ordinal to each logical variable and
-carries that ordinal on the variable term itself; repeated occurrences share it
-within parsing or clause-freshening scope. It therefore does not keep a
-process-global table of every fresh variable name ever created, so long-running
-generators can create and discard fresh variables without growing an unrelated
-host `Map`. Double-quoted Prolog source
-follows the `double_quotes` flag and never creates an extra host-only scalar
-category.
+Standard term order is variables, numbers, atoms, then compounds; compounds
+compare by arity, functor, and arguments. Among numbers, floats precede
+integers; floats compare by value and integers exactly. ISO leaves the order of
+two distinct variables implementation dependent, provided it is stable while a
+sort runs. EyeProlog attaches no permanent ordinal to a variable: it ranks
+variables in order of first encounter within one comparison, and `sort/2`,
+`keysort/2` and `setof/3` share one ranking for the whole operation. No
+process-global table of variables is kept, so long-running generators can
+create and discard variables without growing host state. Double-quoted source
+follows the `double_quotes` flag and never creates an extra scalar category.
 
 #### Term construction and inspection
 
 - **`functor(+Term,?Name,?Arity)`** — Decomposes a term. Scalars have arity zero.
-- **`functor(-Term,+Name,+Arity)`** — Constructs a scalar when `Arity` is zero or a compound with fresh arguments otherwise. Arity must be a nonnegative representable integer and a positive-arity name must be an atom.
-- **`arg(+Index,+Term,?Argument)`** — Selects the one-based argument of a compound. Index zero or an index beyond the arity fails; a negative index is a domain error.
-- **`?Term =.. ?List`** — Converts a term to `[Functor\|Arguments]` or constructs a term from a nonempty proper list. A one-item list constructs its atomic item.
-- **`copy_term(+Term,-Copy)`** — Copies the dereferenced term while replacing every distinct unbound variable with a fresh variable and preserving variable sharing.
-- **`term_variables(+Term,?Variables)`** — Returns distinct variables in first-occurrence traversal order. A supplied result may be a proper or partial list.
+- **`functor(-Term,+Name,+Arity)`** — Constructs a scalar when `Arity` is zero, otherwise a compound with fresh arguments. Arity must be a nonnegative representable integer, and a positive-arity name an atom.
+- **`arg(+Index,+Term,?Argument)`** — Selects the one-based argument of a compound. Index zero or beyond the arity fails; a negative index is a domain error.
+- **`?Term =.. ?List`** — Converts a term to `[Functor\|Arguments]` or constructs one from a nonempty proper list. A one-item list constructs its atomic item.
+- **`copy_term(+Term,-Copy)`** — Copies the term, replacing each distinct unbound variable with a fresh one and preserving sharing.
+- **`term_variables(+Term,?Variables)`** — Returns distinct variables in first-occurrence order. A supplied result may be a proper or partial list.
 
-Construction calls raise `instantiation_error` when neither side supplies the
-required shape. `=../2` distinguishes an incomplete list
-(`instantiation_error`) from an improper list (`type_error(list)`).
+Construction raises `instantiation_error` when neither side supplies the shape.
+`=../2` distinguishes an incomplete list (`instantiation_error`) from an
+improper one (`type_error(list)`).
 
 #### Solution collection
 
-- **`findall(+Template,+Goal,?Bag)`** — Collects a fresh copy of `Template` for every solution of `Goal`, preserving solution order. It succeeds with `[]` when there are no solutions and treats all free variables existentially.
-- **`bagof(+Template,+Goal,?Bag)`** — Groups answers by free variables not present in `Template`. It yields one nonempty bag per witness group and fails when no group exists. Prefix variables with `^` in `Goal` to quantify them existentially.
-- **`setof(+Template,+Goal,?Set)`** — Has the grouping behavior of `bagof/3`, then sorts each group by profile term order and removes identical duplicates.
+- **`findall(+Template,+Goal,?Bag)`** — Collects a copy of `Template` for every solution of `Goal`, in solution order. Succeeds with `[]` when there are none; all free variables are existential.
+- **`bagof(+Template,+Goal,?Bag)`** — Groups answers by the free variables not in `Template`, yielding one nonempty bag per group, and fails when there is none. Mark variables existential with `^`.
+- **`setof(+Template,+Goal,?Set)`** — Groups like `bagof/3`, then sorts each group by term order and removes identical duplicates.
 
-Each collector runs its goal in an isolated inner search while sharing the
-current logical program and stream state. Collected terms are copied, so local
-variables do not escape accidentally. The bag argument must be a proper or
-partial list.
+Each collector runs its goal in an isolated inner search that shares the
+current program and stream state. Collected terms are copied, so local
+variables cannot escape. The bag must be a proper or partial list.
 
 #### Dynamic database and procedure information
 
-- **`clause(+Head,?Body)`** — Enumerates fresh copies of source clauses matching the callable `Head`; facts have body `true`. Only *public* procedures can be inspected: a procedure defined by a Prolog text is static unless a *dynamic/1* directive declares it, and a procedure first created by *assertz/1* or *asserta/1* is dynamic. Access to a static user procedure, or to a built-in, raises *permission_error(access,private_procedure)*. This applies in every execution mode, not only under `--iso-strict`, and matches the *permission_error(modify,static_procedure)* that *assertz/1* and *retract/1* already raise for the same procedures. Normal mode additionally accepts a *public/1* directive and a `default_procedure_access` flag that open static procedures to inspection; see below.
-- **`asserta(+Clause)`, `assertz(+Clause)`** — Insert a copied fact or rule at the beginning or end of a predicate declared *dynamic/1*. Static and built-in procedures cannot be modified.
-- **`retract(+Clause)`** — Removes matching dynamic clauses one at a time on backtracking. A call sees the logical update view captured when it began. A fact pattern matches facts only.
-- **`retractall(+Head)`** — Removes every matching clause from a dynamic procedure, succeeds when none match, and keeps the empty dynamic procedure known.
-- **`abolish(+Name/+Arity)`** — Removes a dynamic procedure and its clauses. The indicator must contain an atom and a nonnegative representable integer.
-- **`current_predicate(?Name/?Arity)`** — Enumerates predicate groups present in the loaded program, including empty dynamic groups. It does not enumerate registry-only built-ins.
+- **`clause(+Head,?Body)`** — Enumerates fresh copies of the clauses matching a callable `Head`; facts have body `true`. Only *public* procedures can be inspected. A procedure defined by Prolog text is static unless declared *dynamic/1*; one first created by *assertz/1* or *asserta/1* is dynamic. Inspecting a static user procedure or a built-in raises *permission_error(access,private_procedure)* in every mode, not only under `--iso-strict`, mirroring the *permission_error(modify,static_procedure)* raised by *assertz/1* and *retract/1*. Normal mode also accepts a *public/1* directive and a `default_procedure_access` flag; see below.
+- **`asserta(+Clause)`, `assertz(+Clause)`** — Insert a copied clause at the beginning or end of a dynamic predicate. Static and built-in procedures cannot be modified.
+- **`retract(+Clause)`** — Removes matching dynamic clauses one at a time on backtracking, under the logical update view captured when the call began. A fact pattern matches facts only.
+- **`retractall(+Head)`** — Removes every matching clause, succeeds when none match, and keeps the emptied predicate known as dynamic.
+- **`abolish(+Name/+Arity)`** — Removes a dynamic procedure and its clauses. The indicator must hold an atom and a nonnegative representable integer.
+- **`current_predicate(?Name/?Arity)`** — Enumerates predicates of the loaded program, including empty dynamic ones, but not registry-only built-ins.
 
 Declare mutable predicates explicitly, including empty ones:
 
@@ -6201,18 +4308,18 @@ remember(Key, Value) :- retract(cache(Key, _)), !, assertz(cache(Key, Value)).
 remember(Key, Value) :- assertz(cache(Key, Value)).
 ```
 
-Assertions and retractions invalidate affected reasoning tables. Mutating a
-predicate that was not declared dynamic raises a permission error rather than
-silently changing a static program.
+Assertions and retractions invalidate affected tables. Changing a predicate
+not declared dynamic raises a permission error instead of silently altering a
+static program.
 
 #### Operators, character conversion, and flags
 
-- **`op(+Priority,+Specifier,+NameOrNames)`** — Defines or removes operators in the current program. Priority is `0..1200`; specifiers are `fx`, `fy`, `xf`, `yf`, `xfx`, `xfy`, or `yfx`; names may be one atom or a proper list. Priority zero removes the definition. `,` and `\|` cannot be modified.
-- **`current_op(?Priority,?Specifier,?Name)`** — Enumerates active operator definitions and filters supplied arguments.
-- **`char_conversion(+Input,+Output)`** — Installs a one-character conversion. In prepared Prolog text, later **unquoted** characters are converted when `char_conversion=on`; quoted characters are unchanged. The same mapping initializes execution-time term input. Mapping a character to itself removes its custom mapping.
+- **`op(+Priority,+Specifier,+NameOrNames)`** — Defines or removes operators in the current program. Priority is `0..1200`; specifiers are `fx`, `fy`, `xf`, `yf`, `xfx`, `xfy`, `yfx`; names are one atom or a proper list. Priority zero removes the definition. `,` and `\|` cannot be modified.
+- **`current_op(?Priority,?Specifier,?Name)`** — Enumerates active operator definitions.
+- **`char_conversion(+Input,+Output)`** — Installs a one-character conversion. With `char_conversion=on`, later **unquoted** characters in prepared text are converted; quoted characters are not. The same mapping initializes run-time term input. Mapping a character to itself removes its mapping.
 - **`current_char_conversion(?Input,?Output)`** — Enumerates installed nonidentity conversions.
-- **`current_prolog_flag(?Flag,?Value)`** — Enumerates flags or retrieves one named flag. An unknown bound flag raises *domain_error(prolog_flag)*.
-- **`set_prolog_flag(+Flag,+Value)`** — Changes a supported mutable flag after validating its allowed atom value. Read-only flags raise a permission error.
+- **`current_prolog_flag(?Flag,?Value)`** — Enumerates flags or retrieves one. An unknown bound flag raises *domain_error(prolog_flag)*.
+- **`set_prolog_flag(+Flag,+Value)`** — Changes a mutable flag after validating its value. Read-only flags raise a permission error.
 
 - **`bounded`** — **Default:** `false`; **Allowed:** `false`; **Mutable:** no.
 - **`integer_rounding_function`** — **Default:** `toward_zero`; **Allowed:** `toward_zero`; **Mutable:** no.
@@ -6226,37 +4333,30 @@ silently changing a static program.
 - **`occurs_check`** — **Default:** `true`; **Allowed:** `true`, `error`; **Mutable:** yes.
 
 Because `bounded=false`, `current_prolog_flag(max_integer, _)` and
-`current_prolog_flag(min_integer, _)` fail, and EyeProlog does not expose an
-`unbounded` sentinel as either flag value. This is a deliberate implementation
-choice rather than a requirement: ISO 7.11.1.1 defines the `bounded` flag and
-does not govern `current_prolog_flag/2` outcomes, and 7.11.1.2 and 7.11.1.3
-give `max_integer` and `min_integer` an implementation-defined default value
-unconditionally, making the `bounded` condition a constraint on what the value
-*means* rather than on whether the flag exists. A processor with unbounded
-integers has no largest integer to report, so EyeProlog declines to invent one.
-See `conformance-report.md` for the alternative reading.
-Preparation-time `char_conversion/2` mappings affect later unquoted source text
-and also initialize the execution-time conversion mapping; setting the
-`char_conversion` flag to `off` disables conversion for following source text.
-Quoted source characters are not converted.
+`current_prolog_flag(min_integer, _)` fail; EyeProlog does not invent an
+`unbounded` sentinel. This is a deliberate choice, not a requirement: ISO
+7.11.1.2 and 7.11.1.3 give `max_integer` and `min_integer` an
+implementation-defined value unconditionally, so the `bounded` flag constrains
+what the value *means* rather than whether it exists. A processor with
+unbounded integers has no largest integer to report. See `conformance-report.md`
+for the alternative reading. Setting `char_conversion` to `off` disables
+conversion for the source text that follows.
 
-Both normal EyeProlog and strict ISO core mode use the ISO `unknown=error`
-default. Interactive `set_prolog_flag/2` changes are retained when the REPL
-consults another file or imports a module instead of being reset by the host
-rebuild of the program. Programs that intentionally treat an undefined
-predicate as failure must opt in with `set_prolog_flag(unknown, fail)`; bundled
-examples and non-ISO corpus cases that depend on that policy do so explicitly.
+Normal and strict ISO mode both default to `unknown=error`. Interactive
+`set_prolog_flag/2` changes survive when the REPL consults another file or
+imports a module. A program that wants an undefined predicate to fail must opt
+in with `set_prolog_flag(unknown, fail)`; the bundled examples that rely on it
+do so explicitly.
+
 ### Reading static procedures
 
-A procedure defined by a Prolog text is static, so `clause/2` refuses it
-(ISO 7.5.2, 7.5.3, 8.8.1.3). Declaring the procedure `dynamic` lifts the
-restriction, but it also makes the procedure modifiable, and for a
-meta-interpreter it means annotating a program you may not want to edit and
-enumerating every predicate you intend to read.
+A procedure defined by Prolog text is static, so `clause/2` refuses it
+(ISO 7.5.2, 7.5.3, 8.8.1.3). Declaring it `dynamic` lifts the restriction but
+also makes it modifiable, and for a meta-interpreter it means annotating a
+program you may not want to edit.
 
-ISO 7.5.3 has a NOTE observing that a `public/1` directive declaring
-user-defined procedures to be public would be an extension. Normal EyeProlog
-provides it:
+ISO 7.5.3 notes that a `public/1` directive for user-defined procedures would
+be an extension. Normal EyeProlog provides it:
 
 ```eyeprolog
 :- public(elk/1).
@@ -6267,13 +4367,12 @@ moose(bertha).
 ```
 
 `clause(elk(bertha), Body)` now succeeds with `Body = moose(bertha)`, while
-`moose/1` carries no declaration and stays private. A public procedure is still
-*static*: `assertz(elk(clara))` continues to raise
-*permission_error(modify,static_procedure)*. The directive grants read access
-only.
+`moose/1` stays private. A public procedure is still *static*:
+`assertz(elk(clara))` raises *permission_error(modify,static_procedure)*. The
+directive grants read access only.
 
-To open every user-defined procedure at once, set the
-`default_procedure_access` flag to `public`:
+To open every user-defined procedure at once, set `default_procedure_access`
+to `public`:
 
 ```eyeprolog
 :- set_prolog_flag(default_procedure_access, public).
@@ -6287,24 +4386,22 @@ moose(bertha).
 grazes(X) :- elk(X).
 ```
 
-`solve(grazes(W))` yields `W = bertha` without a single declaration on the
-interpreted program. The flag changes access, not mutability or existence:
-procedures remain static, and built-in procedures remain private, so
-`clause(atom(_), _)` still raises *permission_error(access,private_procedure)*.
-The supported values are `private` (the default, matching ISO) and `public`.
+`solve(grazes(W))` yields `W = bertha` with no declaration on the interpreted
+program. The flag changes access, not mutability: procedures remain static,
+and built-ins remain private, so `clause(atom(_), _)` still raises
+*permission_error(access,private_procedure)*. The values are `private` (the
+ISO default) and `public`.
 
-Both the directive and the flag are extensions, so strict ISO core mode offers
-neither: `public/1` is rejected as an implementation-specific directive, and
+Both are extensions, so strict ISO mode offers neither: `public/1` is rejected
+as an implementation-specific directive, and
 `current_prolog_flag(default_procedure_access, _)` raises
 *domain_error(prolog_flag)*.
 
-The `occurs_check` flag is an EyeProlog diagnostic
-extension rather than an ISO-defined core flag: it is absent in strict mode,
-while normal mode keeps its `true` default and optional `error` diagnostic for
-STO attempts. Operator and flag directives are processed per program rather
-than changing global JavaScript state. The `double_quotes` setting affects
-subsequent source text, included files, command-line and API goal text, and
-terms read by `read_term/*`:
+The `occurs_check` flag is likewise a normal-mode diagnostic extension, absent
+in strict mode; it defaults to `true` and offers `error` to report STO
+attempts. Operator and flag directives apply per program, not to global
+JavaScript state. The `double_quotes` setting affects subsequent source text,
+included files, command-line and API goals, and terms read by `read_term/*`:
 
 ```text
 % Default: a list of one-character atoms.
@@ -6319,166 +4416,142 @@ quoted_atom("ab").           % quoted_atom(ab)
 
 #### Atomic-term operations and conversions
 
-- **`atom_length(+Atom,?Length)`** — Counts Unicode code points, not UTF-16 code units. A supplied length must be a nonnegative integer.
-- **`atom_concat(?Prefix,?Suffix,?Whole)`** — Concatenates two atoms, removes a supplied prefix or suffix, or enumerates every split when only `Whole` is bound. At least `Whole`, or both parts, must determine the operation.
-- **`sub_atom(+Atom,?Before,?Length,?After,?SubAtom)`** — Enumerates substrings and their Unicode-code-point offsets. Supplied counts must be nonnegative integers.
-- **`atom_chars(?Atom,?Chars)`, `atom_codes(?Atom,?Codes)`** — Convert between an atom and a proper list of one-character atoms or character codes. Both profiles use EyeProlog's Unicode scalar PCS/codes; surrogates and values above U+10FFFF are rejected. At least one side must be instantiated.
-- **`char_code(?Character,?Code)`** — Converts one character atom and its collating/code value. Both profiles accept Unicode scalar codes and reject surrogates/out-of-range values.
-- **`number_chars(?Number,?Chars)`, `number_codes(?Number,?Codes)`** — Convert finite numbers to canonical text or parse a proper character/code list using number and negative-number syntax, including radix integers, character-code constants, and leading layout. Normal mode also accepts digit separators in integer input; strict mode retains the ISO syntax. The input is not parsed as a general term: grouping such as `(0)` is a syntax error. At least one side must be instantiated; malformed numeric input raises *syntax_error(number)*.
+- **`atom_length(+Atom,?Length)`** — Counts Unicode code points, not UTF-16 units. A supplied length must be a nonnegative integer.
+- **`atom_concat(?Prefix,?Suffix,?Whole)`** — Concatenates, removes a supplied prefix or suffix, or enumerates every split when only `Whole` is bound.
+- **`sub_atom(+Atom,?Before,?Length,?After,?SubAtom)`** — Enumerates substrings with code-point offsets. Supplied counts must be nonnegative integers.
+- **`atom_chars(?Atom,?Chars)`, `atom_codes(?Atom,?Codes)`** — Convert between an atom and a list of one-character atoms or codes. Codes are Unicode scalars; surrogates and values above U+10FFFF are rejected. One side must be instantiated.
+- **`char_code(?Character,?Code)`** — Relates a character atom and its Unicode scalar code.
+- **`number_chars(?Number,?Chars)`, `number_codes(?Number,?Codes)`** — Convert a finite number to canonical text, or parse a character or code list using number and negative-number syntax, including radix integers, character-code constants, and leading layout. Normal mode also accepts digit separators in integers; strict mode keeps ISO syntax. The input is not a general term: `(0)` is a syntax error. Malformed input raises *syntax_error(number)*.
 
-Conversions accept partial output lists when the atomic input is known, but
-constructing an atom or number requires a complete proper list with no unbound
-elements. Numeric parsing accepts ISO layout before tokens, including layout between a
-minus token and the following numeric token. A single-line `%...` comment may
-therefore follow `-` directly because `%` cannot continue a graphic token; an
-adjacent bracketed comment in `-/**/1` remains a syntax error under the eager
-token-consumer rule. Decimal fractions and decimal exponents are supported;
-the apostrophe character code is written with a doubled apostrophe as `0'''`
-and has value 39, while a literal space character code is `0' ` and has value
-32. Character-code constants consume one Unicode scalar, including a
-non-BMP character. Trailing layout, comments, and other material are rejected;
-bound integers are converted to their canonical decimal spelling, and
-non-finite values are rejected. Finite floats use the shortest decimal spelling
-that round-trips to the same host floating-point value, with an explicit
-fractional part so the result remains a Prolog float; for example,
-`1.0000000000000001` is represented as `1.0`. Equivalent spellings of the same
-numeric type compare by value, preserving the standard conversion round trip,
-while integer and floating-point terms remain distinct. The numeric conversion
-behavior follows the 74 numbered cases in Ulrich Neumerkel's contemporary
-`number_chars/2` comparison, including the Corrigendum 2 error-precedence cases;
-`number_codes/2` uses the same numeric parser.
+Conversions accept a partial output list when the atomic input is known, but
+constructing an atom or number requires a proper list with no unbound
+elements. Layout may precede tokens, including between a minus sign and the
+number. So a `%` comment may follow `-` directly, since `%` cannot continue a
+graphic token, while `-/**/1` remains a syntax error under the eager token
+rule. The apostrophe code is written `0'''` (value 39) and a space `0' `
+(value 32); a character-code constant consumes one Unicode scalar, including
+non-BMP characters. Trailing material is rejected. Integers convert to
+canonical decimal; finite floats use the shortest decimal that round-trips,
+always with a fractional part, so `1.0000000000000001` becomes `1.0`.
+Non-finite values are rejected. The behavior follows the 74 numbered cases of
+Ulrich Neumerkel's `number_chars/2` comparison, including the Corrigendum 2
+error-precedence cases; `number_codes/2` shares the parser.
 
 #### Streams and unit I/O
 
-Stream arguments accept an alias atom or the opaque handle returned by
-`open/3` or `open/4`. Omitting a stream argument selects the current standard
-input or output.
+A stream argument is an alias atom or the handle returned by `open/3-4`.
+Omitting it selects the current input or output.
 
-- **`open(+Source,+Mode,-Stream)`, `open(+Source,+Mode,-Stream,+Options)`** — Opens an atom path in `read`, `write`, or `append` mode. Options are *type(text or binary)*, *alias(Atom)*, *reposition(true or false)*, and *eof_action(error, eof_code, or reset)*.
-- **`close(+Stream)`, `close(+Stream,+Options)`** — Closes a nonstandard stream. The only close option is *force(true or false)*; standard streams remain available.
-- **`current_input(?Stream)`, `current_output(?Stream)`** — Return or test the current input or output handle.
-- **`set_input(+Stream)`, `set_output(+Stream)`** — Select an existing stream with the required direction.
-- **`flush_output`, `flush_output(+Stream)`** — Completes successfully for the current output or validates and flushes the selected output stream. EyeProlog writes synchronously.
+- **`open(+Source,+Mode,-Stream)`, `open(+Source,+Mode,-Stream,+Options)`** — Opens an atom path in `read`, `write`, or `append` mode. Options: *type(text or binary)*, *alias(Atom)*, *reposition(true or false)*, *eof_action(error, eof_code, or reset)*.
+- **`close(+Stream)`, `close(+Stream,+Options)`** — Closes a nonstandard stream. The only option is *force(true or false)*; standard streams stay available.
+- **`current_input(?Stream)`, `current_output(?Stream)`** — Return or test the current input or output.
+- **`set_input(+Stream)`, `set_output(+Stream)`** — Select an existing stream of the right direction.
+- **`flush_output`, `flush_output(+Stream)`** — Validate and flush an output stream. EyeProlog writes synchronously.
 - **`stream_property(?Stream,?Property)`** — Enumerates streams and their properties: *mode/1*, *type/1*, *reposition/1*, *eof_action/1*, *position/1*, *input*, *output*, *end_of_stream/1*, and optional *alias/1* and *file_name/1*.
-- **`set_stream_position(+Stream,+Position)`** — Repositions a stream opened with *reposition(true)*. `Position` is a nonnegative integer or *position(Integer)* within the stream content.
-- **`at_end_of_stream`, `at_end_of_stream(+Stream)`** — Succeeds when the current or selected input position is at or beyond its content.
-- **`get_char(?Character)`, `get_char(+Stream,?Character)`** — Reads one text character; end of input is `end_of_file`.
-- **`peek_char(?Character)`, `peek_char(+Stream,?Character)`** — Observes the next text character without advancing.
-- **`get_code(?Code)`, `get_code(+Stream,?Code)`** — Reads a character code; end of input is `-1`. Both profiles return codes from EyeProlog's Unicode scalar PCS.
-- **`peek_code(?Code)`, `peek_code(+Stream,?Code)`** — Observes the next Unicode scalar character code without advancing.
-- **`get_byte(?Byte)`, `get_byte(+Stream,?Byte)`** — Reads one unit from a binary stream; end of input is `-1`.
-- **`peek_byte(?Byte)`, `peek_byte(+Stream,?Byte)`** — Observes the next binary unit without advancing.
-- **`put_char(+Character)`, `put_char(+Stream,+Character)`** — Writes one character atom to a text stream.
-- **`put_code(+Code)`, `put_code(+Stream,+Code)`** — Writes one character code to a text stream. Both profiles accept Unicode scalar codes.
+- **`set_stream_position(+Stream,+Position)`** — Repositions a stream opened with *reposition(true)*. `Position` is a nonnegative integer or *position(Integer)*.
+- **`at_end_of_stream`, `at_end_of_stream(+Stream)`** — Succeeds when the input position is at or past the end.
+- **`get_char(?Character)`, `get_char(+Stream,?Character)`** — Reads one character; end of input is `end_of_file`.
+- **`peek_char(?Character)`, `peek_char(+Stream,?Character)`** — Observes the next character without advancing.
+- **`get_code(?Code)`, `get_code(+Stream,?Code)`** — Reads a Unicode scalar code; end of input is `-1`.
+- **`peek_code(?Code)`, `peek_code(+Stream,?Code)`** — Observes the next code without advancing.
+- **`get_byte(?Byte)`, `get_byte(+Stream,?Byte)`** — Reads one byte from a binary stream; end of input is `-1`.
+- **`peek_byte(?Byte)`, `peek_byte(+Stream,?Byte)`** — Observes the next byte without advancing.
+- **`put_char(+Character)`, `put_char(+Stream,+Character)`** — Writes one character to a text stream.
+- **`put_code(+Code)`, `put_code(+Stream,+Code)`** — Writes one Unicode scalar code to a text stream.
 - **`put_byte(+Byte)`, `put_byte(+Stream,+Byte)`** — Writes an integer in `0..255` to a binary stream.
 - **`nl`, `nl(+Stream)`** — Writes a newline to a text stream.
 
-Text operations on binary streams and byte operations on text streams raise
-permission errors. After EOF, `eof_action(error)` rejects another consuming
-read, `eof_code` continues returning the EOF value, and `reset` resumes from
-the beginning. A peek does not mark the stream as past-end.
+Text operations on binary streams, and byte operations on text streams, raise
+permission errors. After end of file, `eof_action(error)` rejects another
+consuming read, `eof_code` keeps returning the end value, and `reset` starts
+again from the beginning. A peek does not mark a stream as past the end.
 
 #### Term input and output
 
-- **`read(?Term)`, `read(+Stream,?Term)`** — Reads one full-stop-terminated Prolog term from a text stream. Returns `end_of_file` when no term remains.
-- **`read_term(?Term,+Options)`, `read_term(+Stream,?Term,+Options)`** — Reads a term and supports *variables(List)*, *variable_names(Pairs)*, and *singletons(Pairs)*. Unknown options raise *domain_error(read_option)*.
-- **`write(+Term)`, `write(+Stream,+Term)`** — Writes readable operator notation without quoting atoms merely because quoting would be required for reparsing. Number variables are enabled.
-- **`writeq(+Term)`, `writeq(+Stream,+Term)`** — Like `write`, but quotes atoms when required for unambiguous input syntax.
-- **`write_canonical(+Term)`, `write_canonical(+Stream,+Term)`** — Writes quoted canonical functor notation while ignoring operators and without interpreting *$VAR/1*.
-- **`write_term(+Term,+Options)`, `write_term(+Stream,+Term,+Options)`** — Writes with *quoted(true or false)*, *ignore_ops(true or false)*, *numbervars(true or false)*, and *variable_names([Name=Variable,...])*. Normal mode also supports *double_quotes(true or false)* and *spacing(true or false)*. `double_quotes(true)` remains effective with `ignore_ops(true)`: operator terms are written functionally while eligible character/code lists retain double-quoted notation, independently of option order.
+- **`read(?Term)`, `read(+Stream,?Term)`** — Reads one full-stop-terminated term; returns `end_of_file` when none remains.
+- **`read_term(?Term,+Options)`, `read_term(+Stream,?Term,+Options)`** — Reads a term with *variables(List)*, *variable_names(Pairs)*, and *singletons(Pairs)*. Unknown options raise *domain_error(read_option)*.
+- **`write(+Term)`, `write(+Stream,+Term)`** — Writes operator notation without quoting atoms. Number variables are enabled.
+- **`writeq(+Term)`, `writeq(+Stream,+Term)`** — Like `write`, but quotes atoms where needed to read them back.
+- **`write_canonical(+Term)`, `write_canonical(+Stream,+Term)`** — Writes quoted functional notation, ignoring operators and *$VAR/1*.
+- **`write_term(+Term,+Options)`, `write_term(+Stream,+Term,+Options)`** — Writes with *quoted(true or false)*, *ignore_ops(true or false)*, *numbervars(true or false)*, and *variable_names([Name=Variable,...])*. Normal mode adds *double_quotes(true or false)* and *spacing(true or false)*; `double_quotes(true)` still applies under `ignore_ops(true)`, in any option order.
 
-Term input uses the program's current operator table and the same ISO quoted-character
-syntax as source text, including backslash-terminated octal and hexadecimal
-escapes such as `'\7\'` and `'\x7\'`. This applies equally to `read/1-2` and
-`read_term/2-3`. Installed character conversions are applied outside quoted text
-when the `char_conversion` flag is `on`. `variable_names/1` and `singletons/1` omit anonymous variables. Output
-predicates do not append a period or newline; call `write/1`, then `write('.')`
-and `nl/0` when emitting a complete source term manually.
+Term input uses the program's current operators and the same quoted-character
+syntax as source text, including backslash-terminated escapes such as `'\7\'`
+and `'\x7\'`, for both `read/1-2` and `read_term/2-3`. Character conversions
+apply outside quotes when `char_conversion` is `on`. `variable_names/1` and
+`singletons/1` omit anonymous variables. Output predicates add no period or
+newline; write `.` and call `nl/0` yourself to emit a complete clause.
 
-A standalone numeric term read by `read/1-2` or `read_term/2-3` uses the same
-bounded numeric scanner and canonical value conversion as `number_chars/2`.
-Consequently every numeric character sequence accepted by `number_chars/2` has
-the same value when read as a full-stop-terminated term, without requiring EOF
-after that term.
+A standalone number read as a term uses the same scanner as `number_chars/2`,
+so every sequence that predicate accepts has the same value when read as a
+full-stop-terminated term.
 
 #### Arithmetic expressions
 
-- **`is(?Result,+Expression)`** — Evaluates `Expression` once and unifies its numeric value with `Result`. It is evaluation plus unification, not mutable assignment.
-- **`Left =:= Right`, `Left =\= Right`** — Evaluate both sides and test numeric equality or inequality. Integer/float representation differences do not by themselves make values unequal.
-- **`Left < Right`, `Left =< Right`, `Left > Right`, `Left >= Right`** — Evaluate both sides and perform the indicated numeric comparison.
+- **`is(?Result,+Expression)`** — Evaluates `Expression` once and unifies the value with `Result`. Evaluation plus unification, not assignment.
+- **`Left =:= Right`, `Left =\= Right`** — Evaluate both sides and test numeric equality or inequality. Integer versus float representation alone does not make values unequal.
+- **`Left < Right`, `Left =< Right`, `Left > Right`, `Left >= Right`** — Evaluate both sides and compare.
 
-Every variable in an arithmetic expression must already be bound to a number
-or evaluable expression. Integers use arbitrary-precision arithmetic while an
-operation remains in the integer domain; operations requiring floating point
-convert their operands to finite JavaScript numbers.
+Every variable in an expression must already be bound to a number or an
+evaluable expression. Integer operations use arbitrary precision; operations
+that need floating point convert their operands to finite JavaScript numbers.
 
-- **Literals and constants** — Integer and finite floating-point literals; `pi` and `e` produce floating-point constants.
+- **Literals and constants** — Integer and finite float literals; `pi` and `e` are float constants.
 - **Unary arithmetic** — Unary `+`, unary `-`, and integer bitwise complement `\`.
-- **Basic binary arithmetic** — `+`, `-`, and `*` preserve integers when both operands are integers. `/` produces a float and rejects a zero divisor.
-- **Exponentiation** — `Base ^ Exponent` remains an integer for nonnegative integer operands. Corrigendum 3 requires a float base for most negative integer exponents; `**` is floating-point exponentiation.
-- **Integer division** — `//` and `div` require integers and reject zero divisors. `//` rounds toward zero as reported by `integer_rounding_function`; `div` rounds down.
-- **Integer remainder** — `rem` is the truncating remainder; `mod` normalizes the result with the divisor's sign. Both require integers and a nonzero divisor.
-- **Bit operations** — Integer `/\`, `\/`, `xor`, `<<`, and `>>`, plus unary `\`.
-- **Numeric normalization** — `abs`, `sign`, and `float`. Integer `abs` and `sign` preserve integer results; `float` produces a float.
+- **Basic binary arithmetic** — `+`, `-`, and `*` stay integer for integer operands. `/` produces a float and rejects a zero divisor.
+- **Exponentiation** — `Base ^ Exponent` stays integer for nonnegative integer operands; Corrigendum 3 requires a float base for most negative integer exponents. `**` is float exponentiation.
+- **Integer division** — `//` and `div` require integers and a nonzero divisor. `//` rounds toward zero (see `integer_rounding_function`); `div` rounds down.
+- **Integer remainder** — `rem` truncates; `mod` takes the divisor's sign. Both require integers and a nonzero divisor.
+- **Bit operations** — Integer `/\`, `\/`, `xor`, `<<`, `>>`, and unary `\`.
+- **Numeric normalization** — `abs`, `sign`, and `float`. Integer `abs` and `sign` stay integer.
 - **Rounding** — `truncate`, `round`, `ceiling`, and `floor` produce integers.
-- **Float decomposition** — `float_integer_part` and `float_fractional_part` require a float and return floats.
+- **Float decomposition** — `float_integer_part` and `float_fractional_part` take and return floats.
 - **Min/max and transcendental functions** — `min`, `max`, `sin`, `cos`, `atan`, `asin`, `acos`, `atan2`, `tan`, `exp`, `log`, and `sqrt`; `pi` is the Corrigendum 2 constant.
 
-Arithmetic comparisons evaluate both operands. Standard term-order predicates
-(`@<`, `@=<`, `@>`, `@>=`) compare terms without arithmetic evaluation.
-EyeProlog's documented profile order distinguishes floats from integers rather
-than applying arithmetic equality across representations. Double-quoted text
-does not introduce another ISO term-order category: it becomes the list or atom
-selected by `double_quotes` before comparison.
+Arithmetic comparison evaluates; term-order comparison (`@<` and friends) does
+not, and it distinguishes floats from integers. Double-quoted text is compared
+as the list or atom selected by `double_quotes`.
 
 #### Errors
 
-ISO built-ins distinguish logical failure from exceptional calls. Insufficient
-instantiation raises `instantiation_error`; wrong argument categories raise
-`type_error`; invalid values raise `domain_error`; and arithmetic faults raise
-`evaluation_error`. JavaScript embedders receive these as `PrologError`
-instances whose message contains the corresponding Prolog error term.
+ISO built-ins distinguish failure from error. Insufficient instantiation raises
+`instantiation_error`, a wrong category `type_error`, an invalid value
+`domain_error`, and an arithmetic fault `evaluation_error`. JavaScript
+embedders receive these as `PrologError` instances whose message holds the
+Prolog error term.
 
-- ***instantiation_error*** — A required callable, stream, number, list, option value, or construction input is still unbound.
-- ***type_error(Expected,Culprit)*** — A bound value has the wrong term category, such as a noninteger index or non-callable goal.
-- ***domain_error(Domain,Culprit)*** — The type is correct but the value is outside the supported domain, such as a bad stream option or operator priority.
-- ***representation_error(Flag)*** — A value cannot be represented by the profile, such as an invalid Unicode scalar code.
-- ***evaluation_error(zero_divisor)*** — Integer or floating-point division was attempted with a zero divisor.
+- ***instantiation_error*** — A required callable, stream, number, list, option value, or construction input is unbound.
+- ***type_error(Expected,Culprit)*** — A bound value has the wrong category, such as a noninteger index or a non-callable goal.
+- ***domain_error(Domain,Culprit)*** — The type is right but the value is outside the domain, such as a bad stream option or operator priority.
+- ***representation_error(Flag)*** — A value cannot be represented, such as an invalid Unicode scalar code.
+- ***evaluation_error(zero_divisor)*** — Division by zero.
 - ***evaluation_error(undefined)*** — Floating-point evaluation produced a non-finite or undefined result.
 - ***permission_error(Operation,Permission,Culprit)*** — A static procedure was modified, a stream was used in the wrong mode, or a protected resource was accessed.
 - ***existence_error(Object,Culprit)*** — A stream, source sink, or required procedure does not exist.
-- ***syntax_error(number)*, *syntax_error(read_term)*** — Lexical number conversion or streamed term parsing failed.
+- ***syntax_error(number)*, *syntax_error(read_term)*** — Number conversion or term parsing failed.
 
-`catch/3` converts a `PrologError` into a catchable
-`error(Formal,eyeprolog)` term. `throw/1` copies its ball before unwinding: bound
-parts are preserved, repeated variables remain shared within the copied ball,
-and unbound variables are fresh with respect to the protected goal and catcher.
-Catchable error terms follow the same variable-freshening rule. The interactive
-top level uses the same ISO error envelope for uncaught processor errors, so an
-ordinary runtime error is displayed as `error(Formal,eyeprolog)` rather than
-dropping the implementation-defined second argument. Variables that occur in an
-uncaught ISO error are rendered with fresh answer names such as `_A` rather than
-reusing query-variable spellings such as `X` or `Xx`; this keeps the displayed
-error consistent with the copied exception term. An unmatched ball or error
-continues outward.
+`catch/3` presents a `PrologError` as `error(Formal,eyeprolog)`. `throw/1`
+copies its ball before unwinding: bound parts are kept, repeated variables stay
+shared within the copy, and unbound variables are fresh relative to the
+protected goal and the catcher. The interactive top level shows uncaught errors
+in the same `error(Formal,eyeprolog)` form, naming their variables `_A` and so
+on rather than reusing query variable names. An unmatched ball continues
+outward.
 
 Streams belong to one solver run and are shared by nested calls, exceptions,
-and solution collectors. `user_input` and `user_output` are always present.
-`open/4` supports `type/1`, `alias/1`, `reposition/1`, and `eof_action/1`;
-`read_term/3` supports `variables/1`, `variable_names/1`, and `singletons/1`.
-The JavaScript `ioOptions.input` and `ioOptions.write` hooks connect standard
-streams to an embedder. File-backed streams use synchronous lifecycle semantics
-so side effects occur in Prolog execution order.
+and collectors. `user_input` and `user_output` always exist. The JavaScript
+`ioOptions.input` and `ioOptions.write` hooks connect the standard streams to
+an embedder. File streams are synchronous, so side effects happen in Prolog
+execution order.
 
 ### Normal-mode extensions
 
-The normal profile also supplies a small number of runtime controls that are not
-members of the isolated ISO registry. They are kept separate here so the core
-boundary remains visible.
+The normal profile adds a few runtime controls outside the isolated ISO
+registry, listed separately to keep that boundary visible.
 
 #### Cleanup controls
 
-`call_cleanup/2` and `setup_call_cleanup/3` are normal EyeProlog runtime extensions rather than members of the isolated ISO builtin registry. They protect a goal across deterministic completion, exhaustion, cut, top-level abandonment, and exception unwinding, running Cleanup exactly once. `setup_call_cleanup/3` runs Setup once and installs Cleanup only after Setup succeeds. A successful Cleanup run before a deterministic answer contributes its substitutions to that answer. Nested cleanups run inside-out, and strict ISO mode does not provide either predicate.
+`call_cleanup/2` and `setup_call_cleanup/3` protect a goal across deterministic completion, exhaustion, cut, top-level abandonment, and exception unwinding, running Cleanup exactly once. `setup_call_cleanup/3` runs Setup once and installs Cleanup only after Setup succeeds. A Cleanup that runs before a deterministic answer contributes its bindings to that answer. Nested cleanups run inside-out. Strict ISO mode provides neither predicate.
 
 ### Bundled libraries
 
@@ -6486,14 +4559,13 @@ EyeProlog exposes **404 distinct non-ISO library and normal-extension predicate
 indicators** in addition to the 129 indicators in its isolated ISO profile.
 **282 are defined entirely as ordinary Prolog clauses** in focused modules under
 `src/lib/`; **122 use host support** for control, attributed variables,
-constraints, character conversion, filesystem/OS access, timing, cryptography,
-or observability. The ISO and library catalogs therefore cover **533 distinct predicate indicators**. A normal-runtime predicate that is intentionally
-re-exported by a compatibility module is counted once in this library surface:
-for example `call_cleanup/2` and `setup_call_cleanup/3` are exported by
-`library(iso_ext)`, while `time/1` and `statistics/2` are available from
-`library(time)`. `statistics/0`, `tnot/1`, and `wfs_truth/2` remain
-normal-runtime extensions outside the library catalog. These additions are
-absent from the strict ISO registry.
+constraints, character conversion, filesystem and OS access, timing,
+cryptography, or observability. Together the ISO and library catalogs cover **533 distinct predicate indicators**. A normal-runtime predicate re-exported by
+a compatibility module is counted once: `call_cleanup/2` and
+`setup_call_cleanup/3` are exported by `library(iso_ext)`, and `time/1` and
+`statistics/2` by `library(time)`. `statistics/0`, `tnot/1`, and `wfs_truth/2`
+remain normal-runtime extensions outside the library catalog. None of these are
+in the strict ISO registry.
 
 The sources are `src/lib/aggregate.pl`, `src/lib/arithmetic.pl`,
 `src/lib/assoc.pl`, `src/lib/atts.pl`, `src/lib/between.pl`,
@@ -6507,25 +4579,29 @@ The sources are `src/lib/aggregate.pl`, `src/lib/arithmetic.pl`,
 `src/lib/prologue.pl`, `src/lib/random.pl`, `src/lib/reif.pl`, `src/lib/si.pl`,
 `src/lib/sockets.pl`, `src/lib/strings.pl`, `src/lib/tabling.pl`, `src/lib/terms.pl`,
 `src/lib/time.pl`, `src/lib/ugraphs.pl`, `src/lib/uuid.pl`, and
-`src/lib/when.pl`. Each declares a same-named module
-with `module/2`; there is no catch-all `library(eyeprolog)`. A program imports
-only the modules it needs, and
-`use_module/2` can select an even smaller indicator list. The Prologue
-module exposes p.p.1 through p.p.11 of the
-[working-draft Prologue](https://www.complang.tuwien.ac.at/ulrich/iso-prolog/prologue),
-as a compatibility facade over the canonical `lists`, `between`, `iso_ext`,
-and `freeze` modules. `src/standard-library.js` registers the module sources and explicit module-owned host adapters. For example, attributed-variable support lives in
-`src/atts-host.js`, while cryptographic primitives live in `src/crypto-host.js`. Whenever `src/lib/foo.pl` needs a private runtime primitive, that
-primitive is registered from `src/foo-host.js`; pure Prolog libraries deliberately
-have no host file. This keeps character I/O, filesystem access, crypto, timing,
-attributed-variable support, and other runtime bridges with the module that owns
-their public semantics instead of in a compatibility grab bag. Private runtime adapters remain owned by the module whose public semantics they support; no shared compatibility grab bag participates in library execution. Explicit `use_module/1-2` loads remain supported; outside strict ISO mode, the bundled-library autoloader may also load the canonical owner of any exported `src/lib/` predicate.
-The core registry remains available through `createDefaultRegistry()` and
-`getDefaultRegistry()` for low-level embedding. The stricter Part 1 +
-Corrigenda registry is exposed as `createStrictIsoRegistry()` and
-`getStrictIsoRegistry()` and is paired with `isoStrict: true` when a complete
-strict-language boundary is required. Module-local predicate identity keeps
-private helpers and same-named predicates in different modules separate.
+`src/lib/when.pl`. Each declares a same-named module with `module/2`; there is
+no catch-all `library(eyeprolog)`. A program imports only the modules it needs,
+and `use_module/2` can narrow that to a list of indicators. `library(prologue)`
+exposes p.p.1 through p.p.11 of the
+[working-draft Prologue](https://www.complang.tuwien.ac.at/ulrich/iso-prolog/prologue)
+as a facade over the canonical `lists`, `between`, `iso_ext`, and `freeze`
+modules.
+
+`src/standard-library.js` registers the module sources and their host adapters.
+When `src/lib/foo.pl` needs a private runtime primitive, it is registered from
+`src/foo-host.js`: attributed-variable support lives in `src/atts-host.js`,
+cryptography in `src/crypto-host.js`. Pure Prolog libraries have no host file.
+Each runtime bridge thus stays with the module that owns its public semantics.
+Explicit `use_module/1-2` loads always work; outside strict ISO mode, the
+autoloader may also load the canonical owner of any exported `src/lib/`
+predicate.
+
+For low-level embedding, the core registry is available through
+`createDefaultRegistry()` and `getDefaultRegistry()`, and the stricter Part 1
+plus Corrigenda registry through `createStrictIsoRegistry()` and
+`getStrictIsoRegistry()`, paired with `isoStrict: true` for a complete
+strict-language boundary. Module-local predicate identity keeps private helpers
+and same-named predicates in different modules apart.
 
 #### Module catalog
 
@@ -6620,15 +4696,15 @@ private helpers and same-named predicates in different modules separate.
 
 #### Using bundled libraries
 
-On the command line, a program can state its library dependencies explicitly:
+A program states its library dependencies with ordinary directives:
 
 ```sh
 printf '%s\n' ':- use_module(library(lists)).' 'answer(X) :- member(X, [ready]).' > program.pl
 eyeprolog --goal 'answer(X)' program.pl
-eyeprolog -p program.pl        # add proof output
+eyeprolog -p --goal 'answer(X)' program.pl   # with proof output
 ```
 
-JavaScript uses the same normal EyeProlog library registry by default:
+JavaScript uses the same library registry by default:
 
 ```js
 import { run } from 'eyeprolog';
@@ -6644,32 +4720,24 @@ console.log(result.stdout);
 
 ### Library relations by programming role
 
-The mode notation used in the role summaries below is descriptive:
-
-- `+` means the argument must already have the required input shape;
-- `-` means the predicate produces that argument;
-- `?` means a bound value can be checked or an unbound value generated.
-
-Most EyeProlog library predicates are projections or filters. When an input is
-unbound, malformed, outside its domain, or incompatible with the requested
-output, they normally **fail** rather than raising the ISO errors described in
-the errors section above. They do not invent open-ended domains. Bind arithmetic
-operands, source text, proper lists, indexes, dates, and aggregate generators
-before calling the corresponding predicate.
+The mode marks below are descriptive, as in the core registry. Most library
+predicates are projections or filters: given an unbound, malformed,
+out-of-domain, or incompatible argument they normally **fail** rather than
+raise the ISO errors above, and they never invent open-ended domains. Bind
+operands, text, lists, indexes, dates, and aggregate generators before the
+call.
 
 #### Portable numeric, comparison, and date relations
 
-- **`lt(+A,+B)`, `le(+A,+B)`, `gt(+A,+B)`, `ge(+A,+B)`** — Compare integers exactly, finite numeric text numerically, `PnYnMnD` duration text component-wise, and other lexical values by string order. These differ from ISO arithmetic comparison and standard term order.
-- **`random(-Value)`** — Stateful Park-Miller step using the library seed set by `set_random/1`; implemented through a private native fast path while retaining the same sequence and numeric conversion as `random/3`.
-- **`random(+Seed0,-Value,-Seed)`** — Portable Park-Miller generator with explicit state. `Value` is in `[0,1)`; pass the returned integer `Seed` to the next call. The same initial integer seed always reproduces the same sequence.
-- **`difference(+End,+Start,-Duration)`** — Portable Prolog. Computes a nonnegative calendar difference between ISO date atoms/character lists and returns atom `'PnYnMnD'`. Invalid dates or an end before the start fail.
+- **`lt(+A,+B)`, `le(+A,+B)`, `gt(+A,+B)`, `ge(+A,+B)`** — Compare integers exactly, numeric text numerically, `PnYnMnD` durations component-wise, and other lexical values as strings. Unlike ISO arithmetic comparison and standard term order.
+- **`random(-Value)`** — Stateful Park-Miller step from the seed set by `set_random/1`; a private native fast path that yields the same sequence as `random/3`.
+- **`random(+Seed0,-Value,-Seed)`** — Park-Miller generator with explicit state. `Value` is in `[0,1)`; pass `Seed` to the next call. The same initial seed always reproduces the same sequence.
+- **`difference(+End,+Start,-Duration)`** — Nonnegative calendar difference between ISO dates (atoms or character lists) as atom `'PnYnMnD'`. Invalid dates, or an end before the start, fail.
 
 ```eyeprolog
 :- use_module(library(dates)).
 :- use_module(library(between), [between/3]).
 :- use_module(library(random)).
-:- use_module(library(lists)).
-
 answer(square, S) :- (S is 12 * 12).
 answer(day_count, N) :- between(3, 5, N).
 answer(age, D) :- difference('2026-07-28', '2020-05-20', D).
@@ -6680,47 +4748,38 @@ answer(random_pair, [A,B]) :- random(42, A, S), random(S, B, _).
 eyeprolog --goal 'answer(Kind, Value)' program.pl
 ```
 
-The library deliberately does not register named arithmetic wrappers such as
-`add/3`, `mul/3`, `abs/2`, or `sqrt/2`, because ISO arithmetic already
-expresses them: for example, `R is A + B`, `R is abs(A)`, and
-`R is sqrt(A)`. The same applies to subtraction, multiplication, division,
-modulo, powers, sine, cosine, exponential, logarithm, and the ISO rounding
-functions.
-
-The bundled library layer defines `between/3` in `library(between)` and
-`smallest_divisor_from/3` in `library(primes)` as ordinary Prolog clauses.
-Choose the smaller or
-larger of two arithmetic values directly with ISO control, for example
-`(A =< B -> Min = A ; Min = B)` or `(A >= B -> Max = A ; Max = B)`.
+There are no named arithmetic wrappers such as `add/3`, `abs/2`, or `sqrt/2`;
+ISO arithmetic already says `R is A + B`, `R is abs(A)`, `R is sqrt(A)`, and
+likewise for the other operations. `between/3` (in `library(between)`) and
+`smallest_divisor_from/3` (in `library(primes)`) are ordinary Prolog. Choose a
+minimum or maximum with ISO control, for example `(A =< B -> Min = A ; Min = B)`.
 
 #### List relations
 
-These relations are the actual Prolog implementations in
-`src/lib/lists.pl`. Every list-consuming relation below expects a
-proper list unless explicitly stated otherwise. Indexes and counts are
-zero-based, nonnegative safe integers.
+These are the Prolog definitions in `src/lib/lists.pl`. Each list argument
+must be a proper list unless stated otherwise; indexes and counts are
+nonnegative safe integers.
 
 - **`append(+Prefix,+Suffix,-Whole)`** — Appends a proper prefix to any suffix, including an improper tail.
-- **`append(-Prefix,-Suffix,+Whole)`** — Enumerates every split of a proper `Whole`, from empty prefix to empty suffix.
-- **`member(?Item,+List)`** — Produces one answer per matching position, so duplicates remain observable.
-- **`select(?Item,+List,-Rest)`** — Removes one occurrence at a time and preserves the order of all other elements. Duplicate occurrences may produce duplicate answers.
-- **`\+ member(+Item,+List)`** — Succeeds only when `Item` does not unify with any member. Use it after binding the item and list.
-- **`nth0(?Index,+List,?Item)`** — Checks a bound zero-based index or enumerates indexes and their items.
-- **`nth1(?Index,+List,?Item)`** — Checks a bound one-based index or enumerates one-based indexes and items.
-- **`maplist(+Closure,+List1,?List2)`** — Applies a two-argument closure pairwise through ISO `call/3`; partially applied compound closures are supported.
-- **`[Head|Tail] = List`** — Decomposes a nonempty list directly with ISO unification; no library wrapper is needed.
-- **`set_nth0(+Index,+List,+Item,-NewList)`** — Replaces one existing position without mutating the input list.
-- **`last(+List,?Last)`** — Returns the final element of a nonempty proper list.
-- **`take(+Count,+List,-Prefix)`, `drop(+Count,+List,-Suffix)`** — Select the first `Count` elements or remove them. Counts beyond the list length fail.
-- **`slice(+Start,+Count,+List,-Slice)`** — Selects exactly `Count` elements beginning at `Start`; an out-of-range slice fails.
+- **`append(-Prefix,-Suffix,+Whole)`** — Enumerates every split of a proper `Whole`.
+- **`member(?Item,+List)`** — One answer per matching position, so duplicates stay observable.
+- **`select(?Item,+List,-Rest)`** — Removes one occurrence at a time, preserving the order of the rest.
+- **`\+ member(+Item,+List)`** — Succeeds when `Item` unifies with no member. Bind both first.
+- **`nth0(?Index,+List,?Item)`** — Checks a zero-based index or enumerates indexes and items.
+- **`nth1(?Index,+List,?Item)`** — The same, one-based.
+- **`maplist(+Closure,+List1,?List2)`** — Applies a two-argument closure pairwise via `call/3`; partially applied closures are supported.
+- **`[Head|Tail] = List`** — Decomposes a nonempty list by unification; no wrapper needed.
+- **`set_nth0(+Index,+List,+Item,-NewList)`** — Replaces one existing position, returning a new list.
+- **`last(+List,?Last)`** — The final element of a nonempty list.
+- **`take(+Count,+List,-Prefix)`, `drop(+Count,+List,-Suffix)`** — Take or remove the first `Count` elements; too large a count fails.
+- **`slice(+Start,+Count,+List,-Slice)`** — Exactly `Count` elements from `Start`; out of range fails.
 - **`reverse(+List,-Reversed)`** — Reverses a proper list.
-- **`length(?List,?Length)`** — Reports or checks the length of a proper list, or generates a list skeleton when `Length` is a bound nonnegative integer.
-- **`sum_list(+List,-Sum)`** — Sums numeric elements with ISO `is/2`. The empty sum is `0`; invalid arithmetic raises the corresponding ISO error.
-- **`min_list(+List,-Min)`, `max_list(+List,-Max)`** — Select by EyeProlog term order, not numeric coercion. Empty lists fail.
-- **`list_to_set(+List,-Set)`** — Removes later structural duplicates while preserving first-occurrence order.
+- **`length(?List,?Length)`** — Reports or checks a length, or builds a list skeleton for a bound length.
+- **`sum_list(+List,-Sum)`** — Sums with `is/2`; the empty sum is `0`, and bad arithmetic raises the ISO error.
+- **`min_list(+List,-Min)`, `max_list(+List,-Max)`** — Select by term order, not numeric coercion. Empty lists fail.
+- **`list_to_set(+List,-Set)`** — Removes later duplicates, keeping first occurrences in order.
 
 ```eyeprolog
-
 :- use_module(library(lists)).
 
 answer(split, pair(Prefix, Suffix)) :-
@@ -6736,34 +4795,31 @@ eyeprolog --goal 'answer(Kind, Value)' program.pl
 
 #### Portable text, lexical values, and pattern matching
 
-The portable text API uses **ISO atoms or proper lists of one-character atoms**.
-A generated text result defaults to an atom. Double-quoted source text uses the
-ISO representation selected by `double_quotes`; with the default `chars`, it is
-already a proper character list accepted by this API. The 56-predicate portable
-library itself has no STRING or JavaScript dependency.
+The text API works on **ISO atoms or proper lists of one-character atoms**, and
+generated text is an atom. With the default `double_quotes=chars`, a
+double-quoted literal is already such a list. The library has no
+JavaScript string dependency.
 
-- **`string_concat(?Left,?Right,?Text)`** — Concatenates or splits atom/character-list text. At least two arguments must determine the operation; generated text is an atom.
-- **`contains(+Text,+Needle)`** — Tests literal containment.
-- **`matches(+Text,+Pattern)`** — Tests `|`-separated literal alternatives.
-- **`matches(+Text,+Pattern,-Context)`** — Portable named-capture matcher. Supports literals, `^`/`$`, named groups `(?<name>...)`, optional named groups, `\w+`, `[A-Za-z]+`, `[0-9]+`, and literal group bodies. Captures are atoms in comma-context data such as `(year('2026'), month('07'))`.
-- **`split(+Text,+Separator,-Parts)`** — Literal split into a proper list of atoms.
-- **`join(+Parts,+Separator,-Text)`** — Joins atom/number/character-list lexical values. The empty list produces the empty atom `''`.
-- **`substring(+Text,+Start,+Count,-Part)`** — Extracts characters using zero-based nonnegative integer indexes.
-- **`replace(+Text,+Search,+Replacement,-Result)`** — Replaces every literal occurrence. An empty search leaves the text unchanged.
-- **`lowercase(+Text,-Lower)`, `uppercase(+Text,-Upper)`** — Portable ASCII case mapping. Non-ASCII characters are preserved unchanged rather than delegated to host Unicode case conversion.
-- **`trim(+Text,-Trimmed)`** — Removes the ISO-portable ASCII whitespace set at both ends.
-- **`number_string(?Number,?Text)`** — Historical predicate name retained for compatibility; converts a number to atom/character-list text or parses such text.
-- **`atom_string(?Atom,?Text)`** — Historical predicate name retained for compatibility; relates an atom to atom/character-list text.
-- **`term_string(+Term,-Text)`** — Renders a nonvariable term into atom/character-list text using the portable library serializer. It does not parse text back into a term.
+- **`string_concat(?Left,?Right,?Text)`** — Concatenates or splits text. Two arguments must be known; the result is an atom.
+- **`contains(+Text,+Needle)`** — Literal containment.
+- **`matches(+Text,+Pattern)`** — Matches `|`-separated literal alternatives.
+- **`matches(+Text,+Pattern,-Context)`** — Named-capture matcher supporting literals, `^`/`$`, named groups `(?<name>...)`, optional named groups, `\w+`, `[A-Za-z]+`, `[0-9]+`, and literal group bodies. Captures are atoms in a comma context such as `(year('2026'), month('07'))`.
+- **`split(+Text,+Separator,-Parts)`** — Literal split into a list of atoms.
+- **`join(+Parts,+Separator,-Text)`** — Joins atoms, numbers, or character lists; the empty list gives `''`.
+- **`substring(+Text,+Start,+Count,-Part)`** — Extracts characters by zero-based index.
+- **`replace(+Text,+Search,+Replacement,-Result)`** — Replaces every literal occurrence; an empty search changes nothing.
+- **`lowercase(+Text,-Lower)`, `uppercase(+Text,-Upper)`** — ASCII case mapping; other characters are unchanged.
+- **`trim(+Text,-Trimmed)`** — Removes ASCII whitespace at both ends.
+- **`number_string(?Number,?Text)`** — Historical name kept for compatibility; converts between a number and text.
+- **`atom_string(?Atom,?Text)`** — Historical name kept for compatibility; relates an atom to text.
+- **`term_string(+Term,-Text)`** — Renders a nonvariable term as text. It does not parse.
 
-The named-capture matcher deliberately implements a small, auditable Prolog
-subset rather than JavaScript regular-expression semantics. Use a host predicate
-when an application genuinely requires a full host regex engine.
+The matcher is a small, auditable Prolog subset, not JavaScript regular
+expressions. Use a host predicate when an application needs a full regex
+engine.
 
 ```eyeprolog
 :- use_module(library(strings)).
-:- use_module(library(lists)).
-
 answer(words, Words) :-
   trim('  Logic Made Visible  ', Clean),
   lowercase(Clean, Lower),
@@ -6781,26 +4837,21 @@ eyeprolog --goal 'answer(Kind, Value)' program.pl
 
 #### Portable aggregation and bounded control
 
-These Prolog relations follow the documented collection, arithmetic,
-term-order, and scoping contracts. The caller is responsible for making that
-search finite. Bind outer variables before the nested goal when they are
-intended to restrict its domain.
+These relations follow the collection, arithmetic, and term-order contracts
+above. The caller keeps the search finite; bind outer variables first when they
+should restrict the nested goal.
 
-- **`countall(+Goal,-Count)`** — Counts all solutions, including solutions that produce the same visible template. The empty count is `0`.
-- **`sumall(+Template,+Goal,-Sum)`** — Sums the numeric value of `Template` in every solution. The empty sum is `0`; invalid arithmetic raises the corresponding ISO error.
-- **`aggregate_min(+KeyTemplate,+ValueTemplate,+Goal,-BestKey,-BestValue)`** — Retains the solution with the smallest resolved key under standard term order.
-- **`aggregate_max(+KeyTemplate,+ValueTemplate,+Goal,-BestKey,-BestValue)`** — Retains the solution with the largest resolved key. Both best-value predicates fail on an empty solution set and retain the first solution on an equal key.
+- **`countall(+Goal,-Count)`** — Counts all solutions, including ones that look the same. The empty count is `0`.
+- **`sumall(+Template,+Goal,-Sum)`** — Sums `Template` over all solutions. The empty sum is `0`; bad arithmetic raises the ISO error.
+- **`aggregate_min(+KeyTemplate,+ValueTemplate,+Goal,-BestKey,-BestValue)`** — Keeps the solution with the smallest key by term order.
+- **`aggregate_max(+KeyTemplate,+ValueTemplate,+Goal,-BestKey,-BestValue)`** — Keeps the largest. Both fail on no solutions and keep the first of equal keys.
 
-ISO `findall/3` is present in both registries. The EyeProlog library aggregates follow
-the same scoping principle: variables created inside the nested search do not
-leak except through the declared templates and outputs.
-
-There is no `not/1` alias; use ISO `\+/1`. `forall/2` is available from
-`library(iso_ext)`, and `once/1` is supplied directly by the ISO registry.
+Like `findall/3`, these aggregates let nothing escape the nested search except
+through their templates and outputs. There is no `not/1`; use `\+/1`.
+`forall/2` comes from `library(iso_ext)`, and `once/1` is core.
 
 ```eyeprolog
 :- use_module(library(aggregate)).
-:- use_module(library(lists)).
 :- use_module(library(iso_ext)).
 
 cost(a, 8).
@@ -6820,13 +4871,10 @@ eyeprolog --goal 'answer(Kind, Value)' program.pl
 
 #### Contexts with ordinary terms
 
-A comma-context needs no special native predicate. A small program relation can
-walk its members, and ISO `=../2` can expose any member's name and argument list.
+A comma context needs no special predicate. A small relation walks its
+members, and `=../2` exposes each member's name and arguments.
 
 ```eyeprolog
-
-:- use_module(library(lists)).
-
 message(event_17,
         (severity(high), source(sensor_3), reading(temp, 91))).
 
@@ -6848,15 +4896,13 @@ answer(field(Name, Args)) :-
 eyeprolog --goal 'answer(X)' program.pl
 ```
 
-The ISO profile includes `functor/3`, `arg/3`, and `=../2`. Use `=../2` for whole-argument-list
-decomposition and construction, `=/2` for unification, and `\=/2` for
-non-unifiability; redundant aliases are not registered.
+Use `=../2` to decompose or build whole argument lists, `=/2` to unify, and
+`\=/2` to test non-unifiability; no redundant aliases are registered.
 
 #### Typical ISO extensions
 
-Import `library(iso_ext)` when a program needs portable solution counting,
-universal checks, inclusive integer generation, difference-list collection,
-or variant comparison:
+`library(iso_ext)` supplies solution counting, universal checks, inclusive
+integer ranges, difference-list collection, and variant comparison:
 
 ```eyeprolog
 :- use_module(library(iso_ext)).
@@ -6880,147 +4926,132 @@ extension_answer(same_shape, true) :-
 
 ### Interoperability, autoloading, and portability
 
-EyeProlog keeps four related concepts separate:
+Four layers are kept apart:
 
-- ****ISO core**** — The documented ISO predicate profile built into the processor. No EyeProlog library import is involved.
-- ****EyeProlog library surface**** — Every public module and exported predicate in the bundled library layer. Programs normally access these with `use_module/1-2`.
-- ****Interoperability profile**** — A deliberately smaller set of library names and predicate interfaces that EyeProlog intends to keep source-compatible with Trealla and Scryer where practical.
-- ****Autoload surface**** — Every bundled predicate with one canonical provider per unambiguous indicator.
+- **ISO core** — The documented ISO predicate profile built into the processor. No import is involved.
+- **EyeProlog library surface** — Every public module and exported predicate in the bundled libraries, normally reached with `use_module/1-2`.
+- **Interoperability profile** — A smaller set of library names and interfaces kept source-compatible with Trealla and Scryer where practical.
+- **Autoload surface** — Every bundled predicate, with one canonical provider per unambiguous indicator.
 
-These layers answer different questions. A predicate may be implemented entirely
-as ordinary Prolog and still be outside the cross-processor interoperability
-profile; conversely, an interoperable predicate may be backed by a private host
-adapter. In this section, **portable** refers to source portability between
-Prolog systems, not merely to the language in which a predicate happens to be
-implemented.
+A predicate written in pure Prolog may still lie outside the interoperability
+profile, and an interoperable one may rely on a host adapter. Here
+**portable** means source portability between Prolog systems, not the language
+a predicate happens to be implemented in.
 
-The conservative Trealla/Scryer compatibility profile is derived from Scryer
-library modules and predicate indicators also documented by Trealla. Where
-Trealla exposes a predicate globally rather than from the same module, EyeProlog
-follows Scryer's module name so explicit Scryer-style imports remain available.
-That interoperability profile currently spans 27 modules and is intentionally
-narrower than either implementation's union of exports; EyeProlog's explicit-state
-`random/3` and `uuid/3`, for example, remain useful extensions rather than shared
-interfaces. Separately, all 33 bundled EyeProlog modules whose basenames overlap Scryer's current `src/lib/` tree cover the corresponding Scryer public predicate surface. The 26 bundled modules that have public-module counterparts in Trealla `library/` cover Trealla's exported predicates at pinned upstream commit `f7a93bd521c07a4841f5123348111dd005918c89`. This is module-overlap coverage, not a claim that EyeProlog bundles Trealla's native host libraries such as `curl`, `gsl`, `janus`, `raylib`, `socket`, or `sqlite3`.
+The conservative Trealla/Scryer profile is derived from Scryer library modules
+and indicators that Trealla also documents. Where Trealla exposes a predicate
+globally, EyeProlog follows Scryer's module name so Scryer-style imports keep
+working. The profile spans 27 modules and is deliberately narrower than either
+system's exports; EyeProlog's explicit-state `random/3` and `uuid/3`, for
+example, are extensions rather than shared interfaces. Separately, all 33
+bundled modules whose basenames match Scryer's `src/lib/` tree cover the
+corresponding Scryer public predicates, and the 26 modules with counterparts in
+Trealla's `library/` cover Trealla's exports at pinned upstream commit
+`f7a93bd521c07a4841f5123348111dd005918c89`. That is module-overlap coverage;
+EyeProlog does not bundle Trealla's native host libraries such as `curl`,
+`gsl`, `janus`, `raylib`, `socket`, or `sqlite3`.
 
-Source reuse is preferred over translation. `clpb.pl`, `ordsets.pl`,
-`reif.pl`, and `ugraphs.pl` retain the upstream Prolog algorithms and license
-headers; `assoc.pl` uses the complete upstream AVL implementation. `gensym.pl`
-and `when.pl` keep the same algorithms with small blackboard and parser-safe
-closure adaptations. `dif.pl`, `tabling.pl`, and part of `time.pl` are thin
-facades over EyeProlog runtime facilities. `charsio.pl` covers Scryer's UTF-8,
-chars/term, and Base64 relations; `pio.pl` covers the complete Scryer export
-surface and accepts Scryer character-list paths while retaining atom-path
-compatibility. `files.pl` covers Scryer's complete filesystem export surface,
-while `os.pl` covers its environment/shell process-context surface. Their actual
-filesystem and OS side effects are isolated in module-owned Node adapters.
-`crypto.pl` exposes Scryer's complete public crypto surface; its strict Trealla/Scryer overlap is `hex_bytes/2`,
-`crypto_n_random_bytes/2`, and `crypto_data_hash/3`. Trealla-specific overlap additions include `aggregate_all/3` and
-`aggregate/3`, `frozen/2`, the set/filter/list helpers and `tasklist/2-8`,
-`maybe/1-2`, `resource_error/2`, and `abolish_table/1`. Because EyeProlog has no
-Trealla task scheduler, `tasklist/2-8` deliberately executes sequentially with
-`maplist`-equivalent success/failure semantics; it does not promise Trealla's
-parallel scheduling behavior. The
+Upstream source is reused rather than translated where possible. `clpb.pl`,
+`ordsets.pl`, `reif.pl`, and `ugraphs.pl` keep the upstream algorithms and
+license headers; `assoc.pl` is the complete upstream AVL implementation.
+`gensym.pl` and `when.pl` keep their algorithms with small blackboard and
+parser-safe closure adaptations. `dif.pl`, `tabling.pl`, and part of `time.pl`
+are thin facades over runtime facilities. `charsio.pl` covers Scryer's UTF-8,
+chars/term, and Base64 relations; `pio.pl` covers Scryer's full export surface
+and accepts both character-list and atom paths. `files.pl` covers Scryer's
+filesystem exports and `os.pl` its environment and shell surface, with the
+side effects isolated in module-owned Node adapters. `crypto.pl` exposes
+Scryer's public crypto surface; its strict Trealla/Scryer overlap is
+`hex_bytes/2`, `crypto_n_random_bytes/2`, and `crypto_data_hash/3`.
+Trealla-specific additions include `aggregate_all/3`, `aggregate/3`,
+`frozen/2`, the set, filter, and list helpers, `tasklist/2-8`, `maybe/1-2`,
+`resource_error/2`, and `abolish_table/1`. With no task scheduler,
+`tasklist/2-8` runs sequentially with `maplist`-like success and failure; it
+does not promise Trealla's parallelism. The
 [portable library overlap example](https://github.com/eyereasoner/eyeprolog/blob/main/examples/portable-library-overlap.pl)
-composes Boolean constraints, ordered sets, graphs, reification, delayed goals,
-generated names, character conversion, transposition, and explicit table
-syntax in one runnable program.
+combines Boolean constraints, ordered sets, graphs, reification, delayed goals,
+generated names, character conversion, transposition, and table declarations in
+one program.
 
-The matching `builtins.pl` files are intentionally not exposed as a portability
-library. Scryer uses `library(builtins)` as its fundamental system module, while
-Trealla's file is implementation support; EyeProlog keeps those procedures in
-the core registry instead of creating a second authority for them.
+The `builtins.pl` files of Scryer and Trealla are not exposed as a library:
+EyeProlog keeps those procedures in the core registry rather than creating a
+second authority for them.
 
-`library(http)` combines the Scryer `http_open/3` option surface with Trealla's `http_get/3`, `http_post/4`, `http_patch/4`, `http_put/4`, `http_delete/3`, `http_server/2`, and `http_request/5`. HTTP and HTTPS client requests are performed by the module-owned Node adapter in `src/http-host.js`; response bodies are exposed as ordinary text streams for `http_open/3` and as complete character lists for the convenience predicates. The host stream pulls response bytes lazily in bounded chunks, so opening a large response no longer buffers the entire body through the fixed-size RPC message. An ordinary GET or HEAD has no request entity unless `data/1` is explicit, repeated request-header values are preserved, and an explicitly empty entity gets `Content-Length: 0`. The client follows redirects, supports Scryer request/response metadata options, Trealla `header(Name,Value)` request options, and Trealla's `host/path` address-list form. `http_request/5` parses a request line and headers from a stream. The compact `http_server/2` facade accepts one connection per call because EyeProlog does not provide Trealla's `fork` task primitive.
+`library(http)` combines Scryer's `http_open/3` options with Trealla's `http_get/3`, `http_post/4`, `http_patch/4`, `http_put/4`, `http_delete/3`, `http_server/2`, and `http_request/5`. Requests go through the Node adapter in `src/http-host.js`. `http_open/3` returns the body as a text stream that pulls bytes lazily in bounded chunks; the convenience predicates return complete character lists. A GET or HEAD sends no entity unless `data/1` is given, repeated request headers are preserved, and an explicitly empty entity gets `Content-Length: 0`. The client follows redirects and accepts Scryer request and response options, Trealla `header(Name,Value)` options, and Trealla's `host/path` address lists. `http_request/5` parses a request line and headers from a stream. `http_server/2` accepts one connection per call, since there is no `fork` primitive.
 
-`library(json)` is the BSD-licensed Scryer JSON DCG also distributed by Trealla. `json_chars//1` is bidirectional and represents JSON objects as `pairs/1`, arrays as `list/1`, strings as `string/1`, numbers as `number/1`, booleans as `boolean/1`, and JSON null as `null`. JSON `\u` escapes are UTF-16 code units: valid surrogate pairs are combined into one supplementary Unicode scalar while parsing and emitted as a pair when that escaped representation is requested during generation; unpaired surrogates are rejected. See `examples/json.pl` and `examples/http-client.pl`.
+`library(json)` is the BSD-licensed Scryer JSON grammar also shipped by Trealla. `json_chars//1` is bidirectional: objects are `pairs/1`, arrays `list/1`, strings `string/1`, numbers `number/1`, booleans `boolean/1`, and null `null`. `\u` escapes are UTF-16 units: surrogate pairs combine into one scalar when parsing and are emitted as a pair when generating escapes; unpaired surrogates are rejected. See `examples/json.pl` and `examples/http-client.pl`.
 
-`library(sockets)` follows Scryer's TCP stream interface. `socket_client_open/3`
-connects to `Host:Port`; `socket_server_open/2` accepts either a port or
-`Host:Port`, and an unbound port is unified with the selected ephemeral port.
+`library(sockets)` follows Scryer's TCP stream interface.
+`socket_client_open/3` connects to `Host:Port`; `socket_server_open/2` takes a
+port or `Host:Port` and binds an unbound port to the chosen ephemeral one.
 `socket_server_accept/4` returns the peer address and a bidirectional stream.
-Client and accepted streams are both input and output streams and report
-`mode(read_append)`, `position(0)`, and their network address through
-`file_name/1`. They support text or binary I/O, aliases, `eof_action/1`,
-`flush_output/1`, and `close/1`. Socket streams are not repositionable, so `reposition(true)` is
-rejected. Closing the server stops future accepts without closing streams that
-have already been accepted. `current_hostname/1` returns the local host name.
-The networking predicates require the Node runtime; runtimes without the socket
-host capability raise `resource_error(sockets)`.
+Socket streams report `mode(read_append)`, `position(0)`, and their address as
+`file_name/1`, and support text or binary I/O, aliases, `eof_action/1`,
+`flush_output/1`, and `close/1`, but not `reposition(true)`. Closing a server
+stops new accepts without closing accepted streams. `current_hostname/1`
+returns the host name. Without the Node socket capability these predicates
+raise `resource_error(sockets)`.
 
-`number_to_rational/2` and `rational_numerator_denominator/3` are now present in
-`library(arithmetic)`. EyeProlog's processor numeric values are still integers
-and IEEE-754 floats, so a non-integral result is represented canonically as the
-ordinary term `rdiv(Numerator,Denominator)`. The conversion/decomposition
-interface is therefore available, but that structural `rdiv/2` value is not yet
-an evaluable rational number for `is/2` or arithmetic comparison.
+`library(arithmetic)` provides `number_to_rational/2` and
+`rational_numerator_denominator/3`. Processor numbers are still integers and
+IEEE-754 floats, so a non-integral rational is the ordinary term
+`rdiv(Numerator,Denominator)`, which `is/2` and arithmetic comparison do not
+yet evaluate.
 
-`library(files)` follows Scryer's character-list path convention and includes
+`library(files)` uses Scryer's character-list paths and includes
 `directory_files/2`, `delete_file/1`, `rename_file/2`, `make_directory/1`,
-`make_directory_path/1`, and `working_directory/2`. `library(os)` similarly
-uses character lists for environment names, values, commands, and argument
-strings. Trealla documents the same predicate indicators, although several of
-its host predicates use atoms instead. Both EyeProlog modules require the Node
-host; browser calls raise a resource error instead of simulating filesystem,
-environment, or process side effects.
+`make_directory_path/1`, and `working_directory/2`. `library(os)` likewise
+uses character lists for environment names, values, commands, and arguments;
+Trealla documents the same indicators, though some of its versions take atoms.
+Both need the Node host and raise a resource error in a browser.
 
-`library(crypto)` follows Scryer's character-list and byte-list conventions.
-It provides hexadecimal conversion, cryptographically secure random bytes,
-hashes and HMAC, HKDF, PBKDF2-SHA512 password hashes, ChaCha20-Poly1305,
-Ed25519 signing and verification, X25519 key agreement, and the Scryer
-secp256k1 curve representation/helpers. Hashing, KDF, authenticated encryption, Ed25519, and X25519 use Node's
-cryptographic backend; `crypto_n_random_bytes/2` can also use Web Crypto's
-CSPRNG. Operations without a suitable backend raise `resource_error(crypto)`.
-`hex_bytes/2` and the static curve metadata remain usable without that backend. As in Scryer, new key-agreement code should prefer X25519 over
-the older generic secp256k1 helper.
+`library(crypto)` follows Scryer's character-list and byte-list conventions:
+hexadecimal conversion, secure random bytes, hashes and HMAC, HKDF,
+PBKDF2-SHA512 password hashes, ChaCha20-Poly1305, Ed25519, X25519, and Scryer's
+secp256k1 representation and helpers. Hashing, key derivation, authenticated
+encryption, Ed25519, and X25519 use Node's backend; `crypto_n_random_bytes/2`
+can also use Web Crypto. Without a backend these raise `resource_error(crypto)`;
+`hex_bytes/2` and the static curve data still work. As in Scryer, prefer X25519
+over the generic secp256k1 helper for new key agreement.
 
-For `library(lists)`, the current interop predicate set is `member/2`,
-`memberchk/2`, `select/3`, `append/2-3`, `last/2`, `same_length/2`,
-`nth0/3-4`, `nth1/3-4`, `reverse/2`, `length/2`, `maplist/2-8`,
-`foldl/4-6`, `sum_list/2`, `list_to_set/2`, `list_max/2`, `list_min/2`,
-`permutation/2`, and `transpose/2`. Other exports from the same
-module, such as `min_list/2`, `max_list/2`, `set_nth0/4`, `take/3`, `drop/3`,
-and `slice/4`, remain available to EyeProlog programs but lie outside this
-conservative cross-engine subset.
+The interoperable part of `library(lists)` is `member/2`, `memberchk/2`,
+`select/3`, `append/2-3`, `last/2`, `same_length/2`, `nth0/3-4`, `nth1/3-4`,
+`reverse/2`, `length/2`, `maplist/2-8`, `foldl/4-6`, `sum_list/2`,
+`list_to_set/2`, `list_max/2`, `list_min/2`, `permutation/2`, and
+`transpose/2`. Other exports such as `min_list/2`, `max_list/2`, `set_nth0/4`,
+`take/3`, `drop/3`, and `slice/4` remain available but outside that subset.
 
-`length/2` remains fully relational. With both arguments variable,
-`length(Xs, N)` enumerates `Xs = [], N = 0`, then one-element lists with
-`N = 1`, and so on. Open-ended generation uses the normal memory guard with
-recovery headroom so finite-heap exhaustion remains a catchable
-`resource_error(memory)`. A supplied nonnegative length selects at most one
-answer, and a supplied closed list has exactly one length; these modes do not
-retain an exhausted choicepoint.
+`length/2` is fully relational: `length(Xs, N)` with both unbound enumerates
+`Xs = [], N = 0`, then one-element lists, and so on, under the normal memory
+guard, so heap exhaustion stays a catchable `resource_error(memory)`. A bound
+length or a closed list gives one answer and leaves no choicepoint.
 
-`library(iso_ext)` is a common interop module name, but only part of its
-EyeProlog API belongs to the shared profile. `call_nth/2`, `time/1`, and
-`.../2` are mapped there. `time/1` measures each solution of a meta-call and
-prints elapsed time, EyeProlog inference count, and MLips in Trealla-style form,
-for example `% Time elapsed 0.832s, 65551 Inferences, 0.079 MLips`; `... //0`
-describes an arbitrary number of input elements. Together they let the
-Trealla/Scryer DCG hand-off benchmark run in EyeProlog without source changes;
-the interactive top level uses the same bundled-predicate autoloader as file and
-CLI/API goal execution. The focused modules have one canonical implementation owner per
-predicate. `library(prologue)` re-exports those same owners, so legacy code can
-combine the facade with `library(lists)`, `library(iso_ext)`, and
-`library(freeze)` in either import order without an accidental collision.
+Only part of `library(iso_ext)` belongs to the shared profile: `call_nth/2`,
+`time/1`, and `.../2`. `time/1` measures each solution of a goal and prints
+elapsed time, inferences, and MLips in Trealla's form, for example
+`% Time elapsed 0.832s, 65551 Inferences, 0.079 MLips`; `... //0` describes any
+number of input elements. With these, the Trealla/Scryer DCG hand-off benchmark
+runs unchanged. Each predicate has one implementation owner;
+`library(prologue)` re-exports those owners, so it combines with
+`library(lists)`, `library(iso_ext)`, and `library(freeze)` in any import order
+without collisions.
 
 `library(lambda)` follows Scryer's higher-order notation, adapted from Ulrich
-Neumerkel's permissively licensed implementation. Its public syntax is:
+Neumerkel's permissively licensed implementation:
 
 ```text
 \X1^X2^...^XN^Goal
 Free+\X1^X2^...^XN^Goal
 ```
 
-The first form has no explicitly shared free variables. Before each invocation,
-EyeProlog copies the closure term so local variables are fresh on successive
-`maplist/2-8`, `foldl/4-6`, or direct `call/N` uses. In the second form, the
-variables contained in `Free` remain shared with the surrounding goal.
-Importing the library installs `+\` as a priority-201 `xfx` operator; `\` and
-`^` use their existing ISO operator definitions. Parenthesize lower-priority
-goal operators after `^`, for example `\X^(X > 3)`.
+The closure is copied before each call, so its local variables are fresh on
+each `maplist/2-8`, `foldl/4-6`, or `call/N` use; in the second form the
+variables in `Free` stay shared with the surrounding goal. Importing the
+library installs `+\` as a priority-201 `xfx` operator; `\` and `^` keep their
+ISO definitions. Parenthesize lower-priority goals after `^`, as in
+`\X^(X > 3)`.
 
-A continuation lambda may leave arguments for a later call:
+A lambda may leave arguments for a later call:
 
 ```text
 f(x, y).
@@ -7028,12 +5059,11 @@ f(x, y).
 answer(A, B) :- call(\X^f(X), A, B).
 ```
 
-This is equivalent to supplying both arguments directly. A lambda called with
-too few parameters raises `existence_error(lambda_parameter, ...)`. EyeProlog
-uses its ISO `copy_term/2` implementation for the fresh-copy step and does not
-require a separate `copy_term_nat/2` predicate.
+This is the same as supplying both arguments directly. Calling a lambda with
+too few parameters raises `existence_error(lambda_parameter, ...)`. The copy
+step uses ISO `copy_term/2`; no `copy_term_nat/2` is needed.
 
-Autoloading is a convenience layered on top of the module system and is independent of the smaller interoperability profile. An otherwise unresolved predicate in source, initialization code, an explicit CLI/API goal, or an interactive top-level query autoloads its canonical bundled provider.
+Autoloading is a convenience on top of the module system, independent of the interoperability profile. An otherwise unresolved predicate in source, initialization code, an explicit CLI/API goal, or an interactive top-level query autoloads its canonical bundled provider.
 For example:
 
 - **`member/2`** — `library(lists)`
@@ -7042,137 +5072,116 @@ For example:
 - **`smallest_divisor_from/3`** — `library(primes)`
 - **`between/3`** — `library(between)`
 
-The resolution order is deliberately conservative with respect to Prolog
-semantics: a predicate already defined by the program wins; ISO/standard
-built-ins are not replaced by an autoloaded library; an explicit module import
-wins over autoloading; only then is the bundled autoload index consulted.
-Facade modules such as `library(prologue)` may re-export predicates from focused modules; autoload resolution chooses the unique module that actually defines the predicate. If more than one bundled module genuinely defines the same
-export, EyeProlog reports an import ambiguity and requires explicit
-`use_module/1-2` rather than guessing. The interactive top level applies this
-same resolution after a query has been parsed. Autoloading therefore supplies
-predicates, not retroactive syntax: a library that introduces operators (for
-example `library(clpz)` and `ins`) must still be explicitly imported before a
-query or source term uses those operators.
+Resolution is conservative: a predicate the program defines wins; ISO built-ins
+are never replaced; an explicit import wins over autoloading; only then is the
+autoload index consulted. Facades such as `library(prologue)` re-export, so
+autoloading picks the module that actually defines the predicate. If two
+bundled modules genuinely define the same export, EyeProlog reports the
+ambiguity and asks for an explicit `use_module/1-2`. The top level resolves a
+query the same way after parsing it. Autoloading therefore supplies
+predicates, not retroactive syntax: a library that adds operators (for example
+`library(clpz)` and `ins`) must be imported before a query or clause uses them.
 
-Explicit imports remain the clearest way to state dependencies when portability or module intent should be visible in the source:
+Explicit imports remain the clearest statement of dependencies:
 
 ```text
 :- use_module(library(lists)).
 :- use_module(library(iso_ext), [call_nth/2]).
 ```
 
-Use `--no-autoload`, or the JavaScript option `autoload: false`, when every
-library dependency should be explicit. `--iso-strict` always disables EyeProlog
-library autoloading, so strict ISO execution never gains procedures from this
-implementation convenience.
+`--no-autoload`, or the JavaScript option `autoload: false`, requires every
+dependency to be explicit. `--iso-strict` always disables autoloading.
 
-`-w` / `--warnings` reports explicit dependencies on non-profile libraries and calls to non-profile predicates from otherwise common modules. `--portable` turns those diagnostics into a failing run, making the conservative profile suitable for continuous integration. Cross-engine portability can be exercised with `node test/run-interop.mjs` when EyeProlog, Trealla, and Scryer are installed.
+`-w` / `--warnings` reports dependencies on non-profile libraries and calls to non-profile predicates from shared modules; `--portable` turns those warnings into a failing run, for use in continuous integration. With EyeProlog, Trealla, and Scryer installed, `node test/run-interop.mjs` exercises cross-engine portability.
 
 ### Specialized library implementation notes
 
-Several libraries have implementation details and semantic boundaries that matter when they use attributed variables, delayed goals, host services, tabling, or mutable runtime state.
+These notes cover libraries whose attributed variables, delayed goals, host
+services, tabling, or runtime state have consequences worth knowing. They do
+not extend the cross-engine compatibility claims.
 
-`freeze(?Term,:Goal)` runs `Goal` immediately when `Term` is already nonvariable;
-otherwise it delays the goal until `Term` becomes nonvariable. Suspensions are
-kept in the logical environment, so bindings and backtracking remain isolated
-between solution branches. When a suspension wakes, its goal is meta-invoked
-with its own cut scope: a `!` inside the delayed goal may commit choices made by
-that invocation, but it cannot prune alternatives that were created before the
-`freeze/2` call. Multiple suspensions on the same variable are stored internally
-as a binary join tree, making each merge constant-time instead of repeatedly
-appending an ever-growing list. Wakeup and residual projection traverse that tree
-left-to-right and emit the original suspensions separately. This keeps a `call/1`-style cut boundary for every delayed goal without
-collapsing the user-visible residuals into one conjunction. Thus
-`call(((Y=1;Y=2),freeze(X,!),X=c));Y=3` retains the three answers `Y=1`, `Y=2`,
-and `Y=3`.
+`freeze(?Term,:Goal)` runs `Goal` at once when `Term` is nonvariable, and
+otherwise delays it until `Term` is bound. Suspensions live in the logical
+environment, so backtracking keeps solution branches isolated. A woken goal has
+its own cut scope: a `!` inside it commits only that invocation, not
+alternatives created before `freeze/2` was called. Several suspensions on one
+variable are kept as a binary join tree, so each merge is constant-time;
+wakeup and residual projection walk it left to right and report each
+suspension separately. Thus `call(((Y=1;Y=2),freeze(X,!),X=c));Y=3` keeps all
+three answers `Y=1`, `Y=2`, and `Y=3`.
 
 `dif(?Left,?Right)` posts a delayed finite-tree disequality when its arguments
-can still unify. Its residual store is normalized by logical implication:
-symmetric or equivalent constraints share one residual, and a stronger
-constraint removes weaker ones regardless of insertion order. Independent
-disequalities remain separate. Residual projection is re-evaluated in each
-solution environment, so a compound disequality is kept intact until later
-bindings make one aligned subterm pair sufficient. For example:
+can still unify. Residuals are normalized by implication: equivalent
+constraints share one residual, and a stronger one removes weaker ones in any
+order, while independent disequalities stay separate. Projection is redone in
+each solution, so a compound disequality stays whole until bindings reduce it
+to one aligned pair:
 
-```eyeprolog
+```text
 ?- dif(f(X,A),f(Y,B)), ( true ; A = B ).
    dif(f(X, A), f(Y, B))
 ;  A = B, dif(X, Y).
 ```
 
-The following notes describe implementation-specific library behavior without extending the cross-engine compatibility claims.
+`library(atts)` is the Prolog layer over the persistent attributed-variable
+machinery in `src/term.js`, with its host bridge in `src/atts-host.js`. It
+provides the attribute operations Scryer libraries use, accepts
+`:- attribute ...` declarations, calls module-local `verify_attributes/3`
+before an attributed binding is committed, and runs the returned goals right
+after it. Attribute maps are copied only when changed, so they backtrack with
+the environment; the top level projects `attribute_goals//1` hooks as residual
+goals. [`examples/attributed-variables.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/attributed-variables.pl) shows binding verification and attribute transfer across aliases.
 
-`library(atts)` is the Prolog-facing attributed-variable layer over the persistent
-annotated-variable machinery in `src/term.js`, with its small host bridge in
-`src/atts.js`. It provides the attribute operations used by Scryer libraries,
-accepts `:- attribute ...` declarations, invokes module-local
-`verify_attributes/3` before an attributed binding is committed, and schedules
-the returned goals immediately after the binding. Attribute maps are copied only
-when changed and therefore backtrack with `Env` branches; the interactive top
-level projects module `attribute_goals//1` hooks as residual goals. [`examples/attributed-variables.pl`](https://github.com/eyereasoner/eyeprolog/blob/main/examples/attributed-variables.pl) demonstrates binding verification and attribute transfer across aliases.
+`library(clpz)` is Markus Triska's MIT-licensed CLP(Z) from Scryer Prolog,
+bundled as `src/lib/clpz.pl` and run unchanged on the generic attributed-variable
+machinery. It provides relational arithmetic and reification, finite and union
+domains, labeling, all-different and all-distinct, sums and scalar products,
+tuple tables, lexicographic chains, serialized and cumulative scheduling,
+global cardinality with costs, Hamiltonian circuits, `disjoint2/1`,
+`automaton/3,8`, value counting, comparison, and domain reflection. It relies
+on ordinary EyeProlog facilities: module-local and `user` `term_expansion/2`
+and `goal_expansion/2`, clause-list expansion, `expand_term/2` for DCG
+lowering, a copy-on-write backtrackable blackboard, and the modules `assoc`,
+`pairs`, `between`, `dcgs`, `terms`, `error`, `si`, `freeze`, `arithmetic`,
+`debug`, and `format`. The bundled source matches Scryer commit
+`e3df91e25f8a09ee942c04e8baef553bba5c6110`, Git blob
+`806445c11e14c8b2515f3de7f309e0ac04d9ad04`.
 
-`library(clpz)` is Markus Triska's MIT-licensed Scryer Prolog implementation of
-constraint logic programming over integers, bundled as `src/lib/clpz.pl`.
-EyeProlog executes the Prolog propagator implementation through the generic
-attributed-variable machinery in `src/term.js` and `src/atts.js`. The library
-provides relational arithmetic and reification, finite and union domains,
-labeling, all-different/all-distinct constraints, sums and scalar products,
-extensional tuple tables, lexicographic chains, serialized and cumulative
-scheduling, global cardinality with costs, Hamiltonian circuits, `disjoint2/1`,
-`automaton/3,8`, value counting, comparison, and domain reflection.
+Besides `call_nth/2`, `time/1`, and `.../2`, `library(iso_ext)` re-exports
+`call_cleanup/2`, `setup_call_cleanup/3`, `call_residue_vars/2`, and
+`copy_term_nat/2` from their canonical implementations, and exports the
+extensions `countall/2` (count solutions), `forall/2` (check every solution),
+`succ/2` (adjacent nonnegative integers), `cfor/3` (inclusive evaluated integer
+range), `findall/4` (collect into a difference list), and `variant/2` (equal up
+to renaming). Sharing the `iso_ext` module does not put them in the interop
+subset.
 
-The compiler services used by the library are ordinary EyeProlog facilities:
-module-local and `user` `term_expansion/2` and `goal_expansion/2`, clause-list
-expansion, and `expand_term/2` for processor DCG lowering. The same runtime also
-provides a generic copy-on-write backtrackable blackboard and the supporting
-Prolog modules `assoc`, `pairs`, `between`, `dcgs`, `terms`, `error`, `si`,
-`freeze`, `arithmetic`, `debug`, and `format`. The bundled CLP(Z) source is
-synchronized with Scryer commit `e3df91e25f8a09ee942c04e8baef553bba5c6110`,
-Git blob `806445c11e14c8b2515f3de7f309e0ac04d9ad04`.
+`library(format)` accepts `format/[2,3]`, `format_//2`, `portray_clause/[1,2]`,
+`portray_clause_//1`, and `listing/1`. The formatter implements literal text,
+`~~`, `~n`, `~w`, `~q`, `~a`, and `~d`; field widths and float presentation are
+not supported yet. `library(pio)` reads or materializes a DCG character list
+around ISO streams eagerly; unlike Scryer's lazy lists, it does not defer file
+reads.
 
-Alongside `call_nth/2`, `time/1`, and `.../2`, `library(iso_ext)` now
-re-exports the shared control/term interfaces `call_cleanup/2`,
-`setup_call_cleanup/3`, `call_residue_vars/2`, and `copy_term_nat/2` from their
-canonical runtime or focused-module implementations. It also exports
-EyeProlog's extension relations `countall/2`, `forall/2`, `succ/2`, `cfor/3`,
-`findall/4`, and `variant/2`. `forall/2` checks an action for every solution of a
-condition; `cfor/3` enumerates an inclusive evaluated integer range; `succ/2`
-relates adjacent nonnegative integers; `findall/4` collects into a difference
-list; and `variant/2` recognizes terms equal up to variable renaming.
-`countall/2` counts solutions without exposing a template. These exports do not
-all belong to the conservative interop subset merely because they share the
-`iso_ext` module.
+`library(tabling)` is a compatibility module for `:- table Name/Arity.`
+source. Tabling stays explicit: only declared predicates are tabled. The
+library adds `start_tabling/2`, `abolish_all_tables/0`, and `abolish_table/1`
+on top of the processor's own tables rather than providing a second tabling
+engine. `library(time)` returns a timestamp association list from the local
+clock; `format_time//2` supports year, month, day, time, month-name,
+weekday-name, and day-of-year specifiers. It also exports `sleep/1`,
+re-exports `time/1`, and exposes `statistics/2`.
 
-`library(format)` accepts the common `format/[2,3]`, `format_//2`,
-`portray_clause/[1,2]`, `portray_clause_//1`, and `listing/1` interfaces. Its
-portable formatter currently implements literal text, `~~`, `~n`, `~w`, `~q`,
-`~a`, and `~d`; controls for field widths and floating-point presentation are
-not yet part of EyeProlog's compatibility subset. `library(pio)` eagerly reads
-or materializes a DCG character list around ISO streams. It preserves the
-declarative grammar interface, but unlike Scryer's lazy list implementation it
-does not defer file reads.
+`random/1` keeps the common mutable-seed interface through a private native
+step for speed; its sequence is the same Park-Miller sequence as the
+explicit-state `random/3`. That helper is internal and appears in neither the
+ISO nor the library catalog.
 
-`library(tabling)` accepts `:- table Name/Arity.` and the common
-`start_tabling/2` and `abolish_all_tables/0` predicates. Recursive user
-predicates are already tabled by EyeProlog's program analysis, so the directive
-is a compatible declaration rather than a second tabling engine.
-`library(time)` returns a timestamp association list from the local clock;
-`format_time//2` supports the documented year, month, day, time, month-name,
-weekday-name, and day-of-year specifiers. It also exports `sleep/1`, re-exports
-the canonical `time/1`, and exposes the normal runtime `statistics/2` interface.
-
-`random/1` keeps the common mutable-seed interface but uses a private native
-state step for hot-loop performance; its public sequence remains the same
-Park-Miller sequence used by the portable explicit-state `random/3`. The helper
-is internal to the normal EyeProlog registry and is not part of the ISO or
-public library predicate catalogs.
-
-`uuidv4/1`, `uuidv4_string/1`, and `uuid_string/2` provide the common UUID byte
-list and character-list interface. `uuid(+Seed0,-UUID,-Seed)` remains an
-EyeProlog extension that creates a version 4 UUID atom using pure `random/3`.
-Passing the returned seed to the next call produces the next UUID; restarting
-with the same integer seed reproduces the same sequence. `set_random/1` controls
-the common stateful generator used by `uuidv4/1`.
+`uuidv4/1`, `uuidv4_string/1`, and `uuid_string/2` provide the common UUID
+byte-list and character-list interface, using the stateful generator seeded by
+`set_random/1`. The extension `uuid(+Seed0,-UUID,-Seed)` creates a version 4
+UUID atom from pure `random/3`; passing the returned seed on yields the next
+UUID, and the same initial seed reproduces the sequence.
 
 <!-- eyeprolog-predicate-reference:start -->
 ### Complete predicate indicator reference
@@ -9441,14 +7450,12 @@ Each indicator links directly to its contract.
 
 ## 40. Running EyeProlog: command line and corpus
 
-The command line is an observation boundary around a theory. Keep the program
-fixed while selecting the evidence you need: ordinary output for answers,
-proof output for support, warnings for portability risks, and statistics for
-search behavior.
+The command line keeps the program fixed and lets you choose what to observe:
+answers, the proof behind them, portability warnings, or search statistics.
 
 <figure>
   <img src="book-assets/cli-observation-loop.svg" alt="An EyeProlog source and query enter the CLI, which separates ground answers and proofs on standard output, warnings and statistics on standard error, and a process status for automation; comparison leads back to program revision.">
-  <figcaption>The CLI exposes three independent channels. Compare each with the right prediction before revising the theory: answers and proofs on stdout, diagnostics on stderr, and status for the calling process.</figcaption>
+  <figcaption>The CLI exposes three independent channels: answers and proofs on stdout, diagnostics on stderr, and an exit status for the calling process.</figcaption>
 </figure>
 
 ```text
@@ -9458,8 +7465,8 @@ eyeprolog [options] [file-or-url.pl|- ...]
 
 ### Interactive queries
 
-Run `eyeprolog` without arguments to enter the interactive top level. Queries
-may span lines and end with a full stop, as in Scryer Prolog:
+Run `eyeprolog` without arguments to enter the interactive top level. A query
+may span several lines and ends with a full stop, as in Scryer Prolog:
 
 ```text
 ?- use_module(library(lists)).
@@ -9470,66 +7477,54 @@ may span lines and end with a full stop, as in Scryer Prolog:
 ?- halt.
 ```
 
-When another answer exists in an interactive terminal, press `;`, Space, or
-`n` to ask for it immediately; no Return is needed. Return or `.` stops
-enumeration, `a` enumerates all remaining answers, and `f` advances to the
-next five-answer boundary (5, 10, 15, ... displayed leaf answers), regardless
-of how many answers were stepped through individually beforehand. `h` displays
-the answer-control help. Enumeration of goal continuations is demand-driven:
-after an answer is found, the top level does not execute a later program branch
-or side effect merely to discover whether the current answer is the last one.
-The solver's uniform choicepoint protocol uses explicit clause and control
-frames, permits a one-answer buffer only for effect-free host relations, and
-requires stateful or meta-control iterators to report their pending state
-directly. Search that can perform an effect starts only after an answer-control
-command asks to continue. Stopping enumeration closes any active
-`call_cleanup/2` or
-`setup_call_cleanup/3` protection exactly once; detecting that a choicepoint
-remains does not execute that next branch. If an unresolved alternative
-ultimately has no solution, asking for it may therefore finish with `false.`. In scripted non-TTY input, a new
-query line implicitly stops the preceding answer enumeration without consuming
-the new query; explicit `;`, `n`, Space, `a`, or `f` still requests more
-answers. Once the top-level reader has accepted a complete query, the following
-line begins with two spaces to mark active execution; a
-third space appears when its result is ready for formatting. The answer prompt
-is `;` with no trailing space while it waits for input; after an advance
-command, one space marks active search and a second marks an answer ready for
-formatting. While a query is actively computing, EyeProlog releases readline's
-terminal signal handling: `Ctrl-C`
-therefore terminates the current EyeProlog process immediately, and on POSIX
-terminals `Ctrl-Z` suspends it in the usual shell-managed way. This remains a
-host top-level convention rather than an ISO/IEC 13211-1 language feature. A
-period-terminated query with no solutions prints `false.`. A solution without
-visible variable bindings prints `true.` only when it also has no pending
-residual goals. Residual constraints are part of the displayed answer even when
-the attributed variable was created inside a called predicate and is not a
-visible query variable; the top level assigns such variables generated names
-like `_A`. For example, if `ffalse :- freeze(_, false).`, the query `ffalse.`
-displays `freeze:freeze(_A, false).`, and
-`call_residue_vars(ffalse, Vs).` displays
-`Vs = [_A], freeze:freeze(_A, false).` rather than implying that the returned
-variable is unconstrained. Answer substitutions are rendered as valid Prolog
-syntax under the current operator table: when a bound value would
-not be a valid right operand of the displayed `=/2`, EyeProlog adds parentheses,
-for example `T = (a = b).` rather than the invalid `T = a = b.`. When an answer
-ends in a graphic token, the top level inserts layout before its terminating
-full stop so the two tokens cannot merge; for example `?- X = .* .` displays
-`X = .* .`, not `X = .*.`. Use `[file].`, `['file.pl'].`, or
-`consult(file).` to consult local source; `reconsult(file).` is accepted as a
-compatibility alias. Use `halt.` or `halt(Status).` to leave the top level.
-For an extensionless designation such as `[file].` or `consult(file).`, the
-top level tries `file.pl` before the unsuffixed `file`. Both the shorthand and
-`consult/1` have modern reconsult semantics: consulting the same resolved file
-again replaces its previous source, so clauses removed from the file do not
-remain active. The traditional `[user].` form consults source directly from the
-top-level input until `end_of_file.` or input EOF, rather than resolving `user`
-as a filesystem path; `consult(user).` and `reconsult(user).` use the same
-interactive source.
-When `read/1-2` or `read_term/2-3` actually reaches interactive
-`user_input`, the top level requests the next full-stop-terminated Prolog term
-with a `|: ` input prompt instead of treating the terminal stream as already
-exhausted. The request is made at execution time, so multiple reads in one goal
-and reads reached through user predicates work independently. For example:
+**Answer control.** When another answer may exist, press `;`, Space, or `n` to
+ask for it; no Return is needed. Return or `.` stops, `a` enumerates all
+remaining answers, `f` advances to the next five-answer boundary (5, 10, 15,
+... answers shown, however many were stepped through individually), and `h`
+shows this help. Enumeration is demand-driven: after an answer, the top level
+does not run a later branch, or any side effect in it, just to learn whether
+that answer was the last. Search that could perform an effect starts only when
+you ask to continue. Stopping closes any active `call_cleanup/2` or
+`setup_call_cleanup/3` protection exactly once. Because a pending choicepoint
+is not explored early, asking for one more answer can end in `false.`.
+
+In scripted, non-TTY input, a new query line stops the preceding enumeration
+without being consumed; an explicit `;`, `n`, Space, `a`, or `f` still asks
+for more. After the reader accepts a complete query, the next line starts with
+two spaces while it runs and a third when the result is ready to format. The
+answer prompt `;` has no trailing space while it waits; after an advance
+command, one space marks active search and a second an answer ready to format.
+
+While a query runs, EyeProlog releases readline's terminal signal handling, so
+`Ctrl-C` ends the process immediately and, on POSIX terminals, `Ctrl-Z`
+suspends it. These are top-level conventions, not ISO/IEC 13211-1 features.
+
+**Answer display.** A query with no solutions prints `false.`. A solution
+without visible bindings prints `true.` only when no residual goals remain.
+Residual constraints are part of the displayed answer even when the attributed variable was created inside a called predicate and is not a
+visible query variable; the top level names such variables `_A`, `_B`, and so
+on. With `ffalse :- freeze(_, false).`, the query `ffalse.` displays
+`freeze:freeze(_A, false).`, and `call_residue_vars(ffalse, Vs).` displays
+`Vs = [_A], freeze:freeze(_A, false).`.
+
+Bindings are written as valid Prolog under the current operator table. When a
+value would not be a valid right operand of `=/2`, it is parenthesized:
+`T = (a = b).`, not `T = a = b.`. When an answer ends in a graphic token, a
+space precedes the final full stop so the two cannot merge: `?- X = .* .`
+displays `X = .* .`.
+
+**Consulting.** `[file].`, `['file.pl'].`, and `consult(file).` load local
+source; `reconsult(file).` is an accepted alias. For an extensionless name the
+top level tries `file.pl` before `file`. Consulting has modern reconsult
+semantics: loading the same resolved file again replaces its previous clauses,
+so clauses deleted from the file disappear. `[user].`, `consult(user).`, and
+`reconsult(user).` read source from the terminal until `end_of_file.` or end
+of input. `halt.` or `halt(Status).` leaves the top level.
+
+**Reading from the terminal.** When `read/1-2` or `read_term/2-3` reaches
+interactive `user_input`, the top level prompts with `|: ` for the next
+full-stop-terminated term. The request happens at execution time, so several
+reads in one goal, or reads inside called predicates, each prompt separately:
 
 ```text
 ?- read(X), read(Y).
@@ -9538,95 +7533,85 @@ and reads reached through user predicates work independently. For example:
    X = hello, Y = world.
 ```
 
-Typing `Ctrl-D` at an empty `|: ` prompt makes that Prolog read return
-`end_of_file`; it does not close the surrounding EyeProlog top-level loop, so a
-new `?- ` query can still be entered afterwards. The top-level prompts and this
-terminal EOF convention are host-interface behavior rather than part of
-ISO/IEC 13211-1; terms supplied to the reads are parsed by the same ISO
-term-input machinery as `read/1-2` and `read_term/2-3` on other text streams.
-Up and Down recall queries from the current session. Explicit `eyeprolog -h`
-displays command-line help.
+`Ctrl-D` at an empty `|: ` prompt makes that read return `end_of_file`
+without leaving the top level. The prompts and this end-of-file convention are
+host behavior; the terms themselves are parsed by the same ISO term reader used
+for every text stream. Up and Down recall earlier queries in the session, and
+`eyeprolog -h` prints command-line help.
 
 ### Selecting goals
 
-A Prolog source file states facts, rules, and ISO directives; the command line
-selects what to solve. Supply `-g` or `--goal` followed by a callable Prolog goal:
+A source file states facts, rules, and directives; the command line chooses what
+to solve. Pass a callable goal with `-g` or `--goal`:
 
 ```sh
 eyeprolog --goal 'ancestor(ada, Who)' examples/ancestor.pl
 ```
 
-Repeat `-g` or `--goal` to request several result relations in one run. EyeProlog prints
-their ground answers in the order the goals were supplied.
-Use `--quiet` for command-style goals: Prolog output such as `write/1` remains
-visible, while the resolved answer terms are suppressed.
+Repeat the option to ask several questions in one run; answers appear in the
+order the goals were given. `--quiet` suppresses the answer terms while keeping
+Prolog output such as `write/1`, which suits command-style goals.
 
-A program can also carry its own question. Write it as an ISO query, or as
-that same query in a comment:
+A program can also carry its own question, either as an ISO query or as the
+same query in a comment:
 
 ```text
 ?- ancestor(ada, Who).      % run by this and any other ISO processor
 %% ?- ancestor(ada, Who).   % run by this one, invisible to the rest
 ```
 
-When no `-g` or `--goal` option is present, the CLI runs the queries it finds
-in the input sources, in source order; an explicit goal option overrides them.
+Without `-g` or `--goal`, the CLI runs the queries it finds in the sources, in
+source order; an explicit goal option overrides them.
 
-Both spellings are extensions, in the precise sense of 7.7.3: "the method by
-which a user delivers a goal to the Prolog processor shall be implementation
-defined". A Prolog text itself (6.2.1) holds only `:-` directive-terms and
-clause-terms, and the standard's own *query* (3.143) is interactive top-level
-input it does not require a processor to have. What the two spellings differ
-in is who else runs them. A `?-` term is the notation nearly every Prolog
-uses for a goal, so a program written that way runs in most engines;
-`--iso-strict` does not accept it. A
-`%% ?-` comment is invisible to every other processor, which keeps a file
-portable to the external Prologs the conformance harness runs it through. The
-standard's own way to put a goal in a text is `:- initialization(Goal).`
-(7.4.2.6), which works here too. External goals remain preferable when a
-script, shell history, or API call should make the observed question
-explicit.
+Both spellings are extensions in the sense of 7.7.3: "the method by which a user
+delivers a goal to the Prolog processor shall be implementation defined". A
+Prolog text (6.2.1) contains only directives and clauses, and the standard's
+*query* (3.143) is top-level input that a processor need not support. The two
+spellings differ in who else runs them. Nearly every Prolog accepts a `?-`
+term as a goal, so a program written that way runs in most engines, although
+`--iso-strict` rejects it. A `%% ?-` comment is invisible to every other
+processor, which keeps a file portable to the external Prologs used by the
+conformance harness. The standard's own way to put a goal in a text,
+`:- initialization(Goal).` (7.4.2.6), works as well. Prefer an external goal
+when a script, shell history, or API call should record which question was
+asked.
 
 | Option | Meaning |
 | --- | --- |
 | `-h`, `--help` | Show usage |
-| `-p`, `--proof` | Print `why/2` explanations |
-| `--proof-detail abstract|expanded` | Select library abstraction for proof output; implies `--proof` |
-| `--check-proof File` | Check a saved proof document against the input program without proof search, writing the result as `condition/4`, `failure/3`, `obligation/3` and `verdict/1` facts; `-` reads the proof from stdin; exits `2` when the proof is not valid. With `--goal`, the goals the proof answers |
+| `-p`, `--proof` | Print a proof (`clause/3` and `step/4` facts) after the answers |
+| `--proof-detail abstract\|expanded` | Stop proofs at bundled library predicates, or explain through them; implies `--proof` |
+| `--check-proof File` | Check a saved proof against the input program without proof search; write `condition/4`, `failure/3`, `obligation/3`, and `verdict/1` facts; `-` reads the proof from stdin; exit `2` when the proof is not valid. With `--goal`, the goals the proof answers |
 | `--strict-proof` | With `--check-proof`, forbid trusted boundaries |
 | `--json` | With `--check-proof`, write the report as JSON |
 | `-q`, `--quads` | Run embedded quad tests and fail if any do not hold |
-| `--quiet` | Suppress resolved answer terms while preserving Prolog output and diagnostics |
-| `--iso-strict` | Restrict parsing and execution to ISO/IEC 13211-1:1995 + Corrigenda 1–3; reject EyeProlog language extensions (including `table` and `:+`) and disable bundled-library autoloading |
-| `--portable` | Enforce the conservative EyeProlog/Trealla/Scryer interoperability profile |
-| `--no-autoload` | Disable bundled-library predicate autoloading |
-| `-s`, `--stats` | Print final solver and memory statistics to stderr after execution |
+| `--quiet` | Suppress answer terms; keep Prolog output and diagnostics |
+| `--iso-strict` | Restrict parsing and execution to ISO/IEC 13211-1:1995 + Corrigenda 1–3; reject EyeProlog extensions (including `table` and `:+`) and disable autoloading |
+| `--portable` | Enforce the EyeProlog/Trealla/Scryer interoperability profile |
+| `--no-autoload` | Disable bundled-library autoloading |
+| `-s`, `--stats` | Print solver and memory statistics to stderr |
 | `-v`, `--version` | Print the package version |
 | `-w`, `--warnings` | Print non-fatal portability warnings |
 | `-g`, `--goal Goal` | Solve a callable goal; may be repeated; overrides queries in the source |
-| `--` | Treat following arguments as inputs |
+| `--` | Treat the remaining arguments as inputs |
 
-Short flags may be combined, so `-pqw` is equivalent to `-p -q -w`.
-`--iso-strict` cannot be combined with `--quads`, because quads and their
-predefined infix `(?-)/2` form are an EyeProlog testing extension. Strict mode
-retains the Part 1 prefix `(?-)/1` operator and treats `-->/2` as ordinary Part
-1 operator syntax; it does not perform Part 3 grammar-rule expansion or expose
-`phrase/2-3`. Part 2 module directives and EyeProlog libraries are rejected,
-the implementation-specific `occurs_check` flag is absent, and the normal-profile
-`table` declaration is unavailable. Normal mode continues to support Parts
-2–3 and EyeProlog extensions, plus generated autoloading across the bundled
-`src/lib/` library exports documented above.
+Short flags combine, so `-pw` means `-p -w`. Note that `-q` is `--quads`;
+`--quiet` has no short form.
 
-Inputs may be local files, HTTP(S) URLs, or one `-` for stdin. The bare command
-`eyeprolog` starts the normal REPL; `eyeprolog --iso-strict` starts the strict
-core REPL. When options are present but no input is named, stdin is normally
-used, but the strict-mode-only invocation is reserved for the REPL, so write
-`eyeprolog --iso-strict -` explicitly when strict source should come from
-stdin. Multiple sources are parsed as one program, so facts, rules, and
-directives can be separated across files. A relative `include/1` inside a local
-file resolves from that file's directory.
+`--iso-strict` cannot be combined with `--quads`, because quads and their infix
+`(?-)/2` form are an EyeProlog testing extension. Strict mode keeps the Part 1
+prefix `(?-)/1` operator and reads `-->/2` as an ordinary operator; it does not
+expand grammar rules or provide `phrase/2-3`. It also rejects Part 2 module
+directives and EyeProlog libraries, and has neither the `occurs_check` flag nor
+the `table` declaration. Normal mode supports Parts 2–3, the EyeProlog
+extensions, and autoloading of the bundled `src/lib/` exports.
 
-For example:
+Inputs may be local files, HTTP(S) URLs, or a single `-` for stdin. Bare
+`eyeprolog` starts the normal REPL and `eyeprolog --iso-strict` the strict one.
+Other options without a named input read stdin, but because the strict-only
+invocation is reserved for the REPL, write `eyeprolog --iso-strict -` to read
+strict source from stdin. Several sources are parsed as one program, and a
+relative `include/1` resolves from the including file's directory.
 
 ```sh
 eyeprolog --iso-strict --goal 'p(X)' program.pl
@@ -9636,18 +7621,15 @@ printf 'p(a).\n' | eyeprolog --iso-strict --goal 'p(X)' -
 
 ### A reproducible run
 
-Work in a fixed sequence:
+Observe one thing at a time:
 
-1. predict the ground answers before running the program;
-2. run without observation flags and compare stdout with that prediction;
-3. add `--proof` when the support for an answer is the question; save the
-   output and use `--check-proof` when the derivation itself must cross a
-   process or review boundary;
-4. add `--warnings` when portability or negative dependencies are the
-   question; use `--portable` when non-profile dependencies must fail CI;
-5. add `--stats` only when comparing two executions of the same semantic case.
-
-For example:
+1. predict the answers, then run without observation flags and compare;
+2. add `--proof` when the support for an answer is the question, and save the
+   proof and use `--check-proof` when it must cross a process or review
+   boundary;
+3. add `--warnings` for portability or negative-dependency questions, and
+   `--portable` when non-profile dependencies should fail CI;
+4. add `--stats` only to compare two runs of the same case.
 
 ```sh
 eyeprolog --goal 'ancestor(X, Y)' examples/ancestor.pl
@@ -9659,18 +7641,23 @@ eyeprolog --portable --goal 'sudoku9(S)' examples/clpz-sudoku-9x9.pl
 eyeprolog --stats --goal 'path(a, X)' examples/path-discovery.pl > answers.pl 2> run.stats
 ```
 
-Normal answers and `why/2` terms go to stdout, which makes them suitable for a
-golden file or another EyeProlog input. Warnings and statistics go to stderr so
-they do not corrupt that logical stream. A successful run normally exits with
-status zero; loading, syntax, option, and other uncaught errors use status `1`. `halt/0-1` can deliberately choose the
-process status from inside a program. `--check-proof` exits with status `2`
-when the proof it checked is not valid, after writing the report as usual.
+Answers and proofs go to stdout, so the output can serve as a golden
+file or as input to another run. Warnings and statistics go to stderr and never
+mix into that stream. A successful run exits with status `0`; loading, syntax,
+option, and other uncaught errors exit with `1`. A program can choose its own
+status with `halt/0-1`. `--check-proof` exits with `2` when the checked proof
+is not valid, after writing its report.
+
+Statistics are only meaningful in comparison. Keep the program, input, runtime
+version, query, answers, and counters together, and accept an optimization only
+when the answers are unchanged and the measure improves on the case that
+matters.
 
 ### Embedded quad tests
 
-A quad places a query directly before a description of its expected top-level
-answer. The answer is ordinary Prolog syntax rather than quoted text or a
-comment, so a small test reads like the interaction it checks:
+A quad places a query directly before a description of its expected answer. The
+description is ordinary Prolog syntax, not quoted text, so a test reads like
+the interaction it checks:
 
 ```eyeprolog
 color(red).
@@ -9684,41 +7671,43 @@ colors ?- color(X).
    false.
 ```
 
-Run all quads in a file with `eyeprolog --quads file.pl` or `eyeprolog -q
-file.pl`. A label such as `colors` is optional. A label is not a separate
-mini-language: it is the ordinary first argument of `(?-)/2`, and therefore may
-be any Prolog term admitted there by the normal term grammar. Quad execution
-requires that argument to be ground; a non-ground label is reported as a quad
-failure rather than aborting source parsing. Loading the file normally only
-records its quads; it does not execute them or add their queries and answers as
-program clauses. A quad run prints a summary and exits with status `1` when any
-description fails. If no description fails but a bounded search cannot decide
-an exact answer sequence, the case is reported separately as `UNDECIDED` and
-the CLI exits with status `2`. Quad mode imports `library(prologue)` as a
-compatibility prelude because the ISO Prolog working-example files use those
-predicates as system predicates without an explicit module directive.
+Run the quads in a file with `eyeprolog --quads file.pl` or `eyeprolog -q
+file.pl`. The syntax follows the "queries using answer descriptions" convention
+of Trealla and the ISO Prolog working examples.
 
-Unless the source explicitly selects another `unknown` flag, quad execution
-uses `unknown=error`, so an undefined predicate is reported rather than being
-accepted as a negative answer.
+**Labels and layout.** A label such as `colors` is optional. It is the ordinary
+first argument of `(?-)/2`, so it may be any term, including several
+comma-separated metadata fields (`9, "case", passes ?- Goal.`), but it must be
+ground when the quad runs; a non-ground label is reported as a failure rather
+than a parse error. Recognition happens after ordinary parsing, so
+`?-(Label, Query).` and `Label ?- Query.` are the same quad. Descriptions are
+layout-sensitive: indent each one, and keep clause heads and the next query at
+the left margin.
 
-Answer descriptions support ordered answers separated by `;`, acceptable
-alternatives separated by `|`, `true`, `false`, standard error descriptions,
-and the `unexpected` annotation for an answer that must not occur (`inattendue`
-is its synonym). In an ordered answer sequence, `unexpected` is a negative
-assertion about the answer at that position: once the next observed answer does
-not match the annotated leaf, that description succeeds and does not require the
-query to have no further answers. Variables named in the query keep their
-identity inside answer descriptions; variables introduced only by a description
-are fresh. For example,
-a query `throw(g(X))` is described by `throw(g(_X))`, while
-`throw(g(X)), unexpected` verifies that ISO `throw/1` did not retain the query
-variable in the renamed exception term. `...` and `ad_infinitum` accept further answers. The `maybe` annotation describes
-a successful answer that still has at least one pending residual constraint. It
-does not stand for an arbitrary answer and it does not weaken substitution
-matching: `X = a, maybe` still requires the `X = a` substitution. Conversely, a
-successful answer description without `maybe` requires that no residual
-constraint remain. For example, a pending `dif/2` constraint can be checked as:
+**Running.** Loading a file only records its quads; it neither runs them nor
+adds them as clauses. A quad run prints a summary and exits with `1` if any
+description fails. Quad mode imports `library(prologue)`, because the ISO
+working-example files call its predicates as system predicates, and uses
+`unknown=error` unless the source sets the flag, so an undefined predicate is
+reported instead of silently failing.
+
+**Description language.**
+
+- `;` separates ordered answers; `|` separates acceptable alternatives.
+- `true`, `false`, and standard error terms describe outcomes.
+- `unexpected` (synonym `inattendue`) marks an answer that must not occur at
+  that position. Once the observed answer differs from the marked leaf, the
+  description succeeds without requiring that no further answers follow.
+- `...` and `ad_infinitum` accept further answers.
+- `maybe` describes a success that still has at least one residual constraint.
+  It does not weaken substitution matching: `X = a, maybe` still requires
+  `X = a`. A success described without `maybe` must have no residue. Native
+  variable constraints, attributed-variable residue, and delayed goals all
+  count as residue.
+- Variables named in the query keep their identity inside descriptions;
+  variables that appear only in a description are fresh. So `throw(g(_X))`
+  describes the query `throw(g(X))`, while `throw(g(X)), unexpected` checks
+  that `throw/1` did not keep the query variable in the copied ball.
 
 ```eyeprolog
 ?- dif(X,Y), X = a.
@@ -9728,50 +7717,33 @@ constraint remain. For example, a pending `dif/2` constraint can be checked as:
    maybe, unexpected.
 ```
 
-ISO arithmetic examples sometimes describe a floating result only as
-"approximately equal" to a written decimal. Quad answer descriptions preserve
-the precision of that spelling with `~~`: the right-hand side is a decimal atom,
-so trailing zeroes remain significant. `V ~~ '14.2000'` accepts a **float** in
-the closed decimal interval `14.19995` through `14.20005`; it does not accept an
-integer term, even when that integer has the same mathematical value. Exponent
-notation uses the last written mantissa digit in the same way, so `'1.42000e1'`
-denotes the same interval. For example:
+Each indented description after a query is an independent check: it re-runs
+the query, is counted in the `quads:` summary, and does not hide later
+descriptions when it fails.
+
+**Approximate floats.** `V ~~ '14.2000'` accepts a **float** in the closed
+decimal interval 14.19995 to 14.20005. The right-hand side is a decimal atom so
+that trailing zeroes keep their meaning; exponent notation such as `'1.42000e1'`
+works the same way. An integer never matches, and a numeric right-hand side such
+as `V ~~ 14.2000` is rejected because parsing it would discard the written
+precision.
 
 ```eyeprolog
 ?- V is 0+(3.2+11).
    V ~~ '14.2000'.
 ```
 
-`~~` is an EyeProlog normal-profile operator at priority 700 with specifier
-`xfx`, matching the priority/specifier of ISO comparison operators such as `=`;
-there is no built-in `~~/2` predicate. Quad answer descriptions interpret the
-operator specially as approximate float matching.
+`~~` is a normal-profile operator (priority 700, `xfx`, like `=`); there is no
+`~~/2` predicate. An approximation is well-formed only when its interval holds
+at least three distinct finite floats: the lowest, the one nearest the written
+midpoint, and the highest. This rejects spellings that claim more precision
+than a float can carry. Endpoints are rounded inward, so binary rounding can
+never admit a float that lies outside the decimal interval.
 
-An approximation is accepted as well-formed only when its exact decimal
-interval contains at least three distinct, strictly ascending finite EyeProlog
-floats: the minimum representable float in the interval, the float denoted by
-the written midpoint, and the maximum representable float in the interval. This
-prevents a decimal spelling from claiming precision finer than the
-implementation can represent, including decimal spellings whose apparent
-precision collapses to the same implementation float, and rejects ranges that
-would require non-finite continuation values. Endpoint
-selection is directed inward, so a binary rounding of a decimal bound cannot
-admit a float that lies mathematically outside the closed decimal interval.
-
-A numeric right-hand side such as `V ~~ 14.2000` is deliberately rejected
-because parsing it as a float would discard the written decimal precision that
-the check is intended to retain.
-
-EyeProlog treats native variable constraints, attributed-variable residue, and
-delayed goals as pending residue for this purpose. Multiple
-indented descriptions after one query are independent checks: each re-runs the
-query, each is counted in the `quads:` summary, and a failing description does
-not suppress later descriptions for that query. `inputs/1` supplies and checks
-exactly the characters consumed by the query. `peeks/1` may add one character
-that is available for look-ahead but must remain unconsumed. The runner puts an
-invalid-character sentinel immediately after the declared input boundary, so a
-reader cannot accidentally use an artificial end-of-file to decide that a full
-stop terminates the term. For example:
+**Input and output.** `inputs/1` supplies exactly the characters the query must
+consume. `peeks/1` adds one character that may be looked at but must remain
+unread. A sentinel follows the declared input, so a reader cannot use an
+artificial end of file to decide that a full stop ends a term:
 
 ```eyeprolog
 ?- read(X).
@@ -9780,36 +7752,31 @@ stop terminates the term. For example:
    inputs("1. "), peeks(" "), X = 1, unexpected.
 ```
 
-`outputs/1` checks characters emitted while reaching the described answer or
-error, including output produced before a later exception. Its argument may be
-an exact character list/string or a DCG body: terminal sequences,
-conjunction/disjunction, `...`/`ad_infinitum` sequence wildcards, and
-user-defined DCG nonterminals are matched against the captured characters.
-Appending `| other_answer_sequence` accepts any permutation of the preceding
-complete answer sequence. Substitutions, residual constraints, per-answer output,
-and duplicate counts must still match; missing or extra answers are failures.
-A final failure or exception stays at the end. Overlapping wildcard or approximate
-answer descriptions are matched one-to-one rather than greedily. Search-budget
-exhaustion remains undecided. Prefix (`...`), negative (`unexpected`), STO, and
-input/wait annotations are not supported in a permuted sequence.
+`outputs/1` checks the characters written while reaching the described answer
+or error, including output emitted before a later exception. Its argument is a
+character list or string, or a DCG body with terminals, conjunction,
+disjunction, `...`/`ad_infinitum` wildcards, and user-defined nonterminals.
 
-For `setof(1, (Y=2 ; Y=1), L)`, the description
-`Y=2, L=[1] ; Y=1, L=[1] | other_answer_sequence` accepts either group order.
+**Unordered answers.** Appending `| other_answer_sequence` accepts any
+permutation of the preceding complete answer sequence. Substitutions, residue,
+per-answer output, and duplicate counts must still match, and a final failure
+or exception stays last. Overlapping wildcard or approximate descriptions are
+matched one-to-one. Prefix (`...`), `unexpected`, STO, and input annotations
+are not allowed in a permuted sequence. For `setof(1, (Y=2 ; Y=1), L)`, the
+description `Y=2, L=[1] ; Y=1, L=[1] | other_answer_sequence` accepts either
+group order.
 
-#### STO, loops, and undecided quad results
+#### STO, loops, and undecided results
 
-Following Trealla's quad convention, `sto` declares that a query is subject to
-occurs-check. EyeProlog checks this conservatively rather than attempting a
-complete STO/NSTO decision procedure. During the query's ordinary execution,
-the finite-tree unifier records a concrete occurs-check event as positive STO
-evidence; the query is not run a second time merely to probe STO-ness. A finite
-execution that completes naturally without such an event disproves `sto`, while
-a search or resource boundary leaves the declaration conservatively unchecked.
-The answer portion of an `sto`-annotated leaf remains implementation-dependent
-and is therefore not compared.
-
-For example, the cyclic binding in the first query provides positive STO
-evidence, whereas the second query is finite and cannot be STO:
+`sto`, following Trealla's convention, declares that a query is subject to
+occurs check. EyeProlog checks this conservatively. During the ordinary run, a
+concrete occurs-check event in the unifier is positive evidence; the query is
+not run again just to probe. A finite run that ends without such an event
+disproves `sto`, while a run cut short by a search or resource bound leaves it
+unchecked. The answer part of an `sto` leaf is implementation-dependent and is
+not compared, and when STO evidence is observed an unannotated `unexpected`
+leaf does not reject the finite-tree outcome. EyeProlog states a result only
+where execution gives definite evidence.
 
 ```eyeprolog
 ?- X = s(X).
@@ -9822,18 +7789,10 @@ evidence, whereas the second query is finite and cannot be STO:
    sto.                  % fails: no STO evidence
 ```
 
-When a quad declares STO and the execution observes an occurs-check event, an
-unannotated `unexpected` leaf does not reject the implementation-dependent
-finite-tree outcome. This is partial STO detection only: EyeProlog makes a
-definite statement where execution provides definite evidence and otherwise
-does not guess.
-
-`loops` is kept distinct from merely exhausting the quad runner's resources.
-EyeProlog accepts structural nontermination evidence such as an active-variant
-recursion cycle, with the loop depth/inference bounds as a bounded fallback. A
-structural cycle is also strong enough to refute a finite `false` description;
-it is not reported as undecided merely because the same query was checked by a
-different answer description:
+`loops` is distinct from running out of budget. EyeProlog accepts structural
+nontermination evidence, such as an active-variant recursion cycle, with depth
+and inference bounds as a fallback. A structural cycle also refutes a `false`
+description.
 
 ```eyeprolog
 inf :- inf, inf.
@@ -9842,23 +7801,20 @@ inf :- inf, inf.
    loops.
 ```
 
-Ordinary answer descriptions also have a finite inference budget (100000 by
-default). Exhausting that budget does **not** establish `loops` and does not
-turn an unfinished search into `false`; instead the description is reported as
-`UNDECIDED`, for example:
+Ordinary descriptions have an inference budget (100000 by default). Exhausting
+it neither establishes `loops` nor turns an unfinished search into `false`;
+the description is reported as undecided:
 
 ```text
 quads: UNDECIDED expensive_case, program.pl:12
    undecided: inference limit reached.
 ```
 
-Thus quad execution has three useful outcomes: passed, failed, and undecided.
-When there are no failures but at least one undecided description, the CLI exits
-with status `2`. The JavaScript API may override the ordinary search budget with
-`quadMaxInferences`; `loopMaxDepth` and `loopMaxInferences` control the explicit
-`loops` probe.
-
-The JavaScript API exposes the same operation without process I/O:
+A quad run therefore has three outcomes: passed, failed, and undecided. With no
+failures but at least one undecided description, the CLI exits with status
+`2`. The JavaScript API exposes the same operation without process I/O;
+`quadMaxInferences` overrides the search budget, and `loopMaxDepth` and
+`loopMaxInferences` bound the `loops` probe:
 
 ```js
 import { Program, runQuads } from 'eyeprolog';
@@ -9868,605 +7824,131 @@ const report = runQuads(program);
 console.log(report.passed, report.failed, report.undecided, report.stdout);
 ```
 
-The syntax follows the “queries using answer descriptions” convention used by
-Trealla and the ISO Prolog working examples. Because answer descriptions are
-layout-sensitive, indent every description while keeping ordinary clause heads
-and the next quad query at the left margin. A quad label may contain any number
-of comma-separated metadata fields, including across layout before `?-`; for
-example `9, "case", passes ?- Goal.` is one labelled query. Quad recognition
-is structural after ordinary term parsing: functional, mixed, quoted-functor,
-and parenthesized spellings of the same `?-/1` or `?-/2` term are semantically
-equivalent. For example `?-(Label, Query).` and `(?-(Label, Query)).`, followed
-by the same indented answer descriptions, create the same labelled quad as
-`Label ?- Query.`.
-
-Statistics are comparative evidence, not a score in isolation. Preserve the
-program, input, runtime version, selected query, answers, and counters together.
-An optimization is acceptable only when the intended answers remain unchanged
-and the chosen resource measure improves on the relevant scale case.
-
-### The corpus as executable documentation
-
-The files under `examples/` pair readable programs with checked output under `examples/output/`. The conformance cases under `test/conformance/` focus on language behavior, including success, failure, errors, warnings, and file loading. Use an example to learn a modeling pattern and a conformance case to settle an exact processor question. Run `npm test` to execute the complete correctness corpus.
-
-**Checkpoint.** Run one example with `--proof --stats`. Identify which bytes
-belong to the reusable logical result, which describe this execution, and which
-process status an automated caller observes. Then change one fact and predict
-all three channels before rerunning it.
-
-## 41. Study paths, review, and further examples
-
-For a first week, run `socrates.pl` and `ancestor.pl`, rewrite them from memory,
-inspect their proofs, learn `member/2`, `append/3`, and `select/3`, solve one
-finite puzzle, and add one explicit integrity query.
-
-### Course-length schedules
-
-These schedules name a spine rather than a reading quota. Every meeting should
-include prediction, execution, one changed input, and a short explanation.
-
-| Meeting | Six-meeting introduction | Ten-meeting course | Fourteen-meeting course |
-| --- | --- | --- | --- |
-| 1 | Chapters 1–2; Socrates and family facts | Chapters 1–2; Laboratory 1 begins | Chapters 1–2; predicates, terms, and unification |
-| 2 | Chapters 3–5; recursion and lists | Chapters 3–5; Laboratories 1–2 | Chapters 3–4; rules, semantics, and recursion |
-| 3 | Chapters 6–10; one finite puzzle | Chapters 6–8; finite generation and absence | Chapters 5–6; lists and arithmetic |
-| 4 | Chapters 11–14 and 17–20; proof, integrity, construction | Chapters 9–12; contexts, models, proofs, and integrity checks | Chapters 7–8; negation and aggregation |
-| 5 | Choose Chapters 21–25 or 26–30 | Chapters 13–16; performance and boundaries | Chapters 9–10; structured data and finite models |
-| 6 | Chapters 31–33; release matrix and reflection | Chapters 17–20; construction and improvement | Chapters 11–12; answers, proofs, and integrity |
-| 7 | — | Chapters 21–25; one advanced case | Chapters 13–14; termination and knowledge engineering |
-| 8 | — | Choose Chapters 26–30 | Choose Chapters 15–16 or an alternate domain route |
-| 9 | — | Chapters 31–32; test and debug | Chapters 17–20; construction, correctness, improvement |
-| 10 | — | Chapter 33; project review | Chapters 21–25; advanced relational design |
-| 11 | — | — | Chapters 26–27; witnesses and induction |
-| 12 | — | — | Chapters 28–30; representation, experiment, limits |
-| 13 | — | — | Chapters 31–33; test, debug, patterns |
-| 14 | — | — | Laboratory demonstrations and rubric review |
-
-For a classroom, use checkpoints as exit questions and laboratories as
-multi-meeting projects. A six-meeting introduction should prefer one small,
-finished theory over hurried coverage of every feature.
-
-### Domain routes
-
-Modelers should study `access-control-policy.pl`,
-`clinical-trial-screening.pl`, `gdpr-compliance.pl`, and
-`trust-flow-provenance-threshold.pl`. Identify facts, derived concepts,
-decisions, closed-world assumptions, and proof premises.
-
-Algorithm students should study `graph-reachability.pl`,
-`dijkstra-risk-path.pl`, `stable-marriage.pl`, `sat-solver-dpll.pl`, and
-`type-inference.pl`. For each, identify the finite domain, branching relation,
-pruning goals, witness, and termination argument.
-
-Mathematics students should read Chapters 3, 19, and 26–30 together, then study
-`peano-calculus.pl`, `fundamental-theorem-arithmetic.pl`,
-`stirling-bell-numbers.pl`, `d3-group.pl`, and
-`matrix-noncommutativity.pl`. For each program, distinguish definition from
-theorem, computation from justification, finite evidence from universal proof,
-and syntactic equality from the domain's mathematical equality.
-
-### Review questions
-
-Review questions:
-
-1. What distinguishes an atom constant from an atomic formula?
-2. Why can one append relation construct lists and split them?
-3. When does goal order affect performance but not declarative meaning?
-4. Why should variables usually be bound before `\+/1`?
-5. What does explicit tabling solve, and when should a predicate remain depth-first?
-6. Why is proof output useful when the answer is already known?
-7. When should a host query an `invalid/1` relation before domain decisions?
-8. Why should external data conversion remain outside the reasoning core?
-9. In what sense is a ground query answer an existential witness?
-10. Why are partial correctness, completeness, and termination three different
-    claims?
-11. When can exhaustive computation constitute a proof, and when is it only
-    evidence?
-12. Which parts of an answer's trust come from its proof, and which remain
-    outside the formal theory?
-
 ### Further examples
 
 <figure>
   <img src="book-assets/example-landscape.svg" alt="A map connects EyeProlog examples across mathematics, search, planning, policy, science, program analysis, and symbolic systems.">
-  <figcaption>The corpus is a connected landscape. Every path leads from a readable source program to an answer, the reason for it, and the check of that reason.</figcaption>
+  <figcaption>Every program in the corpus leads from readable source to an answer, the reason for it, and the check of that reason.</figcaption>
 </figure>
 
-The [examples directory](https://github.com/eyereasoner/eyeprolog/tree/main/examples/) is the book's executable companion. The
+The [examples directory](https://github.com/eyereasoner/eyeprolog/tree/main/examples/) is the book's executable companion. Its
 top-level directory contains **236 self-contained runnable programs**. Every
-source program has an exact answer file under
+program has an exact answer file under
 [examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **236 programs** have a checked
-explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/) together with the result of that
-check under [examples/check](https://github.com/eyereasoner/eyeprolog/tree/main/examples/check/). A check result is itself ordinary Prolog
-— `condition/4` for each of the seven conditions, `failure/3` for anything that
-did not hold, one `obligation/3` naming each conclusion the check rests on
-rather than establishes, counts including `composed/1` for conclusions carried
-by the goals they wrap, and `verdict/1` — so the same reasoning that produced an answer
-can be turned on the question of whether that answer was checked. Every one of those explanations is re-checked by `npm test`, which
-re-performs each recorded inference against its source clause and recomputes
-each primitive the document asserts. The thematic lists link every top-level program and open the program
-itself rather than merely naming it.
+explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/), with the result of that
+check under [examples/check](https://github.com/eyereasoner/eyeprolog/tree/main/examples/check/). So each example comes in three
+parts, making three different claims:
 
-[`examples/book/`](https://github.com/eyereasoner/eyeprolog/tree/main/examples/book/) mirrors the inline EyeProlog displays chapter by chapter. Those files are checked for syntax, and displays containing queries are executed, but some teaching fragments deliberately depend on neighboring facts or helpers. Use the top-level examples when you want a self-contained program with a golden answer; use `examples/book/` when you want the exact display being discussed on a page.
+- the **answer** (`examples/output/`) says what follows;
+- the **reason** (`examples/proof/`) says why, as `step/4` facts naming the
+  clause each conclusion used and what it rested on;
+- the **check** (`examples/check/`) says whether that reason holds, decided
+  mechanically and not by the engine that produced the answer. A proof can be
+  internally flawless and still record a false value; the check is the part
+  that can say no.
 
-Every example is packaged as an answer, a reason, and a check, because those
-are three different claims and only the first is what a program usually
-returns:
+A check result is itself ordinary Prolog: `condition/4` for each of the seven
+conditions, `failure/3` for anything that did not hold, one `obligation/3` for
+each conclusion the check rests on rather than establishes, and `verdict/1`.
+`npm test` re-checks every proof, re-performing each recorded inference against
+its source clause and recomputing each primitive the proof asserts.
 
-- **source:** the facts, rules, comments, and declared queries in
-  the top-level examples directory;
-- **answer:** the exact normal output, in its `examples/output/` counterpart.
-  It says what follows, and on its own it asks to be taken on trust;
-- **reason:** the exact `--proof` output, in the corresponding
-  `examples/proof/` file. It says *why* it follows, as `step/4` facts naming
-  the clause each conclusion used and what it rested on. A reader can now
-  follow the derivation instead of trusting it — but following it is their
-  work, and a long derivation is not something a person checks by reading;
-- **check:** the exact `--check-proof` output, in `examples/check/`. It says
-  whether that reason holds, decided mechanically and not by the engine that
-  produced the answer. A proof can be internally flawless and still record a
-  value that is simply false, which is why the third view is worth more than
-  the second: it is the one that can come back and say no.
+[`examples/book/`](https://github.com/eyereasoner/eyeprolog/tree/main/examples/book/) holds the inline EyeProlog displays, chapter by chapter. They are parsed and their declared goals run, but some depend on facts from the surrounding text; use the top-level examples for self-contained programs with golden answers.
 
-A check document is itself ordinary Prolog, so the last view is not a report to
-read but a result to reason over: `condition/4` for each of the five
-conditions, `failure/3` for anything that did not hold, and one `obligation/3`
-naming each conclusion the check rests on rather than establishes.
-
-Run one program directly:
+To study an example, predict its answers from the declared queries, run it,
+compare with the golden output, then read the proof and change one fact:
 
 ```sh
 node bin/eyeprolog.js examples/ancestor.pl
 node bin/eyeprolog.js --proof examples/ancestor.pl
 ```
 
-Then compare the result with its linked golden file. A productive reading
-sequence is:
+A selection, grouped by theme:
 
-1. read the query declarations and predict their ground answers;
-2. identify facts, base clauses, recursive clauses, and mode-sensitive
-   built-ins;
-3. state one intended mode and its finiteness argument;
-4. run the program and compare with the answer golden;
-5. inspect the proof, when supplied, and mark which source clauses support the
-   conclusion;
-6. change one fact or bound and predict the changed answer before rerunning.
+- **First programs.**
+  [socrates](https://github.com/eyereasoner/eyeprolog/blob/main/examples/socrates.pl),
+  [ancestor](https://github.com/eyereasoner/eyeprolog/blob/main/examples/ancestor.pl),
+  [snaf](https://github.com/eyereasoner/eyeprolog/blob/main/examples/snaf.pl) (negation as failure),
+  [herbrand-witnesses](https://github.com/eyereasoner/eyeprolog/blob/main/examples/herbrand-witnesses.pl) (function terms as existential witnesses).
+- **Standard Prolog.**
+  [iso-control-and-errors](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-control-and-errors.pl),
+  [iso-grouped-solutions](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-grouped-solutions.pl),
+  [iso-term-io](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-term-io.pl),
+  [dcg-expression-language](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dcg-expression-language.pl),
+  [dif-constraints](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dif-constraints.pl).
+- **Constraints.**
+  [clpz-sudoku-9x9](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-sudoku-9x9.pl),
+  [clpz-n-queens](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-n-queens.pl),
+  [clpb-boolean-circuit](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpb-boolean-circuit.pl).
+- **Recursion and graphs.**
+  [graph-reachability](https://github.com/eyereasoner/eyeprolog/blob/main/examples/graph-reachability.pl),
+  [path-discovery](https://github.com/eyereasoner/eyeprolog/blob/main/examples/path-discovery.pl),
+  [service-impact](https://github.com/eyereasoner/eyeprolog/blob/main/examples/service-impact.pl),
+  [deep-taxonomy-100000](https://github.com/eyereasoner/eyeprolog/blob/main/examples/deep-taxonomy-100000.pl) (a stress case).
+- **Search and planning.**
+  [zebra](https://github.com/eyereasoner/eyeprolog/blob/main/examples/zebra.pl),
+  [send-more-money](https://github.com/eyereasoner/eyeprolog/blob/main/examples/send-more-money.pl),
+  [stable-marriage](https://github.com/eyereasoner/eyeprolog/blob/main/examples/stable-marriage.pl),
+  [wolf-goat-cabbage](https://github.com/eyereasoner/eyeprolog/blob/main/examples/wolf-goat-cabbage.pl),
+  [blocks-world-planning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/blocks-world-planning.pl).
+- **Mathematics.**
+  [peano-calculus](https://github.com/eyereasoner/eyeprolog/blob/main/examples/peano-calculus.pl),
+  [fundamental-theorem-arithmetic](https://github.com/eyereasoner/eyeprolog/blob/main/examples/fundamental-theorem-arithmetic.pl),
+  [d3-group](https://github.com/eyereasoner/eyeprolog/blob/main/examples/d3-group.pl),
+  [matrix-noncommutativity](https://github.com/eyereasoner/eyeprolog/blob/main/examples/matrix-noncommutativity.pl),
+  [stirling-bell-numbers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/stirling-bell-numbers.pl).
+- **Languages and metaprogramming.**
+  [vanilla-meta-interpreter](https://github.com/eyereasoner/eyeprolog/blob/main/examples/vanilla-meta-interpreter.pl),
+  [partial-evaluator](https://github.com/eyereasoner/eyeprolog/blob/main/examples/partial-evaluator.pl),
+  [symbolic-derivative](https://github.com/eyereasoner/eyeprolog/blob/main/examples/symbolic-derivative.pl),
+  [sat-solver-dpll](https://github.com/eyereasoner/eyeprolog/blob/main/examples/sat-solver-dpll.pl),
+  [knuth-bendix-completion](https://github.com/eyereasoner/eyeprolog/blob/main/examples/knuth-bendix-completion.pl).
+- **Program analysis.**
+  [abstract-interpretation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/abstract-interpretation.pl),
+  [type-inference](https://github.com/eyereasoner/eyeprolog/blob/main/examples/type-inference.pl),
+  [declarative-fault-localization](https://github.com/eyereasoner/eyeprolog/blob/main/examples/declarative-fault-localization.pl),
+  [universal-vs-existential-termination](https://github.com/eyereasoner/eyeprolog/blob/main/examples/universal-vs-existential-termination.pl).
+- **Policies and provenance.**
+  [access-control-policy](https://github.com/eyereasoner/eyeprolog/blob/main/examples/access-control-policy.pl),
+  [gdpr-compliance](https://github.com/eyereasoner/eyeprolog/blob/main/examples/gdpr-compliance.pl),
+  [defeasible-reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/defeasible-reasoning.pl),
+  [trust-flow-provenance-threshold](https://github.com/eyereasoner/eyeprolog/blob/main/examples/trust-flow-provenance-threshold.pl).
+- **RDF 1.2.**
+  [rdf12-triple-term](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-triple-term.pl),
+  [rdf12-trig-named-graph](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-trig-named-graph.pl),
+  [odrl-policy](https://github.com/eyereasoner/eyeprolog/blob/main/examples/odrl-policy.pl),
+  [symbiotic-knowledge-graph](https://github.com/eyereasoner/eyeprolog/blob/main/examples/symbiotic-knowledge-graph.pl).
+- **Science and engineering.**
+  [bayes-diagnosis](https://github.com/eyereasoner/eyeprolog/blob/main/examples/bayes-diagnosis.pl),
+  [spacecraft-battery-diagnosis](https://github.com/eyereasoner/eyeprolog/blob/main/examples/spacecraft-battery-diagnosis.pl),
+  [least-squares-regression](https://github.com/eyereasoner/eyeprolog/blob/main/examples/least-squares-regression.pl).
+- **Larger cases.**
+  [auroracare](https://github.com/eyereasoner/eyeprolog/blob/main/examples/auroracare.pl),
+  [manufacturing-quality-control](https://github.com/eyereasoner/eyeprolog/blob/main/examples/manufacturing-quality-control.pl).
 
-#### Standard Prolog profile
+`node test/run-examples.mjs` runs every answer and proof golden; `npm test`
+runs the whole correctness corpus, and its elapsed time doubles as the
+project's performance indicator. A new example should name its idea in the
+filename, open with a comment stating the lesson and the model's boundary,
+keep its queries finite and its output small, include a positive and a
+boundary case, and come with its answer, proof, and check files.
 
-These examples compose ISO facilities that isolated conformance cases test one
-mode at a time.
+**Checkpoint.** Run one example with `--proof --stats`. Which output is the
+reusable logical result, which describes this particular run, and which
+status does a calling process see? Change one fact and predict all three before
+rerunning.
 
-| Program | Standard facility | Answer · reason · check |
-| --- | --- | --- |
-| [CLP(B) Boolean circuit](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpb-boolean-circuit.pl) | A NOT/AND/OR XOR circuit is enumerated with `labeling/1`, then `taut/2` verifies equivalence to the XOR (`#`) specification. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpb-boolean-circuit.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/clpb-boolean-circuit.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/clpb-boolean-circuit.pl) |
-| [CLP(B) cardinality](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpb-cardinality.pl) | A two-of-four review quorum combines `card/2`, implication, exclusive-or, labeling, and model counting. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpb-cardinality.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/clpb-cardinality.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/clpb-cardinality.pl) |
-| [CLP(B) feature model](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpb-feature-model.pl) | Deployment-feature dependencies are expressed as Boolean constraints, enumerated with `labeling/1`, and counted directly with `sat_count/2`. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpb-feature-model.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/clpb-feature-model.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/clpb-feature-model.pl) |
-| [CLP(B) weighted planning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpb-weighted-planning.pl) | A bounded release plan uses implications and cardinality constraints, then `weighted_maximum/3` selects the highest-value admissible feature set. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpb-weighted-planning.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/clpb-weighted-planning.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/clpb-weighted-planning.pl) |
-| [CLP(Z) factorial](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-factorial.pl) | Declarative predecessor and product constraints propagate a factorial without mode-sensitive `is/2`. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpz-factorial.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/clpz-factorial.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/clpz-factorial.pl) |
-| [CLP(Z) global constraints](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-global-constraints.pl) | Compatibility tables, lexicographic and serialized schedules, global cardinality with costs, circuits, value counting, and integer comparison. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpz-global-constraints.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/clpz-global-constraints.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/clpz-global-constraints.pl) |
-| [CLP(Z) N-queens](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-n-queens.pl) | A checked eight-queens witness using finite domains, delayed diagonal constraints, `all_distinct/1`, and first-fail labeling, plus a four-queens multi-solution search. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpz-n-queens.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/clpz-n-queens.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/clpz-n-queens.pl) |
-| [CLP(Z) resource allocation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-resource-allocation.pl) | Resource assignment using `element/3`, `sum/3`, `scalar_product/4`, reification, labeling options, and domain reflection. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpz-resource-allocation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/clpz-resource-allocation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/clpz-resource-allocation.pl) |
-| [CLP(Z) Sudoku 9×9](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clpz-sudoku-9x9.pl) | The AI Escargot 9×9 model with finite domains, 27 all-distinct constraints, and first-fail labeling, genuinely searched from its clues as the default example goal. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clpz-sudoku-9x9.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/clpz-sudoku-9x9.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/clpz-sudoku-9x9.pl) |
-| [Combinatorics Findall Sort](https://github.com/eyereasoner/eyeprolog/blob/main/examples/combinatorics-findall-sort.pl) | Combinations example using `findall/3` and ISO `sort/2`. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/combinatorics-findall-sort.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/combinatorics-findall-sort.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/combinatorics-findall-sort.pl) |
-| [Floating Point](https://github.com/eyereasoner/eyeprolog/blob/main/examples/floating-point.pl) | Floating-point arithmetic and comparisons. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/floating-point.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/floating-point.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/floating-point.pl) |
-| [Atomic conversion](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-atomic-conversion.pl) | Atom splitting, character atoms, Unicode codes, and numeric parsing. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/iso-atomic-conversion.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/iso-atomic-conversion.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/iso-atomic-conversion.pl) |
-| [Control and errors](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-control-and-errors.pl) | `call/1`, `once/1`, cut, if-then-else, `throw/1`, and `catch/3`. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/iso-control-and-errors.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/iso-control-and-errors.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/iso-control-and-errors.pl) |
-| [DCG command parser](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dcg-command-parser.pl) | A Part 3 grammar parses token lists into application terms, generates tokens, preserves a remainder, and rejects malformed input. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dcg-command-parser.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/dcg-command-parser.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/dcg-command-parser.pl) |
-| [DCG expression language](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dcg-expression-language.pl) | A precedence-aware bidirectional grammar builds arithmetic ASTs, evaluates variable expressions, regenerates minimally parenthesized tokens, round-trips syntax, and preserves a remainder. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dcg-expression-language.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/dcg-expression-language.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/dcg-expression-language.pl) |
-| [Dynamic database](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-dynamic-database.pl) | Initialization and ordered updates to a declared dynamic procedure. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/iso-dynamic-database.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/iso-dynamic-database.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/iso-dynamic-database.pl) |
-| [Grouped solutions](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-grouped-solutions.pl) | `findall/3`, `bagof/3`, `setof/3`, existential qualification, and `clause/2`. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/iso-grouped-solutions.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/iso-grouped-solutions.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/iso-grouped-solutions.pl) |
-| [Integer arithmetic](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-integer-arithmetic.pl) | Integer quotient/remainder choices plus bit operations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/iso-integer-arithmetic.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/iso-integer-arithmetic.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/iso-integer-arithmetic.pl) |
-| [ISO extension pipeline audit](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-extension-pipeline-audit.pl) | A bounded pipeline audit composing every `library(iso_ext)` relation: nested counting, universal validation, successor generation, difference-list collection, and schema comparison modulo variable names. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/iso-extension-pipeline-audit.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/iso-extension-pipeline-audit.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/iso-extension-pipeline-audit.pl) |
-| [ISO extensions](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-extensions.pl) | Common control, collection, integer, and term-variant extensions from `library(iso_ext)`. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/iso-extensions.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/iso-extensions.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/iso-extensions.pl) |
-| [Operators](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-operators.pl) | Custom syntax, standard term order, and operator-table inspection. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/iso-operators.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/iso-operators.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/iso-operators.pl) |
-| [Portable library overlap](https://github.com/eyereasoner/eyeprolog/blob/main/examples/portable-library-overlap.pl) | Shared Scryer/Trealla interfaces for CLP(B), ordered sets, graphs, reification, delayed goals, generated names, character conversion, matrix transposition, and explicit table syntax. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/portable-library-overlap.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/portable-library-overlap.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/portable-library-overlap.pl) |
-| [Reflective terms](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-reflective-terms.pl) | Term shape, construction, copying, variables, identity, and standard order. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/iso-reflective-terms.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/iso-reflective-terms.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/iso-reflective-terms.pl) |
-| [Term I/O](https://github.com/eyereasoner/eyeprolog/blob/main/examples/iso-term-io.pl) | Text-stream lifecycle, canonical writing, reading, metadata, and end state. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/iso-term-io.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/iso-term-io.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/iso-term-io.pl) |
-| [Term Tools](https://github.com/eyereasoner/eyeprolog/blob/main/examples/term-tools.pl) | Term-tool builtins for inspecting, constructing, rendering, and validating structured terms. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/term-tools.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/term-tools.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/term-tools.pl) |
-| [Aliases and namespaces](https://github.com/eyereasoner/eyeprolog/blob/main/examples/aliases-and-namespaces.pl) | One native spelling per built-in, with vocabulary-style names layered above it. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/aliases-and-namespaces.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/aliases-and-namespaces.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/aliases-and-namespaces.pl) |
-| [Attributed variables](https://github.com/eyereasoner/eyeprolog/blob/main/examples/attributed-variables.pl) | Scryer-style attributed variables over the annotated-variable runtime. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/attributed-variables.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/attributed-variables.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/attributed-variables.pl) |
-| [dif constraints](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dif-constraints.pl) | Delayed disequality with dif/2, which waits rather than guessing. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dif-constraints.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/dif-constraints.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/dif-constraints.pl) |
-| [Reified conditionals](https://github.com/eyereasoner/eyeprolog/blob/main/examples/reified-conditionals.pl) | A condition carried as a value, so a test can be reasoned about rather than only run. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/reified-conditionals.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/reified-conditionals.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/reified-conditionals.pl) |
-| [Bulk stream write](https://github.com/eyereasoner/eyeprolog/blob/main/examples/bulk-stream-write.pl) | Character-by-character writes to a non-console text stream. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/bulk-stream-write.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/bulk-stream-write.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/bulk-stream-write.pl) |
-| [JSON](https://github.com/eyereasoner/eyeprolog/blob/main/examples/json.pl) | JSON parsing and generation in the shared Scryer/Trealla representation. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/json.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/json.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/json.pl) |
-| [HTTP client](https://github.com/eyereasoner/eyeprolog/blob/main/examples/http-client.pl) | HTTP/HTTPS requests from the bundled client library. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/http-client.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/http-client.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/http-client.pl) |
+## 41. Standards, limits, and implementation boundaries
 
-Read these beside Part VIII. Then use the ISO conformance cases when a program
-depends on the exact failure or error behavior of a particular mode.
+This book is the single reference for the EyeProlog implementation.
+Chapters 38–40 define its ISO Prolog syntax, directives, execution model,
+built-in predicates, and command line; the earlier chapters cover the reasoner,
+tabling, proofs, warnings, answer formatting, embedding, and data boundaries.
 
-#### First encounters
+### Conformance evidence
 
-These programs isolate one idea at a time. Read them before the larger case
-studies.
-
-| Program | What to notice | Answer · reason · check |
-| --- | --- | --- |
-| [Age](https://github.com/eyereasoner/eyeprolog/blob/main/examples/age.pl) | Arithmetic comparison acts as a filter after a fact supplies the age. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/age.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/age.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/age.pl) |
-| [Ancestor](https://github.com/eyereasoner/eyeprolog/blob/main/examples/ancestor.pl) | The canonical base-plus-recursive definition computes a transitive family relation. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/ancestor.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/ancestor.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/ancestor.pl) |
-| [Animal](https://github.com/eyereasoner/eyeprolog/blob/main/examples/animal.pl) | Several clauses form a small classification theory with inspectable reasons. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/animal.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/animal.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/animal.pl) |
-| [Annotation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/annotation.pl) | Terms attach descriptive data while the logical relation remains ordinary. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/annotation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/annotation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/annotation.pl) |
-| [Backward](https://github.com/eyereasoner/eyeprolog/blob/main/examples/backward.pl) | A tiny derived fact justified by a numeric comparison in an ordinary Horn rule. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/backward.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/backward.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/backward.pl) |
-| [Cat Koko](https://github.com/eyereasoner/eyeprolog/blob/main/examples/cat-koko.pl) | Named Skolem-style witnesses standing in for the existential witnesses of the original N3 example. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/cat-koko.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/cat-koko.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/cat-koko.pl) |
-| [Derived rule](https://github.com/eyereasoner/eyeprolog/blob/main/examples/derived-rule.pl) | A conclusion depends on another derived predicate rather than directly on a source fact. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/derived-rule.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/derived-rule.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/derived-rule.pl) |
-| [Dog](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dog.pl) | A compact inheritance chain shows how intermediate concepts appear in a proof. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dog.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/dog.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/dog.pl) |
-| [Existential rule](https://github.com/eyereasoner/eyeprolog/blob/main/examples/existential-rule.pl) | Structured Herbrand terms carry explicit generated witnesses. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/existential-rule.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/existential-rule.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/existential-rule.pl) |
-| [Good cobbler](https://github.com/eyereasoner/eyeprolog/blob/main/examples/good-cobbler.pl) | Multiple premises combine into a conclusion without hidden mutation or control state. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/good-cobbler.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/good-cobbler.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/good-cobbler.pl) |
-| [Herbrand Semantics](https://github.com/eyereasoner/eyeprolog/blob/main/examples/herbrand-semantics.pl) | Herbrand terms denote themselves: distinct names and constructor applications remain distinct without extra unique-name or free-constructor axioms. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/herbrand-semantics.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/herbrand-semantics.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/herbrand-semantics.pl) |
-| [Herbrand witnesses](https://github.com/eyereasoner/eyeprolog/blob/main/examples/herbrand-witnesses.pl) | Functional witness terms make existential structure and syntactic identity visible in both answers and derivations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/herbrand-witnesses.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/herbrand-witnesses.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/herbrand-witnesses.pl) |
-| [Reusable built-ins](https://github.com/eyereasoner/eyeprolog/blob/main/examples/reusable-builtins.pl) | Arithmetic, strings, lists, and term inspection compose through ordinary variables. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/reusable-builtins.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/reusable-builtins.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/reusable-builtins.pl) |
-| [Skolem Functions](https://github.com/eyereasoner/eyeprolog/blob/main/examples/skolem-functions.pl) | Skolem functional terms in rule heads. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/skolem-functions.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/skolem-functions.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/skolem-functions.pl) |
-| [SNAF](https://github.com/eyereasoner/eyeprolog/blob/main/examples/snaf.pl) | Negation as failure establishes that Alice does not hate Bob before deriving that she hates Nobody. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/snaf.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/snaf.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/snaf.pl) |
-| [Socrates](https://github.com/eyereasoner/eyeprolog/blob/main/examples/socrates.pl) | A fact and one rule turn the classical syllogism into a ground derivation. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/socrates.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/socrates.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/socrates.pl) |
-| [UUID](https://github.com/eyereasoner/eyeprolog/blob/main/examples/uuid.pl) | `uuid/3` reproducibly creates one version 4 UUID atom from explicit random state; the example validates its canonical shape. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/uuid.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/uuid.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/uuid.pl) |
-| [Witch](https://github.com/eyereasoner/eyeprolog/blob/main/examples/witch.pl) | Burn the witch. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/witch.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/witch.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/witch.pl) |
-
-Suggested path: Socrates → Age → Ancestor → Derived rule → Reusable built-ins.
-At each step, say aloud what one ground instance of every predicate means.
-
-#### Recursion, lists, and graph closure
-
-These examples make termination arguments visible. Compare structural descent,
-visited-state search, and fixed-point tabling rather than treating all
-recursion as one technique.
-
-| Program | What to notice | Answer · reason · check |
-| --- | --- | --- |
-| [Chart parser](https://github.com/eyereasoner/eyeprolog/blob/main/examples/chart-parser.pl) | A finite chart represents shared parsing subproblems and recursive grammatical structure. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/chart-parser.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/chart-parser.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/chart-parser.pl) |
-| [Cyclic path](https://github.com/eyereasoner/eyeprolog/blob/main/examples/cyclic-path.pl) | A deliberately cyclic graph exposes repeated calls and the need for disciplined recursion. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/cyclic-path.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/cyclic-path.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/cyclic-path.pl) |
-| [Deep taxonomy: 10](https://github.com/eyereasoner/eyeprolog/blob/main/examples/deep-taxonomy-10.pl) | A small generated hierarchy is readable by hand and establishes the benchmark shape. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/deep-taxonomy-10.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/deep-taxonomy-10.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/deep-taxonomy-10.pl) |
-| [Deep Taxonomy 100](https://github.com/eyereasoner/eyeprolog/blob/main/examples/deep-taxonomy-100.pl) | A 100-step taxonomy chain that exercises deep recursive closure and side-label derivation. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/deep-taxonomy-100.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/deep-taxonomy-100.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/deep-taxonomy-100.pl) |
-| [Deep taxonomy: 1,000](https://github.com/eyereasoner/eyeprolog/blob/main/examples/deep-taxonomy-1000.pl) | The same logical theory tests indexing and recursive closure at a realistic depth. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/deep-taxonomy-1000.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/deep-taxonomy-1000.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/deep-taxonomy-1000.pl) |
-| [Deep Taxonomy 10000](https://github.com/eyereasoner/eyeprolog/blob/main/examples/deep-taxonomy-10000.pl) | A 10,000-step taxonomy chain used as a large-depth ordinary-recursion and closure stress test. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/deep-taxonomy-10000.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/deep-taxonomy-10000.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/deep-taxonomy-10000.pl) |
-| [Deep taxonomy: 100,000](https://github.com/eyereasoner/eyeprolog/blob/main/examples/deep-taxonomy-100000.pl) | A stress case separates semantic simplicity from implementation scale. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/deep-taxonomy-100000.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/deep-taxonomy-100000.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/deep-taxonomy-100000.pl) |
-| [Family cousins](https://github.com/eyereasoner/eyeprolog/blob/main/examples/family-cousins.pl) | Several relational joins derive kinship beyond a simple transitive closure. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/family-cousins.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/family-cousins.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/family-cousins.pl) |
-| [Graph reachability](https://github.com/eyereasoner/eyeprolog/blob/main/examples/graph-reachability.pl) | A visited list bounds cyclic traversal and makes explicit negative test cases finite. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/graph-reachability.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/graph-reachability.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/graph-reachability.pl) |
-| [Graph](https://github.com/eyereasoner/eyeprolog/blob/main/examples/graph.pl) | Productive right-recursive transitive closure over a directed map, contrasted with an under-generating left-recursive formulation. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/graph.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/graph.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/graph.pl) |
-| [List collection](https://github.com/eyereasoner/eyeprolog/blob/main/examples/list-collection.pl) | `findall/3`, list construction, and aggregation turn a solution stream into data. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/list-collection.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/list-collection.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/list-collection.pl) |
-| [Path discovery](https://github.com/eyereasoner/eyeprolog/blob/main/examples/path-discovery.pl) | Witness paths, not only endpoint pairs, are constructed during a larger graph search. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/path-discovery.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/path-discovery.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/path-discovery.pl) |
-| [Service Impact](https://github.com/eyereasoner/eyeprolog/blob/main/examples/service-impact.pl) | Practical cyclic recursion: incident impact analysis for a service dependency graph. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/service-impact.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/service-impact.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/service-impact.pl) |
-| [Naive reverse benchmark](https://github.com/eyereasoner/eyeprolog/blob/main/examples/bench.pl) | Quintus's 1984 naive-reverse benchmark, kept as a readable recursion. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/bench.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/bench.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/bench.pl) |
-
-Read the three taxonomy programs as one experiment: the mathematical relation
-does not change as the data scale changes. Any difference in runtime belongs
-to control, indexing, memory, and table management.
-
-#### Finite search, puzzles, and optimization
-
-The central question for every program in this group is: what exactly is the
-finite search space, and which constraint removes which branches?
-
-| Program | Search design | Answer · reason · check |
-| --- | --- | --- |
-| [Dijkstra Findall Sort](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dijkstra-findall-sort.pl) | Dijkstra example using `findall/3` and ISO `sort/2`. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dijkstra-findall-sort.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/dijkstra-findall-sort.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/dijkstra-findall-sort.pl) |
-| [Dijkstra](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dijkstra.pl) | Weighted path enumeration. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dijkstra.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/dijkstra.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/dijkstra.pl) |
-| [DONALD + GERALD = ROBERT](https://github.com/eyereasoner/eyeprolog/blob/main/examples/donald-gerald-robert.pl) | All ten decimal digits are assigned to ten distinct letters. Right-to-left carry propagation cuts a naive 10! search space to one solution. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/donald-gerald-robert.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/donald-gerald-robert.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/donald-gerald-robert.pl) |
-| [Enigma1225](https://github.com/eyereasoner/eyeprolog/blob/main/examples/enigma1225.pl) | New Scientist Enigma 1225, retaining the best board in one pass with `aggregate_max/5`. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/enigma1225.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/enigma1225.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/enigma1225.pl) |
-| [Eulerian path](https://github.com/eyereasoner/eyeprolog/blob/main/examples/eulerian-path.pl) | The state tracks remaining edges rather than merely visited vertices. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/eulerian-path.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/eulerian-path.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/eulerian-path.pl) |
-| [Four-color map](https://github.com/eyereasoner/eyeprolog/blob/main/examples/four-color-map.pl) | A finite color assignment is filtered by adjacency constraints. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/four-color-map.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/four-color-map.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/four-color-map.pl) |
-| [Hamiltonian path](https://github.com/eyereasoner/eyeprolog/blob/main/examples/hamiltonian-path.pl) | A witness must visit every vertex exactly once; path construction and global coverage meet. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/hamiltonian-path.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/hamiltonian-path.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/hamiltonian-path.pl) |
-| [Job-shop scheduling](https://github.com/eyereasoner/eyeprolog/blob/main/examples/job-shop-scheduling.pl) | Resource and precedence constraints interact in a larger finite schedule space. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/job-shop-scheduling.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/job-shop-scheduling.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/job-shop-scheduling.pl) |
-| [Knapsack optimization](https://github.com/eyereasoner/eyeprolog/blob/main/examples/knapsack-optimization.pl) | Candidate subsets become feasible solutions, then aggregation selects a best value. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/knapsack-optimization.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/knapsack-optimization.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/knapsack-optimization.pl) |
-| [Map Four Color Search](https://github.com/eyereasoner/eyeprolog/blob/main/examples/map-four-color-search.pl) | Four-colour search for the European Union neighbour graph. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/map-four-color-search.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/map-four-color-search.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/map-four-color-search.pl) |
-| [Markov Logic Network](https://github.com/eyereasoner/eyeprolog/blob/main/examples/markov-logic-network.pl) | Markov Logic Network style scoring over a tiny finite domain. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/markov-logic-network.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/markov-logic-network.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/markov-logic-network.pl) |
-| [Matrix Chain Order](https://github.com/eyereasoner/eyeprolog/blob/main/examples/matrix-chain-order.pl) | Matrix-chain multiplication order by explicitly tabled interval dynamic programming. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/matrix-chain-order.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/matrix-chain-order.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/matrix-chain-order.pl) |
-| [Register allocation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/register-allocation.pl) | Interference constraints turn compiler allocation into graph coloring. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/register-allocation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/register-allocation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/register-allocation.pl) |
-| [SEND + MORE = MONEY](https://github.com/eyereasoner/eyeprolog/blob/main/examples/send-more-money.pl) | Digit assignments are generated under distinctness, leading-zero, and column constraints. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/send-more-money.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/send-more-money.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/send-more-money.pl) |
-| [Stable marriage](https://github.com/eyereasoner/eyeprolog/blob/main/examples/stable-marriage.pl) | Preference data, matching generation, and the absence of blocking pairs define stability. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/stable-marriage.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/stable-marriage.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/stable-marriage.pl) |
-| [Weighted interval scheduling](https://github.com/eyereasoner/eyeprolog/blob/main/examples/weighted-interval-scheduling.pl) | Compatibility constraints and an ordered objective select a maximum-value schedule. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/weighted-interval-scheduling.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/weighted-interval-scheduling.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/weighted-interval-scheduling.pl) |
-| [Zebra puzzle](https://github.com/eyereasoner/eyeprolog/blob/main/examples/zebra.pl) | House records, adjacency relations, and clue constraints jointly determine the famous solution. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/zebra.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/zebra.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/zebra.pl) |
-| [Knight's tour (Warnsdorff)](https://github.com/eyereasoner/eyeprolog/blob/main/examples/knights-tour-warnsdorff.pl) | A heuristic that moves to the most constrained square first. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/knights-tour-warnsdorff.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/knights-tour-warnsdorff.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/knights-tour-warnsdorff.pl) |
-
-A useful comparative exercise is to draw the first three levels of the search
-tree for N-Queens, SEND + MORE = MONEY, DONALD + GERALD = ROBERT, and
-Knapsack. Mark whether each branching decision chooses a permutation element,
-assigns a digit, derives a carry-constrained digit, or includes an item. The
-syntax is similar; the combinatorial objects and pruning strength are different.
-
-#### Planning and state transition
-
-Planning programs represent a world state as a term, define legal transitions,
-and search for a sequence whose final state satisfies a goal.
-
-| Program | State-space idea | Answer · reason · check |
-| --- | --- | --- |
-| [Allen Interval Calculus](https://github.com/eyereasoner/eyeprolog/blob/main/examples/allen-interval-calculus.pl) | Allen interval relations over integer time offsets, with interval records kept as scoped data. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/allen-interval-calculus.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/allen-interval-calculus.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/allen-interval-calculus.pl) |
-| [Blocks world](https://github.com/eyereasoner/eyeprolog/blob/main/examples/blocks-world-planning.pl) | Symbolic actions transform a compact arrangement of blocks. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/blocks-world-planning.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/blocks-world-planning.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/blocks-world-planning.pl) |
-| [Critical-path schedule](https://github.com/eyereasoner/eyeprolog/blob/main/examples/critical-path-schedule.pl) | Dependency closure and duration arithmetic derive project timing. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/critical-path-schedule.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/critical-path-schedule.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/critical-path-schedule.pl) |
-| [Dijkstra Risk Path](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dijkstra-risk-path.pl) | Risk-adjusted route selection that combines delivery cost, accumulated risk, path length, and a trust gate. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dijkstra-risk-path.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/dijkstra-risk-path.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/dijkstra-risk-path.pl) |
-| [Dining Philosophers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dining-philosophers.pl) | Chandy-Misra dining philosophers trace. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dining-philosophers.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/dining-philosophers.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/dining-philosophers.pl) |
-| [Drone corridor planner](https://github.com/eyereasoner/eyeprolog/blob/main/examples/drone-corridor-planner.pl) | Route feasibility combines graph structure with domain restrictions. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/drone-corridor-planner.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/drone-corridor-planner.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/drone-corridor-planner.pl) |
-| [GPS](https://github.com/eyereasoner/eyeprolog/blob/main/examples/gps.pl) | Route planning over scoped map data, accumulating actions, duration, cost, belief, and comfort. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/gps.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/gps.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/gps.pl) |
-| [Gray Code Counter](https://github.com/eyereasoner/eyeprolog/blob/main/examples/gray-code-counter.pl) | Gray-code counter. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/gray-code-counter.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/gray-code-counter.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/gray-code-counter.pl) |
-| [Hanoi](https://github.com/eyereasoner/eyeprolog/blob/main/examples/hanoi.pl) | A recursive plan mirrors the inductive structure of moving a tower. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/hanoi.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/hanoi.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/hanoi.pl) |
-| [Lee routing](https://github.com/eyereasoner/eyeprolog/blob/main/examples/lee.pl) | Breadth-first wave expansion reaches a destination on a grid, then reconstructs a path around rectangular obstacles using the standard list relations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/lee.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/lee.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/lee.pl) |
-| [Microgrid dispatch](https://github.com/eyereasoner/eyeprolog/blob/main/examples/microgrid-dispatch.pl) | Candidate operating decisions are checked against supply, demand, and engineering limits. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/microgrid-dispatch.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/microgrid-dispatch.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/microgrid-dispatch.pl) |
-| [Missionaries and cannibals](https://github.com/eyereasoner/eyeprolog/blob/main/examples/missionaries-cannibals.pl) | Numeric state constraints must hold on both banks after every crossing. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/missionaries-cannibals.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/missionaries-cannibals.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/missionaries-cannibals.pl) |
-| [Monkey and bananas](https://github.com/eyereasoner/eyeprolog/blob/main/examples/monkey-bananas.pl) | Actions change location, support, and possession facts until the goal becomes true. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/monkey-bananas.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/monkey-bananas.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/monkey-bananas.pl) |
-| [Route planning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/route-planning.pl) | Weighted edges construct candidate routes and expose the chosen path as a witness. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/route-planning.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/route-planning.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/route-planning.pl) |
-| [Wolf, goat, and cabbage](https://github.com/eyereasoner/eyeprolog/blob/main/examples/wolf-goat-cabbage.pl) | Safety invariants reject river-bank states before they enter a valid plan. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/wolf-goat-cabbage.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/wolf-goat-cabbage.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/wolf-goat-cabbage.pl) |
-
-Compare the witness shape: Hanoi returns an inductively constructed move list;
-route planning returns a graph path; Lee routing reconstructs a path from
-breadth-first wave layers; Blocks world and the river puzzles expose a sequence
-of whole states. Representation determines which plan properties are easy to
-check.
-
-#### Mathematics as relations
-
-These examples accompany Part VI. They range from executable definitions to
-finite counterexample searches. Do not call every computed result a theorem:
-state which domain was exhausted and which general property was proved only by
-the clauses.
-
-| Program | Mathematical content | Answer · reason · check |
-| --- | --- | --- |
-| [Ackermann](https://github.com/eyereasoner/eyeprolog/blob/main/examples/ackermann.pl) | Ackermann-style fast-growing recursion benchmark. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/ackermann.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/ackermann.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/ackermann.pl) |
-| [Binomial Vandermonde](https://github.com/eyereasoner/eyeprolog/blob/main/examples/binomial-vandermonde.pl) | Two finite sums compute the sides of Vandermonde's identity. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/binomial-vandermonde.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/binomial-vandermonde.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/binomial-vandermonde.pl) |
-| [Catalan convolution](https://github.com/eyereasoner/eyeprolog/blob/main/examples/catalan-convolution.pl) | A classic convolution identity is evaluated over a bounded range. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/catalan-convolution.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/catalan-convolution.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/catalan-convolution.pl) |
-| [Collatz 1000](https://github.com/eyereasoner/eyeprolog/blob/main/examples/collatz-1000.pl) | Collatz conjecture suite. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/collatz-1000.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/collatz-1000.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/collatz-1000.pl) |
-| [Complex](https://github.com/eyereasoner/eyeprolog/blob/main/examples/complex.pl) | Complex numbers. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/complex.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/complex.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/complex.pl) |
-| [Composition Of Injective Functions Is Injective](https://github.com/eyereasoner/eyeprolog/blob/main/examples/composition-of-injective-functions-is-injective.pl) | Composition of injective functions is injective. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/composition-of-injective-functions-is-injective.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/composition-of-injective-functions-is-injective.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/composition-of-injective-functions-is-injective.pl) |
-| [Continued Fraction Sqrt2](https://github.com/eyereasoner/eyeprolog/blob/main/examples/continued-fraction-sqrt2.pl) | Convergents of sqrt(2) by explicitly tabled recurrence. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/continued-fraction-sqrt2.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/continued-fraction-sqrt2.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/continued-fraction-sqrt2.pl) |
-| [D3 group](https://github.com/eyereasoner/eyeprolog/blob/main/examples/d3-group.pl) | A finite Cayley table, inverses, and subgroup closure make group laws executable. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/d3-group.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/d3-group.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/d3-group.pl) |
-| [Diamond Property](https://github.com/eyereasoner/eyeprolog/blob/main/examples/diamond-property.pl) | Diamond property. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/diamond-property.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/diamond-property.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/diamond-property.pl) |
-| [Easter Computus](https://github.com/eyereasoner/eyeprolog/blob/main/examples/easter-computus.pl) | Gregorian Easter computus. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/easter-computus.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/easter-computus.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/easter-computus.pl) |
-| [Equivalence Classes Overlap Implies Same Class](https://github.com/eyereasoner/eyeprolog/blob/main/examples/equivalence-classes-overlap-implies-same-class.pl) | Equivalence-class overlap example. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/equivalence-classes-overlap-implies-same-class.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/equivalence-classes-overlap-implies-same-class.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/equivalence-classes-overlap-implies-same-class.pl) |
-| [Fast exponentiation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/fastpow.pl) | Algebraic decomposition by parity changes a linear recurrence into logarithmic-depth recursion. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/fastpow.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/fastpow.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/fastpow.pl) |
-| [Fibonacci](https://github.com/eyereasoner/eyeprolog/blob/main/examples/fibonacci.pl) | A recurrence becomes an executable relation with a visibly decreasing argument. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/fibonacci.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/fibonacci.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/fibonacci.pl) |
-| [Fundamental theorem of arithmetic](https://github.com/eyereasoner/eyeprolog/blob/main/examples/fundamental-theorem-arithmetic.pl) | Two factorization strategies construct normalized prime-factor witnesses and check reconstruction. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/fundamental-theorem-arithmetic.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/fundamental-theorem-arithmetic.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/fundamental-theorem-arithmetic.pl) |
-| [Goldbach](https://github.com/eyereasoner/eyeprolog/blob/main/examples/goldbach.pl) | Bounded search checks Goldbach decompositions for powers of two using the portable Prolog primality relation. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/goldbach.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/goldbach.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/goldbach.pl) |
-| [Greatest lower bound uniqueness](https://github.com/eyereasoner/eyeprolog/blob/main/examples/greatest-lower-bound-uniqueness.pl) | Order-theoretic definitions support a uniqueness argument. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/greatest-lower-bound-uniqueness.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/greatest-lower-bound-uniqueness.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/greatest-lower-bound-uniqueness.pl) |
-| [Group inverse uniqueness](https://github.com/eyereasoner/eyeprolog/blob/main/examples/group-inverse-uniqueness.pl) | A short derivation exposes the algebraic premises needed for uniqueness. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/group-inverse-uniqueness.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/group-inverse-uniqueness.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/group-inverse-uniqueness.pl) |
-| [Heron Theorem](https://github.com/eyereasoner/eyeprolog/blob/main/examples/heron-theorem.pl) | Heron's theorem: area = sqrt(s(s-a)(s-b)(s-c)). | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/heron-theorem.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/heron-theorem.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/heron-theorem.pl) |
-| [Integer partitions](https://github.com/eyereasoner/eyeprolog/blob/main/examples/integer-partitions.pl) | Recursive generation constructs unordered additive decompositions without permutation duplicates. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/integer-partitions.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/integer-partitions.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/integer-partitions.pl) |
-| [Law Of Cosines](https://github.com/eyereasoner/eyeprolog/blob/main/examples/law-of-cosines.pl) | Law of cosines: c^2 = a^2 + b^2 - 2ab cos(C). | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/law-of-cosines.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/law-of-cosines.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/law-of-cosines.pl) |
-| [Matrix noncommutativity](https://github.com/eyereasoner/eyeprolog/blob/main/examples/matrix-noncommutativity.pl) | Two concrete products provide a counterexample to universal commutativity. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/matrix-noncommutativity.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/matrix-noncommutativity.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/matrix-noncommutativity.pl) |
-| [Modular exponentiation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/modular-exponentiation.pl) | Intermediate reduction preserves the residue while controlling numeric growth. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/modular-exponentiation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/modular-exponentiation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/modular-exponentiation.pl) |
-| [Newton Raphson](https://github.com/eyereasoner/eyeprolog/blob/main/examples/newton-raphson.pl) | Newton-Raphson root finding. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/newton-raphson.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/newton-raphson.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/newton-raphson.pl) |
-| [Peano arithmetic](https://github.com/eyereasoner/eyeprolog/blob/main/examples/peano-arithmetic.pl) | Explicit natural-number terms support arithmetic relations and structural recursion. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/peano-arithmetic.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/peano-arithmetic.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/peano-arithmetic.pl) |
-| [Peano calculus](https://github.com/eyereasoner/eyeprolog/blob/main/examples/peano-calculus.pl) | Addition, multiplication, and factorial follow the constructors `z` and `s/1`. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/peano-calculus.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/peano-calculus.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/peano-calculus.pl) |
-| [Peasant](https://github.com/eyereasoner/eyeprolog/blob/main/examples/peasant.pl) | Peasant multiplication and exponentiation cases. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/peasant.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/peasant.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/peasant.pl) |
-| [Pell equation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/pell-equation.pl) | Bounded generation searches for integer witnesses to a Diophantine equation. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/pell-equation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/pell-equation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/pell-equation.pl) |
-| [Pi](https://github.com/eyereasoner/eyeprolog/blob/main/examples/pi.pl) | The Nilakantha series is a deterministic numeric recurrence; EyeProlog recognizes its accumulator shape and executes 10,000 terms without tabling or heap growth. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/pi.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/pi.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/pi.pl) |
-| [Prime range](https://github.com/eyereasoner/eyeprolog/blob/main/examples/prime-range.pl) | Bounded integer generation and divisor tests enumerate primes over an explicit finite interval. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/prime-range.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/prime-range.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/prime-range.pl) |
-| [Quadratic Formula](https://github.com/eyereasoner/eyeprolog/blob/main/examples/quadratic-formula.pl) | Quadratic formula over sample equations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/quadratic-formula.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/quadratic-formula.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/quadratic-formula.pl) |
-| [Riemann Hypothesis](https://github.com/eyereasoner/eyeprolog/blob/main/examples/riemann-hypothesis.pl) | A deliberately finite audit of catalogued non-trivial zeros, illustrating the boundary between evidence and universal proof. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/riemann-hypothesis.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/riemann-hypothesis.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/riemann-hypothesis.pl) |
-| [Shoelace Polygon Area](https://github.com/eyereasoner/eyeprolog/blob/main/examples/shoelace-polygon-area.pl) | Polygon area by the shoelace formula. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/shoelace-polygon-area.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/shoelace-polygon-area.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/shoelace-polygon-area.pl) |
-| [Sieve](https://github.com/eyereasoner/eyeprolog/blob/main/examples/sieve.pl) | List filtering presents a different operational route to finite prime generation. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/sieve.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/sieve.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/sieve.pl) |
-| [Stirling and Bell numbers](https://github.com/eyereasoner/eyeprolog/blob/main/examples/stirling-bell-numbers.pl) | Inclusion–exclusion and recurrence count set partitions in two related ways. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/stirling-bell-numbers.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/stirling-bell-numbers.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/stirling-bell-numbers.pl) |
-| [Takeuchi](https://github.com/eyereasoner/eyeprolog/blob/main/examples/takeuchi.pl) | The Takeuchi function as a demanding nested-recursion benchmark. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/takeuchi.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/takeuchi.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/takeuchi.pl) |
-| [Totient summatory function](https://github.com/eyereasoner/eyeprolog/blob/main/examples/totient-summatory.pl) | Divisibility, coprimality, counting, and summation compose over finite domains. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/totient-summatory.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/totient-summatory.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/totient-summatory.pl) |
-
-For a focused seminar, read Peano calculus, Fast exponentiation, D3 group,
-Matrix noncommutativity, and Fundamental theorem of arithmetic. They exhibit,
-respectively, structural induction, program improvement by algebra, finite
-model checking, refutation by one witness, and witness-producing number theory.
-
-#### Symbolic mathematics, languages, and metaprogramming
-
-Here terms denote syntax, formulas, expressions, or programs. The crucial
-discipline is to keep object language and EyeProlog metalanguage distinct.
-
-| Program | What the terms represent | Answer · reason · check |
-| --- | --- | --- |
-| [SAT solver: CDCL](https://github.com/eyereasoner/eyeprolog/blob/main/examples/cdcl-sat-solver.pl) | The example extends the SAT vocabulary toward conflicts and learned information. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/cdcl-sat-solver.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/cdcl-sat-solver.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/cdcl-sat-solver.pl) |
-| [Chart parser](https://github.com/eyereasoner/eyeprolog/blob/main/examples/chart-parser.pl) | Shared chart items prevent grammatical subproblems from being rediscovered independently. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/chart-parser.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/chart-parser.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/chart-parser.pl) |
-| [Context Schema Audit](https://github.com/eyereasoner/eyeprolog/blob/main/examples/context-schema-audit.pl) | Schema auditing for heterogeneous context terms by decomposing members with `=../2` and checking predicate arity. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/context-schema-audit.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/context-schema-audit.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/context-schema-audit.pl) |
-| [Derived Backward Rule](https://github.com/eyereasoner/eyeprolog/blob/main/examples/derived-backward-rule.pl) | Derived backward rule example. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/derived-backward-rule.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/derived-backward-rule.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/derived-backward-rule.pl) |
-| [Equality saturation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/equality-saturation.pl) | Repeated rewrite closure explores equivalent symbolic forms to a fixed point. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/equality-saturation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/equality-saturation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/equality-saturation.pl) |
-| [Expression evaluator](https://github.com/eyereasoner/eyeprolog/blob/main/examples/expression-eval.pl) | Arithmetic expression trees are interpreted under an explicit environment. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/expression-eval.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/expression-eval.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/expression-eval.pl) |
-| [Fast Fourier Transform](https://github.com/eyereasoner/eyeprolog/blob/main/examples/fast-fourier-transform.pl) | Recursive evaluation builds a shared expression tree and treats graphic operators such as `+` and `*` as data atoms. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/fast-fourier-transform.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/fast-fourier-transform.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/fast-fourier-transform.pl) |
-| [Intuitionistic Logic Kripke](https://github.com/eyereasoner/eyeprolog/blob/main/examples/intuitionistic-logic-kripke.pl) | Intuitionistic logic emulation with a finite Kripke model. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/intuitionistic-logic-kripke.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/intuitionistic-logic-kripke.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/intuitionistic-logic-kripke.pl) |
-| [Knuth–Bendix completion](https://github.com/eyereasoner/eyeprolog/blob/main/examples/knuth-bendix-completion.pl) | Oriented equations and critical interactions seek a more canonical rewrite system. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/knuth-bendix-completion.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/knuth-bendix-completion.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/knuth-bendix-completion.pl) |
-| [Language](https://github.com/eyereasoner/eyeprolog/blob/main/examples/language.pl) | A small grammar recognizes a finite relational language. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/language.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/language.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/language.pl) |
-| [Linear Logic Resources](https://github.com/eyereasoner/eyeprolog/blob/main/examples/linear-logic-resources.pl) | Linear logic emulation with explicit consumable resources. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/linear-logic-resources.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/linear-logic-resources.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/linear-logic-resources.pl) |
-| [Modal Logic Kripke](https://github.com/eyereasoner/eyeprolog/blob/main/examples/modal-logic-kripke.pl) | Modal logic emulation with a finite Kripke frame. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/modal-logic-kripke.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/modal-logic-kripke.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/modal-logic-kripke.pl) |
-| [Partial evaluator](https://github.com/eyereasoner/eyeprolog/blob/main/examples/partial-evaluator.pl) | Known inputs specialize an expression or program while unknown parts remain symbolic. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/partial-evaluator.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/partial-evaluator.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/partial-evaluator.pl) |
-| [Polynomial](https://github.com/eyereasoner/eyeprolog/blob/main/examples/polynomial.pl) | Structured coefficients and powers support symbolic polynomial operations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/polynomial.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/polynomial.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/polynomial.pl) |
-| [Proof Contrapositive](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof-contrapositive.pl) | Proof by contrapositive example. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/proof-contrapositive.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/proof-contrapositive.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/proof-contrapositive.pl) |
-| [Quine–McCluskey](https://github.com/eyereasoner/eyeprolog/blob/main/examples/quine-mccluskey.pl) | Boolean minimization with the Quine–McCluskey method, including essential implicants and deterministic cover selection. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/quine-mccluskey.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/quine-mccluskey.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/quine-mccluskey.pl) |
-| [SAT solver: DPLL](https://github.com/eyereasoner/eyeprolog/blob/main/examples/sat-solver-dpll.pl) | Formula representation, assignment, simplification, and branching form a compact solver. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/sat-solver-dpll.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/sat-solver-dpll.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/sat-solver-dpll.pl) |
-| [Symbolic derivative](https://github.com/eyereasoner/eyeprolog/blob/main/examples/symbolic-derivative.pl) | Differentiation rules transform expression trees without evaluating them numerically; the proof golden exposes the recursive construction. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/symbolic-derivative.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/symbolic-derivative.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/symbolic-derivative.pl) |
-| [Turing machine](https://github.com/eyereasoner/eyeprolog/blob/main/examples/turing.pl) | Machine configuration terms and transition rules expose a classical computation model. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/turing.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/turing.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/turing.pl) |
-| [Vanilla meta-interpreter](https://github.com/eyereasoner/eyeprolog/blob/main/examples/vanilla-meta-interpreter.pl) | solve/1 mirroring ordinary resolution, one clause at a time. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/vanilla-meta-interpreter.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/vanilla-meta-interpreter.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/vanilla-meta-interpreter.pl) |
-| [Propositional dynamic logic](https://github.com/eyereasoner/eyeprolog/blob/main/examples/propositional-dynamic-logic.pl) | PDL programs and modalities by threading state through pure relations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/propositional-dynamic-logic.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/propositional-dynamic-logic.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/propositional-dynamic-logic.pl) |
-
-Inspect the outermost functor of every data term. In the derivative example it
-names an expression constructor; in the SAT examples it names logical syntax;
-in the Turing example it helps describe a machine configuration. None of those
-nested terms is automatically asserted as an EyeProlog goal.
-
-#### Program analysis and verification
-
-These programs make programs or system configurations the subject of
-reasoning.
-
-| Program | Analysis idea | Answer · reason · check |
-| --- | --- | --- |
-| [Abstract interpretation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/abstract-interpretation.pl) | A finite sign domain conservatively approximates many concrete executions. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/abstract-interpretation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/abstract-interpretation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/abstract-interpretation.pl) |
-| [Cache performance](https://github.com/eyereasoner/eyeprolog/blob/main/examples/cache-performance.pl) | Configuration and workload facts derive performance classifications and reasons. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/cache-performance.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/cache-performance.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/cache-performance.pl) |
-| [Canary release](https://github.com/eyereasoner/eyeprolog/blob/main/examples/canary-release.pl) | Observations and thresholds support a deployment decision with auditable evidence. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/canary-release.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/canary-release.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/canary-release.pl) |
-| [Network SLA](https://github.com/eyereasoner/eyeprolog/blob/main/examples/network-sla.pl) | Technology example: network path SLA check. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/network-sla.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/network-sla.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/network-sla.pl) |
-| [Observability log correlation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/observability-log-correlation.pl) | Structured log events join across identifiers and time-related facts. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/observability-log-correlation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/observability-log-correlation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/observability-log-correlation.pl) |
-| [Pointer analysis](https://github.com/eyereasoner/eyeprolog/blob/main/examples/pointer-analysis.pl) | Allocation and assignment constraints derive a points-to relation by closure. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/pointer-analysis.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/pointer-analysis.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/pointer-analysis.pl) |
-| [Register allocation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/register-allocation.pl) | Liveness interference becomes a finite coloring problem. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/register-allocation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/register-allocation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/register-allocation.pl) |
-| [Relational Cube Lookup](https://github.com/eyereasoner/eyeprolog/blob/main/examples/relational-cube-lookup.pl) | Performance example: repeated multi-key relational lookups. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/relational-cube-lookup.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/relational-cube-lookup.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/relational-cube-lookup.pl) |
-| [Security incident correlation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/security-incident-correlation.pl) | Distributed observations combine into incident conclusions. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/security-incident-correlation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/security-incident-correlation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/security-incident-correlation.pl) |
-| [Truth-maintenance system](https://github.com/eyereasoner/eyeprolog/blob/main/examples/truth-maintenance-system.pl) | Justifications remain explicit when conclusions depend on defeasible information. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/truth-maintenance-system.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/truth-maintenance-system.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/truth-maintenance-system.pl) |
-| [Type inference](https://github.com/eyereasoner/eyeprolog/blob/main/examples/type-inference.pl) | Structural unification solves type constraints for a tiny expression language. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/type-inference.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/type-inference.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/type-inference.pl) |
-| [Vulnerability Impact](https://github.com/eyereasoner/eyeprolog/blob/main/examples/vulnerability-impact.pl) | Vulnerability impact analysis over a transitive dependency graph. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/vulnerability-impact.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/vulnerability-impact.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/vulnerability-impact.pl) |
-| [Declarative fault localization](https://github.com/eyereasoner/eyeprolog/blob/main/examples/declarative-fault-localization.pl) | Narrowing a wrong answer to the clause responsible for it. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/declarative-fault-localization.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/declarative-fault-localization.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/declarative-fault-localization.pl) |
-| [Universal vs existential termination](https://github.com/eyereasoner/eyeprolog/blob/main/examples/universal-vs-existential-termination.pl) | The difference between a query that answers and one that finishes. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/universal-vs-existential-termination.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/universal-vs-existential-termination.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/universal-vs-existential-termination.pl) |
-
-Abstract interpretation deserves special care: an abstract warning is not the
-claim that every concrete execution fails. It says the abstraction cannot rule
-the failure out. The direction of approximation is part of the theorem.
-
-#### Policies, provenance, and auditable decisions
-
-These examples are best read in layers: source facts, normalized concepts,
-decisions, reasons, integrity conditions, and proof.
-
-| Program | Decision domain | Answer · reason · check |
-| --- | --- | --- |
-| [Access control policy](https://github.com/eyereasoner/eyeprolog/blob/main/examples/access-control-policy.pl) | Attribute and policy facts derive permit status and reasons. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/access-control-policy.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/access-control-policy.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/access-control-policy.pl) |
-| [Clinical-trial screening](https://github.com/eyereasoner/eyeprolog/blob/main/examples/clinical-trial-screening.pl) | Inclusion and exclusion criteria produce an evidence-backed eligibility result. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/clinical-trial-screening.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/clinical-trial-screening.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/clinical-trial-screening.pl) |
-| [Data negotiation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/data-negotiation.pl) | Offered and required data conditions derive an agreement or mismatch. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/data-negotiation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/data-negotiation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/data-negotiation.pl) |
-| [Defeasible reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/defeasible-reasoning.pl) | A reimbursement policy overrides defaults by specificity, then compares three ways to handle one unresolved conflict between two independent defaults: an unstratified `\+/1` cycle, `tnot/1` with WFS's `undefined`, and this codebase's usual explicit conflict predicate. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/defeasible-reasoning.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/defeasible-reasoning.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/defeasible-reasoning.pl) |
-| [Deontic Logic](https://github.com/eyereasoner/eyeprolog/blob/main/examples/deontic-logic.pl) | Deontic logic: obligations, prohibitions, compensations, and violations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/deontic-logic.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/deontic-logic.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/deontic-logic.pl) |
-| [Evidence demand authority](https://github.com/eyereasoner/eyeprolog/blob/main/examples/evidence-demand-authority.pl) | A withdrawn demand for evidence: whether the missed deadline is a ground, and whether what was already handed over may be used. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/evidence-demand-authority.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/evidence-demand-authority.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/evidence-demand-authority.pl) |
-| [GDPR compliance](https://github.com/eyereasoner/eyeprolog/blob/main/examples/gdpr-compliance.pl) | Purpose, basis, and processing facts support compliance conclusions. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/gdpr-compliance.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/gdpr-compliance.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/gdpr-compliance.pl) |
-| [Illegitimate Reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/illegitimate-reasoning.pl) | Illegitimate reasoning detector. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/illegitimate-reasoning.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/illegitimate-reasoning.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/illegitimate-reasoning.pl) |
-| [Integrity check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/integrity-check.pl) | An explicit invalid-state relation reports contradictory input and a diagnostic status. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/integrity-check.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/integrity-check.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/integrity-check.pl) |
-| [Nixon Diamond](https://github.com/eyereasoner/eyeprolog/blob/main/examples/nixon-diamond.pl) | Nixon diamond: two independent defaults support incompatible conclusions. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/nixon-diamond.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/nixon-diamond.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/nixon-diamond.pl) |
-| [Trust-flow provenance threshold](https://github.com/eyereasoner/eyeprolog/blob/main/examples/trust-flow-provenance-threshold.pl) | Provenance and trust values remain premises of the derived threshold decision, including its arithmetic and comparison steps. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/trust-flow-provenance-threshold.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/trust-flow-provenance-threshold.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/trust-flow-provenance-threshold.pl) |
-| [Workplace compliance](https://github.com/eyereasoner/eyeprolog/blob/main/examples/workplace-compliance.pl) | Training, role, and workplace conditions feed a compact compliance theory. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/workplace-compliance.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/workplace-compliance.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/workplace-compliance.pl) |
-
-When studying a policy proof, circle every premise imported from outside the
-theory. The derivation validates the transition from those premises to the
-decision; it does not authenticate the source by itself.
-
-This explicit separation between premises, rules, questions, alternatives, and proofs is also why Prolog is a natural human-facing layer. It is not a model of the whole brain, but its computational vocabulary is unusually close to the way people communicate deliberate reasoning: assert something, state a generalization, ask a question, consider another answer, reject an alternative, and explain why. The symbiotic KG example uses that closeness as an interface between machine proposals and human judgment rather than treating the model's latent state as the shared source of truth.
-
-#### RDF 1.2 and policy roundtrips
-
-These programs combine generated `rdf/4` source facts with ISO Prolog rules
-adapted from the `rdf-prolog-interchange` example corpus. Each query materializes
-ground RDF-shaped results that can be serialized back to RDF.
-
-The [Symbiotic Knowledge Graphs](https://github.com/eyereasoner/eyeprolog/blob/main/examples/deck/symbiotic-knowledge-graphs.md) example extends the same boundary into a human/AI feedback loop. Named graphs preserve source and governance context, RDF 1.2 triple terms carry AI-proposed statements without asserting them, EyeProlog decides which claims become operational knowledge, and `result_rdf/4` materializes accepted knowledge and derived decisions for conversion back to RDF.
-
-| Program | Roundtrip idea | Answer · reason · check |
-| --- | --- | --- |
-| [Cross-organization data sharing](https://github.com/eyereasoner/eyeprolog/blob/main/examples/cross-organization-data-sharing.pl) | Combine ODRL/DPV policy, recipient properties, safeguards, jurisdiction, and retention into permit, deny, or review decisions with obligations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/cross-organization-data-sharing.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/cross-organization-data-sharing.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/cross-organization-data-sharing.pl) |
-| [Explainable EV-depot configuration](https://github.com/eyereasoner/eyeprolog/blob/main/examples/explainable-ev-depot-configuration.pl) | Select a compatible charger while deriving blockers and reversible required changes from the same relational rules. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/explainable-ev-depot-configuration.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/explainable-ev-depot-configuration.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/explainable-ev-depot-configuration.pl) |
-| [DPV–ODRL purpose mapping](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dpv-odrl-purpose-mapping.pl) | Verify six correspondences between a DPV process and an ODRL policy. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dpv-odrl-purpose-mapping.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/dpv-odrl-purpose-mapping.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/dpv-odrl-purpose-mapping.pl) |
-| [ODRL–DPV–FPV trust flow](https://github.com/eyereasoner/eyeprolog/blob/main/examples/odrl-dpv-fpv-trust-flow.pl) | Combine policy rules and trust scores into permit, review, and deny decisions. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/odrl-dpv-fpv-trust-flow.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/odrl-dpv-fpv-trust-flow.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/odrl-dpv-fpv-trust-flow.pl) |
-| [ODRL–DPV healthcare risk ranking](https://github.com/eyereasoner/eyeprolog/blob/main/examples/odrl-dpv-healthcare-risk-ranked.pl) | Detect and rank healthcare-policy risks with clauses and mitigations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/odrl-dpv-healthcare-risk-ranked.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/odrl-dpv-healthcare-risk-ranked.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/odrl-dpv-healthcare-risk-ranked.pl) |
-| [ODRL–DPV consumer risk ranking](https://github.com/eyereasoner/eyeprolog/blob/main/examples/odrl-dpv-risk-ranked.pl) | Score consumer-policy conflicts and return a deterministic risk ranking. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/odrl-dpv-risk-ranked.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/odrl-dpv-risk-ranked.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/odrl-dpv-risk-ranked.pl) |
-| [ODRL policy](https://github.com/eyereasoner/eyeprolog/blob/main/examples/odrl-policy.pl) | Read one purpose-constrained permission from an ODRL policy graph. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/odrl-policy.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/odrl-policy.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/odrl-policy.pl) |
-| [Advanced ODRL policy](https://github.com/eyereasoner/eyeprolog/blob/main/examples/odrl-policy-advanced.pl) | Evaluate permission, duty, constraint failure, and prohibition outcomes. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/odrl-policy-advanced.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/odrl-policy-advanced.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/odrl-policy-advanced.pl) |
-| [ODRL policy reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/odrl-policy-reasoning.pl) | Query action relationships, rule and enforcement outcomes, conflict strategies and kinds, action/rule/policy subsumption, and three-valued WFS defaults. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/odrl-policy-reasoning.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/odrl-policy-reasoning.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/odrl-policy-reasoning.pl) |
-| [RDF 1.2 annotated claims](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-annotated-claims.pl) | Rank conflicting annotated claims by confidence and source trust. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/rdf12-annotated-claims.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/rdf12-annotated-claims.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/rdf12-annotated-claims.pl) |
-| [RDF 1.2 annotation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-annotation.pl) | Recover an asserted triple together with its reifier and annotations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/rdf12-annotation.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/rdf12-annotation.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/rdf12-annotation.pl) |
-| [RDF 1.2 directional language](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-directional-language.pl) | Preserve language and base-direction metadata in derived labels. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/rdf12-directional-language.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/rdf12-directional-language.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/rdf12-directional-language.pl) |
-| [RDF 1.2 nested triple term](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-nested-triple-term.pl) | Match nested triple terms and derive the innermost relationship. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/rdf12-nested-triple-term.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/rdf12-nested-triple-term.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/rdf12-nested-triple-term.pl) |
-| [RDF 1.2 TriG graph join](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-trig-graph-join.pl) | Join default-graph metadata with measurements from a named graph. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/rdf12-trig-graph-join.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/rdf12-trig-graph-join.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/rdf12-trig-graph-join.pl) |
-| [RDF 1.2 TriG named graph](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-trig-named-graph.pl) | Derive ancestor relationships inside the source named graph. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/rdf12-trig-named-graph.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/rdf12-trig-named-graph.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/rdf12-trig-named-graph.pl) |
-| [RDF 1.2 TriG triple term](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-trig-triple-term.pl) | Project a triple term while retaining its named-graph context. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/rdf12-trig-triple-term.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/rdf12-trig-triple-term.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/rdf12-trig-triple-term.pl) |
-| [RDF 1.2 triple term](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-triple-term.pl) | Project a triple term into an ordinary asserted relationship. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/rdf12-triple-term.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/rdf12-triple-term.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/rdf12-triple-term.pl) |
-| [Operational incident response](https://github.com/eyereasoner/eyeprolog/blob/main/examples/operational-incident-response.pl) | Correlate symptoms and telemetry through a service dependency graph to derive root cause, transitive impact, evidence, and a guarded failover action. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/operational-incident-response.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/operational-incident-response.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/operational-incident-response.pl) |
-| [SBOM vulnerability response](https://github.com/eyereasoner/eyeprolog/blob/main/examples/sbom-vulnerability-response.pl) | Traverse transitive dependencies, apply severity and waiver policy, expose the exact vulnerable path, and derive an upgrade action. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/sbom-vulnerability-response.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/sbom-vulnerability-response.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/sbom-vulnerability-response.pl) |
-| [Scientific evidence graph](https://github.com/eyereasoner/eyeprolog/blob/main/examples/scientific-evidence-graph.pl) | Use RDF 1.2 triple terms plus study metadata to distinguish supported claims, lower-quality counterevidence, and genuinely contested conclusions. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/scientific-evidence-graph.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/scientific-evidence-graph.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/scientific-evidence-graph.pl) |
-| [Symbiotic Knowledge Graphs](https://github.com/eyereasoner/eyeprolog/blob/main/examples/symbiotic-knowledge-graph.pl) | Roundtrip a city heatwave KG through RDF 1.2 triple-term proposals, human review, explicit Prolog governance, and materialized decisions. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/symbiotic-knowledge-graph.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/symbiotic-knowledge-graph.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/symbiotic-knowledge-graph.pl) |
-| [Alignment demo](https://github.com/eyereasoner/eyeprolog/blob/main/examples/alignment-demo.pl) | Aligning two vocabularies. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/alignment-demo.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/alignment-demo.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/alignment-demo.pl) |
-| [Context association](https://github.com/eyereasoner/eyeprolog/blob/main/examples/context-association.pl) | Associating statements with the context they hold in. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/context-association.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/context-association.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/context-association.pl) |
-| [Web names](https://github.com/eyereasoner/eyeprolog/blob/main/examples/web-names.pl) | Web names carried as ordinary EyeProlog atoms. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/web-names.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/web-names.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/web-names.pl) |
-
-#### Science, engineering, and numerical models
-
-These examples make mathematical assumptions operational. Their values are
-illustrative models, not professional engineering or medical advice.
-
-| Program | Model | Answer · reason · check |
-| --- | --- | --- |
-| [Bayes Diagnosis](https://github.com/eyereasoner/eyeprolog/blob/main/examples/bayes-diagnosis.pl) | Bayesian diagnosis. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/bayes-diagnosis.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/bayes-diagnosis.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/bayes-diagnosis.pl) |
-| [Bayes Therapy](https://github.com/eyereasoner/eyeprolog/blob/main/examples/bayes-therapy.pl) | Memoize shared inference layers: the score vector, disease likelihood tails, and expected therapy success are reused by several report relations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/bayes-therapy.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/bayes-therapy.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/bayes-therapy.pl) |
-| [Beam deflection](https://github.com/eyereasoner/eyeprolog/blob/main/examples/beam-deflection.pl) | A mechanics equation combines load, geometry, and material parameters. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/beam-deflection.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/beam-deflection.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/beam-deflection.pl) |
-| [BMI](https://github.com/eyereasoner/eyeprolog/blob/main/examples/bmi.pl) | Metric and US-unit normalization, BMI classification, healthy-weight bands, and audit checks. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/bmi.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/bmi.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/bmi.pl) |
-| [Braking Safety Worlds](https://github.com/eyereasoner/eyeprolog/blob/main/examples/braking-safety-worlds.pl) | Braking safety in alternative worlds. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/braking-safety-worlds.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/braking-safety-worlds.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/braking-safety-worlds.pl) |
-| [Buck converter design](https://github.com/eyereasoner/eyeprolog/blob/main/examples/buck-converter-design.pl) | Electrical design candidates are checked against component and performance constraints. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/buck-converter-design.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/buck-converter-design.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/buck-converter-design.pl) |
-| [Competitive enzyme kinetics](https://github.com/eyereasoner/eyeprolog/blob/main/examples/competitive-enzyme-kinetics.pl) | A biochemical rate law becomes a numeric relational model. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/competitive-enzyme-kinetics.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/competitive-enzyme-kinetics.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/competitive-enzyme-kinetics.pl) |
-| [Control system](https://github.com/eyereasoner/eyeprolog/blob/main/examples/control-system.pl) | System parameters derive stability- and response-related quantities. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/control-system.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/control-system.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/control-system.pl) |
-| [Dairy energy balance](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dairy-energy-balance.pl) | Intake and expenditure quantities are combined in an agricultural model. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/dairy-energy-balance.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/dairy-energy-balance.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/dairy-energy-balance.pl) |
-| [Electrical RC filter](https://github.com/eyereasoner/eyeprolog/blob/main/examples/electrical-rc-filter.pl) | Component values derive circuit behavior under an explicit formula. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/electrical-rc-filter.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/electrical-rc-filter.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/electrical-rc-filter.pl) |
-| [Epidemic policy](https://github.com/eyereasoner/eyeprolog/blob/main/examples/epidemic-policy.pl) | Observations and thresholds connect a simple epidemic model to policy conclusions. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/epidemic-policy.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/epidemic-policy.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/epidemic-policy.pl) |
-| [EV Range Worlds](https://github.com/eyereasoner/eyeprolog/blob/main/examples/ev-range-worlds.pl) | Electric-vehicle range worlds. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/ev-range-worlds.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/ev-range-worlds.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/ev-range-worlds.pl) |
-| [Exoplanet Validation Worlds](https://github.com/eyereasoner/eyeprolog/blob/main/examples/exoplanet-validation-worlds.pl) | Exoplanet candidate validation worlds. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/exoplanet-validation-worlds.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/exoplanet-validation-worlds.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/exoplanet-validation-worlds.pl) |
-| [FFT-8 Numeric](https://github.com/eyereasoner/eyeprolog/blob/main/examples/fft8-numeric.pl) | An eight-point radix-2 FFT over explicit complex pairs, showing butterflies, twiddle factors, and selected bins. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/fft8-numeric.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/fft8-numeric.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/fft8-numeric.pl) |
-| [Field nitrogen balance](https://github.com/eyereasoner/eyeprolog/blob/main/examples/field-nitrogen-balance.pl) | Inputs, removal, and losses form a conservation-style accounting relation. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/field-nitrogen-balance.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/field-nitrogen-balance.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/field-nitrogen-balance.pl) |
-| [GD Step Certified](https://github.com/eyereasoner/eyeprolog/blob/main/examples/gd-step-certified.pl) | A proof-friendly certified gradient-descent step with memoized interval bounds and explicit acceptance evidence. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/gd-step-certified.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/gd-step-certified.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/gd-step-certified.pl) |
-| [Hamming Code](https://github.com/eyereasoner/eyeprolog/blob/main/examples/hamming-code.pl) | Technology example: Hamming(7,4) single-bit error correction. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/hamming-code.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/hamming-code.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/hamming-code.pl) |
-| [Heat Loss](https://github.com/eyereasoner/eyeprolog/blob/main/examples/heat-loss.pl) | Engineering example: one-dimensional conductive heat loss through a wall. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/heat-loss.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/heat-loss.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/heat-loss.pl) |
-| [Ideal Gas Law](https://github.com/eyereasoner/eyeprolog/blob/main/examples/ideal-gas-law.pl) | Science example: ideal gas law. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/ideal-gas-law.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/ideal-gas-law.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/ideal-gas-law.pl) |
-| [Least-squares regression](https://github.com/eyereasoner/eyeprolog/blob/main/examples/least-squares-regression.pl) | Finite observations are summarized into a fitted linear model. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/least-squares-regression.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/least-squares-regression.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/least-squares-regression.pl) |
-| [Orbital transfer design](https://github.com/eyereasoner/eyeprolog/blob/main/examples/orbital-transfer-design.pl) | Candidate orbital parameters are evaluated against transfer equations. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/orbital-transfer-design.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/orbital-transfer-design.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/orbital-transfer-design.pl) |
-| [Pendulum Period](https://github.com/eyereasoner/eyeprolog/blob/main/examples/pendulum-period.pl) | Science example: simple pendulum period. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/pendulum-period.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/pendulum-period.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/pendulum-period.pl) |
-| [Radioactive Decay](https://github.com/eyereasoner/eyeprolog/blob/main/examples/radioactive-decay.pl) | Science example: radioactive decay. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/radioactive-decay.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/radioactive-decay.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/radioactive-decay.pl) |
-| [Spacecraft battery diagnosis](https://github.com/eyereasoner/eyeprolog/blob/main/examples/spacecraft-battery-diagnosis.pl) | Telemetry, `P = I²R`, limits, and redundant sensing support diagnosis and action. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/spacecraft-battery-diagnosis.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/spacecraft-battery-diagnosis.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/spacecraft-battery-diagnosis.pl) |
-| [Statistics summary](https://github.com/eyereasoner/eyeprolog/blob/main/examples/statistics-summary.pl) | Aggregates compute descriptive statistics over a finite list. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/statistics-summary.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/statistics-summary.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/statistics-summary.pl) |
-| [Superdense Coding](https://github.com/eyereasoner/eyeprolog/blob/main/examples/superdense-coding.pl) | Superdense coding using discrete quantum computing. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/superdense-coding.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/superdense-coding.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/superdense-coding.pl) |
-| [Vector Similarity](https://github.com/eyereasoner/eyeprolog/blob/main/examples/vector-similarity.pl) | Vector dot product, Euclidean norm, and cosine similarity. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/vector-similarity.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/vector-similarity.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/vector-similarity.pl) |
-
-For each scientific example, write a five-column audit: quantity, unit, source,
-equation, and approximation. A machine-checked derivation is only as
-interpretable as that modeling boundary.
-
-
-#### Large integrated cases
-
-After the focused examples, these programs are useful for whole-program
-reading. Begin by drawing their predicate dependency layers.
-
-| Program | Why it is a capstone | Answer · reason · check |
-| --- | --- | --- |
-| [AuroraCare](https://github.com/eyereasoner/eyeprolog/blob/main/examples/auroracare.pl) | A large healthcare-oriented knowledge theory combines many domain concepts and decisions. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/auroracare.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/auroracare.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/auroracare.pl) |
-| [Basic monadic](https://github.com/eyereasoner/eyeprolog/blob/main/examples/basic-monadic.pl) | A large generated symbolic theory stresses parsing, terms, and relational execution. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/basic-monadic.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/basic-monadic.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/basic-monadic.pl) |
-| [Delfour](https://github.com/eyereasoner/eyeprolog/blob/main/examples/delfour.pl) | Delfour insight-economy case. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/delfour.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/delfour.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/delfour.pl) |
-| [Flandor](https://github.com/eyereasoner/eyeprolog/blob/main/examples/flandor.pl) | A broad rule set provides practice navigating a less tutorial-shaped theory. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/flandor.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/flandor.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/flandor.pl) |
-| [Knowledge-engineering alignment flow](https://github.com/eyereasoner/eyeprolog/blob/main/examples/knowledge-engineering-alignment-flow.pl) | Source concepts, mappings, validation, and derived alignment are kept in explicit layers. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/knowledge-engineering-alignment-flow.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/knowledge-engineering-alignment-flow.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/knowledge-engineering-alignment-flow.pl) |
-| [LLDM](https://github.com/eyereasoner/eyeprolog/blob/main/examples/lldm.pl) | A larger logical model demonstrates layered derivation over substantial source data. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/lldm.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/lldm.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/lldm.pl) |
-| [Manufacturing quality control](https://github.com/eyereasoner/eyeprolog/blob/main/examples/manufacturing-quality-control.pl) | Measurements, limits, classifications, and actions form an auditable industrial decision. | [answer](https://github.com/eyereasoner/eyeprolog/blob/main/examples/output/manufacturing-quality-control.pl) · [reason](https://github.com/eyereasoner/eyeprolog/blob/main/examples/proof/manufacturing-quality-control.pl) · [check](https://github.com/eyereasoner/eyeprolog/blob/main/examples/check/manufacturing-quality-control.pl) |
-
-Do not read a capstone from the first line to the last as if it were prose.
-Start at the supplied goal, find its predicate heads, follow their dependencies
-downward, and only then inspect the source facts. This is backward slicing by
-hand.
-
-#### Running and extending the corpus
-
-Run all 236 answer goldens and all 236 proof goldens with:
-
-```sh
-node test/run-examples.mjs
-```
-
-Run the complete conformance, regression, example, and proof corpus
-with:
-
-```sh
-npm test
-```
-
-There is no separate wall-clock benchmark harness. `npm test`'s own elapsed
-time, run across thousands of conformance, regression, and example programs,
-is the project's performance indicator: a real slowdown shows up there.
-
-When adding an example:
-
-1. choose a filename that names the mathematical or domain idea;
-2. begin with comments stating the intended lesson and model boundary;
-3. keep queries finite and outputs small enough to inspect;
-4. add the exact normal output under `examples/output/`;
-5. add a proof golden under `examples/proof/` when explanation is central;
-6. include both a positive case and a meaningful boundary or failure case;
-7. run the full corpus before treating the example as documentation.
-
-Every top-level program under `examples/` appears in the thematic lists above. Apply the same reading discipline to every example—sentence, mode, finite domain, answer, proof, and revision.
-
-## 42. Standards, limits, and implementation boundaries
-
-This book is the single reference for the EyeProlog implementation. Chapters 38–40
-describe its supported ISO Prolog syntax, directives, execution model,
-built-in predicates, and command-line interface. The earlier chapters explain the reasoner, explicit tabling,
-proof terms, warnings, answer formatting, embedding, and explicit host data
-boundaries.
-
-The executable corpus under `test/conformance/` tests the JavaScript
-implementation. Positive programs and exact output cover arithmetic, text relations,
-lists, terms, atoms, variables, negation, queries, rules, and
-syntax. Separate corpora cover expected errors, warnings, and proofs:
+The file-based corpus under `test/conformance/` covers success, failure,
+errors, warnings, proofs, and file loading:
 
 ```sh
 node test/run-conformance-all.mjs
@@ -10474,117 +7956,92 @@ node test/run-iso-strict.mjs
 node test/run-conformance-report.mjs
 ```
 
-`test/conformance/ISO-COMPLIANCE.md` is the processor-requirement ledger for the
-Part 1 conformance review. It records explicit dispositions for the tracked processor, syntax, semantic, built-in, and arithmetic requirements, and maps language families to representative executable cases.
-`test/conformance/ISO-IMPLEMENTATION-DEFINED.md` is the ISO 5.4 decision
-index: it enumerates the Part 1 implementation-defined decisions and the
-implementation-specific extension families without turning draft WG17/STC
-proposals into the licensed baseline. `ISO-TERM-SEMANTICS-MATRIX.md` closes the 7.1-7.3 type/order/unification
-rows, `ISO-PROLOG-TEXT-EXECUTION-MATRIX.md` closes 7.4-7.8 preparation,
-database, conversion, execution, and control, and
-`ISO-EVALUABLE-FUNCTOR-MATRIX.md` closes 7.9/Clause 9 expression and arithmetic
-rows. The exit checklist in `ISO-COMPLIANCE.md` records the closure criteria and their evidence. WG17 syntax cases
-are discovered live and executed as part of the Neumerkel conformity gate
-rather than a vendored, periodically refreshed snapshot; a small offline
-corpus (`test/conformance/wg17-syntax-cases.json`) additionally pins exact
-reviewed strict-reader outcomes for most cases, cross-referenced by id against
-the live-discovered ones. Every case, live or reviewed, is checked directly
-against the upstream Codex expectation.
-
-The syntax review also cross-checks extension safety: each WG17 case
-accepted by the strict Part 1 reader is executed through the normal profile and
-must preserve the same observable outcome. Additional normal-mode syntax may
-accept texts outside the strict grammar, but it may not reinterpret an accepted
-standard case.
-
 The file-based conformance corpus contains 905 cases, including 479 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
-Separate exact-output suites check 235 normal examples and 103 proof examples; all executable chapter programs are parsed and their declared goals are executed. The nine-case
-playground contract suite imports the production worker, sends real reasoning
-requests through its message protocol, and crawls the served module graph for
-missing assets, bad MIME types, and static Node-only imports. `conformance-report.md` inventories the file-based conformance corpus and links to the live Neumerkel evidence, which includes the current WG17 syntax result.
+Separate exact-output suites check every example's answer, proof, and proof
+check, and every chapter display is parsed with its declared goals run. The
+playground suite drives the production worker through its message protocol and
+crawls the served module graph for missing assets, wrong MIME types, and static
+Node-only imports (`node test/run-playground.mjs`).
 
-### Conformance artifacts
+The review documents are:
 
-The repository exposes several forms of executable evidence:
+- `test/conformance/ISO-COMPLIANCE.md`, the Part 1 ledger: an explicit
+  disposition for each tracked processor, syntax, semantic, built-in, and
+  arithmetic requirement, mapped to executable cases, plus the exit checklist;
+- `test/conformance/ISO-IMPLEMENTATION-DEFINED.md`, the ISO 5.4 index of
+  implementation-defined decisions and extension families;
+- `ISO-TERM-SEMANTICS-MATRIX.md` (7.1–7.3 types, order, unification),
+  `ISO-PROLOG-TEXT-EXECUTION-MATRIX.md` (7.4–7.8 preparation, database,
+  conversion, execution, control), and `ISO-EVALUABLE-FUNCTOR-MATRIX.md`
+  (7.9 and Clause 9 arithmetic);
+- `conformance-report.md`, which inventories the corpus and links to
+  `NEUMERKEL-LATEST.md`, the live TU Wien conformity results including WG17
+  syntax.
 
-- `conformance-report.md` inventories the file-based conformance corpus and links to `NEUMERKEL-LATEST.md`, which records the current WG17 syntax result among the other live TU Wien sources;
-- `examples/book/` contains the executable code displays associated with the chapters;
-- `examples/output/` and `examples/proof/` contain reviewed exact-output goldens that make behavior changes visible in version control.
+WG17 syntax cases are discovered live, not taken from a vendored snapshot; a
+small offline file (`test/conformance/wg17-syntax-cases.json`) pins reviewed
+strict-reader outcomes for most of them, and every case is checked against the
+upstream expectation. Each case the strict reader accepts is also run in the
+normal profile and must give the same result: extensions may accept more
+texts, but may not reinterpret a standard one.
 
-Run the browser contract independently with:
+### The supported profile
 
-```sh
-node test/run-playground.mjs
-```
+The strict-core target is ISO/IEC 13211-1:1995 with Technical Corrigenda 1–3.
+Normal mode adds the module compatibility surface, a Part 3-oriented
+definite-clause grammar, and the EyeProlog extensions. Chapter 39 lists every
+supported predicate indicator. The normal profile covers control and
+exceptions, term operations, arithmetic, grouped solutions, dynamic clauses,
+operators, atomic terms, flags, character conversion, streams, character, byte,
+and term I/O, initialization, source inclusion, modules, and grammar rules.
 
-### Supported ISO Prolog implementation
+`--iso-strict` (API option `isoStrict: true`) limits the processor to the
+Part 1 baseline. Corrigendum 2 additions such as `subsumes_term/2`,
+`acyclic_term/1`, `sort/2`, `keysort/2`, `term_variables/2`, `retractall/1`, and
+`call/2-8` belong to that baseline. Modules, grammar-rule expansion and
+`phrase/2-3`, quads, libraries, the `occurs_check` flag, `table`,
+`call_cleanup/2`, and `setup_call_cleanup/3` do not.
 
-EyeProlog executes a documented and tested ISO-oriented Prolog profile. Its
-strict-core target is ISO/IEC 13211-1:1995 with Technical Corrigenda 1-3. Normal
-mode additionally provides the documented module compatibility surface and a
-Part 3-oriented definite-clause-grammar implementation. The exact supported predicate indicators are
-listed in Chapter 39. The normal profile includes control and exceptions, term
-operations, arithmetic, grouped solutions, dynamic clauses, operators,
-atomic-term processing, flags, character conversion, streams, character/byte
-and term I/O, initialization, source inclusion, module compatibility forms,
-definite-clause grammar rules, and EyeProlog extensions.
+The strict-core review gives explicit dispositions for the Clause 5 processor
+obligations, Clause 6 syntax, Clause 7 term, execution, I/O, and error
+semantics, the 8.2–8.17 built-in families, and the Clause 9 evaluable functors.
+Implementation-defined choices, among them the Unicode-scalar character set,
+stream details, flag defaults, floating-point behavior, and signed bitwise and
+shift semantics, are indexed in `ISO-IMPLEMENTATION-DEFINED.md`. This is
+executable evidence for a documented boundary, not independent ISO
+certification.
 
-For a Part 1 conformance boundary, `--iso-strict` (or API option
-`isoStrict: true`) limits the processor to ISO/IEC 13211-1:1995 plus Technical
-Corrigenda 1–3. Corrigendum 2 additions—including `subsumes_term/2`,
-`acyclic_term/1`, `sort/2`, `keysort/2`, `term_variables/2`, `retractall/1`,
-and `call/2-8`—remain part of that strict baseline. Part 2 modules, Part 3 DCG
-expansion/`phrase/2-3`, quads, EyeProlog libraries, the `occurs_check` flag,
-the normal-profile `table` declaration, `call_cleanup/2`, and `setup_call_cleanup/3` are outside
-that Part 1 strict surface.
+Notable boundaries:
 
-The strict-core review has explicit dispositions for the Clause 5 processor
-obligations, Clause 6 syntax and rejection families, Clause 7 term/execution/I/O
-and error semantics, the 8.2-8.17 built-in families, and Clause 9 evaluable
-functors. The complete, live-discovered WG17 syntax matrix is checked together with normal-mode safety: each strict-success WG17 observation must keep the same result when normal-mode extensions are enabled. Implementation-defined
-choices—including the Unicode-scalar processor character set, stream details,
-flag defaults, floating behavior, and signed bitwise/shift semantics—are indexed
-in `test/conformance/ISO-IMPLEMENTATION-DEFINED.md`. The conformance closure ledger is `test/conformance/ISO-COMPLIANCE.md`.
-
-Notable implementation boundaries are:
-
-- zero-arity compound syntax such as `ready()` is represented by the atom
-  `ready`;
-- module and ISO/IEC TS 13211-3-oriented DCG compatibility profiles are supported in normal mode, without a complete Part 2/Part 3 certification claim;
-- variables cannot occupy functor or predicate position;
-- double-quoted text follows `double_quotes` exactly; the default `chars` value
-  matches Trealla and Scryer and may be changed to `codes` or `atom`; normal
-  mode additionally accepts Trealla-compatible `"text"||Tail` right-splicing
-  for the `chars` and `codes` values, while strict mode rejects that syntax;
-- `write_term/2-3` implements the Part 1 plus Corrigendum 3 `quoted/1`,
-  `ignore_ops/1`, `numbervars/1`, and `variable_names/1` option surface,
-  including option validation and traversal rules; normal mode also offers
-  `double_quotes(true|false)` and `spacing(true|false)` as explicitly
-  implementation-specific extensions, which strict mode rejects;
-- unification consistently performs an occurs check, rejecting rational-tree
-  bindings accepted as extensions by some systems.
-
-Write terms explicitly, keep variables uppercase or underscore-prefixed, and
-quote atom names that are neither lowercase plain names nor graphic tokens.
-The conformance ledger provides executable evidence for this documented strict-core boundary; it is not independent ISO certification.
+- zero-arity compound syntax such as `ready()` denotes the atom `ready`;
+- module and DCG support (Parts 2 and 3) is a compatibility profile, not a
+  certification claim;
+- a variable cannot stand in functor or predicate position;
+- double-quoted text follows the `double_quotes` flag exactly; the default
+  `chars` matches Trealla and Scryer, and `codes` or `atom` may be selected.
+  Normal mode also accepts Trealla's `"text"||Tail` splicing for `chars` and
+  `codes`; strict mode rejects it;
+- `write_term/2-3` implements the Part 1 and Corrigendum 3 options `quoted/1`,
+  `ignore_ops/1`, `numbervars/1`, and `variable_names/1`, with their validation
+  rules; normal mode adds `double_quotes(true|false)` and
+  `spacing(true|false)`, which strict mode rejects;
+- unification always performs the occurs check, so rational-tree bindings that
+  some systems accept are rejected.
 
 ### Security and resource use
 
-EyeProlog has no general host-call primitive, yet an untrusted theory is still
-executable input. It can request enormous finite searches or construct
-unbounded terms. URL inputs also cross a network and trust boundary.
-Applications should restrict accepted sources and impose suitable input-size,
-time, depth, memory, and solution limits. Proof output can be larger than
-answer output and needs its own budget.
+EyeProlog has no general host-call primitive, but an untrusted theory is still
+executable input: it can request enormous finite searches or build unbounded
+terms, and URL inputs cross a network and trust boundary. Restrict accepted
+sources and impose limits on input size, time, depth, memory, and solutions.
+Proof output can be much larger than the answers and needs its own budget.
 
-## 43. Glossary and notes for continued study
+## 42. Glossary and notes
 
-### Notes and references
+### References
 
-The book is self-contained as an EyeProlog guide. These sources provide historical
-and technical background for the ideas that EyeProlog adapts. They describe larger
-languages and theories, so they should not be read as additional EyeProlog
-specifications.
+These sources give historical and technical background. They describe larger
+languages and theories and are not EyeProlog specifications.
 
 - ISO/IEC,
   [*ISO/IEC 13211-1:1995 — Programming languages — Prolog — Part 1:
@@ -10593,787 +8050,458 @@ specifications.
   [Technical Corrigendum 2:2012](https://www.iso.org/standard/58033.html),
   and
   [Technical Corrigendum 3:2017](https://www.iso.org/standard/73194.html).
-  Chapter 38 defines the precise EyeProlog compatibility profile against this
-  standards baseline; Chapter 39 lists the implemented predicate indicators.
-
+  Chapter 38 defines EyeProlog's profile against this baseline.
+- Leon Sterling and Ehud Shapiro,
+  [*The Art of Prolog*, second edition](https://mitpress.ublish.com/book/art-prolog),
+  MIT Press, 1994. The model for this book's progression from relations to
+  program construction, interpreters, and applications.
 - Michael Genesereth,
   [*Introduction to Logic*](http://intrologic.stanford.edu/public/chapters.php),
-  Stanford University. This free online text provides a broader introduction
-  to logical syntax and semantics, proof systems, and resolution, complementing
-  the focused treatment of executable Horn clauses in this book.
-
-- David Hilbert,
-  [“Mathematical Problems”](https://www.gutenberg.org/ebooks/71655), address
-  to the International Congress of Mathematicians, Paris, 1900; English
-  translation published in 1902. The address exemplifies the axiomatic,
-  problem-directed mathematical culture from which the later formal study of
-  proof grew. Part VI places logic programming within that longer development
-  without reducing the history of mathematics to formalism.
-
-- Kurt Gödel,
-  [“Über formal unentscheidbare Sätze der *Principia Mathematica* und
-  verwandter Systeme I”](https://doi.org/10.1007/BF01700692),
-  *Monatshefte für Mathematik und Physik* 38, 1931, pp. 173–198. The
-  incompleteness theorems establish intrinsic limits for sufficiently
-  expressive effectively axiomatized formal systems. Chapter 30 treats such
-  limits as part of mathematical rigor, not as a failure of it.
-
-- Alonzo Church,
-  [“An Unsolvable Problem of Elementary Number
-  Theory”](https://www.cis.upenn.edu/~cis5110/Church-UnsolvableProblemElementary-1936.pdf),
-  *American Journal of Mathematics* 58(2), 1936, pp. 345–363. Church's
-  lambda-definability account of effective calculability and his negative
-  solution concerning general decision procedures helped make the boundary of
-  algorithmic method mathematically exact.
-
-- Alan M. Turing,
-  [“On Computable Numbers, with an Application to the
-  Entscheidungsproblem”](https://doi.org/10.1112/plms/s2-42.1.230),
-  *Proceedings of the London Mathematical Society* 42, 1936–1937,
-  pp. 230–265. Turing's machine model gave an independent analysis of
-  effective computation and another route to the undecidability of the general
-  decision problem. It supplies historical context for the distinction in
-  Part VI between a mathematical relation and a procedure guaranteed to decide
-  it.
-
+  Stanford University. A free text on logical syntax, semantics, and proof
+  systems.
 - Jacques Herbrand,
-  [*Recherches sur la théorie de la
-  démonstration*](https://www.numdam.org/item/THESE_1930__110__1_0/),
-  doctoral thesis, University of Paris, 1930. Herbrand's fundamental theorem
-  and treatment of ground instances form a major proof-theoretic foundation
-  for automated deduction. Chapter 3 explains how the later Herbrand universe,
-  base, interpretations, and least-model vocabulary connect that foundation to
-  logic programming.
-
-- J. A. Robinson, [“A Machine-Oriented Logic Based on the Resolution
-  Principle”](https://doi.org/10.1145/321250.321253), *Journal of the ACM*
-  12(1), 1965, pp. 23–41. The foundational account of resolution and
-  machine-oriented unification behind later logic-programming proof
-  procedures.
-
+  [*Recherches sur la théorie de la démonstration*](https://www.numdam.org/item/THESE_1930__110__1_0/),
+  doctoral thesis, University of Paris, 1930. Ground instances as a foundation
+  of automated deduction (Chapter 3).
+- J. A. Robinson,
+  [“A Machine-Oriented Logic Based on the Resolution Principle”](https://doi.org/10.1145/321250.321253),
+  *Journal of the ACM* 12(1), 1965, pp. 23–41. Resolution and unification.
 - Alain Colmerauer and Philippe Roussel,
   [“The Birth of Prolog”](https://softwarepreservation.computerhistory.org/prolog/index.html#history),
-  in *History
-  of Programming Languages II*, 1996, pp. 331–367. A first-person history of
-  how theorem proving, natural-language processing, and programming-language
-  design converged in early Prolog.
-
+  in *History of Programming Languages II*, 1996, pp. 331–367.
 - Maarten H. van Emden and Robert A. Kowalski,
-  [“The Semantics of Predicate Logic as a Programming
-  Language”](https://doi.org/10.1145/321978.321991), *Journal of the ACM*
-  23(4), 1976, pp. 733–742. The classic fixed-point and model-theoretic
-  account behind the least-Herbrand-model discussion in Chapter 3.
-
+  [“The Semantics of Predicate Logic as a Programming Language”](https://doi.org/10.1145/321978.321991),
+  *Journal of the ACM* 23(4), 1976, pp. 733–742. Least models and fixed points
+  (Chapter 3).
 - Robert A. Kowalski,
   [“Algorithm = Logic + Control”](https://doi.org/10.1145/359131.359136),
-  *Communications of the ACM* 22(7), 1979, pp. 424–436. The source of the
-  distinction developed throughout Chapters 3 and 17–20.
-
+  *Communications of the ACM* 22(7), 1979, pp. 424–436 (Chapters 17–20).
 - Keith L. Clark,
-  [“Negation as
-  Failure”](https://www.doc.ic.ac.uk/~klc/neg.html), in *Logic and Data
-  Bases*, 1978, pp. 293–322. Clark relates finite failure in a logic database
-  to a completed-database reading. The historical note after Part II uses this
-  work to distinguish operational negation from unrestricted classical
-  negation.
-
-- Yoshihiko Futamura,
-  [“Partial Evaluation of Computation Process—An Approach to a
-  Compiler-Compiler”](https://www.jstage.jst.go.jp/article/jssst/21/5/21_5_343/_article/-char/en),
-  originally published in 1971 and republished in English translation.
-  Futamura showed how specializing an interpreter with respect to a source
-  program connects partial evaluation with compilation. Part V invokes this
-  as historical context for specialization, not as an EyeProlog implementation
-  claim.
-
+  [“Negation as Failure”](https://www.doc.ic.ac.uk/~klc/neg.html), in *Logic
+  and Data Bases*, 1978, pp. 293–322. Finite failure and the completed
+  database (Chapter 7).
 - Krzysztof R. Apt, Howard A. Blair, and Adrian Walker,
-  [“Towards a Theory of Declarative
-  Knowledge”](https://ir.cwi.nl/pub/10404), in *Foundations of Deductive
-  Databases and Logic Programming*, 1988, pp. 89–148. Background for
-  stratified negation and for treating negative dependencies as layers rather
-  than unrestricted cycles.
-
+  [“Towards a Theory of Declarative Knowledge”](https://ir.cwi.nl/pub/10404),
+  in *Foundations of Deductive Databases and Logic Programming*, 1988,
+  pp. 89–148. Stratified negation.
 - Weidong Chen and David S. Warren,
-  [“Tabled Evaluation with Delaying for General Logic
-  Programs”](https://doi.org/10.1145/227595.227597), *Journal of the ACM*
-  43(1), 1996, pp. 20–74. A foundational treatment of tabled logic-program
-  evaluation. EyeProlog's explicit positive tabling is smaller in scope, but the
-  shared-call and fixed-point intuitions are closely related.
-
+  [“Tabled Evaluation with Delaying for General Logic Programs”](https://doi.org/10.1145/227595.227597),
+  *Journal of the ACM* 43(1), 1996, pp. 20–74. Tabled evaluation (Chapter 13).
+- Yoshihiko Futamura,
+  [“Partial Evaluation of Computation Process—An Approach to a Compiler-Compiler”](https://www.jstage.jst.go.jp/article/jssst/21/5/21_5_343/_article/-char/en),
+  1971, republished in English translation. Partial evaluation and
+  compilation (Part V).
+- Kurt Gödel,
+  [“Über formal unentscheidbare Sätze der *Principia Mathematica* und verwandter Systeme I”](https://doi.org/10.1007/BF01700692),
+  *Monatshefte für Mathematik und Physik* 38, 1931, pp. 173–198; Alonzo
+  Church,
+  [“An Unsolvable Problem of Elementary Number Theory”](https://www.cis.upenn.edu/~cis5110/Church-UnsolvableProblemElementary-1936.pdf),
+  *American Journal of Mathematics* 58(2), 1936, pp. 345–363; and Alan M.
+  Turing,
+  [“On Computable Numbers, with an Application to the Entscheidungsproblem”](https://doi.org/10.1112/plms/s2-42.1.230),
+  *Proceedings of the London Mathematical Society* 42, 1936–1937,
+  pp. 230–265. The limits of formal proof and of decision procedures
+  (Chapter 30).
+- David Hilbert,
+  [“Mathematical Problems”](https://www.gutenberg.org/ebooks/71655), Paris,
+  1900. The problem-directed axiomatic culture behind Part VI.
 - Dörthe Arndt and Stephan Mennicke,
-  [“Notation3 as an Existential Rule
-  Language”](https://arxiv.org/abs/2308.07332), 2023. Context for Notation3 and for the relationship between Semantic Web rule
-  languages and existential-rule reasoning. EyeProlog deliberately implements a
-  different, compact Horn-clause language.
-
-- Leon Sterling and Ehud Shapiro,
-  [*The Art of Prolog*, second
-  edition](https://mitpress.ublish.com/book/art-prolog),
-  MIT Press, 1994. Its sustained treatment of computation, program
-  construction, nondeterminism, transformation, interpreters, grammars,
-  search, and applications is an important pedagogical benchmark for Part V.
-  EyeProlog differs substantially from full Prolog, so the material here develops
-  those themes only through EyeProlog's explicit, supported relations.
-
-The aim of EyeProlog is not to make every difficult problem easy. It is to keep the
-theory visible while the machine searches it: facts you can inspect, rules you
-can discuss, answers you can test, and proofs you can carry forward as data.
+  [“Notation3 as an Existential Rule Language”](https://arxiv.org/abs/2308.07332),
+  2023. Semantic Web rules and existential-rule reasoning.
 
 ### Glossary
 
-The glossary uses the following EyeProlog-specific meanings unless a broader mathematical meaning is explicitly stated.
+**Aggregate.** A predicate that runs a finite nested search and combines its
+solutions, such as `findall/3`, `countall/2`, `sumall/3`, `aggregate_min/5`,
+or `aggregate_max/5`.
 
-**Aggregate.** A relation that evaluates a finite nested solution space and
-combines its solutions, as `findall/3`, `countall/2`, `sumall/3`,
-`aggregate_min/5`, or `aggregate_max/5` does.
+**Answer.** A ground instance of a query goal produced by successful search.
+EyeProlog does not print duplicate answers or answers identical to source facts.
 
-**Answer.** A ground instance of a declared query goal produced by successful
-search. EyeProlog suppresses duplicate printed answers and source facts already
-identical to queried conclusions.
+**Answer set.** The distinct answers to a query, regardless of order or number
+of proofs.
 
-**Answer set.** The distinct ground answers for a query, considered without
-their discovery order or number of proofs.
+**Arity.** The number of arguments of a predicate or compound term. `edge/2`
+and `edge/3` are different predicates.
 
-**Arity.** The number of arguments of a predicate or compound term. Predicate
-identity includes arity: `edge/2` and `edge/3` are different.
-
-**Atom constant.** A symbolic scalar such as `alice`, `ready`, or
-`'a quoted atom'`. An atom constant is data; an atomic formula uses a predicate
-name, possibly with arguments, as a proposition.
+**Atom constant.** A symbolic constant such as `alice` or `'a quoted atom'`.
+It is data; an atomic formula uses a predicate name as a proposition.
 
 **Atomic formula.** A callable proposition such as `ready` or
 `parent(ada, byron)`.
 
-**Base case.** A nonrecursive clause that gives recursion a directly solvable
-case.
+**Base case.** A nonrecursive clause that ends a recursion.
 
-**Binding.** An association between a variable and a term accumulated during
-unification and search.
+**Binding.** An association between a variable and a term, made by
+unification.
 
-**Binding pattern.** Which arguments of a call are known, unknown, or partly
-structured at call time. See also *mode*.
+**Binding pattern.** Which arguments of a call are bound, unbound, or partly
+structured when it is called. See *mode*.
 
-**Body.** The comma-separated goals to the right of `:-` in a rule. Every body
-goal must succeed for that rule use to succeed.
+**Body.** The goals to the right of `:-` in a rule; all must succeed for the
+rule to apply.
 
-**Built-in.** A predicate whose relation is supplied by the host implementation
-rather than by source clauses. Built-ins may have restricted operational modes.
+**Built-in.** A predicate implemented by the system rather than by source
+clauses. Many built-ins accept only certain modes.
 
-**Call.** A goal selected for solving, together with its current bindings.
+**Call.** A goal selected for solving, with its current bindings.
 
-**Canonical form.** A chosen representative for all values considered
-equivalent in a domain. Canonicalization can make some domain equality
-decidable by structural equality.
+**Canonical form.** One chosen representative for a class of equivalent
+values, so that equivalence can be tested by structural equality.
 
-**Clause.** A fact or rule terminated by a period.
+**Choicepoint.** A remaining alternative that may yield another answer if the
+caller asks for more. The engine never runs an unrequested branch or effect to
+find out whether one exists.
 
-**Choicepoint.** A remaining search alternative that may produce another
-answer if the caller asks the solver to continue. Every resumable engine
-iterator follows the same pending-alternative protocol. A suspended iterator
-is conservatively a choicepoint unless it reports that no search position
-remains; the engine never executes an unrequested effect or program branch to
-look for a later successful answer.
+**Cleanup.** A goal installed by `call_cleanup/2` or `setup_call_cleanup/3`
+that runs exactly once when the protected goal completes, is cut, is
+abandoned, or raises an exception.
 
-**Cleanup.** A protected finalization goal installed by normal-mode
-`call_cleanup/2` or `setup_call_cleanup/3`. It runs exactly once when the
-protected search ends, is pruned or abandoned, or unwinds through an exception.
+**Clause.** A fact or rule, terminated by a full stop.
 
-**Closed-world assumption.** The decision to treat failure to derive a
-sufficiently scoped claim as evidence for its absence. EyeProlog's `\+/1` performs
-negation as failure; the modeler is responsible for justifying the scope.
+**Closed-world assumption.** Treating failure to derive a claim as evidence that
+it is false. `\+/1` implements negation as failure; the modeler must justify
+the scope in which that is sound.
 
-**Compound term.** Structured data with a functor and one or more arguments,
-such as `point(3, 4)` or `reason(limit, exceeded)`.
+**Compound term.** A term with a functor and one or more arguments, such as
+`point(3, 4)`.
 
-**Conformance corpus.** The executable cases defining the supported ISO Prolog
-profile and implementation extensions under `test/conformance/`.
+**Conformance corpus.** The executable cases under `test/conformance/` that
+define the supported profile.
 
-**Conjunction.** Several goals joined by commas. Operationally they normally
-run left to right while carrying bindings forward.
+**Conjunction.** Goals joined by commas, normally solved left to right.
 
-**Constraint.** In this book, a goal that rejects candidates not satisfying a
-property. EyeProlog does not provide a general persistent constraint store.
+**Constraint.** A goal that restricts the values of its variables. Delayed
+constraints such as `dif/2`, `freeze/2`, and CLP(Z) constraints remain as
+residual goals until they are decided.
 
-**Declarative reading.** What ground instances of clauses mean independently
-of the particular order in which a solver searches.
+**Declarative reading.** What the ground instances of clauses mean,
+independently of search order.
 
-**Definite clause.** A clause with exactly one positive head and a conjunction
-of positive body goals. The pure definite fragment has a least-Herbrand-model
-semantics.
+**Definite clause.** A clause with one positive head and a conjunction of
+positive body goals. Definite programs have a least Herbrand model.
 
-**Dependency graph.** A graph whose vertices are predicate indicators and
-whose edges record calls between predicates. Recursive components are cycles
-in this graph.
-
-**Environment.** The current collection of variable bindings during a branch
-of search.
+**Dependency graph.** A graph of predicates with an edge from caller to callee.
+Recursive predicates form its cycles.
 
 **Fact.** A clause with no body, such as `parent(ada, byron).`
 
-**Failure.** The absence of a solution for the selected goal along the current
-branch. Failure causes search to reconsider alternatives; it is not an
-exception and not automatically an explicit negative fact.
+**Failure.** The absence of a solution along the current branch. It makes the
+search try alternatives; it is neither an exception nor a stored negative fact.
 
-**Finite domain.** An explicitly bounded set of candidates a search can
-exhaust. Finiteness is a property of a call and its generators, not merely of
-a predicate name.
+**Finite domain.** An explicitly bounded set of candidates that a search can
+exhaust. Finiteness belongs to a call and its generators, not to a predicate
+name.
 
-**Fixed point.** A stage of repeated consequence generation at which no new
-answers are added.
+**Fixed point.** The stage at which repeated derivation adds no new answers.
 
-**Functor.** The name at the root of a compound term. In `point(3,4)`, the
-functor is `point` and the arity is two.
+**Functor.** The name and arity at the root of a compound term: `point/2` in
+`point(3, 4)`.
 
-**Generator.** A goal that produces candidate bindings, usually from facts,
-finite lists, or bounded numeric ranges.
+**Generator.** A goal that produces candidate bindings from facts, lists, or
+bounded ranges.
 
-**Goal.** An atomic formula the solver is asked to establish.
+**Goal.** An atomic formula or control construct the solver is asked to prove.
 
-**Golden file.** Checked expected output stored in the repository. Normal
-example goldens record answers; proof goldens record explanations.
+**Golden file.** Checked expected output stored in the repository: answers,
+proofs, or proof checks.
 
-**Ground.** Containing no variables. EyeProlog prints only ground query answers.
+**Ground.** Containing no variables. The CLI prints only ground answers.
 
-**Head.** The atomic formula to the left of `:-`, or the entire formula in a
-fact. A successful rule use derives an instance of its head.
+**Head.** The atomic formula left of `:-`, or the whole of a fact.
 
-**Herbrand base.** The set of all ground atomic formulas constructible from a
-language's predicate symbols and Herbrand universe.
+**Herbrand base.** All ground atomic formulas built from a program's predicate
+symbols and Herbrand universe.
 
-**Herbrand interpretation.** A selection of ground atomic formulas treated as
-true over the Herbrand universe.
+**Herbrand interpretation.** A subset of the Herbrand base, taken as the true
+atoms.
 
-**Herbrand universe.** The set of ground terms constructible from the constants
-and function symbols of a program.
+**Herbrand universe.** All ground terms built from a program's constants and
+function symbols.
 
-**Indexing.** Implementation machinery that narrows candidate clauses using
-bound arguments without changing the intended answer set.
+**Host goal.** A goal supplied by the CLI or the embedding API to select which
+answers to observe.
 
-**Integrity check.** An ordinary predicate whose answers identify invalid input.
-The host decides whether to reject, report, or inspect those answers.
+**Indexing.** Selecting candidate clauses by bound arguments, without changing
+the answers.
+
+**Integrity check.** An ordinary predicate whose answers identify invalid input;
+the host decides what to do with them.
 
 **Least Herbrand model.** The smallest Herbrand interpretation satisfying a
-definite program; equivalently, the fixed point obtained by repeatedly adding
-supported ground consequences.
+definite program, reached by repeatedly adding supported ground consequences.
 
-**List.** Either `[]` or `[Head | Tail]` where `Tail` is a list. A list
-ends in `[]`. A partial list ends in a variable, for example `[X,Y|Xs]`;
-a variable alone is also a partial list. `[X,Y|non_list]` is an instance
-of a partial list that is not a list.
+**List.** Either `[]` or `[Head | Tail]` where `Tail` is a list. A partial list
+ends in a variable, as in `[X,Y|Xs]`; a variable alone is also a partial list.
+`[X,Y|non_list]` is an instance of a partial list that is not a list.
 
-**Mode.** An intended direction of use described by which arguments are
-supplied and which are produced.
+**Mode.** An intended direction of use: which arguments are supplied and which
+are produced.
 
-**Negation as failure.** The operational meaning of `\+ Goal`: succeed when a
-terminating nested search finds no solution for `Goal`.
-
-**Operational reading.** How a clause directs computation: which subgoal is
-selected, which bindings it needs and produces, and which alternatives it
-creates.
+**Negation as failure.** `\+ Goal` succeeds when a terminating search finds no
+solution for `Goal`.
 
 **Occurs check.** A unification check that prevents binding a variable to a
 term containing that variable. EyeProlog performs it consistently for ordinary
 unification as well as `unify_with_occurs_check/2`.
 
-**Predicate indicator.** A predicate name paired with its arity, conventionally
-written `name/arity`.
+**Operational reading.** How a clause directs computation: which goal is
+selected, which bindings it needs and makes, and which alternatives it leaves.
+
+**Predicate indicator.** A predicate name with its arity, written `name/arity`.
 
 **Proof.** A successful derivation showing which clauses, facts, and built-ins
-support a ground answer. A proof records success, not every failed search
-branch.
+support an answer. It records success, not failed branches.
 
-**Proof tree.** The tree of successful subgoals supporting one derivation.
-Unlike a search tree, it omits failed alternatives.
+**Proof tree.** The tree of subgoals supporting one derivation, without the
+failed alternatives of the search tree.
 
 **Proper list.** A finite list whose final tail is `[]`.
 
-**Host goal.** A callable Prolog goal supplied by the CLI or embedding API to
-select the relation whose answers are observed.
-
 **Readiness.** The binding condition under which a mode-sensitive built-in can
-run safely and productively.
+run safely.
 
-**Recursion.** A predicate depending on itself directly or through other
-predicates.
+**Recursion.** A predicate depending on itself, directly or through others.
 
-**Relation.** A set of tuples described by the ground instances for which a
-predicate holds.
+**Relation.** The set of tuples for which a predicate holds.
 
-**Resolution.** The proof-search step that matches a goal with a clause head
-and replaces it with the instantiated clause body.
+**Resolution.** The step that unifies a goal with a clause head and replaces the
+goal by the instantiated clause body.
 
-**Rule.** A clause with a head and body, written `Head :- Body.`
+**Rule.** A clause with a head and a body: `Head :- Body.`
 
-**Search branch.** One sequence of clause and solution choices considered by
-the solver.
+**Search tree.** All alternatives explored while seeking answers, successful
+or not.
 
-**Search tree.** The tree of successful, failed, and repeated alternatives
-explored while seeking answers.
+**Source fact.** A fact present in the loaded input, as opposed to a derived
+conclusion.
 
-**Source fact.** A fact explicitly present in loaded input, as opposed to a
-derived conclusion.
+**Stratified negation.** Negative dependencies arranged in layers, so that no
+predicate depends negatively on itself.
 
-**Stratified negation.** Negative dependencies arranged in layers so no
-predicate depends negatively on itself through a dependency cycle.
+**Substitution.** A mapping from variables to terms, applied consistently
+throughout a term or clause.
 
-**Substitution.** A mapping from variables to terms. Applying a substitution
-replaces those variables consistently throughout a term or clause.
+**Tabling.** Evaluation that shares calls and accumulates their answers up to a
+fixed point.
 
-**Tabling.** Evaluation that shares recursive calls and accumulates their
-answers toward a fixed point.
+**Term.** An atom, number, variable, or compound term. Double-quoted text
+denotes a list or atom according to the `double_quotes` flag.
 
-**Term.** An atom constant, number, variable, compound term, list, or
-parenthesized comma term. Double-quoted notation denotes a list or atom as
-selected by the ISO `double_quotes` flag.
+**Termination measure.** A value in a well-founded order that strictly decreases
+on every recursive call in a stated mode.
 
-**Termination measure.** A value in a well-founded order that strictly
-decreases along every recursive branch in a stated mode.
+**Theory.** The facts and rules loaded together, read as claims about a domain.
 
-**Theory.** The collection of source facts and rules loaded together and
-interpreted as claims about a domain.
+**Unification.** Solving an equation between two terms by finding a
+substitution that makes them identical.
 
-**Unification.** Structural equation solving that finds a substitution making
-two terms identical, when one exists.
+**Variable.** A clause-local name beginning with an uppercase letter or
+underscore. Each `_` is a fresh variable.
 
-**Variable.** A clause-local placeholder beginning with uppercase or
-underscore. Bare `_` is fresh at every occurrence.
+**Variant.** A term identical to another up to consistent renaming of
+variables. Tabling recognizes variant calls.
 
-**Variant call.** A call identical to another up to consistent renaming of
-variables. Variant recognition is important for tabling and cycle analysis.
-
-**Witness.** A constructed ground term demonstrating an existential result,
-such as a path, assignment, factorization, schedule, or proof-relevant object.
-
-### Historical note: manuals become specifications
-
-Early Prolog programmers learned from implementation manuals, examples, and
-books whose descriptions were often inseparable from one particular system. As
-the language spread, reference writing acquired a second task: distinguish the
-portable language from implementation convention. Predicate indexes, precise
-mode and error descriptions, and standards documents became tools for comparing
-systems rather than merely operating one of them.
-
-ISO standardization made that distinction explicit, while conformance tests and
-cross-processor corpora made many disagreements executable. A mature reference
-therefore joins several forms of evidence: normative prose, named predicates
-and flags, examples, implementation boundaries, and reproducible tests. The
-result is not a substitute for programming practice; it is a map from a
-concrete question to the exact contract that governs it.
+**Witness.** A ground term demonstrating an existential claim: a path, an
+assignment, a factorization, a schedule.
 
 # Part X — Laboratories
 
-## 44. Twelve laboratories
+## 43. Laboratories
 
-These laboratories turn the preceding material into hands-on work. Each has a deliverable, an acceptance test, and a reflection question. Complete them in order or choose a route suited to a study group.
+Each laboratory asks for a working artifact, states when it is done, and ends
+with one question worth answering in writing.
 
 <figure>
   <img src="book-assets/laboratory-progression.svg" alt="Twelve laboratories progress from relational foundations through finite search, mathematical and symbolic methods, domain reasoning, and a release-quality reasoning service.">
-  <figcaption>The laboratories enlarge one construction discipline rather than form twelve unrelated projects: state meaning, control a finite computation, preserve evidence, name the boundary, and finally integrate all four.</figcaption>
+  <figcaption>The laboratories apply one discipline at growing scale: state meaning, control a finite computation, preserve evidence, name the boundary, and finally integrate all four.</figcaption>
 </figure>
-
-The estimates below assume familiarity with the listed chapters and include
-design, implementation, tests, and reflection. They are planning ranges, not
-deadlines.
-
-| Laboratories | Preparation | Typical scope |
-| --- | --- | --- |
-| Laboratories 1–2 | Chapters 1–5 | 2–4 hours each |
-| Laboratories 3–4 | Chapters 6–10 and 13 | 4–8 hours each |
-| Laboratories 5–7 | Chapters 19 and 26–29 | 4–8 hours each |
-| Laboratories 8–10 | Chapters 14, 25, and 31–33 | 6–12 hours each |
-| Laboratory 11 | Chapters 15–16 | 4–8 hours |
-| Laboratory 12 | Chapters 16, 25, and 31–33 | multi-session capstone |
 
 ### Laboratory 1. A family theory
 
-**Build:** facts for at least six people and relations for parent, sibling,
-grandparent, and cousin.
+*Chapters 1–5.* Facts for at least six people; relations for parent, sibling,
+grandparent, and cousin. State the reading and modes of each predicate, include
+a branch with several cousins, query in both directions, and add an integrity
+relation that reports anyone recorded as their own parent.
 
-**Requirements:**
-
-- state the ground reading and principal modes of every predicate;
-- expose a person being their own parent through an integrity relation;
-- include one family branch that produces multiple cousins;
-- query both forward and inverse modes.
-
-**Acceptance:** normal output contains the predicted ground relations; one
-proof for a cousin conclusion passes through named intermediate concepts.
-
-**Reflect:** which conclusions depend on absence, and are those closed-world
-assumptions justified?
+**Done when** the output matches your prediction and one cousin proof passes
+through named intermediate relations.
+**Reflect:** which conclusions depend on absence, and is that closed-world
+assumption justified?
 
 ### Laboratory 2. A relational list toolkit
 
-**Build:** user-defined relations for membership, concatenation, reversal, and
-prefix.
+*Chapters 1–5.* Your own membership, concatenation, reversal, and prefix
+relations, written with facts, rules, and list syntax only. Document each
+finite mode and test empty, singleton, proper, and partial lists.
 
-**Requirements:**
-
-- use only facts, rules, unification, and list syntax for the core relations;
-- document every finite mode;
-- test empty, singleton, proper, and improper lists;
-- compare one relation with its built-in counterpart over a finite corpus.
-
-**Acceptance:** bounded differential queries find no disagreement in either
-direction.
-
-**Reflect:** which logically meaningful modes are operationally infinite?
+**Done when** bounded queries comparing each relation with its library
+counterpart find no disagreement in either direction.
+**Reflect:** which logically meaningful modes fail to terminate?
 
 ### Laboratory 3. A cyclic transport network
 
-**Build:** a network with at least ten stations, cycles, weighted edges, and
-two disconnected components.
+*Chapters 6–10 and 13.* At least ten stations with cycles, weighted edges, and
+two disconnected components. Derive reachability, construct simple paths, and
+pick a least-cost path with deterministic tie-breaking. Test a cycle, an
+unreachable pair, and equal-cost routes, and compare `--stats` before and after
+one justified control change.
 
-**Requirements:**
-
-- derive reachability;
-- construct simple path witnesses;
-- choose a least-cost path with deterministic tie-breaking;
-- test a cycle, absence, and equal-cost routes;
-- compare `--stats` before and after one justified control improvement.
-
-**Acceptance:** every returned witness begins and ends at the queried stations,
-uses known edges, and contains no repeated station.
-
-**Reflect:** why can endpoint reachability table finitely while the set of
-arbitrary walks is infinite?
+**Done when** every path starts and ends at the queried stations, uses known
+edges, and repeats no station.
+**Reflect:** why can reachability be tabled finitely when the set of walks is
+infinite?
 
 ### Laboratory 4. A finite puzzle
 
-**Build:** encode a small Latin square, scheduling puzzle, or house puzzle.
+*Chapters 6–10.* A small Latin square, schedule, or house puzzle. Separate
+generation from constraints, remove at least one symmetry, return a structured
+witness, and predict the size of the naive and reduced search spaces.
 
-**Requirements:**
-
-- write the complete finite-domain calculation;
-- separate generation from constraints;
-- identify and remove at least one symmetry;
-- retain a structured witness;
-- predict the naive and symmetry-reduced search spaces.
-
-**Acceptance:** the solver returns every intended solution and no permutation
-duplicate representing the same mathematical object.
-
-**Reflect:** which source line contributes the greatest pruning power?
+**Done when** every intended solution appears exactly once, with no permuted
+duplicates.
+**Reflect:** which line of the program does the most pruning?
 
 ### Laboratory 5. Arithmetic by construction
 
-**Build:** Peano addition and multiplication, then one relation of your choice:
-exponentiation, comparison, division with remainder, or factorial.
+*Chapters 19 and 26–29.* Peano addition and multiplication, plus one of
+exponentiation, comparison, division with remainder, or factorial. State a
+termination measure for each mode, prove one property by induction on paper,
+and add a bounded executable test of the same property.
 
-**Requirements:**
+**Done when** the proof and the program visibly share their base and recursive
+cases.
+**Reflect:** what does the bounded test establish that the proof does not, and
+the other way round?
 
-- state a termination measure for each intended mode;
-- prove one property by structural induction on paper;
-- add a bounded executable property test;
-- distinguish the inductive proof from the bounded test.
+### Laboratory 6. Counterexamples
 
-**Acceptance:** the proof and program share a clearly identified base and
-recursive structure.
+*Chapters 26–29.* Operation tables over carriers of two or three elements. Test
+closure, identity, commutativity, and associativity, searching for a
+counterexample before confirming a law, and return each offending tuple.
 
-**Reflect:** did the representation make the induction easier or merely the
-computation slower?
-
-### Laboratory 6. Counterexample laboratory
-
-**Build:** finite operation tables over carriers of two or three elements.
-
-**Requirements:**
-
-- test closure, identity, commutativity, and associativity;
-- search for a counterexample before testing the full universal property;
-- return the offending tuple as a witness;
-- explain which checks exhaust the model and which claims remain external.
-
-**Acceptance:** one deliberately nonassociative table is rejected with a
-specific triple; one valid group table passes every finite law.
-
-**Reflect:** why does one counterexample settle the negative question while a
-thousand random confirmations do not settle the positive one?
+**Done when** a nonassociative table is rejected with a specific triple and a
+group table passes every law.
+**Reflect:** why does one counterexample settle a question that a thousand
+confirmations cannot?
 
 ### Laboratory 7. A symbolic language
 
-**Build:** a small expression language with literals, variables, addition,
-conditionals, and local bindings.
+*Chapters 19 and 26–29.* An expression language with literals, variables,
+addition, conditionals, and local bindings, represented as terms and evaluated
+under an explicit environment. Add a size measure and a constant-folding
+transformation.
 
-**Requirements:**
-
-- represent syntax as explicit terms;
-- evaluate under an explicit environment;
-- define a structural size relation;
-- transform constant subexpressions;
-- show that evaluation agrees before and after transformation on a finite set
-  of environments.
-
-**Acceptance:** the transformation is idempotent over the chosen corpus and
-does not change evaluated results.
-
-**Reflect:** where is the boundary between Prolog syntax and the object language
-represented by Prolog terms?
+**Done when** folding is idempotent on your test corpus and never changes an
+evaluated result.
+**Reflect:** where does Prolog syntax end and the object language begin?
 
 ### Laboratory 8. A static analyzer
 
-**Build:** a sign, nullness, taint, or permission analysis for a tiny statement
-language.
+*Chapters 14, 25, and 31–33.* A sign, nullness, taint, or permission analysis
+for a tiny statement language. Define a finite abstract domain and its join,
+propagate to a fixed point, and report both safe conclusions and warnings.
+Include one concrete execution that illustrates an abstract result.
 
-**Requirements:**
-
-- define a finite abstract domain and join;
-- propagate facts to a fixed point;
-- emit both safe conclusions and conservative warnings;
-- include a concrete execution illustrating one abstract result;
-- explain the approximation direction.
-
-**Acceptance:** every tested concrete behavior is covered by its abstract
-result; the analyzer may overapproximate but must not miss the chosen unsafe
-case.
-
-**Reflect:** why is a warning not necessarily evidence that a concrete failure
-occurs?
+**Done when** every tested concrete behavior is covered by its abstract result
+and the chosen unsafe case is never missed.
+**Reflect:** why is a warning not proof that a failure can occur?
 
 ### Laboratory 9. An auditable policy
 
-**Build:** an access, consent, eligibility, or compliance theory.
+*Chapters 14, 25, and 31–33.* An access, consent, eligibility, or compliance
+theory with separate layers for sources, normalized concepts, decisions, and
+reasons. State every closed-world assumption, add three integrity relations,
+record source and theory versions, and keep checked proofs for one permit and
+one denial.
 
-**Requirements:**
-
-- separate source, normalized concept, decision, and reason layers;
-- state every closed-world assumption;
-- add at least three explicit integrity relations;
-- retain source and theory version facts;
-- produce proof goldens for one permit and one denial-like conclusion.
-
-**Acceptance:** changing one source fact changes exactly the predicted decision
-and its supporting proof.
-
-**Reflect:** which trust claims are established by derivation, and which require
+**Done when** changing one source fact changes exactly the predicted decision
+and its proof.
+**Reflect:** which trust claims does the derivation establish, and which need
 authentication outside the theory?
 
 ### Laboratory 10. A scientific model
 
-**Build:** encode a compact model from mechanics, circuits, chemistry,
-epidemiology, or statistics.
+*Chapters 14, 25, and 31–33.* A compact model from mechanics, circuits,
+chemistry, epidemiology, or statistics. Document every quantity and unit,
+expose intermediate quantities, include valid, boundary, and invalid scenarios,
+and state the floating-point assumptions.
 
-**Requirements:**
-
-- document every quantity and unit;
-- expose derived intermediate quantities;
-- include valid, boundary, and invalid scenarios;
-- use an integrity relation for an impossible input state;
-- state floating-point and approximation assumptions.
-
-**Acceptance:** a proof for the final classification includes measurements,
-equations represented by built-ins, and thresholds in an intelligible order.
-
-**Reflect:** what has been proved conditionally, and what empirical claim
-remains outside formal logic?
+**Done when** the proof of the final classification shows measurements,
+equations, and thresholds in a readable order.
+**Reflect:** what has been proved conditionally, and which empirical claim lies
+outside the logic?
 
 ### Laboratory 11. An input boundary
 
-**Build:** start with a small external record, validate it in JavaScript,
-convert it to ordinary Prolog facts, and derive one new relation.
+*Chapters 15–16.* Validate a small external record in JavaScript, convert it to
+Prolog facts, and derive one new relation. Keep conversion code apart from the
+rules, run the generated program with EyeProlog directly, and document what the
+host authenticates.
 
-**Requirements:**
+**Done when** invalid records are rejected before solving and the answer for a
+valid one matches a checked golden with its proof.
+**Reflect:** which claims belong to host validation and which to the derivation?
 
-- define the accepted external fields and value domains;
-- keep conversion code separate from domain rules;
-- query the generated Prolog program with EyeProlog directly;
-- compare the final answer with a checked golden;
-- document what the host authenticates.
+### Laboratory 12. A reasoning service
 
-**Acceptance:** invalid records are rejected before solving, valid records map
-to explicit finite terms, and the checked answer has an inspectable proof.
+*Chapters 16, 25, and 31–33.* An embedded service that loads facts through a
+JavaScript boundary, validates them, and answers with proofs. Test the modes and
+solution counts of its public predicates with semantic cases, bounded
+properties, metamorphic tests, integrity queries, proof goldens, and one scale
+case. Keep source snapshot, theory version, and proof with every result, state
+time, memory, and proof-size budgets, and write one page each on what the
+service guarantees and what it does not.
 
-**Reflect:** which claims belong to host validation and which are established
-by the Prolog derivation?
+**Done when** someone else can clone the repository, run one command, and
+reproduce every answer and proof without help.
+**Reflect:** if the service makes a wrong real-world decision, which layer
+(source, model, engine, or derivation) would reveal the fault?
 
-### Laboratory 12. A release-quality reasoning service
+### Reviewing a laboratory
 
-**Build:** combine the preceding techniques into a small embedded service.
+Judge each project on five independent axes:
 
-**Requirements:**
-
-- define a JavaScript boundary that supplies or loads facts;
-- validate inputs before constructing the theory;
-- test the principal modes and expected solution counts of public predicates;
-- include semantic cases, bounded properties, metamorphic tests, integrity queries,
-  warnings, proof goldens, and one scale case;
-- retain source snapshot, theory version, and proof with every audited result;
-- state time, memory, solution, and proof-size budgets;
-- write a one-page trust contract and a one-page known-limitations statement.
-
-**Acceptance:** another person can clone the repository, run one command, and
-reproduce answers and proofs from the preserved inputs without oral
-instructions.
-
-**Reflect:** if the service gives a wrong real-world decision, which of the four
-trust layers—source, model, engine, or derivation—would reveal the fault?
-
-### Laboratory review rubric
-
-Evaluate each project on five independent axes:
-
-| Axis | Excellent work demonstrates |
+| Axis | Strong work shows |
 | --- | --- |
-| Meaning | every public ground relation has one stable domain sentence |
-| Logic | clauses derive the intended answers and reject counterexamples |
-| Control | supported modes terminate for a stated mathematical reason |
-| Evidence | tests, witnesses, and proofs expose why results hold |
+| Meaning | every public relation has one clear sentence |
+| Logic | the clauses derive the intended answers and reject counterexamples |
+| Control | each supported mode terminates for a stated reason |
+| Evidence | tests, witnesses, and proofs show why results hold |
 | Boundary | sources, assumptions, versions, limits, and host duties are named |
 
-A beautiful program is not merely short. It makes the reason for its
-correctness, the shape of its search, and the boundary of its trust available
-to the next reader.
+### Selected answers
 
-### Historical note: logic programming grows through exercises
+**Unification (Chapter 2).** `point(X, X)` unifies with `point(red, red)` by
+binding `X = red`, but not with `point(red, blue)`: one variable cannot be two
+different atoms. `[Head | Tail]` unifies with `[a, b, c]` with `Head = a` and
+`Tail = [b, c]`.
 
-Logic programming has long been taught by construction. Lists, family
-relations, puzzles, grammars, interpreters, search problems, and small expert
-systems became recurring exercises because each exposes both a logical relation
-and the control needed to compute with it. Texts such as *The Art of Prolog*
-made this dual reading central: an exercise was not finished when a clause
-parsed, but when its meaning, modes, and behavior could be explained.
+**Goal order (Chapter 3).** In `eligible/1`, `age(Person, Years)` binds
+`Years` before `Years >= 18` compares it, and `registered(Person)` then checks
+the person already chosen. Moving the comparison first leaves the meaning
+unchanged but makes `>=/2` raise an instantiation error.
 
-Laboratory practice later absorbed regression testing, property-oriented
-checking, benchmark corpora, and reproducible command-line runs. These tools
-fit logic programming unusually well because a small change can be examined at
-several levels at once: answers, failures, witnesses, proofs, and search. The
-laboratory is where a declarative claim becomes an executable experiment.
+**Appending (Chapter 5).** `joins([a], [b, c], Whole)` uses the recursive clause
+once, binding `Whole = [a | Zs]`, then the base clause binds `Zs = [b, c]`.
+With only `Whole = [a, b, c]` bound there are four splits: `[]` and
+`[a, b, c]`, `[a]` and `[b, c]`, `[a, b]` and `[c]`, `[a, b, c]` and `[]`.
 
-# Part XI — Review
+**Negation order (Chapter 7).** `user(U), \+ blocked(U)` asks, for each known
+user, whether that user is blocked. `\+ blocked(U), user(U)` first asks whether
+*nobody* is blocked, which is a different question. Either reading of "allowed"
+still assumes a complete record of users and blocks.
 
-## 45. Checkpoint notes and selected answers
+**Empty aggregates (Chapter 8).** Over a search with no solutions, `findall/3`
+gives `[]`, `countall/2` gives `0`, and `sumall/3` gives `0`;
+`aggregate_min/5` and `aggregate_max/5` fail, since there is no best element.
+Finiteness must come from the inner goal, not from the aggregate.
 
-Checkpoints are for retrieval and diagnosis, not grading by hidden wording.
-Attempt one before reading these notes. When a checkpoint asks about a program
-of your own, compare the structure of your argument rather than expecting one
-canonical implementation.
+**Mathematical claims (Chapters 26–30).** A witness proves existence. A
+counterexample refutes a universal claim. Exhausting a finite carrier proves a
+property of that model only. Any number of bounded confirmations does not make
+an unbounded theorem.
 
-<figure>
-  <img src="book-assets/review-lenses.svg" alt="A program artifact is examined through five review lenses: meaning, logic, control, evidence, and boundary, followed by a cycle of prediction, execution, explanation, and revision.">
-  <figcaption>Review the same artifact through five independent lenses. A failure under one lens should lead to a specific revision, not to the vague conclusion that logic programming itself is mysterious.</figcaption>
-</figure>
-
-### Foundations: Chapters 1–10
-
-**Chapter 1.** `parent(ada, byron)` says that Ada is a parent of Byron.
-`eyeprolog --goal 'child(X, Y)' program.pl` asks for every ground child–parent pair derivable by the
-program. Adding `parent(diego, elena).` adds `child(elena, diego).`; it does not
-change the earlier three child answers.
-
-**Chapter 2.** `point(X, X)` unifies with `point(red, red)` by binding `X` to
-`red`. It does not unify with `point(red, blue)` because one variable cannot
-be both distinct atoms. `[Head | Tail]` unifies with `[a, b, c]` using
-`Head = a` and `Tail = [b, c]`.
-
-**Chapter 3.** In
-`adult(Person) :- age(Person, Years), Years >= 18.`, a ground reading is:
-every person with a recorded age of at least 18 is an adult. Operationally,
-`age/2` supplies `Person` and `Years` before `>=/2` checks the numeric bound.
-Reversing those goals asks `>=/2` to inspect unbound terms.
-
-**Chapter 4.** With `ada → byron → clara → diego`, direct ancestor answers are
-the three edges. Recursive answers additionally include
-`ancestor(ada, clara)`, `ancestor(byron, diego)`, and
-`ancestor(ada, diego)`. A successful derivation advances along a known parent
-edge until a direct parent clause closes the proof.
-
-**Chapter 5.** `joins([a], [b, c], Whole)` yields `[a, b, c]`. With the whole
-list bound, the prefix/suffix splits are:
-
-```text
-[]          and [a, b, c]
-[a]         and [b, c]
-[a, b]      and [c]
-[a, b, c]   and []
-```
-
-`[a | Tail]` is not yet known to be proper because `Tail` might never resolve
-to a finite chain ending in `[]`.
-
-**Chapter 6.** `is/2`, numeric comparisons, and the recursive
-arithmetic steps require their documented numeric inputs. In
-`between(1, 10, N)`, an unbound `N` is generated from a finite interval; a
-bound `N` is checked for membership in that interval.
-
-**Chapter 7.** `user(User), \+ blocked(User)` first selects each known user,
-then asks a ground absence question for that user.
-`\+ blocked(User), user(User)` first asks whether the database contains no
-blocked user at all. Calling either result “allowed” requires a justified,
-complete user and blocked-status boundary.
-
-**Chapter 8.** Over an empty nested search, `findall/3` produces `[]`,
-`countall/2` produces `0`, and `sumall/3` produces numeric zero.
-`aggregate_min/5` and `aggregate_max/5` fail because no candidate can supply a
-best key. The goal passed into the aggregate, not the aggregate's punctuation,
-must establish finiteness.
-
-**Chapter 9.** `message/2` is asserted as an atomic formula. Its context
-argument is structured data. The program-defined `context_member/2` relation
-examines members inside that term; it does not add those members as globally
-callable source facts.
-
-**Chapter 10.** The complete coloring has six answers. Removing `A \= C`
-leaves the requirements `A ≠ B` and `B ≠ C`, producing twelve answers. The six
-new answers are those with equal first and third colors:
-`red–green–red`, `red–blue–red`, `green–red–green`,
-`green–blue–green`, `blue–red–blue`, and `blue–green–blue`.
-
-### Trust and construction: Chapters 11–20
-
-Use this table to check that the checkpoint response separates concepts that
-are often collapsed:
-
-| Chapter | A sound response distinguishes |
-| --- | --- |
-| 11 | ground answer, successful proof, failed search branches, and source trust |
-| 12 | ordinary absence, invalid theory, process exit, and resource failure |
-| 13 | structural descent, finite table growth, and unbounded term construction |
-| 14 | source evidence, derived concepts, policy decisions, and integrity |
-| 15 | host validation, explicit term conversion, and logical derivation |
-| 16 | host validation, solver derivation, proof retention, and operational ceilings |
-| 17 | ground meaning, intended mode, answer set, first answer, and proof shape |
-| 18 | examples, near misses, finite generators, invariants, and presentation |
-| 19 | partial correctness, completeness in a mode, and termination in that mode |
-| 20 | semantic regression, observable control change, and measured improvement |
-
-A response that says only “the program works” is incomplete. It should name
-the claim, the mode, the evidence inspected, and the boundary that remains
-outside that evidence.
-
-### Advanced work: Chapters 21–33
-
-Later checkpoints often admit several good programs. Evaluate them with five
-questions:
-
-1. **Meaning:** is the disputed or transformed ground relation stated clearly?
-2. **Scope:** are modes, finite domains, equivalence notions, and trust
-   assumptions explicit?
-3. **Observation:** were answers, failures, proofs, and statistics used for
-   the different questions they can actually answer?
-4. **Preservation:** if a program changed, which semantic and observable
-   properties were expected to remain invariant?
-5. **Evidence:** is the result reproducible as a query, test, golden output,
-   counterexample, proof, or preserved source snapshot?
-
-For mathematical checkpoints, add a sixth question: does the conclusion claim
-only what the computation warrants? One witness proves existence; one
-counterexample refutes a universal claim; an exhausted finite carrier proves a
-property only for that model; repeated bounded confirmations do not become an
-unbounded theorem.
-
-For laboratory checkpoints, leave an artifact. A useful completion is not merely a paragraph: it is a small source file, predicted output, actual output, and one sentence explaining any difference.
-
-### Historical note: review becomes explanation
-
-The declarative reading of logic programs encouraged debugging methods that ask
-what a relation was intended to mean, not only which machine step came next. In
-the early 1980s, Ehud Shapiro's work on algorithmic debugging used computation
-trees together with a programmer's judgments about intended results to narrow a
-fault to the clause responsible for it. Declarative debugging developed this
-idea alongside, rather than instead of, ordinary tracing.
-
-That tradition gives review a distinctive role in logic programming. A worked
-answer is useful when it can be reconstructed from the relation, the calling
-mode, and the evidence, and when a disagreement can be turned into a smaller
-question about meaning or control. Review then becomes another pass through the
-same discipline as programming: predict, execute, explain, and revise.
+**Laboratories.** A finished answer is an artifact, not a paragraph: a source
+file, the predicted output, the actual output, and one sentence explaining any
+difference.

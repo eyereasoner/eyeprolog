@@ -1,4 +1,4 @@
-% From The Art of EyeProlog, Chapter 22 — Rewriting symbolic expressions.
+% From The Art of EyeProlog, Chapter 22 — Rewriting.
 simplify(add(number(0), X), X).
 simplify(add(X, number(0)), X).
 simplify(multiply(number(1), X), X).

@@ -1,4 +1,4 @@
-% From The Art of EyeProlog, Chapter 24 — Generate, constrain, describe.
+% From The Art of EyeProlog, Chapter 24 — Generate and constrain.
 worker(ada).
 worker(byron).
 worker(clara).

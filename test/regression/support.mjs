@@ -187,7 +187,7 @@ export function proofCorpusSyncIssues() {
 
 export function bookExampleCatalogIssues() {
   const book = fs.readFileSync(path.join(packageRoot, 'the-art-of-eyeprolog.md'), 'utf8');
-  const section = between(book, '### Further examples', '## 42. Standards, limits, and implementation boundaries');
+  const section = between(book, '### Further examples', '## 41. Standards, limits, and implementation boundaries');
   const names = [...section.matchAll(/github\.com\/eyereasoner\/eyeprolog\/blob\/main\/examples\/([A-Za-z0-9_-]+)\.pl/g)]
     .map((match) => match[1]);
   const issues = [];

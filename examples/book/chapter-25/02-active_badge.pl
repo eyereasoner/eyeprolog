@@ -1,6 +1,4 @@
 % From The Art of EyeProlog, Chapter 25.
-:- use_module(library(lists)).
-
 active_badge(Person, Badge) :-
   badge(Badge, Person),
   badge_status(Badge, active).

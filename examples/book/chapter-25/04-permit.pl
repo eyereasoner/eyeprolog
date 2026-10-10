@@ -1,6 +1,4 @@
-% From The Art of EyeProlog, Chapter 25 — Decision, reasons, and proof.
-:- use_module(library(lists)).
-
+% From The Art of EyeProlog, Chapter 25 — Decision and reason.
 permit(Person, Zone) :-
   active_badge(Person, Badge),
   cleared_for(Badge, Zone),

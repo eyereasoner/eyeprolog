@@ -22,26 +22,23 @@ node tools/extract-book-examples.mjs
 
 - [01-same_shape.pl](chapter-02/01-same_shape.pl) — Unification
 - [02-measurement.pl](chapter-02/02-measurement.pl)
-- [03-label.pl](chapter-02/03-label.pl)
 
 ## Chapter 3: Rules and their two readings
 
 - [01-eligible.pl](chapter-03/01-eligible.pl)
-- [02-adult.pl](chapter-03/02-adult.pl)
-- [03-can_enter.pl](chapter-03/03-can_enter.pl)
-- [04-high_score.pl](chapter-03/04-high_score.pl)
-- [05-parent.pl](chapter-03/05-parent.pl) — The Herbrand world
-- [06-ancestor.pl](chapter-03/06-ancestor.pl)
-- [07-different.pl](chapter-03/07-different.pl) — Why terms denote themselves
-- [08-has_parent.pl](chapter-03/08-has_parent.pl) — Quantification and visible witnesses
-- [09-program.pl](chapter-03/09-program.pl) — Equality, unification, and the occurs check
-- [10-closed.pl](chapter-03/10-closed.pl) — Meaning is not the search strategy
-- [11-p.pl](chapter-03/11-p.pl)
+- [02-can_enter.pl](chapter-03/02-can_enter.pl)
+- [03-high_score.pl](chapter-03/03-high_score.pl)
+- [04-ancestor.pl](chapter-03/04-ancestor.pl) — Deeper foundations: the Herbrand world
+- [05-different.pl](chapter-03/05-different.pl) — Terms denote themselves
+- [06-has_parent.pl](chapter-03/06-has_parent.pl) — Witnesses instead of hidden objects
+- [07-program.pl](chapter-03/07-program.pl) — The occurs check
+- [08-closed.pl](chapter-03/08-closed.pl) — Meaning is not the search strategy
+- [09-p.pl](chapter-03/09-p.pl)
 
 ## Chapter 4: Recursion: describing reachability
 
 - [01-ancestor.pl](chapter-04/01-ancestor.pl)
-- [02-path.pl](chapter-04/02-path.pl) — Constructing the recursive argument
+- [02-path.pl](chapter-04/02-path.pl) — Cycles and tabling
 
 ## Chapter 5: Lists as relations
 
@@ -58,8 +55,8 @@ node tools/extract-book-examples.mjs
 ## Chapter 7: Failure, negation, and quantification
 
 - [01-allowed.pl](chapter-07/01-allowed.pl)
-- [02-move.pl](chapter-07/02-move.pl)
-- [03-all_tests_pass.pl](chapter-07/03-all_tests_pass.pl)
+- [02-all_tests_pass.pl](chapter-07/02-all_tests_pass.pl)
+- [03-move.pl](chapter-07/03-move.pl) — Negation through recursion
 
 ## Chapter 8: Collecting and choosing answers
 
@@ -76,14 +73,13 @@ node tools/extract-book-examples.mjs
 - [01-color.pl](chapter-10/01-color.pl)
 - [02-plan.pl](chapter-10/02-plan.pl)
 
-## Chapter 11: Queries, answers, and proofs
-
-- [01-type.pl](chapter-11/01-type.pl)
-
 ## Chapter 12: Integrity checks as ordinary predicates
 
 - [01-invalid_probability.pl](chapter-12/01-invalid_probability.pl)
-- [02-invalid_assignment.pl](chapter-12/02-invalid_assignment.pl)
+
+## Chapter 13: Termination, tabling, and performance
+
+- [01-reach.pl](chapter-13/01-reach.pl)
 
 ## Chapter 14: Knowledge engineering
 
@@ -92,46 +88,45 @@ node tools/extract-book-examples.mjs
 ## Chapter 17: Logic and control
 
 - [01-path.pl](chapter-17/01-path.pl)
-- [02-adult.pl](chapter-17/02-adult.pl) — The same relation, a different computation
+- [02-adult.pl](chapter-17/02-adult.pl) — Same meaning, different computation
 - [03-bad_member.pl](chapter-17/03-bad_member.pl)
 - [04-item.pl](chapter-17/04-item.pl)
 
 ## Chapter 18: Constructing a program
 
-- [01-routeable.pl](chapter-18/01-routeable.pl) — Begin with ground sentences
+- [01-routeable.pl](chapter-18/01-routeable.pl) — Begin with a ground sentence
 - [02-routeable-2.pl](chapter-18/02-routeable-2.pl)
-- [03-prefix.pl](chapter-18/03-prefix.pl) — Invent examples before recursion
-- [04-candidate_pair.pl](chapter-18/04-candidate_pair.pl) — Separate generate, test, and describe
-- [05-compatible_pair.pl](chapter-18/05-compatible_pair.pl)
+- [03-prefix.pl](chapter-18/03-prefix.pl) — Examples before recursion
+- [04-candidate_pair.pl](chapter-18/04-candidate_pair.pl) — Generate, then test
 
 ## Chapter 19: Correctness and termination
 
-- [01-factorial.pl](chapter-19/01-factorial.pl) — Termination needs its own argument
-- [02-invalid_limits.pl](chapter-19/02-invalid_limits.pl) — Integrity is not merely failure
+- [01-factorial.pl](chapter-19/01-factorial.pl) — Termination needs its own measure
+- [02-invalid_limits.pl](chapter-19/02-invalid_limits.pl) — Integrity is not failure
 
 ## Chapter 20: Improving a program
 
-- [01-connected.pl](chapter-20/01-connected.pl) — Strengthen calls before adding machinery
-- [02-within_thermal_limits.pl](chapter-20/02-within_thermal_limits.pl) — Introduce helpers that express invariants
-- [03-search.pl](chapter-20/03-search.pl) — Move invariant work outward
+- [01-connected.pl](chapter-20/01-connected.pl) — Ask a better question first
+- [02-within_thermal_limits.pl](chapter-20/02-within_thermal_limits.pl) — Name invariants with helpers
+- [03-search.pl](chapter-20/03-search.pl) — Hoist invariant work
 
 ## Chapter 21: Reading the computation
 
 - [01-parent.pl](chapter-21/01-parent.pl)
-- [02-grandparent.pl](chapter-21/02-grandparent.pl) — Substitutions accumulate
+- [02-grandparent.pl](chapter-21/02-grandparent.pl) — Bindings flow forward
 - [03-loop_edge.pl](chapter-21/03-loop_edge.pl)
 - [04-eligible.pl](chapter-21/04-eligible.pl) — Failure rewinds choices, not facts
-- [05-grows.pl](chapter-21/05-grows.pl) — Variants, cycles, and tables
+- [05-grows.pl](chapter-21/05-grows.pl) — Variants and tables
 
 ## Chapter 22: Trees, languages, and symbolic evaluation
 
 - [01-tree.pl](chapter-22/01-tree.pl)
 - [02-tree_member.pl](chapter-22/02-tree_member.pl)
-- [03-mirror.pl](chapter-22/03-mirror.pl) — Transforming a tree
-- [04-sentence.pl](chapter-22/04-sentence.pl) — A standard definite clause grammar
-- [05-evaluate.pl](chapter-22/05-evaluate.pl) — Interpreting an expression
+- [03-mirror.pl](chapter-22/03-mirror.pl) — Relating two trees
+- [04-sentence.pl](chapter-22/04-sentence.pl) — A definite clause grammar
+- [05-evaluate.pl](chapter-22/05-evaluate.pl) — An evaluator
 - [06-lookup.pl](chapter-22/06-lookup.pl)
-- [07-simplify.pl](chapter-22/07-simplify.pl) — Rewriting symbolic expressions
+- [07-simplify.pl](chapter-22/07-simplify.pl) — Rewriting
 
 ## Chapter 23: Transforming programs
 
@@ -139,81 +134,71 @@ node tools/extract-book-examples.mjs
 - [02-adult-2.pl](chapter-23/02-adult-2.pl)
 - [03-can_board.pl](chapter-23/03-can_board.pl)
 - [04-traveler_in_good_standing.pl](chapter-23/04-traveler_in_good_standing.pl)
-- [05-connection.pl](chapter-23/05-connection.pl) — Specializing a relation
-- [06-rail_connection.pl](chapter-23/06-rail_connection.pl)
-- [07-sum_numbers.pl](chapter-23/07-sum_numbers.pl) — Accumulators and modes
-- [08-sum_numbers_acc.pl](chapter-23/08-sum_numbers_acc.pl)
+- [05-rail_connection.pl](chapter-23/05-rail_connection.pl) — Specialization
+- [06-sum_numbers.pl](chapter-23/06-sum_numbers.pl) — Accumulators change modes
+- [07-sum_numbers_acc.pl](chapter-23/07-sum_numbers_acc.pl)
 
 ## Chapter 24: Designing finite search
 
-- [01-worker.pl](chapter-24/01-worker.pl) — Generate, constrain, describe
+- [01-worker.pl](chapter-24/01-worker.pl) — Generate and constrain
 - [02-simple_path.pl](chapter-24/02-simple_path.pl) — Search over states
 - [03-best_plan.pl](chapter-24/03-best_plan.pl) — Optimization is search plus an order
 
 ## Chapter 25: Case study: an auditable decision service
 
-- [01-person.pl](chapter-25/01-person.pl) — Source and concept layers
+- [01-person.pl](chapter-25/01-person.pl) — Sources and concepts
 - [02-active_badge.pl](chapter-25/02-active_badge.pl)
-- [03-in_good_standing.pl](chapter-25/03-in_good_standing.pl) — Closed-world choice
-- [04-permit.pl](chapter-25/04-permit.pl) — Decision, reasons, and proof
+- [03-in_good_standing.pl](chapter-25/03-in_good_standing.pl) — The closed-world choice
+- [04-permit.pl](chapter-25/04-permit.pl) — Decision and reason
 - [05-incompatible_status.pl](chapter-25/05-incompatible_status.pl) — Integrity before decisions
 
 ## Chapter 26: A proof can be a computation
 
-- [01-mortal.pl](chapter-26/01-mortal.pl)
-- [02-triple.pl](chapter-26/02-triple.pl) — Answers are existential witnesses
-- [03-triple-2.pl](chapter-26/03-triple-2.pl) — Proof objects and proof checking
-- [04-edge.pl](chapter-26/04-edge.pl) — The least model as mathematical closure
+- [01-triple.pl](chapter-26/01-triple.pl)
+- [02-edge.pl](chapter-26/02-edge.pl) — The least model as closure
 
 ## Chapter 27: Recursion is induction in motion
 
 - [01-natural.pl](chapter-27/01-natural.pl)
-- [02-list_length.pl](chapter-27/02-list_length.pl) — Structural induction and data design
-- [03-reverse_acc.pl](chapter-27/03-reverse_acc.pl) — Accumulators and strengthened invariants
+- [02-list_length.pl](chapter-27/02-list_length.pl) — Data shapes give you the induction
+- [03-reverse_acc.pl](chapter-27/03-reverse_acc.pl) — Accumulators need stronger invariants
 
 ## Chapter 28: Algebra, symmetry, and representation
 
 - [01-triangle.pl](chapter-28/01-triangle.pl) — Symmetry reduces search
-- [02-rectangle.pl](chapter-28/02-rectangle.pl) — Relations reveal inverse problems
-- [03-integer_rectangle.pl](chapter-28/03-integer_rectangle.pl)
-- [04-preserves_combine.pl](chapter-28/04-preserves_combine.pl) — Composition, homomorphism, and reusable laws
+- [02-integer_rectangle.pl](chapter-28/02-integer_rectangle.pl) — Relations expose inverse problems
+- [03-preserves_combine.pl](chapter-28/03-preserves_combine.pl) — Laws as testable relations
 
 ## Chapter 29: Search as experimental mathematics
 
-- [01-counterexample_to_odd_square.pl](chapter-29/01-counterexample_to_odd_square.pl) — Examples suggest; proofs compel
-- [02-noncommuting_pair.pl](chapter-29/02-noncommuting_pair.pl) — One counterexample has asymmetric power
+- [01-counterexample_to_odd_square.pl](chapter-29/01-counterexample_to_odd_square.pl)
 
 ## Chapter 31: Testing a theory
 
 - [01-edge.pl](chapter-31/01-edge.pl) — Positive and negative observers
-- [02-program.pl](chapter-31/02-program.pl)
-- [03-double.pl](chapter-31/03-double.pl) — Properties over finite domains
+- [02-double_is_even.pl](chapter-31/02-double_is_even.pl) — Properties over finite domains
 
 ## Chapter 32: Debugging by meaning, search, and proof
 
-- [01-eligible.pl](chapter-32/01-eligible.pl) — Follow bindings from left to right
-- [02-eligible-2.pl](chapter-32/02-eligible-2.pl)
-- [03-candidate_debug.pl](chapter-32/03-candidate_debug.pl) — Create diagnostic relations
-- [04-reference_square.pl](chapter-32/04-reference_square.pl) — Compare specification and implementation
+- [01-age.pl](chapter-32/01-age.pl) — Follow bindings left to right
+- [02-reference_square.pl](chapter-32/02-reference_square.pl) — Compare with a reference
 
 ## Chapter 33: A pattern catalog for reasoning
 
-- [01-assigned_badge.pl](chapter-33/01-assigned_badge.pl) — Pattern 1: Ground sentence first
-- [02-source_role.pl](chapter-33/02-source_role.pl) — Pattern 2: Normalize at the boundary
-- [03-chosen_pair.pl](chapter-33/03-chosen_pair.pl) — Pattern 3: Generate, constrain, describe
-- [04-path.pl](chapter-33/04-path.pl) — Pattern 4: Carry the witness
-- [05-unregistered.pl](chapter-33/05-unregistered.pl) — Pattern 5: Bound absence
-- [06-step.pl](chapter-33/06-step.pl) — Pattern 6: Explicit state transition
-- [07-depends.pl](chapter-33/07-depends.pl) — Pattern 7: Fixed-point closure
-- [08-within_limit.pl](chapter-33/08-within_limit.pl) — Pattern 8: Proof façade
-- [09-invalid_badge_assignment.pl](chapter-33/09-invalid_badge_assignment.pl) — Pattern 9: Integrity before inference
-- [10-theory_version.pl](chapter-33/10-theory_version.pl) — Pattern 10: Version the evidence boundary
+- [01-source_role.pl](chapter-33/01-source_role.pl)
+- [02-chosen_pair.pl](chapter-33/02-chosen_pair.pl)
+- [03-unregistered.pl](chapter-33/03-unregistered.pl)
+- [04-step.pl](chapter-33/04-step.pl)
+- [05-depends.pl](chapter-33/05-depends.pl)
+- [06-within_limit.pl](chapter-33/06-within_limit.pl)
+- [07-invalid_badge_assignment.pl](chapter-33/07-invalid_badge_assignment.pl)
+- [08-theory_version.pl](chapter-33/08-theory_version.pl)
 
 ## Chapter 34: Control, exceptions, and grouped solutions
 
 - [01-travel_status.pl](chapter-34/01-travel_status.pl)
-- [02-require_route.pl](chapter-34/02-require_route.pl)
-- [03-regional_total.pl](chapter-34/03-regional_total.pl)
+- [02-require_route.pl](chapter-34/02-require_route.pl) — Exceptions
+- [03-regional_total.pl](chapter-34/03-regional_total.pl) — Grouped solutions
 
 ## Chapter 35: Reflective terms and atomic conversion
 
@@ -223,7 +208,7 @@ node tools/extract-book-examples.mjs
 
 - [01-program.pl](chapter-36/01-program.pl)
 - [02-program-2.pl](chapter-36/02-program-2.pl)
-- [03-program-3.pl](chapter-36/03-program-3.pl)
+- [03-program-3.pl](chapter-36/03-program-3.pl) — Operators
 
 ## Chapter 37: Streams and term I/O
 
@@ -231,7 +216,7 @@ node tools/extract-book-examples.mjs
 
 ## Chapter 38: Language and ISO profile
 
-- [01-city.pl](chapter-38/01-city.pl)
+- [01-city.pl](chapter-38/01-city.pl) — Source text
 - [02-look_ahead.pl](chapter-38/02-look_ahead.pl) — Part 3-oriented definite clause grammars
 
 ## Chapter 39: Predicate reference
@@ -244,7 +229,6 @@ node tools/extract-book-examples.mjs
 - [06-cost.pl](chapter-39/06-cost.pl)
 - [07-message.pl](chapter-39/07-message.pl)
 - [08-task.pl](chapter-39/08-task.pl)
-- [09-program.pl](chapter-39/09-program.pl) — Specialized library implementation notes
 
 ## Chapter 40: Running EyeProlog: command line and corpus
 

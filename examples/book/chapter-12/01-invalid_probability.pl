@@ -2,3 +2,8 @@
 invalid_probability(Disease, Probability) :-
   probability(Disease, Probability),
   (Probability > 1).
+
+invalid_assignment(Person, Role, Other) :-
+  assigned(Person, Role),
+  incompatible_roles(Role, Other),
+  assigned(Person, Other).

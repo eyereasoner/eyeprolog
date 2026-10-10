@@ -1,6 +1,4 @@
 % From The Art of EyeProlog, Chapter 9.
-:- use_module(library(lists)).
-
 message(event_17, (severity(high), source(sensor_3), reading(temp, 91))).
 
 context_member((Left, _right), Member) :- context_member(Left, Member).

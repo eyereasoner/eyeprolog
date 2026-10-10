@@ -1,6 +1,4 @@
-% From The Art of EyeProlog, Chapter 25 — Source and concept layers.
-:- use_module(library(lists)).
-
+% From The Art of EyeProlog, Chapter 25 — Sources and concepts.
 person(ada).
 badge(b17, ada).
 badge_status(b17, active).

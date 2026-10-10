@@ -1,6 +1,4 @@
 % From The Art of EyeProlog, Chapter 23.
-:- use_module(library(lists)).
-
 traveler_in_good_standing(Person) :-
   registered(Person),
   identity_checked(Person),

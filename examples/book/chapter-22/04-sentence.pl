@@ -1,4 +1,4 @@
-% From The Art of EyeProlog, Chapter 22 — A standard definite clause grammar.
+% From The Art of EyeProlog, Chapter 22 — A definite clause grammar.
 sentence --> noun_phrase, verb_phrase.
 
 noun_phrase --> [the], noun.
