@@ -212,6 +212,7 @@ export function readProofDocument(text, program, fail = () => {}) {
       doubleQuotes: program?.doubleQuotes ?? 'chars',
       operatorDefinitions: [...(program?.operators?.values() ?? [])],
       sourceMetadata: false,
+      generalParser: true,
     });
   } catch (error) {
     fail('C3', `the document does not read: ${error?.message ?? String(error)}`, null);

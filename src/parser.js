@@ -51,10 +51,14 @@ function scanFastRangeToken(text, i, end) {
   return i;
 }
 
+// The Unicode property tests below are needed only past ASCII: for a code
+// under 128 the plain code tests give exactly the same answer, and these
+// helpers run once per source character.
 function isWhitespaceCharacter(character) {
   if (!character) return false;
   const code = character.charCodeAt(0);
-  return isWhitespaceCode(code) || /\p{White_Space}/u.test(character);
+  if (code < 128) return isWhitespaceCode(code);
+  return /\p{White_Space}/u.test(character);
 }
 
 function isUnicodeUpperCharacter(character) {
@@ -82,21 +86,24 @@ function isNameContinueCode(code) {
 }
 
 function isNameContinueCharacter(character) {
-  return Boolean(character) && (isNameContinueCode(character.charCodeAt(0)) ||
-    isUnicodeNameContinueCharacter(character));
+  if (!character) return false;
+  const code = character.charCodeAt(0);
+  if (code < 128) return isNameContinueCode(code);
+  return isUnicodeNameContinueCharacter(character);
 }
 
 function isVariableStartCharacter(character) {
   if (!character) return false;
   const code = character.charCodeAt(0);
-  return code === 95 || (code >= 65 && code <= 90) || isUnicodeUpperCharacter(character);
+  if (code < 128) return code === 95 || (code >= 65 && code <= 90);
+  return isUnicodeUpperCharacter(character);
 }
 
 function isPlainAtomStartCharacter(character) {
   if (!character) return false;
   const code = character.charCodeAt(0);
-  return (code >= 97 && code <= 122) ||
-    (isUnicodeLetterCharacter(character) && !isUnicodeUpperCharacter(character));
+  if (code < 128) return code >= 97 && code <= 122;
+  return isUnicodeLetterCharacter(character) && !isUnicodeUpperCharacter(character);
 }
 
 const graphicAtomChars = '#$&*+-./<=>?@^~\\:';
@@ -311,6 +318,11 @@ function isCodePointOutOfRange(code) {
   return code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff);
 }
 
+const PUNCTUATION_TOKENS = new Map([
+  ['(', TOK.LPAREN], [')', TOK.RPAREN], ['[', TOK.LBRACKET], [']', TOK.RBRACKET],
+  ['{', TOK.LBRACE], ['}', TOK.RBRACE], [',', TOK.COMMA], ['|', TOK.BAR], ['.', TOK.DOT],
+]);
+
 class Parser {
   constructor(source, options = {}) {
     this.source = String(source ?? '');
@@ -368,6 +380,7 @@ class Parser {
     return ch;
   }
   convertedSlice(start, end) {
+    if (this.parserFlagState.charConversions.size === 0) return this.source.slice(start, end);
     let out = '';
     for (const ch of this.source.slice(start, end)) out += this.convertCharacter(ch);
     return out;
@@ -614,13 +627,10 @@ class Parser {
       return { type: TOK.ATOM, text: ';', line };
     }
 
-    const punct = {
-      '(': TOK.LPAREN, ')': TOK.RPAREN, '[': TOK.LBRACKET, ']': TOK.RBRACKET,
-      '{': TOK.LBRACE, '}': TOK.RBRACE, ',': TOK.COMMA, '|': TOK.BAR, '.': TOK.DOT,
-    };
-    if (punct[ch]) {
+    const punctuation = PUNCTUATION_TOKENS.get(ch);
+    if (punctuation) {
       this.take();
-      return { type: punct[ch], text: ch, line, precededByLayout };
+      return { type: punctuation, text: ch, line, precededByLayout };
     }
     if (ch === ':' && this.peek(1) === '-' &&
         !(isGraphicAtomCode(this.peek(2).charCodeAt(0)) && !this.terminatingFullStop(this.pos + 2))) {
@@ -671,7 +681,9 @@ class Parser {
     // A signed numeric literal is only recognized where a term may start.
     // Otherwise the minus is the standard infix operator, so compact ISO
     // syntax such as `X-1` must not be read as `X` followed by `-1`.
-    const previousEndsTerm = this.previousToken && (
+    // Whether the previous token ends a term matters only for a minus sign
+    // before a digit, so it is decided only then.
+    const previousEndsTerm = () => this.previousToken && (
       [TOK.VAR, TOK.NUMBER, TOK.STRING, TOK.RPAREN, TOK.RBRACKET, TOK.RBRACE].includes(this.previousToken.type) ||
       (this.previousToken.type === TOK.ATOM &&
        (this.postfixOperators.has(this.previousToken.text) ||
@@ -679,7 +691,7 @@ class Parser {
          !this.prefixOperators.has(this.previousToken.text))))
     );
     if (isDigitCode(ch.charCodeAt(0)) ||
-        (ch === '-' && isDigitCode(this.peek(1).charCodeAt(0)) && !previousEndsTerm)) {
+        (ch === '-' && isDigitCode(this.peek(1).charCodeAt(0)) && !previousEndsTerm())) {
       const start = this.pos;
       const negative = this.peek() === '-';
       if (negative) this.take();
@@ -1435,7 +1447,10 @@ export function parseClauses(source, options = {}) {
   const parserOptions = ownsParserFlagState
     ? { ...options, parserFlagState: { doubleQuotes: initialDoubleQuotes, charConversion: 'on', charConversions: new Map() } }
     : options;
-  if (options.sourceMetadata === false && options.readTermEnd == null) {
+  // `generalParser` reads with the general parser from the start: a text of
+  // large, nested terms, such as a proof document, gains nothing from the
+  // line-oriented fast path and pays for a parser per term in it.
+  if (options.sourceMetadata === false && options.readTermEnd == null && options.generalParser !== true) {
     const clauses = parseClausesFastNoSource(source, null, null, parserOptions);
     if (clauses) return clauses;
     if (ownsParserFlagState) {

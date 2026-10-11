@@ -62,10 +62,27 @@ function copyHookResult(term, env, inputNames) {
   return copy(term);
 }
 
+// Whether some clause of a hook could unify with `input` as its first
+// argument. A clause whose first argument has another type, name or arity
+// cannot, so when none can the hook does not run at all: a library such as
+// CLP(Z) expands only its own goals, and asking a fresh solver about every
+// other clause and goal of a program cost more than loading it.
+function hookMayApply(group, input) {
+  if (input?.type === VAR) return true;
+  for (const clause of group.clauses) {
+    const first = clause.head?.args?.[0];
+    if (first == null || first.type === VAR) return true;
+    if (first.type !== input.type || first.name !== input.name) continue;
+    if (first.type !== COMPOUND || first.args.length === input.args.length) return true;
+  }
+  return false;
+}
+
 function runHook(program, module, name, input, loadContext = null) {
   for (const owner of hookModules(module)) {
     const group = exactHookGroup(program, owner, name);
     if (group == null || group.clauses.length === 0) continue;
+    if (!hookMayApply(group, input)) continue;
 
     const output = variable(`\u0000source-expansion:${++expansionFresh}`);
     const goal = compound(name, [input, output]);

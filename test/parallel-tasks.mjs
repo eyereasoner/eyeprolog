@@ -1,7 +1,10 @@
 // A small ordered worker pool for the suites that do the same work once per
 // file: run every example, prove every example, check every packaged proof.
 //
-// Results are reported in task order however the workers finish, so a parallel
+// Tasks are handed to workers most expensive first when the caller can
+// estimate a task's cost: a suite whose slowest task starts late spends its
+// last seconds running that one task alone. Results are still reported in task
+// order however the workers finish, so a parallel
 // suite numbers its tests exactly as the sequential one did and a failure still
 // stops the run at the same test. Each suite compares inside its worker, so
 // only a name, an elapsed time, an optional failure, and a small plain-data
@@ -17,6 +20,7 @@ export async function runTasksInParallel({
   maxWorkers,
   runLocally,
   onResult,
+  cost = null,
 }) {
   if (names.length === 0) return;
   const parallelism = os.availableParallelism?.() ?? os.cpus().length;
@@ -35,6 +39,13 @@ export async function runTasksInParallel({
   }
 
   const completedResults = new Map();
+  // Dispatch order: task indexes by descending estimated cost, ties in task
+  // order. Reporting still follows the task order itself.
+  const dispatch = names.map((_, index) => index);
+  if (typeof cost === 'function') {
+    const costs = names.map((name) => cost(name));
+    dispatch.sort((left, right) => costs[right] - costs[left] || left - right);
+  }
   let nextTask = 0;
   let nextReport = 0;
   let completed = 0;
@@ -72,7 +83,8 @@ export async function runTasksInParallel({
 
     const assign = (worker) => {
       if (nextTask >= names.length || settled) return;
-      worker.postMessage({ ...message, id: nextTask, name: names[nextTask++] });
+      const id = dispatch[nextTask++];
+      worker.postMessage({ ...message, id, name: names[id] });
     };
 
     for (const worker of workers) {

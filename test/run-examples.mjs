@@ -50,6 +50,16 @@ const exampleTaskKinds = {
 };
 
 
+// A packaged proof grows with the derivation it records, so its size is a
+// cheap estimate of how long an example takes to run, prove, and check.
+export function exampleCost(name) {
+  try {
+    return fs.statSync(path.join(expectedProofDir, name)).size;
+  } catch {
+    return 0;
+  }
+}
+
 function runExampleTasks(names, kind, reporter) {
   return runTasksInParallel({
     names,
@@ -57,6 +67,7 @@ function runExampleTasks(names, kind, reporter) {
     workerData: { exampleWorker: true },
     message: { kind },
     maxWorkers: 3,
+    cost: exampleCost,
     runLocally: (name) => exampleTaskKinds[kind](name),
     onResult: (name, result) => reporter.testResult(name, result),
   });

@@ -15,7 +15,7 @@ import { isMainThread, parentPort, workerData } from 'node:worker_threads';
 import { Program } from '../src/index.js';
 import { checkProofDocument, checkReportTerms, sourceGoals, verdict } from '../src/check-proof.js';
 import { TestReporter, assertEqual, isMainModule, runStandalone } from './test-style.mjs';
-import { proofExamples } from './run-examples.mjs';
+import { exampleCost, proofExamples } from './run-examples.mjs';
 import { runTasksInParallel, serveTasks } from './parallel-tasks.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -37,6 +37,7 @@ export async function runProofChecking(reporter = new TestReporter()) {
     workerUrl: new URL(import.meta.url),
     workerData: { proofCheckingWorker: true },
     maxWorkers: 3,
+    cost: exampleCost,
     runLocally: (name) => checkPackagedProof(name),
     onResult: (name, result) => {
       for (const field of Object.keys(totals)) totals[field] += result.value?.[field] ?? 0;
