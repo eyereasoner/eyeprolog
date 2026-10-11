@@ -6026,6 +6026,40 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       },
     },
     {
+      name: 'with source metadata, compact binary clauses are numbered and named exactly as the general parser reads them',
+      run: () => {
+        // A proof cites clauses by the numbers source metadata gives them, so
+        // a program loaded through the compact binary-clause path for --proof
+        // must carry the numbers, lines and anonymous-variable names the
+        // general parser gives the same text -- including after a clause the
+        // compact path reads part of and then declines.
+        const source = [
+          'a(ind, n0).',
+          'a(X, n1) :- a(X, n0).',
+          'b(_, _).',
+          'c(X, Y) :- a(X, _), b(Y, _).',
+          'a(_, n2) :- a(_, n1).',
+          'd(f(_), _).',
+          'p(_, x) :- q(f(_), x).',
+          'e(X, _) :- a(X, n2).',
+          '',
+        ].join('\n');
+        // Variables by their internal names, which a printed term hides.
+        const named = (term) => term.type === 'var'
+          ? term.name
+          : term.type === 'compound' ? `${term.name}(${term.args.map(named).join(',')})` : String(term.name);
+        const spelled = (clause) => [
+          clause.source?.line,
+          clause.source?.clause,
+          named(clause.head),
+          (clause.body ?? []).map(named).join(', '),
+        ].join(' | ');
+        const loaded = Program.parse(source, { sourceMetadata: true }).clauses.map(spelled);
+        const general = parseProgramText(source, { sourceMetadata: true, generalParser: true }).map(spelled);
+        assertEqual(loaded.join('\n'), general.join('\n'), 'the loaded clauses');
+      },
+    },
+    {
       // https://github.com/eyereasoner/eyeprolog/issues/114#issuecomment-5663598188
       name: 'a genuine IEEE-754 negative zero produced by arithmetic (not just parsed from text) still prints as 0.0',
       run: () => {

@@ -250,7 +250,11 @@ function printableReadVariableNames(term, env, explicit) {
   const used = new Set(names.values());
   const suffixes = new Map();
   const seenVariables = new Set();
-  const seenTerms = new Set();
+  // A subterm shared many times over is walked once. Most terms are small
+  // trees, where walking a subterm again changes nothing, so the set is only
+  // kept once a term turns out to be large.
+  let seenTerms = null;
+  let walked = 0;
   const stack = [term];
 
   while (stack.length) {
@@ -268,8 +272,12 @@ function printableReadVariableNames(term, env, explicit) {
       used.add(candidate);
       continue;
     }
-    if (current.type !== COMPOUND || seenTerms.has(current)) continue;
-    seenTerms.add(current);
+    if (current.type !== COMPOUND) continue;
+    if (seenTerms == null && ++walked > 4096) seenTerms = new Set();
+    if (seenTerms != null) {
+      if (seenTerms.has(current)) continue;
+      seenTerms.add(current);
+    }
     for (let i = current.arity - 1; i >= 0; i--) stack.push(current.args[i]);
   }
 

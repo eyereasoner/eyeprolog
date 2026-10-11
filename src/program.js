@@ -1269,18 +1269,27 @@ function collectAutoloadClosureDependencies(closure, extraArguments, out, module
 
 function expandAutoloadMetaDependencies(program, dependencies, module = 'user') {
   const seen = new WeakMap();
+  // Most dependencies name a predicate without closure arguments; look each
+  // predicate up once instead of once per call site.
+  const closureModes = new Map();
   for (let i = 0; i < dependencies.length; i++) {
     const dependency = dependencies[i];
     if (dependency.goal == null) continue;
     const caller = dependency.module ?? module;
     const visitKey = `${caller}\u0000${dependency.key}`;
+    let modes = closureModes.get(visitKey);
+    if (modes === undefined) {
+      const group = program.findGroup(dependency.name, dependency.arity, caller);
+      modes = (group?.metaArgumentModes ?? []).filter((mode) =>
+        mode.kind === 'closure' && Number.isSafeInteger(mode.extraArguments) && mode.extraArguments >= 0);
+      closureModes.set(visitKey, modes);
+    }
+    if (modes.length === 0) continue;
     const visits = seen.get(dependency.goal) ?? new Set();
     if (visits.has(visitKey)) continue;
     visits.add(visitKey);
     seen.set(dependency.goal, visits);
-    const group = program.findGroup(dependency.name, dependency.arity, caller);
-    for (const mode of group?.metaArgumentModes ?? []) {
-      if (mode.kind !== 'closure' || !Number.isSafeInteger(mode.extraArguments) || mode.extraArguments < 0) continue;
+    for (const mode of modes) {
       collectAutoloadClosureDependencies(dependency.goal?.args[mode.index], mode.extraArguments, dependencies, caller);
     }
   }
@@ -1716,13 +1725,17 @@ function loadSourceIntoBuilder(builder, source, options, ensured, loadedModules,
   if (fast) {
     const acceptBinary = (headName, head0Type, head0Name, head1Type, head1Name,
         bodyName, body0Type, body0Name, body1Type, body1Name) => {
-      batch.push(new CompactBinaryClause(
+      if (batch.length >= PROGRAM_BUILD_BATCH_SIZE) flush();
+      const clause = new CompactBinaryClause(
         headName, head0Type, head0Name, head1Type, head1Name,
         bodyName, body0Type, body0Name, body1Type, body1Name,
-      ));
-      batch[batch.length - 1].module = context.module;
-      batch[batch.length - 1].textUnit = context.textUnit;
-      if (batch.length >= PROGRAM_BUILD_BATCH_SIZE) flush();
+      );
+      clause.module = context.module;
+      clause.textUnit = context.textUnit;
+      batch.push(clause);
+      // The parser numbers the clause for its source metadata once it is
+      // returned, so the batch is flushed at the next clause, not here.
+      return clause;
     };
     const parsed = tryParseClausesFastInto(source, processClause, acceptBinary, options);
     if (parsed) flush();

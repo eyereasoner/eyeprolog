@@ -1504,8 +1504,8 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
   let operatorState = null;
   // With source metadata, this path numbers clauses exactly as the general
   // parser does: one number per clause and per counted directive, none for a
-  // query or a quad. Compact binary clauses carry no source, so they are not
-  // used then.
+  // query or a quad. A compact binary clause is numbered the same way, through
+  // the clause object its builder hands back.
   const trackSource = options.sourceMetadata === true;
   const sourceFilename = options.filename ?? '<input>';
   let clauseNumber = 0;
@@ -1774,18 +1774,20 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
     if (rule < 0) {
       if (!parseBinaryRawRange(text, start, termEnd, rawHead)) return false;
       reportFastBinarySingletonWarnings(rawHead, null, line);
-      emitBinary(rawHead.name,
+      const clause = emitBinary(rawHead.name,
         rawHead.arg0Type, rawHead.arg0Name, rawHead.arg1Type, rawHead.arg1Name,
         null, null, null, null, null);
+      if (clause) numbered(clause, line);
       return true;
     }
     if (findRuleInRange(text, rule + 2, termEnd) >= 0 ||
         !parseBinaryRawRange(text, start, rule, rawHead) ||
         !parseBinaryRawRange(text, rule + 2, termEnd, rawBody)) return false;
     reportFastBinarySingletonWarnings(rawHead, rawBody, line);
-    emitBinary(rawHead.name,
+    const clause = emitBinary(rawHead.name,
       rawHead.arg0Type, rawHead.arg0Name, rawHead.arg1Type, rawHead.arg1Name,
       rawBody.name, rawBody.arg0Type, rawBody.arg0Name, rawBody.arg1Type, rawBody.arg1Name);
+    if (clause) numbered(clause, line);
     return true;
   };
 
@@ -1851,12 +1853,14 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
     // subsequent source character must pass through the full tokenizer. The
     // compact parser deliberately operates on raw source ranges, so using it
     // here would silently bypass Convc for otherwise simple clauses.
+    const anonymousBefore = anonymous;
     const simple = preparationConversionActive() ? null : parseSimple(text);
     if (simple) {
       reportClauseSingletonWarnings(simple, options.onWarning, options.filename ?? '<input>', sourceLine);
       accept(numbered(simple, sourceLine));
       return true;
     }
+    anonymous = anonymousBefore;
     try {
       const nestedWarning = typeof options.onWarning === 'function'
         ? (warning) => options.onWarning({ ...warning, line: warning.line + sourceLine - 1 })
@@ -1912,14 +1916,19 @@ function parseClausesFastNoSource(source, emit = null, emitBinary = null, option
     contentEnd = trimRangeEnd(source, contentStart, contentEnd);
     if (contentStart < contentEnd && source.charCodeAt(contentStart) !== 37) {
       if (!chunk && source.charCodeAt(contentEnd - 1) === 46 && !preparationConversionActive()) {
-        if (!trackSource && emitFastBinaryRange(source, contentStart, contentEnd, lineNumber)) {
+        // A reader that declines a clause may have named some of its
+        // anonymous variables already; the next one starts the count again.
+        const anonymousBefore = anonymous;
+        if (emitFastBinaryRange(source, contentStart, contentEnd, lineNumber)) {
           // The program builder accepted a compact binary clause directly.
         } else {
+          anonymous = anonymousBefore;
           const simple = parseFastRange(source, contentStart, contentEnd);
           if (simple) {
             reportClauseSingletonWarnings(simple, options.onWarning, options.filename ?? '<input>', lineNumber);
             accept(numbered(simple, lineNumber));
           } else {
+            anonymous = anonymousBefore;
             chunkStartLine = lineNumber;
             chunk = source.slice(lineStart, lineEnd) + '\n';
             if (!flush()) return null;

@@ -152,8 +152,19 @@ function isAtom(term, name) {
   return term?.type === ATOM && term.name === name;
 }
 
+// While a proof is checked, each term is spelled once: a step's conclusion is
+// also the use of the step that rests on it, and the coverage, relevance and
+// well-foundedness checks each look it up.
+let keyMemo = null;
+
 function key(term) {
-  return termToString(term, new Env(), true);
+  if (keyMemo == null || term === null || typeof term !== 'object') return termToString(term, new Env(), true);
+  let spelled = keyMemo.get(term);
+  if (spelled === undefined) {
+    spelled = termToString(term, new Env(), true);
+    keyMemo.set(term, spelled);
+  }
+  return spelled;
 }
 
 // A term is identical to another when it needs no further instantiation to
@@ -455,7 +466,17 @@ export function checkProofDocument(program, text, options = {}) {
 // its own proofs this way before writing them (SPEC.md, Section 7.1); that the
 // text it writes reads back as the same structures is what checking the
 // packaged documents establishes.
-export function checkProof(program, { claims, records = [], steps: allSteps }, options = {}, failures = []) {
+export function checkProof(program, document, options = {}, failures = []) {
+  const outer = keyMemo;
+  keyMemo ??= new WeakMap();
+  try {
+    return checkProofWithKeys(program, document, options, failures);
+  } finally {
+    keyMemo = outer;
+  }
+}
+
+function checkProofWithKeys(program, { claims, records = [], steps: allSteps }, options, failures) {
   const writeOptions = {
     doubleQuotes: program?.doubleQuotes ?? 'chars', doubleBar: true, quoted: true,
     operators: [...(program?.operators?.values() ?? [])],
@@ -472,7 +493,13 @@ export function checkProof(program, { claims, records = [], steps: allSteps }, o
   for (const record of records) {
     const number = record.args[0]?.type === NUMBER ? Number(record.args[0].name) : NaN;
     const clause = Number.isInteger(number) ? numbering.get(number) : null;
-    if (!clause || !identical(normalizedClauseRecord(record), normalizedClauseRecord(clauseRecordTerm(number, clause)))) {
+    if (!clause) {
+      fail('C1', 'clause record differs from source', record);
+      continue;
+    }
+    // A record that is the rebuilt record itself restates the clause.
+    const rebuilt = clauseRecordTerm(number, clause);
+    if (record !== rebuilt && !identical(normalizedClauseRecord(record), normalizedClauseRecord(rebuilt))) {
       fail('C1', 'clause record differs from source', record);
     }
   }

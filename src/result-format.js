@@ -158,9 +158,22 @@ function renameMinted(value, minted) {
       if (!minted.has(key)) minted.set(key, minted.size + 1);
       return compound('$stream', [numberTerm(BigInt(minted.get(key)))]);
     }
-    return compound(value.name, value.args.map((arg) => renameMinted(arg, minted)));
+    return sameOrRebuilt(value, (arg) => renameMinted(arg, minted));
   }
   return value;
+}
+
+// A compound with `rewrite` applied to its arguments: the compound itself
+// when no argument changes, so ground subterms are shared, not copied.
+function sameOrRebuilt(value, rewrite) {
+  let args = null;
+  for (let i = 0; i < value.args.length; i++) {
+    const arg = value.args[i];
+    const rewritten = rewrite(arg);
+    if (args == null && rewritten !== arg) args = value.args.slice(0, i);
+    if (args != null) args.push(rewritten);
+  }
+  return args == null ? value : compound(value.name, args);
 }
 
 function templateTerm(value, anonymous, minted) {
@@ -172,7 +185,7 @@ function templateTerm(value, anonymous, minted) {
     if (!anonymous.has(value.name)) anonymous.set(value.name, anonymous.size + 1);
     return compound('anonymous', [numberTerm(BigInt(anonymous.get(value.name)))]);
   }
-  if (value.type === COMPOUND) return compound(value.name, value.args.map((arg) => templateTerm(arg, anonymous, minted)));
+  if (value.type === COMPOUND) return sameOrRebuilt(value, (arg) => templateTerm(arg, anonymous, minted));
   return value;
 }
 
@@ -192,8 +205,16 @@ function clauseTerm(number, clause, minted) {
 
 // The `clause/3` record a proof writes for clause `number`, which a checker
 // rebuilds from the source to compare with the document's (C1).
+// The record is kept with the clause, so a proof checked as it is written
+// compares its records with the very terms the checker rebuilds.
+const clauseRecords = new WeakMap();
+
 export function clauseRecordTerm(number, clause) {
-  return clauseTerm(number, clause, new Map());
+  const cached = clauseRecords.get(clause);
+  if (cached?.number === number) return cached.record;
+  const record = clauseTerm(number, clause, new Map());
+  clauseRecords.set(clause, { number, record });
+  return record;
 }
 
 // A `clause/3` record with its minted variable names renumbered from the

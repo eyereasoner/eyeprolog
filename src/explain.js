@@ -1009,6 +1009,7 @@ function resolvedSubstitutions(substitutions, env) {
 // would displace the real clause and every step citing it would stop
 // resolving. Such a declaration is never what a rule(N) or fact(N) cites.
 function isUnnumberedDeclaration(clause) {
+  if (clause?.compactBinary === true) return false;
   const head = clause?.head;
   if (head?.type !== COMPOUND || head.name !== ':-' || head.arity !== 1) return false;
   const directive = head.args[0];
@@ -1016,7 +1017,36 @@ function isUnnumberedDeclaration(clause) {
   return ['module', 'use_module', 'meta_predicate', 'attribute'].includes(directive.name);
 }
 
+// A Map from small positive integers, kept in an array.
+class NumberedTable {
+  constructor() {
+    this.items = [];
+  }
+
+  get(number) {
+    return Number.isInteger(number) && number >= 0 ? this.items[number] : undefined;
+  }
+
+  set(number, value) {
+    this.items[number] = value;
+  }
+}
+
+// A proof is numbered when it is flattened and again when it is checked, and
+// both see the same program; the numbering is kept until the program's
+// clauses change.
+const numberings = new WeakMap();
+
 export function clauseNumbering(program) {
+  const clauses = program.clauses ?? [];
+  const cached = numberings.get(program);
+  if (cached && cached.clauses === clauses && cached.length === clauses.length) return cached.numbering;
+  const numbering = computeClauseNumbering(program);
+  numberings.set(program, { clauses, length: clauses.length, numbering });
+  return numbering;
+}
+
+function computeClauseNumbering(program) {
   const spans = new Map();
   for (const clause of program.clauses ?? []) {
     if (!isProgramClause(clause)) continue;
@@ -1032,17 +1062,19 @@ export function clauseNumbering(program) {
 
   // Keyed by file, then by clause position: one string key per clause cost
   // more than the numbering itself on programs with hundreds of thousands of
-  // clauses.
+  // clauses. Positions and numbers count up from 1, so arrays hold them.
   const bySource = new Map();
-  const byNumber = new Map();
+  const byNumber = new NumberedTable();
   for (const clause of program.clauses ?? []) {
     if (!isProgramClause(clause) || isUnnumberedDeclaration(clause)) continue;
     const { filename, clause: position } = clause.source;
     const number = (offsets.get(filename) ?? 0) + position;
     let numbers = bySource.get(filename);
-    if (!numbers) bySource.set(filename, numbers = new Map());
+    if (!numbers) bySource.set(filename, numbers = new NumberedTable());
     numbers.set(position, number);
-    byNumber.set(number, { head: clause.head, body: clause.body ?? [] });
+    // The clause itself, not a copy of its head and body: a compact clause
+    // builds those terms only when a proof cites it.
+    byNumber.set(number, clause.compactBinary === true || clause.body != null ? clause : { head: clause.head, body: [] });
   }
   return { bySource, byNumber };
 }
