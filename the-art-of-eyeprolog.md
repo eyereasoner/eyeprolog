@@ -8183,9 +8183,9 @@ console.log(report.passed, report.failed, report.undecided, report.stdout);
 </figure>
 
 The [examples directory](https://github.com/eyereasoner/eyeprolog/tree/main/examples/) is the book's executable companion. Its
-top-level directory contains **236 self-contained runnable programs**. Every
+top-level directory contains **238 self-contained runnable programs**. Every
 program has an exact answer file under
-[examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **236 programs** have a checked
+[examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **238 programs** have a checked
 explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/), with the result of that
 check under [examples/check](https://github.com/eyereasoner/eyeprolog/tree/main/examples/check/). So each example comes in three
 parts, making three different claims:
@@ -8255,6 +8255,8 @@ A selection, grouped by theme:
   [sat-solver-dpll](https://github.com/eyereasoner/eyeprolog/blob/main/examples/sat-solver-dpll.pl),
   [knuth-bendix-completion](https://github.com/eyereasoner/eyeprolog/blob/main/examples/knuth-bendix-completion.pl).
 - **Program analysis.**
+  [dependency-preparation-5000](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dependency-preparation-5000.pl) (preparing 5,000 distinct predicates),
+  [dependency-depth-10000](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dependency-depth-10000.pl) (stack-safe analysis of a 10,000-predicate chain),
   [abstract-interpretation](https://github.com/eyereasoner/eyeprolog/blob/main/examples/abstract-interpretation.pl),
   [type-inference](https://github.com/eyereasoner/eyeprolog/blob/main/examples/type-inference.pl),
   [declarative-fault-localization](https://github.com/eyereasoner/eyeprolog/blob/main/examples/declarative-fault-localization.pl),

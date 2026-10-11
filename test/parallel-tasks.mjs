@@ -4,7 +4,7 @@
 // Tasks are handed to workers most expensive first when the caller can
 // estimate a task's cost: a suite whose slowest task starts late spends its
 // last seconds running that one task alone. Results are still reported in task
-// order however the workers finish, so a parallel
+// order by default however the workers finish, so a parallel
 // suite numbers its tests exactly as the sequential one did and a failure still
 // stops the run at the same test. Each suite compares inside its worker, so
 // only a name, an elapsed time, an optional failure, and a small plain-data
@@ -21,6 +21,7 @@ export async function runTasksInParallel({
   runLocally,
   onResult,
   cost = null,
+  ordered = true,
 }) {
   if (names.length === 0) return;
   const parallelism = os.availableParallelism?.() ?? os.cpus().length;
@@ -40,11 +41,15 @@ export async function runTasksInParallel({
 
   const completedResults = new Map();
   // Dispatch order: task indexes by descending estimated cost, ties in task
-  // order. Reporting still follows the task order itself.
+  // order. Ordered reporting still follows the task order itself.
   const dispatch = names.map((_, index) => index);
   if (typeof cost === 'function') {
     const costs = names.map((name) => cost(name));
     dispatch.sort((left, right) => costs[right] - costs[left] || left - right);
+    // In live-reporting mode start the cheapest estimated task before the
+    // expensive ones. This makes the first result visible promptly while
+    // retaining the expensive-first schedule for the rest of the corpus.
+    if (!ordered) dispatch.unshift(dispatch.pop());
   }
   let nextTask = 0;
   let nextReport = 0;
@@ -90,17 +95,30 @@ export async function runTasksInParallel({
     for (const worker of workers) {
       worker.on('message', ({ id, ms, error, value }) => {
         if (settled) return;
-        completedResults.set(id, {
+        const result = {
           ms,
           value: value ?? null,
           error: error == null ? null : Object.assign(new Error(error.message), { stack: error.stack }),
-        });
+        };
         completed++;
-        reportReady();
+        if (ordered) {
+          completedResults.set(id, result);
+          reportReady();
+        } else {
+          try {
+            onResult(names[id], result);
+            nextReport++;
+          } catch (error) {
+            fail(error);
+          }
+        }
         assign(worker);
         finish();
       });
       worker.on('error', fail);
+      worker.on('exit', (code) => {
+        if (!settled) fail(new Error(`task worker exited unexpectedly with status ${code}`));
+      });
       assign(worker);
     }
   });

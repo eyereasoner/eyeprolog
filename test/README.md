@@ -58,4 +58,8 @@ deliberately, and say why, never to make a transient failure disappear.
 There is no separate wall-clock benchmark harness: `npm test`'s own elapsed
 time is the project's performance indicator.
 
+Example, proof-example, and proof-checking tests print results as they finish,
+so long-running proofs do not hide completed tests behind alphabetical order.
+Every test still compares its results with the same golden files.
+
 See the [conformance guide](conformance/README.md) for report maintenance.

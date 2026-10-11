@@ -2,24 +2,32 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const libraryCall = /\b(?:uuid|difference|maplist|foldl|call_nth|lt|gt|le|ge|between|smallest_divisor_from|random|matches|split|replace|lowercase|uppercase|trim|number_string|atom_string|term_string|append|string_concat|contains|join|substring|member|select|last|nth0|nth1|set_nth0|take|drop|slice|reverse|length|sum_list|min_list|max_list|list_to_set|countall|sumall|aggregate_min|aggregate_max)\s*\(/;
-
-const standardModulePrelude = `:- use_module(library(aggregate)).
-:- use_module(library(comparison)).
-:- use_module(library(dates)).
-:- use_module(library(iso_ext)).
-:- use_module(library(lists)).
-:- use_module(library(primes)).
-:- use_module(library(between), [between/3]).
-:- use_module(library(random)).
-:- use_module(library(strings)).
-:- use_module(library(uuid)).
-`;
+// Import the libraries each fixture actually calls. Loading all ten libraries
+// for a single member/2 or length/2 call repeats unrelated parsing, indexing,
+// and dependency analysis hundreds of times across the test corpus.
+const standardModules = [
+  ['aggregate', /\b(?:sumall|aggregate_min|aggregate_max)\s*\(/],
+  ['comparison', /\b(?:lt|gt|le|ge)\s*\(/],
+  ['dates', /\bdifference\s*\(/],
+  ['iso_ext', /\b(?:call_nth|countall)\s*\(/],
+  ['lists', /\b(?:maplist|foldl|append|member|select|last|nth0|nth1|set_nth0|take|drop|slice|reverse|length|sum_list|min_list|max_list|list_to_set)\s*\(/],
+  ['primes', /\bsmallest_divisor_from\s*\(/],
+  ['between', /\bbetween\s*\(/],
+  ['random', /\brandom\s*\(/],
+  ['strings', /\b(?:matches|split|replace|lowercase|uppercase|trim|number_string|atom_string|term_string|string_concat|contains|join|substring)\s*\(/],
+  ['uuid', /\buuid\s*\(/],
+];
 
 export function withStandardModules(source) {
   const text = String(source);
-  if (!libraryCall.test(text) || text.includes('use_module(library(') || text.includes(':- module(')) return text;
-  return `${standardModulePrelude}${text}`;
+  if (text.includes('use_module(library(') || text.includes(':- module(')) return text;
+  let prelude = '';
+  for (const [module, calls] of standardModules) {
+    if (!calls.test(text)) continue;
+    const imports = module === 'between' ? ', [between/3]' : '';
+    prelude += `:- use_module(library(${module})${imports}).\n`;
+  }
+  return `${prelude}${text}`;
 }
 
 export function listPrologFiles(base, dir = base) {

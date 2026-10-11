@@ -29,7 +29,7 @@ export async function runProofChecking(reporter = new TestReporter()) {
   reporter.section('Proof checking');
   // Each document is checked on its own against its own program, so the corpus
   // is checked in parallel and the counts it establishes are summed as the
-  // results come back, in task order, rather than accumulated in a shared
+  // results come back, rather than accumulated in a shared
   // tally a worker could not reach.
   const totals = { steps: 0, verified: 0, redecided: 0, trusted: 0 };
   await runTasksInParallel({
@@ -38,6 +38,7 @@ export async function runProofChecking(reporter = new TestReporter()) {
     workerData: { proofCheckingWorker: true },
     maxWorkers: 3,
     cost: exampleCost,
+    ordered: false,
     runLocally: (name) => checkPackagedProof(name),
     onResult: (name, result) => {
       for (const field of Object.keys(totals)) totals[field] += result.value?.[field] ?? 0;

@@ -13,6 +13,7 @@ import { selectClauseCandidates } from '../../src/program.js';
 import { evaluatePositiveDatalog, relationForDatalogGroup } from '../../src/datalog.js';
 import { assertEqual, assertIncludes, assertNotIncludes } from '../test-style.mjs';
 import { goalsFromSource } from '../goal-metadata.mjs';
+import { withStandardModules } from '../test-support.mjs';
 import {
   bin,
   packageRoot,
@@ -22,6 +23,66 @@ import {
 
 export function whiteBoxCases() {
   return [
+    {
+      name: 'test fixtures import only their required standard libraries',
+      run: () => {
+        const source = 'p(X) :- member(X, [a,b]), countall(true, 1), difference(a, b, _).';
+        const prepared = withStandardModules(source);
+        assertIncludes(prepared, 'use_module(library(lists))', 'list dependency');
+        assertIncludes(prepared, 'use_module(library(iso_ext))', 'count dependency');
+        assertIncludes(prepared, 'use_module(library(dates))', 'date dependency');
+        assertNotIncludes(prepared, 'library(strings)', 'unrelated text library');
+        assertNotIncludes(prepared, 'library(uuid)', 'unrelated UUID library');
+        assertEqual(withStandardModules('p(a).'), 'p(a).', 'plain fixture unchanged');
+        const explicit = ':- use_module(library(lists)).\np(X) :- member(X, [a]).';
+        assertEqual(withStandardModules(explicit), explicit, 'explicit imports unchanged');
+        const module = ':- module(test, [p/1]).\np(X) :- member(X, [a]).';
+        assertEqual(withStandardModules(module), module, 'module fixture unchanged');
+        assertIncludes(withStandardModules('between(1, 3, X).'), 'library(between), [between/3]', 'selective between import');
+      },
+    },
+    {
+      name: 'parallel task reporting exposes completed work and handles unexpected exits',
+      run: () => {
+        const script = `
+          import assert from 'node:assert/strict';
+          import os from 'node:os';
+          import { runTasksInParallel } from './test/parallel-tasks.mjs';
+          os.availableParallelism = () => 3;
+          const gate = new Int32Array(new SharedArrayBuffer(4));
+          const workerUrl = new URL('data:text/javascript,' + encodeURIComponent(\`
+            import { parentPort, workerData } from 'node:worker_threads';
+            parentPort.on('message', ({ id, name }) => {
+              if (name === 'exit') process.exit(0);
+              const waited = name === 'slow' ? Atomics.wait(workerData.gate, 0, 0, 3000) : null;
+              parentPort.postMessage({ id, ms: 0, value: waited });
+            });
+          \`));
+          const options = { workerUrl, workerData: { gate }, maxWorkers: 2, names: ['slow', 'fast'], cost: (name) => name === 'fast' ? 2 : 1 };
+          const live = [];
+          await runTasksInParallel({ ...options, ordered: false, onResult: (name, result) => {
+            assert.equal(result.error, null);
+            assert.notEqual(result.value, 'timed-out');
+            live.push(name);
+            if (name === 'fast') { Atomics.store(gate, 0, 1); Atomics.notify(gate, 0); }
+          } });
+          assert.deepEqual(live, ['fast', 'slow']);
+          const ordered = [];
+          await runTasksInParallel({ ...options, onResult: (name) => ordered.push(name) });
+          assert.deepEqual(ordered, ['slow', 'fast']);
+          await assert.rejects(runTasksInParallel({ ...options, names: ['exit', 'fast'], onResult: () => {} }), /exited unexpectedly/);
+          os.availableParallelism = () => 1;
+          const local = [];
+          await runTasksInParallel({ ...options, runLocally: (name) => name, onResult: (_, result) => local.push(result.value) });
+          assert.deepEqual(local, ['slow', 'fast']);
+        `;
+        const result = spawnSync(process.execPath, ['--input-type=module', '-e', script], {
+          cwd: packageRoot, encoding: 'utf8', timeout: 10_000,
+        });
+        if (result.error) throw result.error;
+        assertEqual(result.status, 0, result.stderr || 'worker reporting subprocess exit');
+      },
+    },
     {
       // The point of C5. A proof can be internally flawless -- every step an
       // instance of the clause it cites, every use accounted for, no cycles --
@@ -768,6 +829,61 @@ export function whiteBoxCases() {
         selectClauseCandidates(gateGroup, parseGoalText('gate(a, b, Result)'), new Env());
         assertEqual(gateGroup.demandIndexes.size, 0, 'poor wide index discarded');
         assertEqual(gateGroup.rejectedDemandIndexes.has('0,1'), true, 'poor call mode remembered');
+      },
+    },
+    {
+      name: 'dependency planning propagates cuts and multiplicity across the correct components',
+      run: () => {
+        const program = Program.parse([
+          'base_cut([]) :- !.',
+          'base_cut([_|Xs]) :- base_cut(Xs).',
+          'recursive_cut([]).',
+          'recursive_cut([_|Xs]) :- !, recursive_cut(Xs).',
+          'mutual_a(X) :- mutual_b(X).',
+          'mutual_b(X) :- !, mutual_a(X).',
+          'caller(X) :- (true -> base_cut(X) ; recursive_cut(X)).',
+          'counted(X) :- leaf(X).',
+          'leaf(a).',
+          'collect(L) :- findall(X, counted(X), L).',
+          'unrelated(a).',
+        ].join('\n'));
+        const group = (name) => program.findGroup(name, 1);
+        assertEqual(group('base_cut').cutReachable, true, 'base cut remains reachable');
+        assertEqual(group('base_cut').cutRecursive, false, 'base cut does not mark the recursive clause');
+        assertEqual(group('base_cut').listTailRecursive, true, 'base cut preserves strict tail planning');
+        assertEqual(group('recursive_cut').cutRecursive, true, 'cut in recursive clause detected');
+        assertEqual(group('recursive_cut').listTailRecursive, false, 'recursive cut disables strict tail planning');
+        for (const name of ['mutual_a', 'mutual_b']) {
+          assertEqual(group(name).recursive, true, `${name} is mutually recursive`);
+          assertEqual(group(name).cutRecursive, true, `${name} shares the component cut`);
+        }
+        assertEqual(group('caller').recursive, false, 'calling recursion is not recursion');
+        assertEqual(group('caller').cutReachable, true, 'conditional dependency propagates cuts');
+        for (const name of ['counted', 'leaf']) {
+          assertEqual(group(name).multiplicitySensitive, true, `${name} contributes to the bag`);
+        }
+        assertEqual(group('collect').multiplicitySensitive, false, 'bag sensitivity flows toward dependencies');
+        assertEqual(group('unrelated').multiplicitySensitive, false, 'unrelated predicate stays independent');
+      },
+    },
+    {
+      name: 'deep predicate dependency chains prepare and analyze without a host stack limit',
+      run: () => {
+        for (const [name, count, cutReachable] of [
+          ['dependency-preparation-5000', 5_000, false],
+          ['dependency-depth-10000', 10_000, true],
+        ]) {
+          const source = fs.readFileSync(path.join(packageRoot, 'examples', `${name}.pl`), 'utf8');
+          const program = Program.parse(source);
+          assertEqual(program.groups.size, count, `${name}: all predicate groups prepared`);
+          assertEqual(program.isStratifiedNegation(), true, `${name}: deep acyclic graph is stratified`);
+          assertEqual(program.negationDependencies.length, count - 1, `${name}: every chain edge analyzed`);
+          for (let index = 0; index < count; index++) {
+            const group = program.findGroup(`chain${index}`, 1);
+            assertEqual(group.recursive, false, `${name}: chain${index} is acyclic`);
+            assertEqual(group.cutReachable, cutReachable, `${name}: chain${index} cut propagation`);
+          }
+        }
       },
     },
     {

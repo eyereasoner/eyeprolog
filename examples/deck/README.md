@@ -81,6 +81,8 @@ check of that proof. Each deck links to the source and opens the example in the
 - [Delayed disequality with dif/2](https://eyereasoner.github.io/eyeprolog/examples/deck/dif-constraints) — How do you say "these must differ" before you know what they are?
 - [Delfour: a privacy-preserving shopping insight](https://eyereasoner.github.io/eyeprolog/examples/deck/delfour) — Can a store scanner give diabetes-aware advice without ever learning about the diabetes?
 - [Deontic logic](https://eyereasoner.github.io/eyeprolog/examples/deck/deontic-logic) — Which duties were broken, which were repaired, and does someone need to review it?
+- [Dependency depth: 10,000 predicates](https://eyereasoner.github.io/eyeprolog/examples/deck/dependency-depth-10000) — Can dependency analysis follow a deep chain without exhausting the JavaScript stack?
+- [Dependency preparation: 5,000 predicates](https://eyereasoner.github.io/eyeprolog/examples/deck/dependency-preparation-5000) — How quickly can the engine prepare thousands of distinct predicates?
 - [Dijkstra with findall and sort](https://eyereasoner.github.io/eyeprolog/examples/deck/dijkstra-findall-sort) — What is the cheapest route, found the way Dijkstra would?
 - [Dining philosophers](https://eyereasoner.github.io/eyeprolog/examples/deck/dining-philosophers) — Who eats when, and with which forks?
 - [DONALD + GERALD = ROBERT](https://eyereasoner.github.io/eyeprolog/examples/deck/donald-gerald-robert) — Which digit does each letter stand for?

@@ -44,8 +44,12 @@ export function componentHasCut(start, deps, groups) {
 
 
 export function reachableIndexes(start, deps) {
+  return reachableFromRoots([start], deps);
+}
+
+function reachableFromRoots(roots, deps) {
   const seen = new Set();
-  const stack = [start];
+  const stack = [...roots];
   while (stack.length) {
     const current = stack.pop();
     if (seen.has(current)) continue;
@@ -53,6 +57,49 @@ export function reachableIndexes(start, deps) {
     for (const next of deps[current]) if (!seen.has(next)) stack.push(next);
   }
   return seen;
+}
+
+// Classify the whole dependency graph once. Repeating a reachability walk for
+// every predicate makes loading a long acyclic chain quadratic, even though
+// recursion and cut propagation are properties of its components and edges.
+export function analyzeDependencyGraph(deps, cutDeps, groups, multiplicityRoots, wfsEdges) {
+  const components = stronglyConnectedComponents(deps);
+  const componentByIndex = new Int32Array(groups.length);
+  const componentCuts = new Uint8Array(components.length);
+  const reverse = groups.map(() => []);
+  const reverseCuts = groups.map(() => []);
+  const cutRoots = [];
+  for (let component = 0; component < components.length; component++) {
+    for (const index of components[component]) {
+      componentByIndex[index] = component;
+      const group = groups[index];
+      if (!group.hasCut) continue;
+      // Preserve the distinction between a cut in a base clause and a cut
+      // in a directly recursive clause used by the solver's recursion plans.
+      const directRecursive = group.clauses.some((clause) => clauseIsDirectRecursive(clause, group));
+      if (group.clauses.some((clause) =>
+        (!directRecursive || clauseIsDirectRecursive(clause, group)) && clauseHasCut(clause))) {
+        componentCuts[component] = 1;
+      }
+    }
+  }
+  for (let from = 0; from < groups.length; from++) {
+    for (const to of deps[from]) reverse[to].push(from);
+    for (const to of cutDeps[from]) reverseCuts[to].push(from);
+    if (groups[from].hasCut) cutRoots.push(from);
+  }
+  const wfsRoots = [];
+  for (const [from, to] of wfsEdges) {
+    if (componentByIndex[from] === componentByIndex[to]) wfsRoots.push(from, to);
+  }
+  return {
+    components,
+    componentByIndex,
+    componentCuts,
+    cutReachable: reachableFromRoots(cutRoots, reverseCuts),
+    multiplicitySensitive: reachableFromRoots(multiplicityRoots, deps),
+    wfsReachable: reachableFromRoots(wfsRoots, reverse),
+  };
 }
 
 // Returns the set of nodes in `candidates` that can reach `target` by
@@ -509,36 +556,47 @@ export function stronglyConnectedComponents(adjacency) {
   const lowlinks = new Map();
   const components = [];
 
-  function visit(v) {
+  function enter(v) {
     indexes.set(v, index);
     lowlinks.set(v, index);
     index++;
     stack.push(v);
     onStack.add(v);
 
-    for (const w of adjacency[v]) {
-      if (!indexes.has(w)) {
-        visit(w);
-        lowlinks.set(v, Math.min(lowlinks.get(v), lowlinks.get(w)));
-      } else if (onStack.has(w)) {
-        lowlinks.set(v, Math.min(lowlinks.get(v), indexes.get(w)));
-      }
-    }
-
-    if (lowlinks.get(v) === indexes.get(v)) {
-      const component = [];
-      while (true) {
-        const w = stack.pop();
-        onStack.delete(w);
-        component.push(w);
-        if (w === v) break;
-      }
-      components.push(component);
-    }
+    return { node: v, edges: adjacency[v][Symbol.iterator]() };
   }
 
   for (let v = 0; v < adjacency.length; v++) {
-    if (!indexes.has(v)) visit(v);
+    if (indexes.has(v)) continue;
+    // Explicit DFS frames keep preparation safe for dependency chains deeper
+    // than the JavaScript stack, including large generated taxonomies.
+    const frames = [enter(v)];
+    while (frames.length > 0) {
+      const frame = frames[frames.length - 1];
+      const next = frame.edges.next();
+      if (!next.done) {
+        const w = next.value;
+        if (!indexes.has(w)) frames.push(enter(w));
+        else if (onStack.has(w)) lowlinks.set(frame.node, Math.min(lowlinks.get(frame.node), indexes.get(w)));
+        continue;
+      }
+      const node = frame.node;
+      if (lowlinks.get(node) === indexes.get(node)) {
+        const component = [];
+        let w;
+        do {
+          w = stack.pop();
+          onStack.delete(w);
+          component.push(w);
+        } while (w !== node);
+        components.push(component);
+      }
+      frames.pop();
+      if (frames.length > 0) {
+        const parent = frames[frames.length - 1].node;
+        lowlinks.set(parent, Math.min(lowlinks.get(parent), lowlinks.get(node)));
+      }
+    }
   }
   return components;
 }

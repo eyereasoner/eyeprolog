@@ -32,7 +32,7 @@ import {
 export { selectClauseCandidates, selectClauseCandidatesForValues, selectGroundClauseCandidates } from './program-indexing.js';
 import {
 
-  componentHasNegativeEdge, componentHasCut, reachableIndexes, datalogDependencyClauseCount, isFiniteDatalogGroup, isRangeRestrictedFiniteDatalogGroup, isFiniteWfsDatalogGroup, inferStructuralInputPositions, hasStrictListTailRecursion, hasLinearNumericRecursion, isPiAccumulator, isPortableBetweenGenerator, directGoalDependencyKey, collectGoalDependencies, stronglyConnectedComponents, computeNegationStrata,
+  analyzeDependencyGraph, datalogDependencyClauseCount, isFiniteDatalogGroup, isRangeRestrictedFiniteDatalogGroup, isFiniteWfsDatalogGroup, inferStructuralInputPositions, hasStrictListTailRecursion, hasLinearNumericRecursion, isPiAccumulator, isPortableBetweenGenerator, directGoalDependencyKey, collectGoalDependencies, stronglyConnectedComponents, computeNegationStrata,
 } from './program-analysis.js';
 
 const RE_DECIMAL_INT = /^\d+$/;
@@ -434,7 +434,6 @@ export class Program {
     const deps = groups.map(() => new Set());
     const cutDeps = groups.map(() => new Set());
     const multiplicitySensitiveRoots = new Set();
-    const negativeEdges = [];
     const wfsNegativeEdges = [];
     for (const group of groups) {
       const groupIndex = indexByGroup.get(group);
@@ -465,7 +464,6 @@ export class Program {
               const dependencyIndex = indexByGroup.get(dep);
               deps[groupIndex].add(dependencyIndex);
               if (dependency.negative) {
-                negativeEdges.push([groupIndex, dependencyIndex]);
                 if (dependency.wfs === true) wfsNegativeEdges.push([groupIndex, dependencyIndex]);
               }
             }
@@ -480,6 +478,7 @@ export class Program {
         cutDeps[groupIndex].add(dependencyIndex);
       }
     }
+    const graph = analyzeDependencyGraph(deps, cutDeps, groups, multiplicitySensitiveRoots, wfsNegativeEdges);
     const finiteDatalogCache = new Map();
     const rangeRestrictedDatalogCache = new Map();
     for (const group of groups) {
@@ -487,19 +486,10 @@ export class Program {
       const standardLibraryModule = group.module !== 'user' &&
         this.modules.get(group.module)?.filename?.startsWith('src/lib/');
       group.bundledLibrary = standardLibraryModule === true;
-      group.cutReachable = [...reachableIndexes(start, cutDeps)].some((index) => groups[index].hasCut);
-      const seen = new Set();
-      const stack = [start];
-      let recursive = false;
-      while (stack.length && !recursive) {
-        const current = stack.pop();
-        if (seen.has(current)) continue;
-        seen.add(current);
-        for (const next of deps[current]) {
-          if (next === start) { recursive = true; break; }
-          if (!seen.has(next)) stack.push(next);
-        }
-      }
+      group.cutReachable = graph.cutReachable.has(start);
+      const component = graph.componentByIndex[start];
+      const componentSize = graph.components[component].length;
+      const recursive = componentSize > 1 || deps[start].has(start);
       // Bundled libraries use their written ISO control directly. User modules
       // are analyzed for recursion, but tabling itself is strictly opt-in.
       const plannedRecursive = recursive && !standardLibraryModule;
@@ -509,18 +499,16 @@ export class Program {
       group.tableInputPositions = explicitlyTabled && plannedRecursive
         ? inferStructuralInputPositions(group)
         : [];
-      group.cutRecursive = plannedRecursive && componentHasCut(start, deps, groups);
+      group.cutRecursive = plannedRecursive && graph.componentCuts[component] === 1;
       const linearNumeric = plannedRecursive && !explicitlyTabled && hasLinearNumericRecursion(group) &&
         (isPiAccumulator(group) || isPortableBetweenGenerator(group));
       group.linearNumeric = linearNumeric;
       group.fastPi = linearNumeric && isPiAccumulator(group);
-      const directRecursiveComponent = plannedRecursive && [...deps[start]].every((dependency) =>
-        dependency === start || !reachableIndexes(dependency, deps).has(start)
-      );
+      const directRecursiveComponent = plannedRecursive && componentSize === 1;
       group.listTailRecursive = directRecursiveComponent && !group.cutRecursive &&
         hasStrictListTailRecursion(group);
       const cutTailRecursion = plannedRecursive && hasDirectCutTailRecursion(group);
-      const multiplicitySensitive = [...multiplicitySensitiveRoots].some((root) => reachableIndexes(root, deps).has(start));
+      const multiplicitySensitive = graph.multiplicitySensitive.has(start);
       group.cutTailRecursion = cutTailRecursion;
       group.multiplicitySensitive = multiplicitySensitive;
       group.depthFirstRecursive = plannedRecursive && !explicitlyTabled;
@@ -542,17 +530,10 @@ export class Program {
     // not silently change ordinary Prolog programs.  A group is WFS-backed when
     // its dependency cone reaches an SCC containing an edge introduced by
     // tnot/1 and the whole cone is range-restricted finite Datalog.
-    const wfsCycleNodes = new Set();
-    for (const [from, to] of wfsNegativeEdges) {
-      if (!reachableIndexes(to, deps).has(from)) continue;
-      wfsCycleNodes.add(from);
-      wfsCycleNodes.add(to);
-    }
     const finiteWfsCache = new Map();
     for (const group of groups) {
       const start = indexByGroup.get(group);
-      const reachable = reachableIndexes(start, deps);
-      const reachesWfsCycle = [...wfsCycleNodes].some((index) => reachable.has(index));
+      const reachesWfsCycle = graph.wfsReachable.has(start);
       group.wfsDatalog = reachesWfsCycle && isFiniteWfsDatalogGroup(this, group, finiteWfsCache);
     }
   }

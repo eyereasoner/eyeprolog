@@ -68,6 +68,7 @@ function runExampleTasks(names, kind, reporter) {
     message: { kind },
     maxWorkers: 3,
     cost: exampleCost,
+    ordered: false,
     runLocally: (name) => exampleTaskKinds[kind](name),
     onResult: (name, result) => reporter.testResult(name, result),
   });
