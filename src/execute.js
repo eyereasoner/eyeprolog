@@ -66,6 +66,9 @@ function currentWriteOptions(program, solver) {
     doubleBar: !solver.isoStrict,
     operators: [...program.operators.values()],
     quoted: true,
+    // An answer is a fact to be read back: '$VAR'(N) written as a letter
+    // would read back as a variable, a different term.
+    numbervars: false,
   };
 }
 
@@ -144,5 +147,6 @@ function forwardLine(term, program, solver) {
     minimalOperatorSpacing: true,
     operatorAtomsAsArgs: true,
     generateVariableNames: true,
+    numbervars: false,
   })}.\n`;
 }

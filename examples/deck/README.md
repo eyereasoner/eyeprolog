@@ -60,7 +60,7 @@ check of that proof. Each deck links to the source and opens the example in the
 - [Common ISO extensions](https://eyereasoner.github.io/eyeprolog/examples/deck/iso-extensions) — Which everyday extensions do mature Prolog systems share?
 - [Competitive enzyme inhibition](https://eyereasoner.github.io/eyeprolog/examples/deck/competitive-enzyme-kinetics) — How much does an inhibitor slow an enzyme down?
 - [Complex numbers](https://eyereasoner.github.io/eyeprolog/examples/deck/complex) — What is i to the power i?
-- [Composing injective functions](https://eyereasoner.github.io/eyeprolog/examples/deck/composition-of-injective-functions-is-injective) — If f and g are injective, what follows when g ∘ f sends two inputs to the same place?
+- [Composing injective functions](https://eyereasoner.github.io/eyeprolog/examples/deck/composition-of-injective-functions-is-injective) — If f and g are injective, is g ∘ f injective too?
 - [Computing the date of Easter](https://eyereasoner.github.io/eyeprolog/examples/deck/easter-computus) — On which day does Easter fall in each year from 2026 to 2035?
 - [Computing π](https://eyereasoner.github.io/eyeprolog/examples/deck/pi) — How close does the Nilakantha series get to π?
 - [Context association](https://eyereasoner.github.io/eyeprolog/examples/deck/context-association) — Which named graph holds the data, which holds its signature, and which holds the signature's metadata?
@@ -83,6 +83,7 @@ check of that proof. Each deck links to the source and opens the example in the
 - [Deontic logic](https://eyereasoner.github.io/eyeprolog/examples/deck/deontic-logic) — Which duties were broken, which were repaired, and does someone need to review it?
 - [Dependency depth: 10,000 predicates](https://eyereasoner.github.io/eyeprolog/examples/deck/dependency-depth-10000) — Can dependency analysis follow a deep chain without exhausting the JavaScript stack?
 - [Dependency preparation: 5,000 predicates](https://eyereasoner.github.io/eyeprolog/examples/deck/dependency-preparation-5000) — How quickly can the engine prepare thousands of distinct predicates?
+- [Dialogical reasoning](https://eyereasoner.github.io/eyeprolog/examples/deck/dialogical-reasoning) — Can this claim survive an opponent?
 - [Dijkstra with findall and sort](https://eyereasoner.github.io/eyeprolog/examples/deck/dijkstra-findall-sort) — What is the cheapest route, found the way Dijkstra would?
 - [Dining philosophers](https://eyereasoner.github.io/eyeprolog/examples/deck/dining-philosophers) — Who eats when, and with which forks?
 - [DONALD + GERALD = ROBERT](https://eyereasoner.github.io/eyeprolog/examples/deck/donald-gerald-robert) — Which digit does each letter stand for?

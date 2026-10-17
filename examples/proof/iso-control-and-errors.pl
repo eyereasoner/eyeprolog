@@ -49,9 +49,11 @@ step(travel_status(antwerp, ghent, connected),
      ['From' = antwerp, 'To' = ghent, 'Status' = connected],
      [(call(route(antwerp, ghent)) -> connected = connected ; connected = disconnected)]).
 step((call(route(antwerp, ghent)) -> connected = connected ; connected = disconnected),
-     builtin,
+     control,
      [],
-     []).
+     [call(route(antwerp, ghent)), connected = connected]).
+step(call(route(antwerp, ghent)), control, [], [route(antwerp, ghent)]).
+step(connected = connected, builtin, [], []).
 step(report(missing_route, disconnected),
      rule(11),
      ['Status' = disconnected],
@@ -61,9 +63,11 @@ step(travel_status(antwerp, paris, disconnected),
      ['From' = antwerp, 'To' = paris, 'Status' = disconnected],
      [(call(route(antwerp, paris)) -> disconnected = connected ; disconnected = disconnected)]).
 step((call(route(antwerp, paris)) -> disconnected = connected ; disconnected = disconnected),
-     builtin,
+     control,
      [],
-     []).
+     [\+ call(route(antwerp, paris)), disconnected = disconnected]).
+step(\+ call(route(antwerp, paris)), absent, [], []).
+step(disconnected = disconnected, builtin, [], []).
 step(report(recovered_exception, rejected),
      rule(12),
      ['Result' = rejected],

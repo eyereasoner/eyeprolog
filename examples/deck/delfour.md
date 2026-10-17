@@ -157,15 +157,16 @@ eyeprolog --check-proof delfour.why.pl examples/delfour.pl
 
 ```text
 condition('C1', resolution, ok, 244).
-condition('C6', boundary_consistency, ok, 2).
+condition('C5', re_decision, ok, 51).
+condition('C6', boundary_consistency, ok, 1).
 obligation(absent, theory_scoped, \+ better_lower_sugar(biscuits, 120, 30)).
-obligation(absent, theory_scoped, \+ matches('createdat expiresat insight metric sugar_g_per_serving retailer delfour scopedevice self-scanner scopeevent pick_up_scanner', 'diabetes|medical')).
 verdict(checked_with_obligations).
 ```
 
-All 296 steps check out. Two conclusions rest on absence and are left as
-**obligations**: that no biscuit beats the suggestion, and that the shared text
-contains no sensitive word.
+All 296 steps check out. That the shared text contains no sensitive word is a
+plain test on a string written out in the step, so the checker decides it again
+itself. One conclusion still rests on absence and is left as an
+**obligation**: that no biscuit beats the suggestion.
 
 The signature check is named for what it does. `signature_accepted_as_trusted/1`
 accepts the signature because the input marks its verification mode as

@@ -95,16 +95,17 @@ in range, all distinct, and safe on the diagonals. Further steps prove
 
 ```text
 condition('C1', resolution, ok, 76).
-condition('C4', coverage, ok, 212).
-condition('C5', re_decision, ok, 98).
-steps(174).
+condition('C4', coverage, ok, 602).
+condition('C5', re_decision, ok, 262).
+steps(338).
 trusted(0).
 verdict(checked).
 ```
 
-174 steps: 76 resolve against program clauses and 98 constraint steps are
-recomputed on their ground values. The checker confirms every diagonal test
-without repeating the search.
+338 steps: 76 resolve against program clauses, 106 constraint steps are
+recomputed on their ground values, and 156 `control` steps record which branch
+of each compiled diagonal test was taken, composed from the goals it rests on.
+The checker confirms every diagonal test without repeating the search.
 
 ---
 

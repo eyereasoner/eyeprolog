@@ -108,17 +108,18 @@ that found nothing.
 
 ```text
 condition('C1', resolution, ok, 37).
-condition('C5', re_decision, ok, 40).
-condition('C6', boundary_consistency, ok, 6).
+condition('C5', re_decision, ok, 45).
+condition('C6', boundary_consistency, ok, 1).
 obligation(collected, theory_scoped, findall(A, block(A), "abcde")).
 verdict(checked_with_obligations).
 ```
 
-Rule steps and arithmetic were replayed. The "clear" and "not yet visited"
-tests, and the count of blocks, are negations and collections: the checker can
-test them against the evidence (C6 decided 6 of them and refuted none) but
-cannot prove them outright, so it lists each as an **obligation** the verdict
-rests on.
+Rule steps replay, and arithmetic plus the ground "not yet visited" tests are
+decided again by the checker itself. What is left are the "clear" tests, which
+ask whether *any* block sits on another (`\+ member(on(A, e), [...])`), and the
+count of blocks: an open negation and a collection. The checker can confront
+them with the evidence (C6 decided one and refuted none) but cannot prove them
+outright, so it lists each as an **obligation** the verdict rests on.
 
 ---
 

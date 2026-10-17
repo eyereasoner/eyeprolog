@@ -96,18 +96,21 @@ clause.
 
 ```text
 condition('C1', resolution, ok, 7).
-condition('C5', re_decision, ok, 4).
-condition('C7', relevance, ok, 12).
-steps(11).
-recomputed(4).
+condition('C5', re_decision, ok, 10).
+condition('C7', relevance, ok, 18).
+steps(17).
+recomputed(6).
+composed(4).
 trusted(0).
 verdict(checked).
 ```
 
-All 11 steps check out, and the four if-then-else decisions are recomputed.
-The proof is valid, and that is the point: a proof certifies that an answer
-follows from the program, not that the program is correct. Locating the bug
-needed the intended meaning, which only the programmer has.
+All 17 steps check out. The four if-then-else decisions are now recorded as
+the branch each took, composed from the goals that branch rests on, and the
+tests inside them are recomputed. The proof is valid, and that is the point: a
+proof certifies that an answer follows from the program, not that the program
+is correct. Locating the bug needed the intended meaning, which only the
+programmer has.
 
 ---
 

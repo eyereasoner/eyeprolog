@@ -198,10 +198,15 @@ function controlAlternatives(goal) {
   }
   if (isCompound(goal, ';', 2)) {
     const [left, right] = goal.args;
-    const first = isCompound(left, '->', 2) || isCompound(left, '*->', 2)
-      ? [...conjuncts(left.args[0]), ...conjuncts(left.args[1])]
-      : conjuncts(left);
-    return [first, conjuncts(right)];
+    // An if-then-else takes its else branch only when its condition has no
+    // solution, so that branch rests on `\+ Cond` as well as its own goals.
+    if (isCompound(left, '->', 2) || isCompound(left, '*->', 2)) {
+      return [
+        [...conjuncts(left.args[0]), ...conjuncts(left.args[1])],
+        [compound('\\+', [left.args[0]]), ...conjuncts(right)],
+      ];
+    }
+    return [conjuncts(left), conjuncts(right)];
   }
   return null;
 }
@@ -541,6 +546,7 @@ function checkProofWithKeys(program, { claims, records = [], steps: allSteps }, 
   const redecideGoals = [];
   for (const step of steps.values()) {
     if (isAtom(step.by, 'builtin')) redecideGoals.push(step.conclusion);
+    if (isAtom(step.by, 'absent') && termIsGround(step.conclusion)) redecideGoals.push(step.conclusion);
     if (isAtom(step.by, 'absent') || isAtom(step.by, 'collected')) {
       const inner = isCompound(step.conclusion, '\\+', 1) ? step.conclusion.args[0] : step.conclusion.args?.[1];
       for (const part of inner ? flattenConjunction(inner) : []) {
@@ -623,6 +629,22 @@ function checkProofWithKeys(program, { claims, records = [], steps: allSteps }, 
                (isAtom(by, 'collected') && isCompound(goal, 'findall', 3))) {
       if (step.bindings.length > 0 || step.uses.length > 0) {
         fail('C3', 'trusted boundaries cannot have bindings or uses', goal);
+      }
+      // A ground absence the libraries alone can decide -- `\+ 1 > 3` -- is
+      // decided again, as a builtin step is; one that needs the theory stays
+      // an obligation.
+      const outcome = isAtom(by, 'absent') && termIsGround(goal) && !NOT_REDECIDABLE.has(predicateKey(goal.args[0]))
+        ? redecide(goal)
+        : { status: 'unavailable' };
+      if (outcome.status === 'agrees') {
+        redecided++;
+        continue;
+      }
+      if (outcome.status === 'disagrees') {
+        fail('C5', outcome.detail
+          ? `primitive went wrong: ${show(goal)}: ${outcome.detail}`
+          : `primitive disagrees: ${show(goal)}`, goal);
+        continue;
       }
       boundaries.push(goal);
       trust(by.name, step);

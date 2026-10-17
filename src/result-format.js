@@ -21,7 +21,9 @@ import { formatTermForWrite } from './write.js';
 const WIDTH = 96;
 
 export function resultWriteOptions(program, { doubleQuotes = 'chars', doubleBar = true } = {}) {
-  return { doubleQuotes, doubleBar, operators: [...(program?.operators?.values() ?? [])], quoted: true };
+  // Facts a reader parses again, so '$VAR'(N) is written as itself, not as a
+  // letter that would read back as a variable.
+  return { doubleQuotes, doubleBar, operators: [...(program?.operators?.values() ?? [])], quoted: true, numbervars: false };
 }
 
 // One argument, rendered the way a writer renders an argument: at priority

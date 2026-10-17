@@ -379,7 +379,7 @@ export interface EyePrologProofStep {
 /** A clause of the program, under the number `rule(N)` and `fact(N)` cite. */
 export type EyePrologNumberedClause = [number, { head: EyePrologTerm; body: EyePrologTerm[] }];
 
-export function clauseNumbering(program: Program): { bySource: Map<string, number>; byNumber: Map<number, { head: EyePrologTerm; body: EyePrologTerm[] }> };
+export function clauseNumbering(program: Program): { bySource: Map<string, ReadonlyMap<number, number>>; byNumber: ReadonlyMap<number, { head: EyePrologTerm; body: EyePrologTerm[] }> };
 export function flattenProof(roots: unknown[], program: Program): { clauses: EyePrologNumberedClause[]; steps: EyePrologProofStep[] };
 export function formatFact(term: EyePrologTerm, writeOptions?: Record<string, unknown>): string;
 export function isLibraryClause(clause: unknown): boolean;
@@ -390,6 +390,16 @@ export function checkedProofBlocks(
   program: Program,
   claimed: EyePrologTerm[],
   options?: { registry?: unknown; proofDetail?: 'abstract' | 'expanded'; solver?: unknown; goals?: (string | EyePrologTerm)[] },
+): string;
+/**
+ * Each answer to `goals` played out as a dialogue, the checker as opponent, as
+ * `move/4`, `outcome/3` and `obligation/2` facts. `evidence` is the program with
+ * the opponent's evidence added; `evidenceFile` names the source it came from.
+ */
+export function dialogueText(
+  program: Program,
+  goals: (string | EyePrologTerm)[],
+  options?: { registry?: unknown; proofDetail?: 'abstract' | 'expanded'; evidence?: Program | null; evidenceFile?: string | null },
 ): string;
 /** Raised when a run's own proof does not check, so it is not written. */
 export class ProofCheckError extends Error {
@@ -487,6 +497,7 @@ declare const eyeprolog: {
   isProgramClause: typeof isProgramClause;
   proofBlocks: typeof proofBlocks;
   checkedProofBlocks: typeof checkedProofBlocks;
+  dialogueText: typeof dialogueText;
   ProofCheckError: typeof ProofCheckError;
   proofNodeFor: typeof proofNodeFor;
   resultWriteOptions: typeof resultWriteOptions;

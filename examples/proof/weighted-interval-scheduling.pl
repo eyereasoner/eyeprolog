@@ -250,7 +250,9 @@ step(next_compatible(8, 9),
 step(interval(8, 8, 11, 4), fact(11), [], []).
 step(\+ (interval(K, Startk, _finishk, _valuek), K > 8, Startk >= 11), absent, [], []).
 step(4 is 4 + 0, builtin, [], []).
-step((4 >= 0 -> 4 = 4 ; 4 = 0), builtin, [], []).
+step((4 >= 0 -> 4 = 4 ; 4 = 0), control, [], [4 >= 0, 4 = 4]).
+step(4 >= 0, builtin, [], []).
+step(4 = 4, builtin, [], []).
 step(next_compatible(7, 9),
      rule(13),
      ['I' = 7, 'Finish' = 10],
@@ -258,7 +260,8 @@ step(next_compatible(7, 9),
 step(interval(7, 6, 10, 2), fact(10), [], []).
 step(\+ (interval(K, Startk, _finishk, _valuek), K > 7, Startk >= 10), absent, [], []).
 step(2 is 2 + 0, builtin, [], []).
-step((2 >= 4 -> 4 = 2 ; 4 = 4), builtin, [], []).
+step((2 >= 4 -> 4 = 2 ; 4 = 4), control, [], [\+ 2 >= 4, 4 = 4]).
+step(\+ 2 >= 4, absent, [], []).
 step(next_compatible(6, 9),
      rule(13),
      ['I' = 6, 'Finish' = 9],
@@ -266,7 +269,8 @@ step(next_compatible(6, 9),
 step(interval(6, 5, 9, 3), fact(9), [], []).
 step(\+ (interval(K, Startk, _finishk, _valuek), K > 6, Startk >= 9), absent, [], []).
 step(3 is 3 + 0, builtin, [], []).
-step((3 >= 4 -> 4 = 3 ; 4 = 4), builtin, [], []).
+step((3 >= 4 -> 4 = 3 ; 4 = 4), control, [], [\+ 3 >= 4, 4 = 4]).
+step(\+ 3 >= 4, absent, [], []).
 step(next_compatible(5, 9),
      rule(13),
      ['I' = 5, 'Finish' = 9],
@@ -274,7 +278,9 @@ step(next_compatible(5, 9),
 step(interval(5, 3, 9, 6), fact(8), [], []).
 step(\+ (interval(K, Startk, _finishk, _valuek), K > 5, Startk >= 9), absent, [], []).
 step(6 is 6 + 0, builtin, [], []).
-step((6 >= 4 -> 6 = 6 ; 6 = 4), builtin, [], []).
+step((6 >= 4 -> 6 = 6 ; 6 = 4), control, [], [6 >= 4, 6 = 6]).
+step(6 >= 4, builtin, [], []).
+step(6 = 6, builtin, [], []).
 step(next_compatible(4, 8),
      rule(12),
      ['I' = 4, 'J' = 8, 'Finish' = 7],
@@ -286,7 +292,9 @@ step(aggregate_min(Value, Value, (interval(Value, Startk, _finishk, _valuek), Va
      [],
      []).
 step(8 is 4 + 4, builtin, [], []).
-step((8 >= 6 -> 8 = 8 ; 8 = 6), builtin, [], []).
+step((8 >= 6 -> 8 = 8 ; 8 = 6), control, [], [8 >= 6, 8 = 8]).
+step(8 >= 6, builtin, [], []).
+step(8 = 8, builtin, [], []).
 step(next_compatible(3, 7),
      rule(12),
      ['I' = 3, 'J' = 7, 'Finish' = 6],
@@ -298,7 +306,9 @@ step(aggregate_min(Value, Value, (interval(Value, Startk, _finishk, _valuek), Va
      [],
      []).
 step(12 is 8 + 4, builtin, [], []).
-step((12 >= 8 -> 12 = 12 ; 12 = 8), builtin, [], []).
+step((12 >= 8 -> 12 = 12 ; 12 = 8), control, [], [12 >= 8, 12 = 12]).
+step(12 >= 8, builtin, [], []).
+step(12 = 12, builtin, [], []).
 step(next_compatible(2, 6),
      rule(12),
      ['I' = 2, 'J' = 6, 'Finish' = 5],
@@ -310,7 +320,8 @@ step(aggregate_min(Value, Value, (interval(Value, Startk, _finishk, _valuek), Va
      [],
      []).
 step(5 is 1 + 4, builtin, [], []).
-step((5 >= 12 -> 12 = 5 ; 12 = 12), builtin, [], []).
+step((5 >= 12 -> 12 = 5 ; 12 = 12), control, [], [\+ 5 >= 12, 12 = 12]).
+step(\+ 5 >= 12, absent, [], []).
 step(next_compatible(1, 4),
      rule(12),
      ['I' = 1, 'J' = 4, 'Finish' = 4],
@@ -322,7 +333,9 @@ step(aggregate_min(Value, Value, (interval(Value, Startk, _finishk, _valuek), Va
      [],
      []).
 step(13 is 5 + 8, builtin, [], []).
-step((13 >= 12 -> 13 = 13 ; 13 = 12), builtin, [], []).
+step((13 >= 12 -> 13 = 13 ; 13 = 12), control, [], [13 >= 12, 13 = 13]).
+step(13 >= 12, builtin, [], []).
+step(13 = 13, builtin, [], []).
 step(weighted_interval_answer(chosen_interval, interval(1, 1, 4, 5)),
      rule(20),
      ['I' = 1, 'Start' = 1, 'Finish' = 4, 'Value' = 5],
@@ -346,8 +359,6 @@ step(chosen_from(1, 1),
       13 is 5 + 8,
       13 = 13,
       13 >= 12]).
-step(13 = 13, builtin, [], []).
-step(13 >= 12, builtin, [], []).
 step(weighted_interval_answer(chosen_interval, interval(4, 4, 7, 4)),
      rule(20),
      ['I' = 4, 'Start' = 4, 'Finish' = 7, 'Value' = 4],
@@ -392,8 +403,6 @@ step(chosen_from(4, 4),
       8 is 4 + 4,
       8 = 8,
       8 >= 6]).
-step(8 = 8, builtin, [], []).
-step(8 >= 6, builtin, [], []).
 step(weighted_interval_answer(chosen_interval, interval(8, 8, 11, 4)),
      rule(20),
      ['I' = 8, 'Start' = 8, 'Finish' = 11, 'Value' = 4],
@@ -459,8 +468,6 @@ step(chosen_from(8, 8),
       4 is 4 + 0,
       4 = 4,
       4 >= 0]).
-step(4 = 4, builtin, [], []).
-step(4 >= 0, builtin, [], []).
 step(weighted_interval_answer(candidate_count, 8),
      rule(21),
      ['Count' = 8],

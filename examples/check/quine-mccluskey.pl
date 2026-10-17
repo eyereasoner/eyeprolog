@@ -1,10 +1,10 @@
 condition('C1', resolution, ok, 145).
-condition('C2', well_founded, ok, 243).
-condition('C3', justification, ok, 243).
-condition('C4', coverage, ok, 308).
-condition('C5', re_decision, ok, 76).
+condition('C2', well_founded, ok, 247).
+condition('C3', justification, ok, 247).
+condition('C4', coverage, ok, 312).
+condition('C5', re_decision, ok, 80).
 condition('C6', boundary_consistency, ok, 1).
-condition('C7', relevance, ok, 250).
+condition('C7', relevance, ok, 254).
 obligation(asserted, theory_scoped, solution_cache(["00xx", "0xx1", "xx11"], ["00xx", "xx11"])).
 obligation(collected, theory_scoped, findall(A, (member(B, ["00xx", "xx11"]), term_sop(B, A)), ['~A~B', 'CD'])).
 obligation(collected, theory_scoped, findall(A, minterm(A), [1, 3, 7, 11, 15])).
@@ -27,10 +27,10 @@ obligation(absent, theory_scoped, \+ covers_int("00xx", 14)).
 obligation(absent, theory_scoped, \+ covers_int("xx11", 14)).
 obligation(absent, theory_scoped, \+ smaller_cover(["00xx", "0xx1", "xx11"], [1, 3, 7, 11, 15], 1, A)).
 obligation(collected, theory_scoped, findall(A, (find_combination(2, ["00xx", "0xx1", "xx11"], A), covers_all(A, [1, 3, 7, 11, 15])), [["00xx", "xx11"], ["00xx", "xx11"], ["0xx1", "xx11"], ["0xx1", "xx11"], ["0xx1", "xx11"], ["0xx1", "xx11"]])).
-steps(243).
+steps(247).
 verified(145).
-recomputed(76).
-composed(0).
+recomputed(78).
+composed(2).
 trusted(22).
 claims(7).
 verdict(checked_with_obligations).

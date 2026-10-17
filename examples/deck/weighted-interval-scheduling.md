@@ -102,14 +102,15 @@ sentinel `best_from(9, 0)`.
 
 ```text
 condition('C1', resolution, ok, 37).
-condition('C5', re_decision, ok, 38).
+condition('C5', re_decision, ok, 45).
 obligation(absent, theory_scoped, \+ (interval(A, B, C, D), A > 8, B >= 11)).
 obligation(builtin, theory_scoped, aggregate_min(A, A, (interval(A, B, C, D), A > 4, B >= 7), 8, 8)).
 trusted(9).
 verdict(checked_with_obligations).
 ```
 
-Rule steps replay and arithmetic is recomputed. Finding the next compatible
+Rule steps replay, arithmetic is recomputed, and each if-then-else is
+composed from the branch it took. Finding the next compatible
 interval uses `aggregate_min/5` or a negation over the program's own
 `interval/4` facts. The checker cannot redo those searches without the
 program, so it reports 9 **obligations**: the verdict holds provided those

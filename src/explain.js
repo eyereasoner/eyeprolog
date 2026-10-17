@@ -133,6 +133,14 @@ function* proveGoalAll(program, goal, env, depth, maxDepth, registry, active, de
     return;
   }
 
+  // A control construct is explained by the branch it took, so a reader can
+  // ask why that branch and get an answer: an if-then-else that took its then
+  // branch rests on the condition and the then goals, one that took its else
+  // branch on the condition's failure, `\+ Cond`, and the else goals. When the
+  // replay cannot settle the branch, the construct stays one builtin step.
+  if (goal.type === COMPOUND && isExplainedControl(goal, env) &&
+      (yield* controlNodes(program, goal, env, depth, maxDepth, registry, active, detail))) return;
+
   const builtin = builtinDefinition(program, goal, env, registry);
   if (builtin.handled) {
     for (const next of builtinEnvs(builtin.def, builtin.solver, goal, env)) {
@@ -439,6 +447,105 @@ function builtinDefinition(program, goal, env, registry) {
   return { handled: true, def, solver };
 }
 
+// The proofs of a control construct as nodes, and whether there were any. It
+// is a generator of its own so the frame of proveGoalAll, which a deep replay
+// nests once per level, stays as small as it was.
+function* controlNodes(program, goal, env, depth, maxDepth, registry, active, detail) {
+  let explained = false;
+  for (const proved of controlProofs(program, goal, env, depth + 1, maxDepth, registry, active, detail)) {
+    explained = true;
+    yield {
+      env: proved.env,
+      node: {
+        raw: goal,
+        goal: resolveForProof(goal, proved.env),
+        method: goalMethod('builtin', goal),
+        sourceHead: null,
+        sourceBody: [],
+        bindings: [],
+        children: proved.children,
+      },
+    };
+  }
+  return explained;
+}
+
+// The control constructs replayed branch by branch: if-then-else, soft-cut,
+// if-then, disjunction, and call/1 of a callable goal.
+function isExplainedControl(goal, env) {
+  if ((goal.name === ';' || goal.name === '->' || goal.name === '*->') && goal.arity === 2) return true;
+  if (goal.name === 'call' && goal.arity === 1) {
+    const called = deref(goal.args[0], env);
+    return called.type === ATOM || called.type === COMPOUND;
+  }
+  return false;
+}
+
+const INSTANTIATION_TESTS = new Set([
+  'var/1', 'nonvar/1', 'atom/1', 'number/1', 'integer/1', 'float/1', 'atomic/1',
+  'compound/1', 'callable/1', 'is_list/1', 'ground/1',
+  '==/2', '\\==/2', '@</2', '@>/2', '@=</2', '@>=/2', 'compare/3', '?=/2', '\\+/1',
+]);
+
+// A condition whose truth cannot change as its variables are bound later: no
+// goal of it tests instantiation, unless that goal is already ground.
+function isSteadfastCondition(condition, env) {
+  const pending = [condition];
+  while (pending.length > 0) {
+    const goal = deref(pending.pop(), env);
+    if (goal.type === VAR) return false;
+    if (goal.type !== COMPOUND) continue;
+    if ((goal.name === ',' || goal.name === ';' || goal.name === '->' || goal.name === '*->') && goal.arity === 2) {
+      pending.push(goal.args[0], goal.args[1]);
+      continue;
+    }
+    if ((goal.name === 'call' || goal.name === 'once') && goal.arity === 1) {
+      pending.push(goal.args[0]);
+      continue;
+    }
+    if (INSTANTIATION_TESTS.has(`${goal.name}/${goal.arity}`) && !termIsGround(goal, env)) return false;
+  }
+  return true;
+}
+
+// The proofs of a control construct, each with the nodes of the goals the
+// branch it took rests on. The condition of an if-then-else commits to its
+// first proof, as execution does; a soft-cut tries each one.
+function* controlProofs(program, goal, env, depth, maxDepth, registry, active, detail) {
+  const prove = (term, from) => proveGoalAll(program, term, from, depth, maxDepth, registry, active, detail);
+  if (goal.name === 'call') {
+    for (const called of prove(goal.args[0], env)) yield { env: called.env, children: [called.node] };
+    return;
+  }
+  const left = goal.name === ';' ? deref(goal.args[0], env) : goal;
+  const conditional = left.type === COMPOUND && (left.name === '->' || left.name === '*->') && left.arity === 2;
+  if (!conditional) {
+    for (const branch of [goal.args[0], goal.args[1]]) {
+      for (const proved of prove(branch, env)) yield { env: proved.env, children: [proved.node] };
+    }
+    return;
+  }
+  const [condition, then] = left.args;
+  // A proof states its steps with the bindings of the whole derivation. A
+  // test of how far a term is instantiated -- var/1, integer/1, ==/2 --
+  // can hold while the condition is tried and fail once the term is bound,
+  // so such a condition is not split into steps.
+  if (!isSteadfastCondition(condition, env)) return;
+  const otherwise = goal.name === ';' ? goal.args[1] : null;
+  let held = false;
+  for (const met of prove(condition, env)) {
+    held = true;
+    for (const proved of prove(then, met.env)) yield { env: proved.env, children: [met.node, proved.node] };
+    if (left.name === '->') break;
+  }
+  if (held || otherwise == null) return;
+  // The else branch is only taken when the condition has no solution; the
+  // `\+` step records that, and is decided by the solver, not the replay.
+  for (const failed of prove(compound('\\+', [condition]), env)) {
+    for (const proved of prove(otherwise, failed.env)) yield { env: proved.env, children: [failed.node, proved.node] };
+  }
+}
+
 function* builtinEnvs(def, solver, goal, env) {
   for (const next of def.handler({ solver, goal, env })) yield next;
 }
@@ -519,6 +626,7 @@ const PURE_REPLAY_STEPS = new Set([
   'member/2', 'memberchk/2', 'append/3', 'append/2', 'reverse/2', 'nth0/3', 'nth1/3',
   'last/2', 'select/3', 'sum_list/2', 'max_list/2', 'min_list/2', 'list_to_set/2',
   'once/1', 'findall/3', 'forall/2', '\\+/1',
+  ';/2', '->/2', '*->/2', 'call/1',
 ]);
 
 // Settle a ground goal's first proof while its environment still holds every
@@ -698,7 +806,10 @@ export function verifyProof(program, input, options = {}) {
 }
 
 function collectTrustedBoundaries(node, out = []) {
-  if (node.method?.type === 'builtin' || node.method?.type === 'library') {
+  // A control node with children is verified through them, not trusted.
+  const verifiedControl = node.method?.type === 'builtin' && node.children.length !== 0 &&
+    EXPLAINED_CONTROL.has(`${node.method.name}/${node.method.arity}`);
+  if (!verifiedControl && (node.method?.type === 'builtin' || node.method?.type === 'library')) {
     out.push({
       type: node.method.type,
       name: String(node.method.name),
@@ -748,6 +859,8 @@ function verifyCertificateNode(program, node, expectedGoal, registry, options, i
       const innerEnv = new Env();
       if (!unify(nodeGoal.args[0], childGoal, innerEnv)) throw new Error('once/1 child does not match called goal');
       verifyCertificateNode(program, node.children[0], childGoal, registry, options, new Env());
+    } else if (EXPLAINED_CONTROL.has(`${name}/${arity}`) && node.children.length !== 0) {
+      verifyControlNode(program, node, nodeGoal, registry, options);
     } else if (node.children.length !== 0) {
       throw new Error(`unexpected children for builtin ${name}/${arity}`);
     }
@@ -770,6 +883,43 @@ function verifyCertificateNode(program, node, expectedGoal, registry, options, i
   }
 
   throw new Error(`unknown proof method: ${method.type}`);
+}
+
+const EXPLAINED_CONTROL = new Set([';/2', '->/2', '*->/2', 'call/1']);
+
+// A control node's children are the goals of the branch it took: they must be
+// one of the construct's alternatives, goal for goal, and each must be proved.
+function verifyControlNode(program, node, nodeGoal, registry, options) {
+  const parts = [];
+  for (const child of node.children) {
+    const childGoal = parseCertificateTerm(child.goal, program);
+    if (child.method?.type === 'conjunction') parts.push(...flattenConjunction(childGoal));
+    else parts.push(childGoal);
+  }
+  const composes = controlBranches(nodeGoal).some((branch) => {
+    if (branch.length !== parts.length) return false;
+    const env = new Env();
+    return branch.every((goal, i) => unify(goal, parts[i], env));
+  });
+  if (!composes) throw new Error(`control step does not follow from its uses: ${node.goal}`);
+  for (const child of node.children) {
+    verifyCertificateNode(program, child, parseCertificateTerm(child.goal, program), registry, options, new Env());
+  }
+}
+
+// The branches a control construct can take, each as the goals it runs. An
+// else branch runs only when the condition has no solution, so it starts
+// with `\+ Cond`.
+function controlBranches(goal) {
+  if (goal.name === 'call') return [flattenConjunction(goal.args[0])];
+  const left = goal.name === ';' ? goal.args[0] : goal;
+  if (left.type === COMPOUND && (left.name === '->' || left.name === '*->') && left.arity === 2) {
+    const then = [...flattenConjunction(left.args[0]), ...flattenConjunction(left.args[1])];
+    return goal.name === ';'
+      ? [then, [compound('\\+', [left.args[0]]), ...flattenConjunction(goal.args[1])]]
+      : [then];
+  }
+  return [flattenConjunction(goal.args[0]), flattenConjunction(goal.args[1])];
 }
 
 function findLibraryGroup(program, name, arity) {
@@ -1017,18 +1167,51 @@ function isUnnumberedDeclaration(clause) {
   return ['module', 'use_module', 'meta_predicate', 'attribute'].includes(directive.name);
 }
 
-// A Map from small positive integers, kept in an array.
+// A read-only Map from small positive integers, kept in an array.
 class NumberedTable {
   constructor() {
     this.items = [];
+    this.count = 0;
   }
 
   get(number) {
     return Number.isInteger(number) && number >= 0 ? this.items[number] : undefined;
   }
 
+  has(number) {
+    return this.get(number) !== undefined;
+  }
+
   set(number, value) {
+    if (this.items[number] === undefined) this.count++;
     this.items[number] = value;
+    return this;
+  }
+
+  get size() {
+    return this.count;
+  }
+
+  * entries() {
+    for (let number = 0; number < this.items.length; number++) {
+      if (this.items[number] !== undefined) yield [number, this.items[number]];
+    }
+  }
+
+  * keys() {
+    for (const [number] of this.entries()) yield number;
+  }
+
+  * values() {
+    for (const [, value] of this.entries()) yield value;
+  }
+
+  forEach(callback, thisArg) {
+    for (const [number, value] of this.entries()) callback.call(thisArg, value, number, this);
+  }
+
+  [Symbol.iterator]() {
+    return this.entries();
   }
 }
 

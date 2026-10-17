@@ -490,7 +490,9 @@ step(format_bits(1, 4, "0001"),
 step(4 > 0, builtin, [], []).
 step(3 is 4 - 1, builtin, [], []).
 step(0 is 1 >> 3 /\ 1, builtin, [], []).
-step((0 = 1 -> '0' = '1' ; '0' = '0'), builtin, [], []).
+step((0 = 1 -> '0' = '1' ; '0' = '0'), control, [], [\+ 0 = 1, '0' = '0']).
+step(\+ 0 = 1, absent, [], []).
+step('0' = '0', builtin, [], []).
 step(1 is 1 - 0 << 3, builtin, [], []).
 step(format_bits(1, 3, "001"),
      rule(42),
@@ -530,7 +532,9 @@ step(format_bits(1, 1, "1"),
 step(1 > 0, builtin, [], []).
 step(0 is 1 - 1, builtin, [], []).
 step(1 is 1 >> 0 /\ 1, builtin, [], []).
-step((1 = 1 -> '1' = '1' ; '1' = '0'), builtin, [], []).
+step((1 = 1 -> '1' = '1' ; '1' = '0'), control, [], [1 = 1, '1' = '1']).
+step(1 = 1, builtin, [], []).
+step('1' = '1', builtin, [], []).
 step(0 is 1 - 1 << 0, builtin, [], []).
 step(format_bits(0, 0, []), rule(41), [], "!").
 step(covers("00xx", "0001"),

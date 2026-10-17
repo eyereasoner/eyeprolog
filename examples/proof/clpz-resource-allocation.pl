@@ -51,9 +51,11 @@ step(sum([3, 2, 7], #=, 12), builtin, [], []).
 step((integer(1) -> between:between(0, 1, 1) ; clpz:clpz_in(1, 0..1)), builtin, [], []).
 step(1 #<==> 12 #=< 12, builtin, [], []).
 step((integer(1) -> 1 =:= 1 ; true, var(1) -> 1 = 1 ; Var_1 = 1, clpz:clpz_equal(1, Var_1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), 1 =:= 1]).
+step(integer(1), builtin, [], []).
+step(1 =:= 1, builtin, [], []).
 step(labeling([ff, down], [2, 3, 1, 1]), builtin, [], []).
 step(clpz_example(allocation, plan([3, 1, 2], durations([4, 4, 2]), 10)),
      rule(1),

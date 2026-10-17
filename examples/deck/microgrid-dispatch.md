@@ -111,15 +111,18 @@ the limit. The grid import of 110 kW is then within the 150 kW contract.
 
 ```text
 condition('C1', resolution, ok, 21).
-condition('C5', re_decision, ok, 8).
-steps(29).
+condition('C5', re_decision, ok, 10).
+steps(31).
 verified(21).
-recomputed(8).
+recomputed(9).
+composed(1).
 trusted(0).
 verdict(checked).
 ```
 
-Every rule step replays and every arithmetic step is recomputed. The plan's
+Every rule step replays and every arithmetic step is recomputed. The one
+if-then-else decision is recorded as the branch it took, including the failed
+test `\+ 350.0 =< 240.0`, which the checker decides again too. The plan's
 feasibility is fully checked.
 
 ---

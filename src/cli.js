@@ -23,6 +23,7 @@ export function defaultsToStdin(fileCount, stdinIsTty) {
 const BOOLEAN_OPTIONS = new Map([
   ['--help', 'help'], ['-h', 'help'],
   ['--proof', 'proof'], ['-p', 'proof'],
+  ['--dialogue', 'dialogue'], ['-d', 'dialogue'],
   ['--quads', 'quads'], ['-q', 'quads'],
   ['--quiet', 'quiet'],
   ['--stats', 'stats'], ['-s', 'stats'],
@@ -52,6 +53,11 @@ const VALUE_OPTIONS = new Map([
     if (value == null) throw new Error('--check-proof requires a file');
     options.checkProof = value;
   }],
+  ['--evidence', (options, value) => {
+    if (value == null) throw new Error('--evidence requires a file');
+    options.dialogue = true;
+    options.evidence = value;
+  }],
   ['--goal', (options, value, arg) => {
     if (value == null) throw new Error(`option ${arg} requires a goal`);
     options.goals.push(value);
@@ -66,6 +72,8 @@ export function parseOptions(argv) {
     proof: false,
     proofDetail: 'abstract',
     checkProof: null,
+    dialogue: false,
+    evidence: null,
     strictProof: false,
     json: false,
     quads: false,
@@ -171,6 +179,9 @@ export async function main(argv) {
   if (options.checkProof != null && options.proof) {
     throw new Error('--check-proof cannot be combined with --proof or --proof-detail');
   }
+  if (options.dialogue && (options.checkProof != null || options.quads || options.isoStrict)) {
+    throw new Error('--dialogue cannot be combined with --check-proof, --quads or --iso-strict');
+  }
   if (options.checkProof == null && (options.strictProof || options.json)) {
     throw new Error(`${options.json ? '--json' : '--strict-proof'} requires --check-proof`);
   }
@@ -254,7 +265,7 @@ export async function main(argv) {
 
   const engine = await loadEngine();
   let program = engine.Program.parseSources(sourceParts, {
-    sourceMetadata: options.proof || options.checkProof != null || options.isoStrict,
+    sourceMetadata: options.proof || options.dialogue || options.checkProof != null || options.isoStrict,
     isoStrict: options.isoStrict,
     autoload: options.autoload,
     autoloadGoals: options.goals,
@@ -300,6 +311,11 @@ export async function main(argv) {
       process.stderr.write(`eyeprolog: ${source} is not a valid proof for this program: ${report.failures.length} failure(s)\n`);
       process.exitCode = 2;
     }
+    return;
+  }
+
+  if (options.dialogue) {
+    await runDialogue(engine, program, sourceParts, options);
     return;
   }
 
@@ -402,6 +418,27 @@ async function runDefault(engine, program, options) {
   }
 }
 
+// The run's answers, each defended as a dialogue against the checker as
+// opponent, who may hold evidence of its own (src/dialogue.js).
+async function runDialogue(engine, program, sourceParts, options) {
+  const { dialogueText } = await import('./dialogue.js');
+  let evidence = null;
+  const evidenceFile = options.evidence == null ? null : path.basename(options.evidence);
+  if (options.evidence != null) {
+    const text = await fs.readFile(options.evidence, 'utf8');
+    evidence = engine.Program.parseSources([
+      ...sourceParts,
+      { text, filename: evidenceFile, baseDir: path.dirname(path.resolve(options.evidence)) },
+    ], { sourceMetadata: true, autoload: options.autoload, autoloadGoals: options.goals, onWarning: printSourceWarning });
+  }
+  process.stdout.write(dialogueText(program, options.goals, {
+    registry: engine.getEyePrologRegistry(),
+    proofDetail: options.proofDetail,
+    evidence,
+    evidenceFile,
+  }));
+}
+
 async function usage(stream) {
   stream.write(`eyeprolog ${await packageVersion()}
 
@@ -419,6 +456,13 @@ Input:
 Options:
   -h, --help            Show this help text and exit.
   -p, --proof           Enable proof explanations.
+  -d, --dialogue        Play each answer out as a dialogue: the proponent defends
+                        it with its proof, the checker is the opponent. Writes
+                        move/4, outcome/3 and obligation/2 facts.
+  --evidence file       Give the opponent evidence of its own, with which it
+                        counters an absence (\\+ G) it can refute; the
+                        proponent may then defend again using that evidence.
+                        (implies --dialogue)
   --proof-detail mode   abstract stops at a bundled library predicate and records
                         it as one builtin step; expanded explains through it,
                         as ordinary source steps. Only differs for a program

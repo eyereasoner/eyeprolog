@@ -108,19 +108,20 @@ nothing.
 # The check
 
 ```text
-condition('C6', boundary_consistency, ok, 408).
+condition('C5', re_decision, ok, 408).
 steps(688).
 verified(280).
-trusted(408).
+recomputed(408).
+trusted(0).
 claims(121).
-verdict(checked_with_obligations).
+verdict(checked).
 ```
 
 280 steps are replayed against the program. The 408 "not on the path yet"
-tests cannot be re-proved by resolution, so they are reported as
-`obligation/3` facts, such as `\+ member(v2, [v1])`. The checker did test each
-one against the available evidence and found none contradicted (C6). The
-verdict is therefore valid *given* those absences.
+tests, such as `\+ member(v2, [v1])`, are not resolution steps, but each one
+is about a list that is right there in the step. The checker decides every one
+of them again itself (C5), so nothing is left to take on trust: the verdict is
+plainly `checked`.
 
 ---
 

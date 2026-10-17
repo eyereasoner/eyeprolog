@@ -435,7 +435,7 @@
   </footer>
 
   <script type="module">
-    import { goalsFromSource } from './src/goal-metadata.js';
+    import { goalsFromList, goalsFromSource } from './src/goal-metadata.js';
 
     const EXAMPLES = [
           "abstract-interpretation",
@@ -508,6 +508,7 @@
           "dependency-preparation-5000",
           "derived-backward-rule",
           "derived-rule",
+          "dialogical-reasoning",
           "diamond-property",
           "dif-constraints",
           "dijkstra",
@@ -894,7 +895,7 @@
     }
 
     function selectedGoals() {
-      return goal.value.split(';').map((text) => text.trim()).filter(Boolean);
+      return goalsFromList(goal.value);
     }
 
     function render() {

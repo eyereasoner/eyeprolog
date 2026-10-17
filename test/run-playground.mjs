@@ -10,6 +10,7 @@ import {
   executePlaygroundRequest,
   installPlaygroundWorker,
 } from '../src/playground-worker.js';
+import { goalsFromList } from '../src/goal-metadata.js';
 import {
   TestReporter,
   assertEqual,
@@ -44,6 +45,14 @@ export async function runPlayground(reporter = new TestReporter()) {
       .map((name) => name.slice(0, -3))
       .sort();
     assertEqual(JSON.stringify(listed), JSON.stringify(expected), 'playground example picker');
+  });
+
+  await reporter.testAsync('goal field splits only at top-level semicolons', async () => {
+    const goals = goalsFromList("?- X = (foo,bar;baz).; a(X) ; b('x;y', 0';, [p;q])");
+    assertEqual(JSON.stringify(goals),
+      JSON.stringify(['X = (foo,bar;baz)', 'a(X)', "b('x;y', 0';, [p;q])"]), 'split goals');
+    const result = executePlaygroundRequest({ source: '', options: { goals: goals.slice(0, 1) } });
+    assertEqual(result.stdout, '(foo, bar ; baz) = (foo, bar ; baz).\n', 'disjunction goal output');
   });
 
   await reporter.testAsync('worker loads append/3 from the EyeProlog library', async () => {

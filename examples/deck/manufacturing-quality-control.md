@@ -111,17 +111,18 @@ the 1.33 threshold and concludes `needs_adjustment(line7_shift_a)`.
 
 ```text
 condition('C1', resolution, ok, 25).
-condition('C2', well_founded, ok, 37).
-condition('C3', justification, ok, 37).
-condition('C4', coverage, ok, 44).
-condition('C5', re_decision, ok, 12).
+condition('C2', well_founded, ok, 41).
+condition('C3', justification, ok, 41).
+condition('C4', coverage, ok, 48).
+condition('C5', re_decision, ok, 16).
 condition('C6', boundary_consistency, ok, 0).
-condition('C7', relevance, ok, 43).
+condition('C7', relevance, ok, 47).
 verdict(checked).
 ```
 
-25 steps were replayed against the clauses they cite, and the 12 arithmetic
-steps were recomputed independently. Nothing is taken on trust.
+25 steps were replayed against the clauses they cite, and 14 arithmetic steps
+were recomputed independently. The 2 if-then-else decisions are recorded as the
+branch each took and composed from its goals. Nothing is taken on trust.
 
 ---
 

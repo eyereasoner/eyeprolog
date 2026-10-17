@@ -122,18 +122,17 @@ eyeprolog --check-proof wgc.why.pl examples/wolf-goat-cabbage.pl
 
 ```text
 condition('C1', resolution, ok, 48).
-condition('C5', re_decision, ok, 2).
-condition('C6', boundary_consistency, ok, 12).
-obligation(absent, theory_scoped, \+ member("ewew", ["wwww"])).
-verdict(checked_with_obligations).
+condition('C5', re_decision, ok, 14).
+condition('C6', boundary_consistency, ok, 0).
+trusted(0).
+verdict(checked).
 ```
 
-Of 62 steps, 48 are replayed against their clauses and 2 built-in steps are
-recomputed. The other 12 are "not visited yet" tests (`\+ member(...)`). A
-checker cannot prove an absence by replaying a clause, so each is listed as an
-**obligation**: a claim the verdict rests on. The checker did test every one
-against the evidence it had, and none was refuted, hence
-`checked_with_obligations`.
+Of 62 steps, 48 are replayed against their clauses and 14 are recomputed: 2
+built-in steps and the 12 "not visited yet" tests (`\+ member(...)`). An
+absence cannot be proved by replaying a clause, but each of these is about a
+list written out in the step, so the checker simply decides it again. Nothing
+rests on trust, hence a plain `checked`.
 
 ---
 

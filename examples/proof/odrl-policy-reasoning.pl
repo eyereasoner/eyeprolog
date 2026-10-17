@@ -1249,7 +1249,10 @@ step(conflicting_action(use, print, subsumption),
      rule(127),
      ['ActionA' = use, 'ActionB' = print],
      [use \= print, (action_subsumes(use, print) ; action_subsumes(print, use))]).
-step((action_subsumes(use, print) ; action_subsumes(print, use)), builtin, [], []).
+step((action_subsumes(use, print) ; action_subsumes(print, use)),
+     control,
+     [],
+     [action_subsumes(use, print)]).
 step(conflictQuestion(dependency, analysis_policy, aggregate_permit, read_prohibit, dependency),
      rule(166),
      ['Kind' = dependency],
@@ -1317,7 +1320,10 @@ step(conflicting_action(aggregate, read, dependency),
       (action_requires(aggregate, read) ; action_requires(read, aggregate))]).
 step(\+ action_subsumes(aggregate, read), absent, [], []).
 step(\+ action_subsumes(read, aggregate), absent, [], []).
-step((action_requires(aggregate, read) ; action_requires(read, aggregate)), builtin, [], []).
+step((action_requires(aggregate, read) ; action_requires(read, aggregate)),
+     control,
+     [],
+     [action_requires(aggregate, read)]).
 step(subsumptionQuestion(action_yes, use, display, yes),
      rule(167),
      [],

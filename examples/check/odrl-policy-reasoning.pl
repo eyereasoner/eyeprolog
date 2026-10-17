@@ -1,8 +1,8 @@
 condition('C1', resolution, ok, 205).
 condition('C2', well_founded, ok, 248).
 condition('C3', justification, ok, 248).
-condition('C4', coverage, ok, 327).
-condition('C5', re_decision, ok, 3).
+condition('C4', coverage, ok, 329).
+condition('C5', re_decision, ok, 5).
 condition('C6', boundary_consistency, ok, 5).
 condition('C7', relevance, ok, 282).
 obligation(absent, theory_scoped, \+ positive_action_match(display, delete, A)).
@@ -31,11 +31,9 @@ obligation(absent, theory_scoped, \+ policy_prohibition(context_policy, q_commer
 obligation(absent, theory_scoped, \+ policy_applicable(context_policy, q_unrelated)).
 obligation(absent, theory_scoped, \+ (constraint(exact_permit, A, B), constraint(exact_prohibit, A, C), B \= C)).
 obligation(absent, theory_scoped, \+ (constraint(broad_permit, A, B), constraint(narrow_prohibit, A, C), B \= C)).
-obligation(builtin, theory_scoped, (action_subsumes(use, print) ; action_subsumes(print, use))).
 obligation(absent, theory_scoped, \+ (constraint(aggregate_permit, A, B), constraint(read_prohibit, A, C), B \= C)).
 obligation(absent, theory_scoped, \+ action_subsumes(aggregate, read)).
 obligation(absent, theory_scoped, \+ action_subsumes(read, aggregate)).
-obligation(builtin, theory_scoped, (action_requires(aggregate, read) ; action_requires(read, aggregate))).
 obligation(absent, theory_scoped, \+ action_subsumes(display, use)).
 obligation(absent, theory_scoped, \+ (constraint(general_use, A, B), \+ constraint(specific_display, A, B))).
 obligation(absent, theory_scoped, \+ (duty(general_use, A), \+ duty(specific_display, A))).
@@ -48,7 +46,7 @@ obligation(builtin, theory_scoped, wfs_truth(profile_permission(cycle), undefine
 steps(248).
 verified(205).
 recomputed(3).
-composed(0).
-trusted(40).
+composed(2).
+trusted(38).
 claims(34).
 verdict(checked_with_obligations).

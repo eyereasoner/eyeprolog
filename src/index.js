@@ -32,6 +32,7 @@ export { formatQuadTerm, runQuads } from './quads.js';
 export { executeForwardRules, hasForwardRules } from './execute.js';
 export { formatFact, proofBlocks, resultWriteOptions } from './result-format.js';
 export { ProofCheckError, checkedProofBlocks } from './proof-document.js';
+export { dialogueText } from './dialogue.js';
 
 import { installCleanupLifecycle } from './cleanup.js';
 import { Program, autoloadProgramGoals } from './program.js';

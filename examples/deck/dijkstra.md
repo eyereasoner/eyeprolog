@@ -112,16 +112,17 @@ eyeprolog --check-proof dijkstra.why.pl examples/dijkstra.pl
 ```text
 condition('C1', resolution, ok, 121).
 condition('C4', coverage, ok, 223).
+condition('C5', re_decision, ok, 46).
 condition('C7', relevance, ok, 183).
-obligation(absent, theory_scoped, \+ member(b, "a")).
-trusted(17).
-verdict(checked_with_obligations).
+trusted(0).
+verdict(checked).
 ```
 
-All 121 rule steps replay. The 17 `\+ member(...)` tests are **obligations**:
-a proof can show that something holds, but "this place was not visited yet" is
-an absence, which the checker takes on trust and lists explicitly rather than
-hiding. The verdict says so: checked, with obligations.
+All 121 rule steps replay. The `\+ member(...)` tests, "this place was not
+visited yet", are absences, but each one is about a list written out in the
+step, so the checker decides it again itself instead of taking it on trust.
+Together with the arithmetic, that makes 46 recomputed steps, nothing left as
+an obligation, and a plain `checked` verdict.
 
 ---
 

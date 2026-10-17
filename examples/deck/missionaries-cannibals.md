@@ -96,19 +96,19 @@ has a step like this one.
 
 ```text
 condition('C1', resolution, ok, 53).
-condition('C5', re_decision, ok, 32).
-condition('C6', boundary_consistency, ok, 11).
+condition('C5', re_decision, ok, 43).
+condition('C6', boundary_consistency, ok, 0).
 steps(97).
 verified(53).
-recomputed(31).
-trusted(12).
+recomputed(42).
+trusted(1).
 verdict(checked_with_obligations).
 ```
 
-Rule steps replay and arithmetic is recomputed. The 12 trusted steps are
-obligations: 11 "this state was not visited yet" tests (`\+ member/2`), all
-tested and none contradicted (C6), and the `countall/2` that counts the safe
-states.
+Rule steps replay. The arithmetic and the 11 "this state was not visited yet"
+tests (`\+ member/2` over a list written out in the step) are recomputed by
+the checker itself. The one trusted step left is the `countall/2` that counts
+the safe states: it is the single obligation.
 
 ---
 

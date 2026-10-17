@@ -115,19 +115,20 @@ the proof cannot spell out step by step.
 # The check
 
 ```text
-condition('C5', re_decision, ok, 8).
-condition('C6', boundary_consistency, ok, 2).
+condition('C5', re_decision, ok, 9).
+condition('C6', boundary_consistency, ok, 1).
 obligation(absent, theory_scoped, \+ lower_cost_eligible_package(120)).
 steps(107).
 verified(97).
-trusted(2).
+trusted(1).
 verdict(checked_with_obligations).
 ```
 
-97 steps are replayed and 8 built-in calls recomputed. Two absences, "no
-cheaper package" and "no sensitive term in the insight", are **obligations**:
-the checker found no evidence against them (C6), but they hold only within
-this theory. If someone adds a package, the obligation must be met again.
+97 steps are replayed and 9 built-in calls recomputed, among them "no sensitive
+term in the insight", a test on text written out in the step. One absence, "no
+cheaper package", is an **obligation**: the checker found no evidence against
+it (C6), but it holds only within this theory. If someone adds a package, the
+obligation must be met again.
 The signature checks are named for what they do: the input marks the HMAC as
 `trustedPrecomputedInput`, `signature_accepted_as_trusted/1` accepts that
 declaration, and `hmac_is_expected_value/1` compares the recorded HMAC with the

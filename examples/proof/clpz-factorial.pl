@@ -15,7 +15,12 @@ step(factorial(6, 720),
       (integer(5) -> (integer(6) -> 5 =:= 6 - 1 ; T_2 is 5, clpz:clpz_equal(T_2, 6 - 1)) ; integer(6) -> (true, var(5) -> 5 is 6 - 1 ; T_2 is 6 - 1, clpz:clpz_equal(5, T_2)) ; clpz:clpz_equal(5, 6 - 1)),
       factorial(5, 120),
       (integer(720) -> (integer(6), integer(120) -> 720 =:= 6 * 120 ; T_3 is 720, clpz:clpz_equal(T_3, 6 * 120)) ; integer(6), integer(120) -> (true, var(720) -> 720 is 6 * 120 ; T_3 is 6 * 120, clpz:clpz_equal(720, T_3)) ; clpz:clpz_equal(720, 6 * 120))]).
-step((integer(6) -> 6 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(6, Var_1)), builtin, [], []).
+step((integer(6) -> 6 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(6, Var_1)),
+     control,
+     [],
+     [integer(6), 6 >= 0 + 1]).
+step(integer(6), builtin, [], []).
+step(6 >= 0 + 1, builtin, [], []).
 step((integer(5) -> (integer(6) -> 5 =:= 6 - 1 ; T_2 is 5, clpz:clpz_equal(T_2, 6 - 1)) ; integer(6) -> (true, var(5) -> 5 is 6 - 1 ; T_2 is 6 - 1, clpz:clpz_equal(5, T_2)) ; clpz:clpz_equal(5, 6 - 1)),
      builtin,
      [],
@@ -27,7 +32,12 @@ step(factorial(5, 120),
       (integer(4) -> (integer(5) -> 4 =:= 5 - 1 ; T_2 is 4, clpz:clpz_equal(T_2, 5 - 1)) ; integer(5) -> (true, var(4) -> 4 is 5 - 1 ; T_2 is 5 - 1, clpz:clpz_equal(4, T_2)) ; clpz:clpz_equal(4, 5 - 1)),
       factorial(4, 24),
       (integer(120) -> (integer(5), integer(24) -> 120 =:= 5 * 24 ; T_3 is 120, clpz:clpz_equal(T_3, 5 * 24)) ; integer(5), integer(24) -> (true, var(120) -> 120 is 5 * 24 ; T_3 is 5 * 24, clpz:clpz_equal(120, T_3)) ; clpz:clpz_equal(120, 5 * 24))]).
-step((integer(5) -> 5 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(5, Var_1)), builtin, [], []).
+step((integer(5) -> 5 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(5, Var_1)),
+     control,
+     [],
+     [integer(5), 5 >= 0 + 1]).
+step(integer(5), builtin, [], []).
+step(5 >= 0 + 1, builtin, [], []).
 step((integer(4) -> (integer(5) -> 4 =:= 5 - 1 ; T_2 is 4, clpz:clpz_equal(T_2, 5 - 1)) ; integer(5) -> (true, var(4) -> 4 is 5 - 1 ; T_2 is 5 - 1, clpz:clpz_equal(4, T_2)) ; clpz:clpz_equal(4, 5 - 1)),
      builtin,
      [],
@@ -39,7 +49,12 @@ step(factorial(4, 24),
       (integer(3) -> (integer(4) -> 3 =:= 4 - 1 ; T_2 is 3, clpz:clpz_equal(T_2, 4 - 1)) ; integer(4) -> (true, var(3) -> 3 is 4 - 1 ; T_2 is 4 - 1, clpz:clpz_equal(3, T_2)) ; clpz:clpz_equal(3, 4 - 1)),
       factorial(3, 6),
       (integer(24) -> (integer(4), integer(6) -> 24 =:= 4 * 6 ; T_3 is 24, clpz:clpz_equal(T_3, 4 * 6)) ; integer(4), integer(6) -> (true, var(24) -> 24 is 4 * 6 ; T_3 is 4 * 6, clpz:clpz_equal(24, T_3)) ; clpz:clpz_equal(24, 4 * 6))]).
-step((integer(4) -> 4 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(4, Var_1)), builtin, [], []).
+step((integer(4) -> 4 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(4, Var_1)),
+     control,
+     [],
+     [integer(4), 4 >= 0 + 1]).
+step(integer(4), builtin, [], []).
+step(4 >= 0 + 1, builtin, [], []).
 step((integer(3) -> (integer(4) -> 3 =:= 4 - 1 ; T_2 is 3, clpz:clpz_equal(T_2, 4 - 1)) ; integer(4) -> (true, var(3) -> 3 is 4 - 1 ; T_2 is 4 - 1, clpz:clpz_equal(3, T_2)) ; clpz:clpz_equal(3, 4 - 1)),
      builtin,
      [],
@@ -51,7 +66,12 @@ step(factorial(3, 6),
       (integer(2) -> (integer(3) -> 2 =:= 3 - 1 ; T_2 is 2, clpz:clpz_equal(T_2, 3 - 1)) ; integer(3) -> (true, var(2) -> 2 is 3 - 1 ; T_2 is 3 - 1, clpz:clpz_equal(2, T_2)) ; clpz:clpz_equal(2, 3 - 1)),
       factorial(2, 2),
       (integer(6) -> (integer(3), integer(2) -> 6 =:= 3 * 2 ; T_3 is 6, clpz:clpz_equal(T_3, 3 * 2)) ; integer(3), integer(2) -> (true, var(6) -> 6 is 3 * 2 ; T_3 is 3 * 2, clpz:clpz_equal(6, T_3)) ; clpz:clpz_equal(6, 3 * 2))]).
-step((integer(3) -> 3 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(3, Var_1)), builtin, [], []).
+step((integer(3) -> 3 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(3, Var_1)),
+     control,
+     [],
+     [integer(3), 3 >= 0 + 1]).
+step(integer(3), builtin, [], []).
+step(3 >= 0 + 1, builtin, [], []).
 step((integer(2) -> (integer(3) -> 2 =:= 3 - 1 ; T_2 is 2, clpz:clpz_equal(T_2, 3 - 1)) ; integer(3) -> (true, var(2) -> 2 is 3 - 1 ; T_2 is 3 - 1, clpz:clpz_equal(2, T_2)) ; clpz:clpz_equal(2, 3 - 1)),
      builtin,
      [],
@@ -63,7 +83,12 @@ step(factorial(2, 2),
       (integer(1) -> (integer(2) -> 1 =:= 2 - 1 ; T_2 is 1, clpz:clpz_equal(T_2, 2 - 1)) ; integer(2) -> (true, var(1) -> 1 is 2 - 1 ; T_2 is 2 - 1, clpz:clpz_equal(1, T_2)) ; clpz:clpz_equal(1, 2 - 1)),
       factorial(1, 1),
       (integer(2) -> (integer(2), integer(1) -> 2 =:= 2 * 1 ; T_3 is 2, clpz:clpz_equal(T_3, 2 * 1)) ; integer(2), integer(1) -> (true, var(2) -> 2 is 2 * 1 ; T_3 is 2 * 1, clpz:clpz_equal(2, T_3)) ; clpz:clpz_equal(2, 2 * 1))]).
-step((integer(2) -> 2 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(2, Var_1)), builtin, [], []).
+step((integer(2) -> 2 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(2, Var_1)),
+     control,
+     [],
+     [integer(2), 2 >= 0 + 1]).
+step(integer(2), builtin, [], []).
+step(2 >= 0 + 1, builtin, [], []).
 step((integer(1) -> (integer(2) -> 1 =:= 2 - 1 ; T_2 is 1, clpz:clpz_equal(T_2, 2 - 1)) ; integer(2) -> (true, var(1) -> 1 is 2 - 1 ; T_2 is 2 - 1, clpz:clpz_equal(1, T_2)) ; clpz:clpz_equal(1, 2 - 1)),
      builtin,
      [],
@@ -75,7 +100,12 @@ step(factorial(1, 1),
       (integer(0) -> (integer(1) -> 0 =:= 1 - 1 ; T_2 is 0, clpz:clpz_equal(T_2, 1 - 1)) ; integer(1) -> (true, var(0) -> 0 is 1 - 1 ; T_2 is 1 - 1, clpz:clpz_equal(0, T_2)) ; clpz:clpz_equal(0, 1 - 1)),
       factorial(0, 1),
       (integer(1) -> (integer(1), integer(1) -> 1 =:= 1 * 1 ; T_3 is 1, clpz:clpz_equal(T_3, 1 * 1)) ; integer(1), integer(1) -> (true, var(1) -> 1 is 1 * 1 ; T_3 is 1 * 1, clpz:clpz_equal(1, T_3)) ; clpz:clpz_equal(1, 1 * 1))]).
-step((integer(1) -> 1 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(1, Var_1)), builtin, [], []).
+step((integer(1) -> 1 >= 0 + 1 ; Var_1 = 1, clpz:clpz_geq(1, Var_1)),
+     control,
+     [],
+     [integer(1), 1 >= 0 + 1]).
+step(integer(1), builtin, [], []).
+step(1 >= 0 + 1, builtin, [], []).
 step((integer(0) -> (integer(1) -> 0 =:= 1 - 1 ; T_2 is 0, clpz:clpz_equal(T_2, 1 - 1)) ; integer(1) -> (true, var(0) -> 0 is 1 - 1 ; T_2 is 1 - 1, clpz:clpz_equal(0, T_2)) ; clpz:clpz_equal(0, 1 - 1)),
      builtin,
      [],
@@ -102,6 +132,14 @@ step((integer(120) -> (integer(5), integer(24) -> 120 =:= 5 * 24 ; T_3 is 120, c
      [],
      []).
 step((integer(720) -> (integer(6), integer(120) -> 720 =:= 6 * 120 ; T_3 is 720, clpz:clpz_equal(T_3, 6 * 120)) ; integer(6), integer(120) -> (true, var(720) -> 720 is 6 * 120 ; T_3 is 6 * 120, clpz:clpz_equal(720, T_3)) ; clpz:clpz_equal(720, 6 * 120)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(720),
+      (integer(6), integer(120) -> 720 =:= 6 * 120 ; T_3 is 720, clpz:clpz_equal(T_3, 6 * 120))]).
+step(integer(720), builtin, [], []).
+step((integer(6), integer(120) -> 720 =:= 6 * 120 ; T_3 is 720, clpz:clpz_equal(T_3, 6 * 120)),
+     control,
+     [],
+     [integer(6), integer(120), 720 =:= 6 * 120]).
+step(integer(120), builtin, [], []).
+step(720 =:= 6 * 120, builtin, [], []).

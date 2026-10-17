@@ -6026,6 +6026,27 @@ answer(Result) :- countdown(2048, Result), Result = 2048.
       },
     },
     {
+      name: '--dialogue plays each answer against the checker as opponent, and --evidence lets the opponent counter an absence',
+      run: () => {
+        // The proponent defends with its proof; the opponent concedes facts,
+        // verifies what it can decide again and grants what it can only
+        // trust. Evidence lets it refute an absence: the proponent then
+        // defends again from the program and that evidence, or gives up.
+        for (const [args, golden] of [
+          [['--dialogue', 'examples/dialogue/contract.pl'], 'examples/dialogue/contract-dialogue.pl'],
+          [['--evidence', 'examples/dialogue/evidence.pl', 'examples/dialogue/contract.pl'], 'examples/dialogue/contract-evidence-dialogue.pl'],
+        ]) {
+          const result = runCli(args);
+          assertEqual(result.status, 0, `${args.join(' ')}: ${result.stderr}`);
+          assertEqual(result.stdout, fs.readFileSync(path.join(packageRoot, golden), 'utf8'), golden);
+        }
+        const countered = runCli(['--evidence', 'examples/dialogue/evidence.pl', 'examples/dialogue/contract.pl']).stdout;
+        assertIncludes(countered, 'counters(\\+ minor_party(c17), minor_party(c17), [born(ann, 2009)])', 'the counter names its evidence');
+        assertIncludes(countered, 'concedes(born(ann, 2009))', "the proponent defends with the opponent's evidence");
+        assertIncludes(countered, 'outcome(2, valid(c18), lost).', 'a claim with no defence left');
+      },
+    },
+    {
       name: 'with source metadata, compact binary clauses are numbered and named exactly as the general parser reads them',
       run: () => {
         // A proof cites clauses by the numbers source metadata gives them, so

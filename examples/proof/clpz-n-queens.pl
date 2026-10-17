@@ -52,13 +52,25 @@ step(safe_from(1, [5, 8, 6, 3, 7, 2, 4], 1),
       2 is 1 + 1,
       safe_from(1, [8, 6, 3, 7, 2, 4], 2)]).
 step((integer(1) -> (integer(5), integer(1) -> 1 =\= 5 + 1 ; T_1 is 1, clpz:clpz_neq(T_1, 5 + 1)) ; integer(5), integer(1) -> T_1 is 5 + 1, clpz:clpz_neq(1, T_1) ; clpz:clpz_neq(1, 5 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(5), integer(1) -> 1 =\= 5 + 1 ; T_1 is 1, clpz:clpz_neq(T_1, 5 + 1))]).
+step(integer(1), builtin, [], []).
+step((integer(5), integer(1) -> 1 =\= 5 + 1 ; T_1 is 1, clpz:clpz_neq(T_1, 5 + 1)),
+     control,
+     [],
+     [integer(5), integer(1), 1 =\= 5 + 1]).
+step(integer(5), builtin, [], []).
+step(1 =\= 5 + 1, builtin, [], []).
 step((integer(1) -> (integer(5), integer(1) -> 1 =\= 5 - 1 ; T_2 is 1, clpz:clpz_neq(T_2, 5 - 1)) ; integer(5), integer(1) -> T_2 is 5 - 1, clpz:clpz_neq(1, T_2) ; clpz:clpz_neq(1, 5 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(5), integer(1) -> 1 =\= 5 - 1 ; T_2 is 1, clpz:clpz_neq(T_2, 5 - 1))]).
+step((integer(5), integer(1) -> 1 =\= 5 - 1 ; T_2 is 1, clpz:clpz_neq(T_2, 5 - 1)),
+     control,
+     [],
+     [integer(5), integer(1), 1 =\= 5 - 1]).
+step(1 =\= 5 - 1, builtin, [], []).
 step(2 is 1 + 1, builtin, [], []).
 step(safe_from(1, [8, 6, 3, 7, 2, 4], 2),
      rule(6),
@@ -68,13 +80,25 @@ step(safe_from(1, [8, 6, 3, 7, 2, 4], 2),
       3 is 2 + 1,
       safe_from(1, [6, 3, 7, 2, 4], 3)]).
 step((integer(1) -> (integer(8), integer(2) -> 1 =\= 8 + 2 ; T_1 is 1, clpz:clpz_neq(T_1, 8 + 2)) ; integer(8), integer(2) -> T_1 is 8 + 2, clpz:clpz_neq(1, T_1) ; clpz:clpz_neq(1, 8 + 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(8), integer(2) -> 1 =\= 8 + 2 ; T_1 is 1, clpz:clpz_neq(T_1, 8 + 2))]).
+step((integer(8), integer(2) -> 1 =\= 8 + 2 ; T_1 is 1, clpz:clpz_neq(T_1, 8 + 2)),
+     control,
+     [],
+     [integer(8), integer(2), 1 =\= 8 + 2]).
+step(integer(8), builtin, [], []).
+step(integer(2), builtin, [], []).
+step(1 =\= 8 + 2, builtin, [], []).
 step((integer(1) -> (integer(8), integer(2) -> 1 =\= 8 - 2 ; T_2 is 1, clpz:clpz_neq(T_2, 8 - 2)) ; integer(8), integer(2) -> T_2 is 8 - 2, clpz:clpz_neq(1, T_2) ; clpz:clpz_neq(1, 8 - 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(8), integer(2) -> 1 =\= 8 - 2 ; T_2 is 1, clpz:clpz_neq(T_2, 8 - 2))]).
+step((integer(8), integer(2) -> 1 =\= 8 - 2 ; T_2 is 1, clpz:clpz_neq(T_2, 8 - 2)),
+     control,
+     [],
+     [integer(8), integer(2), 1 =\= 8 - 2]).
+step(1 =\= 8 - 2, builtin, [], []).
 step(3 is 2 + 1, builtin, [], []).
 step(safe_from(1, [6, 3, 7, 2, 4], 3),
      rule(6),
@@ -84,13 +108,25 @@ step(safe_from(1, [6, 3, 7, 2, 4], 3),
       4 is 3 + 1,
       safe_from(1, [3, 7, 2, 4], 4)]).
 step((integer(1) -> (integer(6), integer(3) -> 1 =\= 6 + 3 ; T_1 is 1, clpz:clpz_neq(T_1, 6 + 3)) ; integer(6), integer(3) -> T_1 is 6 + 3, clpz:clpz_neq(1, T_1) ; clpz:clpz_neq(1, 6 + 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(6), integer(3) -> 1 =\= 6 + 3 ; T_1 is 1, clpz:clpz_neq(T_1, 6 + 3))]).
+step((integer(6), integer(3) -> 1 =\= 6 + 3 ; T_1 is 1, clpz:clpz_neq(T_1, 6 + 3)),
+     control,
+     [],
+     [integer(6), integer(3), 1 =\= 6 + 3]).
+step(integer(6), builtin, [], []).
+step(integer(3), builtin, [], []).
+step(1 =\= 6 + 3, builtin, [], []).
 step((integer(1) -> (integer(6), integer(3) -> 1 =\= 6 - 3 ; T_2 is 1, clpz:clpz_neq(T_2, 6 - 3)) ; integer(6), integer(3) -> T_2 is 6 - 3, clpz:clpz_neq(1, T_2) ; clpz:clpz_neq(1, 6 - 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(6), integer(3) -> 1 =\= 6 - 3 ; T_2 is 1, clpz:clpz_neq(T_2, 6 - 3))]).
+step((integer(6), integer(3) -> 1 =\= 6 - 3 ; T_2 is 1, clpz:clpz_neq(T_2, 6 - 3)),
+     control,
+     [],
+     [integer(6), integer(3), 1 =\= 6 - 3]).
+step(1 =\= 6 - 3, builtin, [], []).
 step(4 is 3 + 1, builtin, [], []).
 step(safe_from(1, [3, 7, 2, 4], 4),
      rule(6),
@@ -100,13 +136,24 @@ step(safe_from(1, [3, 7, 2, 4], 4),
       5 is 4 + 1,
       safe_from(1, [7, 2, 4], 5)]).
 step((integer(1) -> (integer(3), integer(4) -> 1 =\= 3 + 4 ; T_1 is 1, clpz:clpz_neq(T_1, 3 + 4)) ; integer(3), integer(4) -> T_1 is 3 + 4, clpz:clpz_neq(1, T_1) ; clpz:clpz_neq(1, 3 + 4)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(3), integer(4) -> 1 =\= 3 + 4 ; T_1 is 1, clpz:clpz_neq(T_1, 3 + 4))]).
+step((integer(3), integer(4) -> 1 =\= 3 + 4 ; T_1 is 1, clpz:clpz_neq(T_1, 3 + 4)),
+     control,
+     [],
+     [integer(3), integer(4), 1 =\= 3 + 4]).
+step(integer(4), builtin, [], []).
+step(1 =\= 3 + 4, builtin, [], []).
 step((integer(1) -> (integer(3), integer(4) -> 1 =\= 3 - 4 ; T_2 is 1, clpz:clpz_neq(T_2, 3 - 4)) ; integer(3), integer(4) -> T_2 is 3 - 4, clpz:clpz_neq(1, T_2) ; clpz:clpz_neq(1, 3 - 4)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(3), integer(4) -> 1 =\= 3 - 4 ; T_2 is 1, clpz:clpz_neq(T_2, 3 - 4))]).
+step((integer(3), integer(4) -> 1 =\= 3 - 4 ; T_2 is 1, clpz:clpz_neq(T_2, 3 - 4)),
+     control,
+     [],
+     [integer(3), integer(4), 1 =\= 3 - 4]).
+step(1 =\= 3 - 4, builtin, [], []).
 step(5 is 4 + 1, builtin, [], []).
 step(safe_from(1, [7, 2, 4], 5),
      rule(6),
@@ -116,13 +163,24 @@ step(safe_from(1, [7, 2, 4], 5),
       6 is 5 + 1,
       safe_from(1, [2, 4], 6)]).
 step((integer(1) -> (integer(7), integer(5) -> 1 =\= 7 + 5 ; T_1 is 1, clpz:clpz_neq(T_1, 7 + 5)) ; integer(7), integer(5) -> T_1 is 7 + 5, clpz:clpz_neq(1, T_1) ; clpz:clpz_neq(1, 7 + 5)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(7), integer(5) -> 1 =\= 7 + 5 ; T_1 is 1, clpz:clpz_neq(T_1, 7 + 5))]).
+step((integer(7), integer(5) -> 1 =\= 7 + 5 ; T_1 is 1, clpz:clpz_neq(T_1, 7 + 5)),
+     control,
+     [],
+     [integer(7), integer(5), 1 =\= 7 + 5]).
+step(integer(7), builtin, [], []).
+step(1 =\= 7 + 5, builtin, [], []).
 step((integer(1) -> (integer(7), integer(5) -> 1 =\= 7 - 5 ; T_2 is 1, clpz:clpz_neq(T_2, 7 - 5)) ; integer(7), integer(5) -> T_2 is 7 - 5, clpz:clpz_neq(1, T_2) ; clpz:clpz_neq(1, 7 - 5)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(7), integer(5) -> 1 =\= 7 - 5 ; T_2 is 1, clpz:clpz_neq(T_2, 7 - 5))]).
+step((integer(7), integer(5) -> 1 =\= 7 - 5 ; T_2 is 1, clpz:clpz_neq(T_2, 7 - 5)),
+     control,
+     [],
+     [integer(7), integer(5), 1 =\= 7 - 5]).
+step(1 =\= 7 - 5, builtin, [], []).
 step(6 is 5 + 1, builtin, [], []).
 step(safe_from(1, [2, 4], 6),
      rule(6),
@@ -132,13 +190,23 @@ step(safe_from(1, [2, 4], 6),
       7 is 6 + 1,
       safe_from(1, [4], 7)]).
 step((integer(1) -> (integer(2), integer(6) -> 1 =\= 2 + 6 ; T_1 is 1, clpz:clpz_neq(T_1, 2 + 6)) ; integer(2), integer(6) -> T_1 is 2 + 6, clpz:clpz_neq(1, T_1) ; clpz:clpz_neq(1, 2 + 6)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(2), integer(6) -> 1 =\= 2 + 6 ; T_1 is 1, clpz:clpz_neq(T_1, 2 + 6))]).
+step((integer(2), integer(6) -> 1 =\= 2 + 6 ; T_1 is 1, clpz:clpz_neq(T_1, 2 + 6)),
+     control,
+     [],
+     [integer(2), integer(6), 1 =\= 2 + 6]).
+step(1 =\= 2 + 6, builtin, [], []).
 step((integer(1) -> (integer(2), integer(6) -> 1 =\= 2 - 6 ; T_2 is 1, clpz:clpz_neq(T_2, 2 - 6)) ; integer(2), integer(6) -> T_2 is 2 - 6, clpz:clpz_neq(1, T_2) ; clpz:clpz_neq(1, 2 - 6)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(2), integer(6) -> 1 =\= 2 - 6 ; T_2 is 1, clpz:clpz_neq(T_2, 2 - 6))]).
+step((integer(2), integer(6) -> 1 =\= 2 - 6 ; T_2 is 1, clpz:clpz_neq(T_2, 2 - 6)),
+     control,
+     [],
+     [integer(2), integer(6), 1 =\= 2 - 6]).
+step(1 =\= 2 - 6, builtin, [], []).
 step(7 is 6 + 1, builtin, [], []).
 step(safe_from(1, [4], 7),
      rule(6),
@@ -148,13 +216,23 @@ step(safe_from(1, [4], 7),
       8 is 7 + 1,
       safe_from(1, [], 8)]).
 step((integer(1) -> (integer(4), integer(7) -> 1 =\= 4 + 7 ; T_1 is 1, clpz:clpz_neq(T_1, 4 + 7)) ; integer(4), integer(7) -> T_1 is 4 + 7, clpz:clpz_neq(1, T_1) ; clpz:clpz_neq(1, 4 + 7)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(4), integer(7) -> 1 =\= 4 + 7 ; T_1 is 1, clpz:clpz_neq(T_1, 4 + 7))]).
+step((integer(4), integer(7) -> 1 =\= 4 + 7 ; T_1 is 1, clpz:clpz_neq(T_1, 4 + 7)),
+     control,
+     [],
+     [integer(4), integer(7), 1 =\= 4 + 7]).
+step(1 =\= 4 + 7, builtin, [], []).
 step((integer(1) -> (integer(4), integer(7) -> 1 =\= 4 - 7 ; T_2 is 1, clpz:clpz_neq(T_2, 4 - 7)) ; integer(4), integer(7) -> T_2 is 4 - 7, clpz:clpz_neq(1, T_2) ; clpz:clpz_neq(1, 4 - 7)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(4), integer(7) -> 1 =\= 4 - 7 ; T_2 is 1, clpz:clpz_neq(T_2, 4 - 7))]).
+step((integer(4), integer(7) -> 1 =\= 4 - 7 ; T_2 is 1, clpz:clpz_neq(T_2, 4 - 7)),
+     control,
+     [],
+     [integer(4), integer(7), 1 =\= 4 - 7]).
+step(1 =\= 4 - 7, builtin, [], []).
 step(8 is 7 + 1, builtin, [], []).
 step(safe_from(1, [], 8), fact(5), [], []).
 step(safe_diagonals([5, 8, 6, 3, 7, 2, 4]),
@@ -169,13 +247,23 @@ step(safe_from(5, [8, 6, 3, 7, 2, 4], 1),
       2 is 1 + 1,
       safe_from(5, [6, 3, 7, 2, 4], 2)]).
 step((integer(5) -> (integer(8), integer(1) -> 5 =\= 8 + 1 ; T_1 is 5, clpz:clpz_neq(T_1, 8 + 1)) ; integer(8), integer(1) -> T_1 is 8 + 1, clpz:clpz_neq(5, T_1) ; clpz:clpz_neq(5, 8 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(8), integer(1) -> 5 =\= 8 + 1 ; T_1 is 5, clpz:clpz_neq(T_1, 8 + 1))]).
+step((integer(8), integer(1) -> 5 =\= 8 + 1 ; T_1 is 5, clpz:clpz_neq(T_1, 8 + 1)),
+     control,
+     [],
+     [integer(8), integer(1), 5 =\= 8 + 1]).
+step(5 =\= 8 + 1, builtin, [], []).
 step((integer(5) -> (integer(8), integer(1) -> 5 =\= 8 - 1 ; T_2 is 5, clpz:clpz_neq(T_2, 8 - 1)) ; integer(8), integer(1) -> T_2 is 8 - 1, clpz:clpz_neq(5, T_2) ; clpz:clpz_neq(5, 8 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(8), integer(1) -> 5 =\= 8 - 1 ; T_2 is 5, clpz:clpz_neq(T_2, 8 - 1))]).
+step((integer(8), integer(1) -> 5 =\= 8 - 1 ; T_2 is 5, clpz:clpz_neq(T_2, 8 - 1)),
+     control,
+     [],
+     [integer(8), integer(1), 5 =\= 8 - 1]).
+step(5 =\= 8 - 1, builtin, [], []).
 step(safe_from(5, [6, 3, 7, 2, 4], 2),
      rule(6),
      ['Row' = 5, 'Other' = 6, 'Rows' = [3, 7, 2, 4], 'Distance' = 2, 'NextDistance' = 3],
@@ -184,13 +272,23 @@ step(safe_from(5, [6, 3, 7, 2, 4], 2),
       3 is 2 + 1,
       safe_from(5, [3, 7, 2, 4], 3)]).
 step((integer(5) -> (integer(6), integer(2) -> 5 =\= 6 + 2 ; T_1 is 5, clpz:clpz_neq(T_1, 6 + 2)) ; integer(6), integer(2) -> T_1 is 6 + 2, clpz:clpz_neq(5, T_1) ; clpz:clpz_neq(5, 6 + 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(6), integer(2) -> 5 =\= 6 + 2 ; T_1 is 5, clpz:clpz_neq(T_1, 6 + 2))]).
+step((integer(6), integer(2) -> 5 =\= 6 + 2 ; T_1 is 5, clpz:clpz_neq(T_1, 6 + 2)),
+     control,
+     [],
+     [integer(6), integer(2), 5 =\= 6 + 2]).
+step(5 =\= 6 + 2, builtin, [], []).
 step((integer(5) -> (integer(6), integer(2) -> 5 =\= 6 - 2 ; T_2 is 5, clpz:clpz_neq(T_2, 6 - 2)) ; integer(6), integer(2) -> T_2 is 6 - 2, clpz:clpz_neq(5, T_2) ; clpz:clpz_neq(5, 6 - 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(6), integer(2) -> 5 =\= 6 - 2 ; T_2 is 5, clpz:clpz_neq(T_2, 6 - 2))]).
+step((integer(6), integer(2) -> 5 =\= 6 - 2 ; T_2 is 5, clpz:clpz_neq(T_2, 6 - 2)),
+     control,
+     [],
+     [integer(6), integer(2), 5 =\= 6 - 2]).
+step(5 =\= 6 - 2, builtin, [], []).
 step(safe_from(5, [3, 7, 2, 4], 3),
      rule(6),
      ['Row' = 5, 'Other' = 3, 'Rows' = [7, 2, 4], 'Distance' = 3, 'NextDistance' = 4],
@@ -199,13 +297,23 @@ step(safe_from(5, [3, 7, 2, 4], 3),
       4 is 3 + 1,
       safe_from(5, [7, 2, 4], 4)]).
 step((integer(5) -> (integer(3), integer(3) -> 5 =\= 3 + 3 ; T_1 is 5, clpz:clpz_neq(T_1, 3 + 3)) ; integer(3), integer(3) -> T_1 is 3 + 3, clpz:clpz_neq(5, T_1) ; clpz:clpz_neq(5, 3 + 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(3), integer(3) -> 5 =\= 3 + 3 ; T_1 is 5, clpz:clpz_neq(T_1, 3 + 3))]).
+step((integer(3), integer(3) -> 5 =\= 3 + 3 ; T_1 is 5, clpz:clpz_neq(T_1, 3 + 3)),
+     control,
+     [],
+     [integer(3), integer(3), 5 =\= 3 + 3]).
+step(5 =\= 3 + 3, builtin, [], []).
 step((integer(5) -> (integer(3), integer(3) -> 5 =\= 3 - 3 ; T_2 is 5, clpz:clpz_neq(T_2, 3 - 3)) ; integer(3), integer(3) -> T_2 is 3 - 3, clpz:clpz_neq(5, T_2) ; clpz:clpz_neq(5, 3 - 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(3), integer(3) -> 5 =\= 3 - 3 ; T_2 is 5, clpz:clpz_neq(T_2, 3 - 3))]).
+step((integer(3), integer(3) -> 5 =\= 3 - 3 ; T_2 is 5, clpz:clpz_neq(T_2, 3 - 3)),
+     control,
+     [],
+     [integer(3), integer(3), 5 =\= 3 - 3]).
+step(5 =\= 3 - 3, builtin, [], []).
 step(safe_from(5, [7, 2, 4], 4),
      rule(6),
      ['Row' = 5, 'Other' = 7, 'Rows' = [2, 4], 'Distance' = 4, 'NextDistance' = 5],
@@ -214,13 +322,23 @@ step(safe_from(5, [7, 2, 4], 4),
       5 is 4 + 1,
       safe_from(5, [2, 4], 5)]).
 step((integer(5) -> (integer(7), integer(4) -> 5 =\= 7 + 4 ; T_1 is 5, clpz:clpz_neq(T_1, 7 + 4)) ; integer(7), integer(4) -> T_1 is 7 + 4, clpz:clpz_neq(5, T_1) ; clpz:clpz_neq(5, 7 + 4)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(7), integer(4) -> 5 =\= 7 + 4 ; T_1 is 5, clpz:clpz_neq(T_1, 7 + 4))]).
+step((integer(7), integer(4) -> 5 =\= 7 + 4 ; T_1 is 5, clpz:clpz_neq(T_1, 7 + 4)),
+     control,
+     [],
+     [integer(7), integer(4), 5 =\= 7 + 4]).
+step(5 =\= 7 + 4, builtin, [], []).
 step((integer(5) -> (integer(7), integer(4) -> 5 =\= 7 - 4 ; T_2 is 5, clpz:clpz_neq(T_2, 7 - 4)) ; integer(7), integer(4) -> T_2 is 7 - 4, clpz:clpz_neq(5, T_2) ; clpz:clpz_neq(5, 7 - 4)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(7), integer(4) -> 5 =\= 7 - 4 ; T_2 is 5, clpz:clpz_neq(T_2, 7 - 4))]).
+step((integer(7), integer(4) -> 5 =\= 7 - 4 ; T_2 is 5, clpz:clpz_neq(T_2, 7 - 4)),
+     control,
+     [],
+     [integer(7), integer(4), 5 =\= 7 - 4]).
+step(5 =\= 7 - 4, builtin, [], []).
 step(safe_from(5, [2, 4], 5),
      rule(6),
      ['Row' = 5, 'Other' = 2, 'Rows' = [4], 'Distance' = 5, 'NextDistance' = 6],
@@ -229,13 +347,23 @@ step(safe_from(5, [2, 4], 5),
       6 is 5 + 1,
       safe_from(5, [4], 6)]).
 step((integer(5) -> (integer(2), integer(5) -> 5 =\= 2 + 5 ; T_1 is 5, clpz:clpz_neq(T_1, 2 + 5)) ; integer(2), integer(5) -> T_1 is 2 + 5, clpz:clpz_neq(5, T_1) ; clpz:clpz_neq(5, 2 + 5)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(2), integer(5) -> 5 =\= 2 + 5 ; T_1 is 5, clpz:clpz_neq(T_1, 2 + 5))]).
+step((integer(2), integer(5) -> 5 =\= 2 + 5 ; T_1 is 5, clpz:clpz_neq(T_1, 2 + 5)),
+     control,
+     [],
+     [integer(2), integer(5), 5 =\= 2 + 5]).
+step(5 =\= 2 + 5, builtin, [], []).
 step((integer(5) -> (integer(2), integer(5) -> 5 =\= 2 - 5 ; T_2 is 5, clpz:clpz_neq(T_2, 2 - 5)) ; integer(2), integer(5) -> T_2 is 2 - 5, clpz:clpz_neq(5, T_2) ; clpz:clpz_neq(5, 2 - 5)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(2), integer(5) -> 5 =\= 2 - 5 ; T_2 is 5, clpz:clpz_neq(T_2, 2 - 5))]).
+step((integer(2), integer(5) -> 5 =\= 2 - 5 ; T_2 is 5, clpz:clpz_neq(T_2, 2 - 5)),
+     control,
+     [],
+     [integer(2), integer(5), 5 =\= 2 - 5]).
+step(5 =\= 2 - 5, builtin, [], []).
 step(safe_from(5, [4], 6),
      rule(6),
      ['Row' = 5, 'Other' = 4, 'Rows' = [], 'Distance' = 6, 'NextDistance' = 7],
@@ -244,13 +372,23 @@ step(safe_from(5, [4], 6),
       7 is 6 + 1,
       safe_from(5, [], 7)]).
 step((integer(5) -> (integer(4), integer(6) -> 5 =\= 4 + 6 ; T_1 is 5, clpz:clpz_neq(T_1, 4 + 6)) ; integer(4), integer(6) -> T_1 is 4 + 6, clpz:clpz_neq(5, T_1) ; clpz:clpz_neq(5, 4 + 6)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(4), integer(6) -> 5 =\= 4 + 6 ; T_1 is 5, clpz:clpz_neq(T_1, 4 + 6))]).
+step((integer(4), integer(6) -> 5 =\= 4 + 6 ; T_1 is 5, clpz:clpz_neq(T_1, 4 + 6)),
+     control,
+     [],
+     [integer(4), integer(6), 5 =\= 4 + 6]).
+step(5 =\= 4 + 6, builtin, [], []).
 step((integer(5) -> (integer(4), integer(6) -> 5 =\= 4 - 6 ; T_2 is 5, clpz:clpz_neq(T_2, 4 - 6)) ; integer(4), integer(6) -> T_2 is 4 - 6, clpz:clpz_neq(5, T_2) ; clpz:clpz_neq(5, 4 - 6)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(5), (integer(4), integer(6) -> 5 =\= 4 - 6 ; T_2 is 5, clpz:clpz_neq(T_2, 4 - 6))]).
+step((integer(4), integer(6) -> 5 =\= 4 - 6 ; T_2 is 5, clpz:clpz_neq(T_2, 4 - 6)),
+     control,
+     [],
+     [integer(4), integer(6), 5 =\= 4 - 6]).
+step(5 =\= 4 - 6, builtin, [], []).
 step(safe_from(5, [], 7), fact(5), [], []).
 step(safe_diagonals([8, 6, 3, 7, 2, 4]),
      rule(4),
@@ -264,13 +402,23 @@ step(safe_from(8, [6, 3, 7, 2, 4], 1),
       2 is 1 + 1,
       safe_from(8, [3, 7, 2, 4], 2)]).
 step((integer(8) -> (integer(6), integer(1) -> 8 =\= 6 + 1 ; T_1 is 8, clpz:clpz_neq(T_1, 6 + 1)) ; integer(6), integer(1) -> T_1 is 6 + 1, clpz:clpz_neq(8, T_1) ; clpz:clpz_neq(8, 6 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(8), (integer(6), integer(1) -> 8 =\= 6 + 1 ; T_1 is 8, clpz:clpz_neq(T_1, 6 + 1))]).
+step((integer(6), integer(1) -> 8 =\= 6 + 1 ; T_1 is 8, clpz:clpz_neq(T_1, 6 + 1)),
+     control,
+     [],
+     [integer(6), integer(1), 8 =\= 6 + 1]).
+step(8 =\= 6 + 1, builtin, [], []).
 step((integer(8) -> (integer(6), integer(1) -> 8 =\= 6 - 1 ; T_2 is 8, clpz:clpz_neq(T_2, 6 - 1)) ; integer(6), integer(1) -> T_2 is 6 - 1, clpz:clpz_neq(8, T_2) ; clpz:clpz_neq(8, 6 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(8), (integer(6), integer(1) -> 8 =\= 6 - 1 ; T_2 is 8, clpz:clpz_neq(T_2, 6 - 1))]).
+step((integer(6), integer(1) -> 8 =\= 6 - 1 ; T_2 is 8, clpz:clpz_neq(T_2, 6 - 1)),
+     control,
+     [],
+     [integer(6), integer(1), 8 =\= 6 - 1]).
+step(8 =\= 6 - 1, builtin, [], []).
 step(safe_from(8, [3, 7, 2, 4], 2),
      rule(6),
      ['Row' = 8, 'Other' = 3, 'Rows' = [7, 2, 4], 'Distance' = 2, 'NextDistance' = 3],
@@ -279,13 +427,23 @@ step(safe_from(8, [3, 7, 2, 4], 2),
       3 is 2 + 1,
       safe_from(8, [7, 2, 4], 3)]).
 step((integer(8) -> (integer(3), integer(2) -> 8 =\= 3 + 2 ; T_1 is 8, clpz:clpz_neq(T_1, 3 + 2)) ; integer(3), integer(2) -> T_1 is 3 + 2, clpz:clpz_neq(8, T_1) ; clpz:clpz_neq(8, 3 + 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(8), (integer(3), integer(2) -> 8 =\= 3 + 2 ; T_1 is 8, clpz:clpz_neq(T_1, 3 + 2))]).
+step((integer(3), integer(2) -> 8 =\= 3 + 2 ; T_1 is 8, clpz:clpz_neq(T_1, 3 + 2)),
+     control,
+     [],
+     [integer(3), integer(2), 8 =\= 3 + 2]).
+step(8 =\= 3 + 2, builtin, [], []).
 step((integer(8) -> (integer(3), integer(2) -> 8 =\= 3 - 2 ; T_2 is 8, clpz:clpz_neq(T_2, 3 - 2)) ; integer(3), integer(2) -> T_2 is 3 - 2, clpz:clpz_neq(8, T_2) ; clpz:clpz_neq(8, 3 - 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(8), (integer(3), integer(2) -> 8 =\= 3 - 2 ; T_2 is 8, clpz:clpz_neq(T_2, 3 - 2))]).
+step((integer(3), integer(2) -> 8 =\= 3 - 2 ; T_2 is 8, clpz:clpz_neq(T_2, 3 - 2)),
+     control,
+     [],
+     [integer(3), integer(2), 8 =\= 3 - 2]).
+step(8 =\= 3 - 2, builtin, [], []).
 step(safe_from(8, [7, 2, 4], 3),
      rule(6),
      ['Row' = 8, 'Other' = 7, 'Rows' = [2, 4], 'Distance' = 3, 'NextDistance' = 4],
@@ -294,13 +452,23 @@ step(safe_from(8, [7, 2, 4], 3),
       4 is 3 + 1,
       safe_from(8, [2, 4], 4)]).
 step((integer(8) -> (integer(7), integer(3) -> 8 =\= 7 + 3 ; T_1 is 8, clpz:clpz_neq(T_1, 7 + 3)) ; integer(7), integer(3) -> T_1 is 7 + 3, clpz:clpz_neq(8, T_1) ; clpz:clpz_neq(8, 7 + 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(8), (integer(7), integer(3) -> 8 =\= 7 + 3 ; T_1 is 8, clpz:clpz_neq(T_1, 7 + 3))]).
+step((integer(7), integer(3) -> 8 =\= 7 + 3 ; T_1 is 8, clpz:clpz_neq(T_1, 7 + 3)),
+     control,
+     [],
+     [integer(7), integer(3), 8 =\= 7 + 3]).
+step(8 =\= 7 + 3, builtin, [], []).
 step((integer(8) -> (integer(7), integer(3) -> 8 =\= 7 - 3 ; T_2 is 8, clpz:clpz_neq(T_2, 7 - 3)) ; integer(7), integer(3) -> T_2 is 7 - 3, clpz:clpz_neq(8, T_2) ; clpz:clpz_neq(8, 7 - 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(8), (integer(7), integer(3) -> 8 =\= 7 - 3 ; T_2 is 8, clpz:clpz_neq(T_2, 7 - 3))]).
+step((integer(7), integer(3) -> 8 =\= 7 - 3 ; T_2 is 8, clpz:clpz_neq(T_2, 7 - 3)),
+     control,
+     [],
+     [integer(7), integer(3), 8 =\= 7 - 3]).
+step(8 =\= 7 - 3, builtin, [], []).
 step(safe_from(8, [2, 4], 4),
      rule(6),
      ['Row' = 8, 'Other' = 2, 'Rows' = [4], 'Distance' = 4, 'NextDistance' = 5],
@@ -309,13 +477,23 @@ step(safe_from(8, [2, 4], 4),
       5 is 4 + 1,
       safe_from(8, [4], 5)]).
 step((integer(8) -> (integer(2), integer(4) -> 8 =\= 2 + 4 ; T_1 is 8, clpz:clpz_neq(T_1, 2 + 4)) ; integer(2), integer(4) -> T_1 is 2 + 4, clpz:clpz_neq(8, T_1) ; clpz:clpz_neq(8, 2 + 4)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(8), (integer(2), integer(4) -> 8 =\= 2 + 4 ; T_1 is 8, clpz:clpz_neq(T_1, 2 + 4))]).
+step((integer(2), integer(4) -> 8 =\= 2 + 4 ; T_1 is 8, clpz:clpz_neq(T_1, 2 + 4)),
+     control,
+     [],
+     [integer(2), integer(4), 8 =\= 2 + 4]).
+step(8 =\= 2 + 4, builtin, [], []).
 step((integer(8) -> (integer(2), integer(4) -> 8 =\= 2 - 4 ; T_2 is 8, clpz:clpz_neq(T_2, 2 - 4)) ; integer(2), integer(4) -> T_2 is 2 - 4, clpz:clpz_neq(8, T_2) ; clpz:clpz_neq(8, 2 - 4)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(8), (integer(2), integer(4) -> 8 =\= 2 - 4 ; T_2 is 8, clpz:clpz_neq(T_2, 2 - 4))]).
+step((integer(2), integer(4) -> 8 =\= 2 - 4 ; T_2 is 8, clpz:clpz_neq(T_2, 2 - 4)),
+     control,
+     [],
+     [integer(2), integer(4), 8 =\= 2 - 4]).
+step(8 =\= 2 - 4, builtin, [], []).
 step(safe_from(8, [4], 5),
      rule(6),
      ['Row' = 8, 'Other' = 4, 'Rows' = [], 'Distance' = 5, 'NextDistance' = 6],
@@ -324,13 +502,23 @@ step(safe_from(8, [4], 5),
       6 is 5 + 1,
       safe_from(8, [], 6)]).
 step((integer(8) -> (integer(4), integer(5) -> 8 =\= 4 + 5 ; T_1 is 8, clpz:clpz_neq(T_1, 4 + 5)) ; integer(4), integer(5) -> T_1 is 4 + 5, clpz:clpz_neq(8, T_1) ; clpz:clpz_neq(8, 4 + 5)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(8), (integer(4), integer(5) -> 8 =\= 4 + 5 ; T_1 is 8, clpz:clpz_neq(T_1, 4 + 5))]).
+step((integer(4), integer(5) -> 8 =\= 4 + 5 ; T_1 is 8, clpz:clpz_neq(T_1, 4 + 5)),
+     control,
+     [],
+     [integer(4), integer(5), 8 =\= 4 + 5]).
+step(8 =\= 4 + 5, builtin, [], []).
 step((integer(8) -> (integer(4), integer(5) -> 8 =\= 4 - 5 ; T_2 is 8, clpz:clpz_neq(T_2, 4 - 5)) ; integer(4), integer(5) -> T_2 is 4 - 5, clpz:clpz_neq(8, T_2) ; clpz:clpz_neq(8, 4 - 5)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(8), (integer(4), integer(5) -> 8 =\= 4 - 5 ; T_2 is 8, clpz:clpz_neq(T_2, 4 - 5))]).
+step((integer(4), integer(5) -> 8 =\= 4 - 5 ; T_2 is 8, clpz:clpz_neq(T_2, 4 - 5)),
+     control,
+     [],
+     [integer(4), integer(5), 8 =\= 4 - 5]).
+step(8 =\= 4 - 5, builtin, [], []).
 step(safe_from(8, [], 6), fact(5), [], []).
 step(safe_diagonals([6, 3, 7, 2, 4]),
      rule(4),
@@ -344,13 +532,23 @@ step(safe_from(6, [3, 7, 2, 4], 1),
       2 is 1 + 1,
       safe_from(6, [7, 2, 4], 2)]).
 step((integer(6) -> (integer(3), integer(1) -> 6 =\= 3 + 1 ; T_1 is 6, clpz:clpz_neq(T_1, 3 + 1)) ; integer(3), integer(1) -> T_1 is 3 + 1, clpz:clpz_neq(6, T_1) ; clpz:clpz_neq(6, 3 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(6), (integer(3), integer(1) -> 6 =\= 3 + 1 ; T_1 is 6, clpz:clpz_neq(T_1, 3 + 1))]).
+step((integer(3), integer(1) -> 6 =\= 3 + 1 ; T_1 is 6, clpz:clpz_neq(T_1, 3 + 1)),
+     control,
+     [],
+     [integer(3), integer(1), 6 =\= 3 + 1]).
+step(6 =\= 3 + 1, builtin, [], []).
 step((integer(6) -> (integer(3), integer(1) -> 6 =\= 3 - 1 ; T_2 is 6, clpz:clpz_neq(T_2, 3 - 1)) ; integer(3), integer(1) -> T_2 is 3 - 1, clpz:clpz_neq(6, T_2) ; clpz:clpz_neq(6, 3 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(6), (integer(3), integer(1) -> 6 =\= 3 - 1 ; T_2 is 6, clpz:clpz_neq(T_2, 3 - 1))]).
+step((integer(3), integer(1) -> 6 =\= 3 - 1 ; T_2 is 6, clpz:clpz_neq(T_2, 3 - 1)),
+     control,
+     [],
+     [integer(3), integer(1), 6 =\= 3 - 1]).
+step(6 =\= 3 - 1, builtin, [], []).
 step(safe_from(6, [7, 2, 4], 2),
      rule(6),
      ['Row' = 6, 'Other' = 7, 'Rows' = [2, 4], 'Distance' = 2, 'NextDistance' = 3],
@@ -359,13 +557,23 @@ step(safe_from(6, [7, 2, 4], 2),
       3 is 2 + 1,
       safe_from(6, [2, 4], 3)]).
 step((integer(6) -> (integer(7), integer(2) -> 6 =\= 7 + 2 ; T_1 is 6, clpz:clpz_neq(T_1, 7 + 2)) ; integer(7), integer(2) -> T_1 is 7 + 2, clpz:clpz_neq(6, T_1) ; clpz:clpz_neq(6, 7 + 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(6), (integer(7), integer(2) -> 6 =\= 7 + 2 ; T_1 is 6, clpz:clpz_neq(T_1, 7 + 2))]).
+step((integer(7), integer(2) -> 6 =\= 7 + 2 ; T_1 is 6, clpz:clpz_neq(T_1, 7 + 2)),
+     control,
+     [],
+     [integer(7), integer(2), 6 =\= 7 + 2]).
+step(6 =\= 7 + 2, builtin, [], []).
 step((integer(6) -> (integer(7), integer(2) -> 6 =\= 7 - 2 ; T_2 is 6, clpz:clpz_neq(T_2, 7 - 2)) ; integer(7), integer(2) -> T_2 is 7 - 2, clpz:clpz_neq(6, T_2) ; clpz:clpz_neq(6, 7 - 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(6), (integer(7), integer(2) -> 6 =\= 7 - 2 ; T_2 is 6, clpz:clpz_neq(T_2, 7 - 2))]).
+step((integer(7), integer(2) -> 6 =\= 7 - 2 ; T_2 is 6, clpz:clpz_neq(T_2, 7 - 2)),
+     control,
+     [],
+     [integer(7), integer(2), 6 =\= 7 - 2]).
+step(6 =\= 7 - 2, builtin, [], []).
 step(safe_from(6, [2, 4], 3),
      rule(6),
      ['Row' = 6, 'Other' = 2, 'Rows' = [4], 'Distance' = 3, 'NextDistance' = 4],
@@ -374,13 +582,23 @@ step(safe_from(6, [2, 4], 3),
       4 is 3 + 1,
       safe_from(6, [4], 4)]).
 step((integer(6) -> (integer(2), integer(3) -> 6 =\= 2 + 3 ; T_1 is 6, clpz:clpz_neq(T_1, 2 + 3)) ; integer(2), integer(3) -> T_1 is 2 + 3, clpz:clpz_neq(6, T_1) ; clpz:clpz_neq(6, 2 + 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(6), (integer(2), integer(3) -> 6 =\= 2 + 3 ; T_1 is 6, clpz:clpz_neq(T_1, 2 + 3))]).
+step((integer(2), integer(3) -> 6 =\= 2 + 3 ; T_1 is 6, clpz:clpz_neq(T_1, 2 + 3)),
+     control,
+     [],
+     [integer(2), integer(3), 6 =\= 2 + 3]).
+step(6 =\= 2 + 3, builtin, [], []).
 step((integer(6) -> (integer(2), integer(3) -> 6 =\= 2 - 3 ; T_2 is 6, clpz:clpz_neq(T_2, 2 - 3)) ; integer(2), integer(3) -> T_2 is 2 - 3, clpz:clpz_neq(6, T_2) ; clpz:clpz_neq(6, 2 - 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(6), (integer(2), integer(3) -> 6 =\= 2 - 3 ; T_2 is 6, clpz:clpz_neq(T_2, 2 - 3))]).
+step((integer(2), integer(3) -> 6 =\= 2 - 3 ; T_2 is 6, clpz:clpz_neq(T_2, 2 - 3)),
+     control,
+     [],
+     [integer(2), integer(3), 6 =\= 2 - 3]).
+step(6 =\= 2 - 3, builtin, [], []).
 step(safe_from(6, [4], 4),
      rule(6),
      ['Row' = 6, 'Other' = 4, 'Rows' = [], 'Distance' = 4, 'NextDistance' = 5],
@@ -389,13 +607,23 @@ step(safe_from(6, [4], 4),
       5 is 4 + 1,
       safe_from(6, [], 5)]).
 step((integer(6) -> (integer(4), integer(4) -> 6 =\= 4 + 4 ; T_1 is 6, clpz:clpz_neq(T_1, 4 + 4)) ; integer(4), integer(4) -> T_1 is 4 + 4, clpz:clpz_neq(6, T_1) ; clpz:clpz_neq(6, 4 + 4)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(6), (integer(4), integer(4) -> 6 =\= 4 + 4 ; T_1 is 6, clpz:clpz_neq(T_1, 4 + 4))]).
+step((integer(4), integer(4) -> 6 =\= 4 + 4 ; T_1 is 6, clpz:clpz_neq(T_1, 4 + 4)),
+     control,
+     [],
+     [integer(4), integer(4), 6 =\= 4 + 4]).
+step(6 =\= 4 + 4, builtin, [], []).
 step((integer(6) -> (integer(4), integer(4) -> 6 =\= 4 - 4 ; T_2 is 6, clpz:clpz_neq(T_2, 4 - 4)) ; integer(4), integer(4) -> T_2 is 4 - 4, clpz:clpz_neq(6, T_2) ; clpz:clpz_neq(6, 4 - 4)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(6), (integer(4), integer(4) -> 6 =\= 4 - 4 ; T_2 is 6, clpz:clpz_neq(T_2, 4 - 4))]).
+step((integer(4), integer(4) -> 6 =\= 4 - 4 ; T_2 is 6, clpz:clpz_neq(T_2, 4 - 4)),
+     control,
+     [],
+     [integer(4), integer(4), 6 =\= 4 - 4]).
+step(6 =\= 4 - 4, builtin, [], []).
 step(safe_from(6, [], 5), fact(5), [], []).
 step(safe_diagonals([3, 7, 2, 4]),
      rule(4),
@@ -409,13 +637,23 @@ step(safe_from(3, [7, 2, 4], 1),
       2 is 1 + 1,
       safe_from(3, [2, 4], 2)]).
 step((integer(3) -> (integer(7), integer(1) -> 3 =\= 7 + 1 ; T_1 is 3, clpz:clpz_neq(T_1, 7 + 1)) ; integer(7), integer(1) -> T_1 is 7 + 1, clpz:clpz_neq(3, T_1) ; clpz:clpz_neq(3, 7 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(7), integer(1) -> 3 =\= 7 + 1 ; T_1 is 3, clpz:clpz_neq(T_1, 7 + 1))]).
+step((integer(7), integer(1) -> 3 =\= 7 + 1 ; T_1 is 3, clpz:clpz_neq(T_1, 7 + 1)),
+     control,
+     [],
+     [integer(7), integer(1), 3 =\= 7 + 1]).
+step(3 =\= 7 + 1, builtin, [], []).
 step((integer(3) -> (integer(7), integer(1) -> 3 =\= 7 - 1 ; T_2 is 3, clpz:clpz_neq(T_2, 7 - 1)) ; integer(7), integer(1) -> T_2 is 7 - 1, clpz:clpz_neq(3, T_2) ; clpz:clpz_neq(3, 7 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(7), integer(1) -> 3 =\= 7 - 1 ; T_2 is 3, clpz:clpz_neq(T_2, 7 - 1))]).
+step((integer(7), integer(1) -> 3 =\= 7 - 1 ; T_2 is 3, clpz:clpz_neq(T_2, 7 - 1)),
+     control,
+     [],
+     [integer(7), integer(1), 3 =\= 7 - 1]).
+step(3 =\= 7 - 1, builtin, [], []).
 step(safe_from(3, [2, 4], 2),
      rule(6),
      ['Row' = 3, 'Other' = 2, 'Rows' = [4], 'Distance' = 2, 'NextDistance' = 3],
@@ -424,13 +662,23 @@ step(safe_from(3, [2, 4], 2),
       3 is 2 + 1,
       safe_from(3, [4], 3)]).
 step((integer(3) -> (integer(2), integer(2) -> 3 =\= 2 + 2 ; T_1 is 3, clpz:clpz_neq(T_1, 2 + 2)) ; integer(2), integer(2) -> T_1 is 2 + 2, clpz:clpz_neq(3, T_1) ; clpz:clpz_neq(3, 2 + 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(2), integer(2) -> 3 =\= 2 + 2 ; T_1 is 3, clpz:clpz_neq(T_1, 2 + 2))]).
+step((integer(2), integer(2) -> 3 =\= 2 + 2 ; T_1 is 3, clpz:clpz_neq(T_1, 2 + 2)),
+     control,
+     [],
+     [integer(2), integer(2), 3 =\= 2 + 2]).
+step(3 =\= 2 + 2, builtin, [], []).
 step((integer(3) -> (integer(2), integer(2) -> 3 =\= 2 - 2 ; T_2 is 3, clpz:clpz_neq(T_2, 2 - 2)) ; integer(2), integer(2) -> T_2 is 2 - 2, clpz:clpz_neq(3, T_2) ; clpz:clpz_neq(3, 2 - 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(2), integer(2) -> 3 =\= 2 - 2 ; T_2 is 3, clpz:clpz_neq(T_2, 2 - 2))]).
+step((integer(2), integer(2) -> 3 =\= 2 - 2 ; T_2 is 3, clpz:clpz_neq(T_2, 2 - 2)),
+     control,
+     [],
+     [integer(2), integer(2), 3 =\= 2 - 2]).
+step(3 =\= 2 - 2, builtin, [], []).
 step(safe_from(3, [4], 3),
      rule(6),
      ['Row' = 3, 'Other' = 4, 'Rows' = [], 'Distance' = 3, 'NextDistance' = 4],
@@ -439,13 +687,23 @@ step(safe_from(3, [4], 3),
       4 is 3 + 1,
       safe_from(3, [], 4)]).
 step((integer(3) -> (integer(4), integer(3) -> 3 =\= 4 + 3 ; T_1 is 3, clpz:clpz_neq(T_1, 4 + 3)) ; integer(4), integer(3) -> T_1 is 4 + 3, clpz:clpz_neq(3, T_1) ; clpz:clpz_neq(3, 4 + 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(4), integer(3) -> 3 =\= 4 + 3 ; T_1 is 3, clpz:clpz_neq(T_1, 4 + 3))]).
+step((integer(4), integer(3) -> 3 =\= 4 + 3 ; T_1 is 3, clpz:clpz_neq(T_1, 4 + 3)),
+     control,
+     [],
+     [integer(4), integer(3), 3 =\= 4 + 3]).
+step(3 =\= 4 + 3, builtin, [], []).
 step((integer(3) -> (integer(4), integer(3) -> 3 =\= 4 - 3 ; T_2 is 3, clpz:clpz_neq(T_2, 4 - 3)) ; integer(4), integer(3) -> T_2 is 4 - 3, clpz:clpz_neq(3, T_2) ; clpz:clpz_neq(3, 4 - 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(4), integer(3) -> 3 =\= 4 - 3 ; T_2 is 3, clpz:clpz_neq(T_2, 4 - 3))]).
+step((integer(4), integer(3) -> 3 =\= 4 - 3 ; T_2 is 3, clpz:clpz_neq(T_2, 4 - 3)),
+     control,
+     [],
+     [integer(4), integer(3), 3 =\= 4 - 3]).
+step(3 =\= 4 - 3, builtin, [], []).
 step(safe_from(3, [], 4), fact(5), [], []).
 step(safe_diagonals([7, 2, 4]),
      rule(4),
@@ -459,13 +717,23 @@ step(safe_from(7, [2, 4], 1),
       2 is 1 + 1,
       safe_from(7, [4], 2)]).
 step((integer(7) -> (integer(2), integer(1) -> 7 =\= 2 + 1 ; T_1 is 7, clpz:clpz_neq(T_1, 2 + 1)) ; integer(2), integer(1) -> T_1 is 2 + 1, clpz:clpz_neq(7, T_1) ; clpz:clpz_neq(7, 2 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(7), (integer(2), integer(1) -> 7 =\= 2 + 1 ; T_1 is 7, clpz:clpz_neq(T_1, 2 + 1))]).
+step((integer(2), integer(1) -> 7 =\= 2 + 1 ; T_1 is 7, clpz:clpz_neq(T_1, 2 + 1)),
+     control,
+     [],
+     [integer(2), integer(1), 7 =\= 2 + 1]).
+step(7 =\= 2 + 1, builtin, [], []).
 step((integer(7) -> (integer(2), integer(1) -> 7 =\= 2 - 1 ; T_2 is 7, clpz:clpz_neq(T_2, 2 - 1)) ; integer(2), integer(1) -> T_2 is 2 - 1, clpz:clpz_neq(7, T_2) ; clpz:clpz_neq(7, 2 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(7), (integer(2), integer(1) -> 7 =\= 2 - 1 ; T_2 is 7, clpz:clpz_neq(T_2, 2 - 1))]).
+step((integer(2), integer(1) -> 7 =\= 2 - 1 ; T_2 is 7, clpz:clpz_neq(T_2, 2 - 1)),
+     control,
+     [],
+     [integer(2), integer(1), 7 =\= 2 - 1]).
+step(7 =\= 2 - 1, builtin, [], []).
 step(safe_from(7, [4], 2),
      rule(6),
      ['Row' = 7, 'Other' = 4, 'Rows' = [], 'Distance' = 2, 'NextDistance' = 3],
@@ -474,13 +742,23 @@ step(safe_from(7, [4], 2),
       3 is 2 + 1,
       safe_from(7, [], 3)]).
 step((integer(7) -> (integer(4), integer(2) -> 7 =\= 4 + 2 ; T_1 is 7, clpz:clpz_neq(T_1, 4 + 2)) ; integer(4), integer(2) -> T_1 is 4 + 2, clpz:clpz_neq(7, T_1) ; clpz:clpz_neq(7, 4 + 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(7), (integer(4), integer(2) -> 7 =\= 4 + 2 ; T_1 is 7, clpz:clpz_neq(T_1, 4 + 2))]).
+step((integer(4), integer(2) -> 7 =\= 4 + 2 ; T_1 is 7, clpz:clpz_neq(T_1, 4 + 2)),
+     control,
+     [],
+     [integer(4), integer(2), 7 =\= 4 + 2]).
+step(7 =\= 4 + 2, builtin, [], []).
 step((integer(7) -> (integer(4), integer(2) -> 7 =\= 4 - 2 ; T_2 is 7, clpz:clpz_neq(T_2, 4 - 2)) ; integer(4), integer(2) -> T_2 is 4 - 2, clpz:clpz_neq(7, T_2) ; clpz:clpz_neq(7, 4 - 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(7), (integer(4), integer(2) -> 7 =\= 4 - 2 ; T_2 is 7, clpz:clpz_neq(T_2, 4 - 2))]).
+step((integer(4), integer(2) -> 7 =\= 4 - 2 ; T_2 is 7, clpz:clpz_neq(T_2, 4 - 2)),
+     control,
+     [],
+     [integer(4), integer(2), 7 =\= 4 - 2]).
+step(7 =\= 4 - 2, builtin, [], []).
 step(safe_from(7, [], 3), fact(5), [], []).
 step(safe_diagonals([2, 4]),
      rule(4),
@@ -494,13 +772,23 @@ step(safe_from(2, [4], 1),
       2 is 1 + 1,
       safe_from(2, [], 2)]).
 step((integer(2) -> (integer(4), integer(1) -> 2 =\= 4 + 1 ; T_1 is 2, clpz:clpz_neq(T_1, 4 + 1)) ; integer(4), integer(1) -> T_1 is 4 + 1, clpz:clpz_neq(2, T_1) ; clpz:clpz_neq(2, 4 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(2), (integer(4), integer(1) -> 2 =\= 4 + 1 ; T_1 is 2, clpz:clpz_neq(T_1, 4 + 1))]).
+step((integer(4), integer(1) -> 2 =\= 4 + 1 ; T_1 is 2, clpz:clpz_neq(T_1, 4 + 1)),
+     control,
+     [],
+     [integer(4), integer(1), 2 =\= 4 + 1]).
+step(2 =\= 4 + 1, builtin, [], []).
 step((integer(2) -> (integer(4), integer(1) -> 2 =\= 4 - 1 ; T_2 is 2, clpz:clpz_neq(T_2, 4 - 1)) ; integer(4), integer(1) -> T_2 is 4 - 1, clpz:clpz_neq(2, T_2) ; clpz:clpz_neq(2, 4 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(2), (integer(4), integer(1) -> 2 =\= 4 - 1 ; T_2 is 2, clpz:clpz_neq(T_2, 4 - 1))]).
+step((integer(4), integer(1) -> 2 =\= 4 - 1 ; T_2 is 2, clpz:clpz_neq(T_2, 4 - 1)),
+     control,
+     [],
+     [integer(4), integer(1), 2 =\= 4 - 1]).
+step(2 =\= 4 - 1, builtin, [], []).
 step(safe_from(2, [], 2), fact(5), [], []).
 step(safe_diagonals([4]),
      rule(4),
@@ -539,13 +827,23 @@ step(safe_from(2, [1, 3], 2),
       3 is 2 + 1,
       safe_from(2, [3], 3)]).
 step((integer(2) -> (integer(1), integer(2) -> 2 =\= 1 + 2 ; T_1 is 2, clpz:clpz_neq(T_1, 1 + 2)) ; integer(1), integer(2) -> T_1 is 1 + 2, clpz:clpz_neq(2, T_1) ; clpz:clpz_neq(2, 1 + 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(2), (integer(1), integer(2) -> 2 =\= 1 + 2 ; T_1 is 2, clpz:clpz_neq(T_1, 1 + 2))]).
+step((integer(1), integer(2) -> 2 =\= 1 + 2 ; T_1 is 2, clpz:clpz_neq(T_1, 1 + 2)),
+     control,
+     [],
+     [integer(1), integer(2), 2 =\= 1 + 2]).
+step(2 =\= 1 + 2, builtin, [], []).
 step((integer(2) -> (integer(1), integer(2) -> 2 =\= 1 - 2 ; T_2 is 2, clpz:clpz_neq(T_2, 1 - 2)) ; integer(1), integer(2) -> T_2 is 1 - 2, clpz:clpz_neq(2, T_2) ; clpz:clpz_neq(2, 1 - 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(2), (integer(1), integer(2) -> 2 =\= 1 - 2 ; T_2 is 2, clpz:clpz_neq(T_2, 1 - 2))]).
+step((integer(1), integer(2) -> 2 =\= 1 - 2 ; T_2 is 2, clpz:clpz_neq(T_2, 1 - 2)),
+     control,
+     [],
+     [integer(1), integer(2), 2 =\= 1 - 2]).
+step(2 =\= 1 - 2, builtin, [], []).
 step(safe_from(2, [3], 3),
      rule(6),
      ['Row' = 2, 'Other' = 3, 'Rows' = [], 'Distance' = 3, 'NextDistance' = 4],
@@ -554,13 +852,23 @@ step(safe_from(2, [3], 3),
       4 is 3 + 1,
       safe_from(2, [], 4)]).
 step((integer(2) -> (integer(3), integer(3) -> 2 =\= 3 + 3 ; T_1 is 2, clpz:clpz_neq(T_1, 3 + 3)) ; integer(3), integer(3) -> T_1 is 3 + 3, clpz:clpz_neq(2, T_1) ; clpz:clpz_neq(2, 3 + 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(2), (integer(3), integer(3) -> 2 =\= 3 + 3 ; T_1 is 2, clpz:clpz_neq(T_1, 3 + 3))]).
+step((integer(3), integer(3) -> 2 =\= 3 + 3 ; T_1 is 2, clpz:clpz_neq(T_1, 3 + 3)),
+     control,
+     [],
+     [integer(3), integer(3), 2 =\= 3 + 3]).
+step(2 =\= 3 + 3, builtin, [], []).
 step((integer(2) -> (integer(3), integer(3) -> 2 =\= 3 - 3 ; T_2 is 2, clpz:clpz_neq(T_2, 3 - 3)) ; integer(3), integer(3) -> T_2 is 3 - 3, clpz:clpz_neq(2, T_2) ; clpz:clpz_neq(2, 3 - 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(2), (integer(3), integer(3) -> 2 =\= 3 - 3 ; T_2 is 2, clpz:clpz_neq(T_2, 3 - 3))]).
+step((integer(3), integer(3) -> 2 =\= 3 - 3 ; T_2 is 2, clpz:clpz_neq(T_2, 3 - 3)),
+     control,
+     [],
+     [integer(3), integer(3), 2 =\= 3 - 3]).
+step(2 =\= 3 - 3, builtin, [], []).
 step(safe_from(2, [], 4), fact(5), [], []).
 step(safe_diagonals([4, 1, 3]),
      rule(4),
@@ -574,13 +882,23 @@ step(safe_from(4, [1, 3], 1),
       2 is 1 + 1,
       safe_from(4, [3], 2)]).
 step((integer(4) -> (integer(1), integer(1) -> 4 =\= 1 + 1 ; T_1 is 4, clpz:clpz_neq(T_1, 1 + 1)) ; integer(1), integer(1) -> T_1 is 1 + 1, clpz:clpz_neq(4, T_1) ; clpz:clpz_neq(4, 1 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(4), (integer(1), integer(1) -> 4 =\= 1 + 1 ; T_1 is 4, clpz:clpz_neq(T_1, 1 + 1))]).
+step((integer(1), integer(1) -> 4 =\= 1 + 1 ; T_1 is 4, clpz:clpz_neq(T_1, 1 + 1)),
+     control,
+     [],
+     [integer(1), integer(1), 4 =\= 1 + 1]).
+step(4 =\= 1 + 1, builtin, [], []).
 step((integer(4) -> (integer(1), integer(1) -> 4 =\= 1 - 1 ; T_2 is 4, clpz:clpz_neq(T_2, 1 - 1)) ; integer(1), integer(1) -> T_2 is 1 - 1, clpz:clpz_neq(4, T_2) ; clpz:clpz_neq(4, 1 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(4), (integer(1), integer(1) -> 4 =\= 1 - 1 ; T_2 is 4, clpz:clpz_neq(T_2, 1 - 1))]).
+step((integer(1), integer(1) -> 4 =\= 1 - 1 ; T_2 is 4, clpz:clpz_neq(T_2, 1 - 1)),
+     control,
+     [],
+     [integer(1), integer(1), 4 =\= 1 - 1]).
+step(4 =\= 1 - 1, builtin, [], []).
 step(safe_from(4, [3], 2),
      rule(6),
      ['Row' = 4, 'Other' = 3, 'Rows' = [], 'Distance' = 2, 'NextDistance' = 3],
@@ -589,13 +907,23 @@ step(safe_from(4, [3], 2),
       3 is 2 + 1,
       safe_from(4, [], 3)]).
 step((integer(4) -> (integer(3), integer(2) -> 4 =\= 3 + 2 ; T_1 is 4, clpz:clpz_neq(T_1, 3 + 2)) ; integer(3), integer(2) -> T_1 is 3 + 2, clpz:clpz_neq(4, T_1) ; clpz:clpz_neq(4, 3 + 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(4), (integer(3), integer(2) -> 4 =\= 3 + 2 ; T_1 is 4, clpz:clpz_neq(T_1, 3 + 2))]).
+step((integer(3), integer(2) -> 4 =\= 3 + 2 ; T_1 is 4, clpz:clpz_neq(T_1, 3 + 2)),
+     control,
+     [],
+     [integer(3), integer(2), 4 =\= 3 + 2]).
+step(4 =\= 3 + 2, builtin, [], []).
 step((integer(4) -> (integer(3), integer(2) -> 4 =\= 3 - 2 ; T_2 is 4, clpz:clpz_neq(T_2, 3 - 2)) ; integer(3), integer(2) -> T_2 is 3 - 2, clpz:clpz_neq(4, T_2) ; clpz:clpz_neq(4, 3 - 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(4), (integer(3), integer(2) -> 4 =\= 3 - 2 ; T_2 is 4, clpz:clpz_neq(T_2, 3 - 2))]).
+step((integer(3), integer(2) -> 4 =\= 3 - 2 ; T_2 is 4, clpz:clpz_neq(T_2, 3 - 2)),
+     control,
+     [],
+     [integer(3), integer(2), 4 =\= 3 - 2]).
+step(4 =\= 3 - 2, builtin, [], []).
 step(safe_from(4, [], 3), fact(5), [], []).
 step(safe_diagonals([1, 3]),
      rule(4),
@@ -609,13 +937,23 @@ step(safe_from(1, [3], 1),
       2 is 1 + 1,
       safe_from(1, [], 2)]).
 step((integer(1) -> (integer(3), integer(1) -> 1 =\= 3 + 1 ; T_1 is 1, clpz:clpz_neq(T_1, 3 + 1)) ; integer(3), integer(1) -> T_1 is 3 + 1, clpz:clpz_neq(1, T_1) ; clpz:clpz_neq(1, 3 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(3), integer(1) -> 1 =\= 3 + 1 ; T_1 is 1, clpz:clpz_neq(T_1, 3 + 1))]).
+step((integer(3), integer(1) -> 1 =\= 3 + 1 ; T_1 is 1, clpz:clpz_neq(T_1, 3 + 1)),
+     control,
+     [],
+     [integer(3), integer(1), 1 =\= 3 + 1]).
+step(1 =\= 3 + 1, builtin, [], []).
 step((integer(1) -> (integer(3), integer(1) -> 1 =\= 3 - 1 ; T_2 is 1, clpz:clpz_neq(T_2, 3 - 1)) ; integer(3), integer(1) -> T_2 is 3 - 1, clpz:clpz_neq(1, T_2) ; clpz:clpz_neq(1, 3 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(3), integer(1) -> 1 =\= 3 - 1 ; T_2 is 1, clpz:clpz_neq(T_2, 3 - 1))]).
+step((integer(3), integer(1) -> 1 =\= 3 - 1 ; T_2 is 1, clpz:clpz_neq(T_2, 3 - 1)),
+     control,
+     [],
+     [integer(3), integer(1), 1 =\= 3 - 1]).
+step(1 =\= 3 - 1, builtin, [], []).
 step(safe_from(1, [], 2), fact(5), [], []).
 step(safe_diagonals([3]),
      rule(4),
@@ -646,13 +984,23 @@ step(safe_from(3, [1, 4, 2], 1),
       2 is 1 + 1,
       safe_from(3, [4, 2], 2)]).
 step((integer(3) -> (integer(1), integer(1) -> 3 =\= 1 + 1 ; T_1 is 3, clpz:clpz_neq(T_1, 1 + 1)) ; integer(1), integer(1) -> T_1 is 1 + 1, clpz:clpz_neq(3, T_1) ; clpz:clpz_neq(3, 1 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(1), integer(1) -> 3 =\= 1 + 1 ; T_1 is 3, clpz:clpz_neq(T_1, 1 + 1))]).
+step((integer(1), integer(1) -> 3 =\= 1 + 1 ; T_1 is 3, clpz:clpz_neq(T_1, 1 + 1)),
+     control,
+     [],
+     [integer(1), integer(1), 3 =\= 1 + 1]).
+step(3 =\= 1 + 1, builtin, [], []).
 step((integer(3) -> (integer(1), integer(1) -> 3 =\= 1 - 1 ; T_2 is 3, clpz:clpz_neq(T_2, 1 - 1)) ; integer(1), integer(1) -> T_2 is 1 - 1, clpz:clpz_neq(3, T_2) ; clpz:clpz_neq(3, 1 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(1), integer(1) -> 3 =\= 1 - 1 ; T_2 is 3, clpz:clpz_neq(T_2, 1 - 1))]).
+step((integer(1), integer(1) -> 3 =\= 1 - 1 ; T_2 is 3, clpz:clpz_neq(T_2, 1 - 1)),
+     control,
+     [],
+     [integer(1), integer(1), 3 =\= 1 - 1]).
+step(3 =\= 1 - 1, builtin, [], []).
 step(safe_from(3, [4, 2], 2),
      rule(6),
      ['Row' = 3, 'Other' = 4, 'Rows' = [2], 'Distance' = 2, 'NextDistance' = 3],
@@ -661,13 +1009,23 @@ step(safe_from(3, [4, 2], 2),
       3 is 2 + 1,
       safe_from(3, [2], 3)]).
 step((integer(3) -> (integer(4), integer(2) -> 3 =\= 4 + 2 ; T_1 is 3, clpz:clpz_neq(T_1, 4 + 2)) ; integer(4), integer(2) -> T_1 is 4 + 2, clpz:clpz_neq(3, T_1) ; clpz:clpz_neq(3, 4 + 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(4), integer(2) -> 3 =\= 4 + 2 ; T_1 is 3, clpz:clpz_neq(T_1, 4 + 2))]).
+step((integer(4), integer(2) -> 3 =\= 4 + 2 ; T_1 is 3, clpz:clpz_neq(T_1, 4 + 2)),
+     control,
+     [],
+     [integer(4), integer(2), 3 =\= 4 + 2]).
+step(3 =\= 4 + 2, builtin, [], []).
 step((integer(3) -> (integer(4), integer(2) -> 3 =\= 4 - 2 ; T_2 is 3, clpz:clpz_neq(T_2, 4 - 2)) ; integer(4), integer(2) -> T_2 is 4 - 2, clpz:clpz_neq(3, T_2) ; clpz:clpz_neq(3, 4 - 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(4), integer(2) -> 3 =\= 4 - 2 ; T_2 is 3, clpz:clpz_neq(T_2, 4 - 2))]).
+step((integer(4), integer(2) -> 3 =\= 4 - 2 ; T_2 is 3, clpz:clpz_neq(T_2, 4 - 2)),
+     control,
+     [],
+     [integer(4), integer(2), 3 =\= 4 - 2]).
+step(3 =\= 4 - 2, builtin, [], []).
 step(safe_from(3, [2], 3),
      rule(6),
      ['Row' = 3, 'Other' = 2, 'Rows' = [], 'Distance' = 3, 'NextDistance' = 4],
@@ -676,13 +1034,23 @@ step(safe_from(3, [2], 3),
       4 is 3 + 1,
       safe_from(3, [], 4)]).
 step((integer(3) -> (integer(2), integer(3) -> 3 =\= 2 + 3 ; T_1 is 3, clpz:clpz_neq(T_1, 2 + 3)) ; integer(2), integer(3) -> T_1 is 2 + 3, clpz:clpz_neq(3, T_1) ; clpz:clpz_neq(3, 2 + 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(2), integer(3) -> 3 =\= 2 + 3 ; T_1 is 3, clpz:clpz_neq(T_1, 2 + 3))]).
+step((integer(2), integer(3) -> 3 =\= 2 + 3 ; T_1 is 3, clpz:clpz_neq(T_1, 2 + 3)),
+     control,
+     [],
+     [integer(2), integer(3), 3 =\= 2 + 3]).
+step(3 =\= 2 + 3, builtin, [], []).
 step((integer(3) -> (integer(2), integer(3) -> 3 =\= 2 - 3 ; T_2 is 3, clpz:clpz_neq(T_2, 2 - 3)) ; integer(2), integer(3) -> T_2 is 2 - 3, clpz:clpz_neq(3, T_2) ; clpz:clpz_neq(3, 2 - 3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(2), integer(3) -> 3 =\= 2 - 3 ; T_2 is 3, clpz:clpz_neq(T_2, 2 - 3))]).
+step((integer(2), integer(3) -> 3 =\= 2 - 3 ; T_2 is 3, clpz:clpz_neq(T_2, 2 - 3)),
+     control,
+     [],
+     [integer(2), integer(3), 3 =\= 2 - 3]).
+step(3 =\= 2 - 3, builtin, [], []).
 step(safe_diagonals([1, 4, 2]),
      rule(4),
      ['Row' = 1, 'Rows' = [4, 2]],
@@ -695,13 +1063,23 @@ step(safe_from(1, [4, 2], 1),
       2 is 1 + 1,
       safe_from(1, [2], 2)]).
 step((integer(1) -> (integer(4), integer(1) -> 1 =\= 4 + 1 ; T_1 is 1, clpz:clpz_neq(T_1, 4 + 1)) ; integer(4), integer(1) -> T_1 is 4 + 1, clpz:clpz_neq(1, T_1) ; clpz:clpz_neq(1, 4 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(4), integer(1) -> 1 =\= 4 + 1 ; T_1 is 1, clpz:clpz_neq(T_1, 4 + 1))]).
+step((integer(4), integer(1) -> 1 =\= 4 + 1 ; T_1 is 1, clpz:clpz_neq(T_1, 4 + 1)),
+     control,
+     [],
+     [integer(4), integer(1), 1 =\= 4 + 1]).
+step(1 =\= 4 + 1, builtin, [], []).
 step((integer(1) -> (integer(4), integer(1) -> 1 =\= 4 - 1 ; T_2 is 1, clpz:clpz_neq(T_2, 4 - 1)) ; integer(4), integer(1) -> T_2 is 4 - 1, clpz:clpz_neq(1, T_2) ; clpz:clpz_neq(1, 4 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(4), integer(1) -> 1 =\= 4 - 1 ; T_2 is 1, clpz:clpz_neq(T_2, 4 - 1))]).
+step((integer(4), integer(1) -> 1 =\= 4 - 1 ; T_2 is 1, clpz:clpz_neq(T_2, 4 - 1)),
+     control,
+     [],
+     [integer(4), integer(1), 1 =\= 4 - 1]).
+step(1 =\= 4 - 1, builtin, [], []).
 step(safe_from(1, [2], 2),
      rule(6),
      ['Row' = 1, 'Other' = 2, 'Rows' = [], 'Distance' = 2, 'NextDistance' = 3],
@@ -710,13 +1088,23 @@ step(safe_from(1, [2], 2),
       3 is 2 + 1,
       safe_from(1, [], 3)]).
 step((integer(1) -> (integer(2), integer(2) -> 1 =\= 2 + 2 ; T_1 is 1, clpz:clpz_neq(T_1, 2 + 2)) ; integer(2), integer(2) -> T_1 is 2 + 2, clpz:clpz_neq(1, T_1) ; clpz:clpz_neq(1, 2 + 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(2), integer(2) -> 1 =\= 2 + 2 ; T_1 is 1, clpz:clpz_neq(T_1, 2 + 2))]).
+step((integer(2), integer(2) -> 1 =\= 2 + 2 ; T_1 is 1, clpz:clpz_neq(T_1, 2 + 2)),
+     control,
+     [],
+     [integer(2), integer(2), 1 =\= 2 + 2]).
+step(1 =\= 2 + 2, builtin, [], []).
 step((integer(1) -> (integer(2), integer(2) -> 1 =\= 2 - 2 ; T_2 is 1, clpz:clpz_neq(T_2, 2 - 2)) ; integer(2), integer(2) -> T_2 is 2 - 2, clpz:clpz_neq(1, T_2) ; clpz:clpz_neq(1, 2 - 2)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(2), integer(2) -> 1 =\= 2 - 2 ; T_2 is 1, clpz:clpz_neq(T_2, 2 - 2))]).
+step((integer(2), integer(2) -> 1 =\= 2 - 2 ; T_2 is 1, clpz:clpz_neq(T_2, 2 - 2)),
+     control,
+     [],
+     [integer(2), integer(2), 1 =\= 2 - 2]).
+step(1 =\= 2 - 2, builtin, [], []).
 step(safe_from(1, [], 3), fact(5), [], []).
 step(safe_diagonals([4, 2]),
      rule(4),
@@ -730,13 +1118,23 @@ step(safe_from(4, [2], 1),
       2 is 1 + 1,
       safe_from(4, [], 2)]).
 step((integer(4) -> (integer(2), integer(1) -> 4 =\= 2 + 1 ; T_1 is 4, clpz:clpz_neq(T_1, 2 + 1)) ; integer(2), integer(1) -> T_1 is 2 + 1, clpz:clpz_neq(4, T_1) ; clpz:clpz_neq(4, 2 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(4), (integer(2), integer(1) -> 4 =\= 2 + 1 ; T_1 is 4, clpz:clpz_neq(T_1, 2 + 1))]).
+step((integer(2), integer(1) -> 4 =\= 2 + 1 ; T_1 is 4, clpz:clpz_neq(T_1, 2 + 1)),
+     control,
+     [],
+     [integer(2), integer(1), 4 =\= 2 + 1]).
+step(4 =\= 2 + 1, builtin, [], []).
 step((integer(4) -> (integer(2), integer(1) -> 4 =\= 2 - 1 ; T_2 is 4, clpz:clpz_neq(T_2, 2 - 1)) ; integer(2), integer(1) -> T_2 is 2 - 1, clpz:clpz_neq(4, T_2) ; clpz:clpz_neq(4, 2 - 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(4), (integer(2), integer(1) -> 4 =\= 2 - 1 ; T_2 is 4, clpz:clpz_neq(T_2, 2 - 1))]).
+step((integer(2), integer(1) -> 4 =\= 2 - 1 ; T_2 is 4, clpz:clpz_neq(T_2, 2 - 1)),
+     control,
+     [],
+     [integer(2), integer(1), 4 =\= 2 - 1]).
+step(4 =\= 2 - 1, builtin, [], []).
 step(safe_from(4, [], 2), fact(5), [], []).
 step(safe_diagonals([2]),
      rule(4),

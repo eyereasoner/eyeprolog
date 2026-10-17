@@ -60,6 +60,13 @@ printf 'human(socrates).\nmortal(X) :- human(X).\n' |
   npx --yes eyeprolog --proof --goal 'mortal(socrates)' -
 ```
 
+Or play the answer out as a dialogue, with the proof checker as the opponent:
+
+```sh
+printf 'human(socrates).\nmortal(X) :- human(X).\n' |
+  npx --yes eyeprolog --dialogue --goal 'mortal(socrates)' -
+```
+
 ## Links
 
 - [The Art of EyeProlog](https://eyereasoner.github.io/eyeprolog/the-art-of-eyeprolog) — complete reference

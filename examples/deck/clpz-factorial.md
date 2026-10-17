@@ -72,15 +72,19 @@ also shows what the constraints became: when the program is loaded,
 
 ```text
 condition('C1', resolution, ok, 7).
-condition('C5', re_decision, ok, 18).
-steps(25).
-recomputed(18).
+condition('C5', re_decision, ok, 34).
+steps(41).
+recomputed(26).
+composed(8).
 trusted(0).
 verdict(checked).
 ```
 
 All seven factorial steps resolve against their clauses, and the checker
-recomputes the 18 arithmetic steps itself. Nothing is left on trust.
+recomputes the 26 arithmetic steps itself. The 8 `control` steps are the
+if-then-else tests the constraint library compiles each `#=` into: each rests
+on the branch it took, and the checker composes it from those goals. Nothing is
+left on trust.
 
 ---
 

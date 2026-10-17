@@ -116,16 +116,18 @@ values filled in.
 
 ```text
 condition('C1', resolution, ok, 7).
-condition('C5', re_decision, ok, 30).
-steps(37).
-recomputed(30).
+condition('C5', re_decision, ok, 40).
+steps(47).
+recomputed(34).
+composed(6).
 trusted(0).
 verdict(checked).
 ```
 
-All 7 rule steps resolve, and the checker recomputes all 30 constraint steps
-on their ground values: once the variables are bound, each global constraint
-is a plain test. Nothing is trusted.
+All 7 rule steps resolve, and the checker recomputes 34 constraint steps on
+their ground values: once the variables are bound, each global constraint is a
+plain test. The 6 `control` steps are the branches the compiled constraints
+took, each composed from the goals it rests on. Nothing is trusted.
 
 ---
 

@@ -106,19 +106,18 @@ the decision rests on is named.
 
 ```text
 condition('C1', resolution, ok, 8).
-condition('C5', re_decision, ok, 3).
-condition('C6', boundary_consistency, ok, 1).
-obligation(absent, theory_scoped, \+ member(data4, [data1, data2, data3])).
+condition('C5', re_decision, ok, 4).
+condition('C6', boundary_consistency, ok, 0).
 steps(12).
-trusted(1).
-verdict(checked_with_obligations).
+trusted(0).
+verdict(checked).
 ```
 
-Eight steps are replayed and three `member/2` calls recomputed. The one
-obligation is a negation: "agent 1 does not already have `data4`". A proof
-records that a search for something failed; it cannot replay a failure as a
-derivation. The checker did test that negation against the evidence it has (C6)
-and found nothing that contradicts it, but it remains a stated assumption.
+Eight steps are replayed and four recomputed: three `member/2` calls and one
+negation, "agent 1 does not already have `data4`", written
+`\+ member(data4, [data1, data2, data3])`. A failed search cannot be replayed
+as a derivation, but this one is about a list written out in the step, so the
+checker decides it again itself. Nothing is left as an assumption.
 
 ---
 

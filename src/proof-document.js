@@ -32,7 +32,16 @@ export class ProofCheckError extends Error {
 //
 // `goals` are the goals the run asked, which its claims answer (C7); a run of
 // forward rules asks none.
-export function checkedProofBlocks(program, claimed, { registry, proofDetail = 'abstract', solver = null, goals = [] } = {}) {
+export function checkedProofBlocks(program, claimed, options = {}) {
+  const { clauses, steps, report } = checkedProof(program, claimed, options);
+  if (!report.valid) throw new ProofCheckError(report);
+  return proofBlocks(program, clauses, steps);
+}
+
+// The proof of the facts a run claimed, as the clauses it cites and its steps,
+// with the report of checking it. A caller decides what a failed check means:
+// the proof writer refuses to write it, a dialogue lets the opponent object.
+export function checkedProof(program, claimed, { registry, proofDetail = 'abstract', solver = null, goals = [] } = {}) {
   const roots = [];
   const unexplained = [];
   const questions = goals.filter((goal) => typeof goal !== 'string');
@@ -51,6 +60,5 @@ export function checkedProofBlocks(program, claimed, { registry, proofDetail = '
 
   const records = clauses.map(([number, clause]) => clauseRecordTerm(number, clause));
   const report = checkProof(program, { claims: claimed, records, steps }, { goals });
-  if (!report.valid) throw new ProofCheckError(report);
-  return proofBlocks(program, clauses, steps);
+  return { clauses, steps, report };
 }

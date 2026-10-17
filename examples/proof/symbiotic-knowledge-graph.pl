@@ -207,6 +207,12 @@ clause(91,
 clause(92, decision_atom(iri('https://example.org/city/decision/accept'), accept), true).
 clause(93, decision_atom(iri('https://example.org/city/decision/reject'), reject), true).
 clause(94, auto_eligible(iri('https://example.org/city/evidence-kind/official-feed')), true).
+clause(95, replaceable(var('P')), v(status, var('P'))).
+clause(96,
+       authoritative_override(var('Evidence'), var('Predicate')),
+       (evidence_kind(var('Evidence'), var('Kind')),
+        auto_eligible(var('Kind')),
+        replaceable(var('Predicate')))).
 clause(98,
        opposite(iri('https://example.org/city/state/closed'), iri('https://example.org/city/state/open')),
        true).
@@ -543,9 +549,22 @@ step(auto_eligible(iri('https://example.org/city/evidence-kind/official-feed')),
      []).
 step(99 >= 95, builtin, [], []).
 step((\+ conflict_iri(iri('https://example.org/city/proposal/p1'), iri('https://example.org/city/route/7'), iri('https://example.org/vocab/status'), _Existing) ; authoritative_override(iri('https://example.org/city/evidence/transit-api-20260827'), iri('https://example.org/vocab/status'))),
-     builtin,
+     control,
      [],
-     []).
+     [authoritative_override(iri('https://example.org/city/evidence/transit-api-20260827'), iri('https://example.org/vocab/status'))]).
+step(authoritative_override(iri('https://example.org/city/evidence/transit-api-20260827'), iri('https://example.org/vocab/status')),
+     rule(96),
+     ['Evidence' = iri('https://example.org/city/evidence/transit-api-20260827'),
+      'Predicate' = iri('https://example.org/vocab/status'),
+      'Kind' = iri('https://example.org/city/evidence-kind/official-feed')],
+     [evidence_kind(iri('https://example.org/city/evidence/transit-api-20260827'), iri('https://example.org/city/evidence-kind/official-feed')),
+      auto_eligible(iri('https://example.org/city/evidence-kind/official-feed')),
+      replaceable(iri('https://example.org/vocab/status'))]).
+step(replaceable(iri('https://example.org/vocab/status')),
+     rule(95),
+     ['P' = iri('https://example.org/vocab/status')],
+     [v(status, iri('https://example.org/vocab/status'))]).
+step(v(status, iri('https://example.org/vocab/status')), fact(69), [], []).
 step(short(iri('https://example.org/city/proposal/p1'), p1), fact(125), [], []).
 step(proposal_state(p2, human_accepted),
      rule(146),
@@ -1016,7 +1035,6 @@ step(v(emergency_designation, iri('https://example.org/vocab/emergencyDesignatio
      fact(77),
      [],
      []).
-step(v(status, iri('https://example.org/vocab/status')), fact(69), [], []).
 step(v(cooling, iri('https://example.org/vocab/cooling')), fact(70), [], []).
 step(v(wheelchair_access, iri('https://example.org/vocab/wheelchairAccess')), fact(72), [], []).
 step(v(power, iri('https://example.org/vocab/power')), fact(76), [], []).

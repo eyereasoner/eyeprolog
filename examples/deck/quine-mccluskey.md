@@ -132,19 +132,20 @@ cover would be a counterexample, and the proof names the search for one.
 
 ```text
 condition('C1', resolution, ok, 145).
-condition('C5', re_decision, ok, 76).
+condition('C5', re_decision, ok, 80).
 condition('C6', boundary_consistency, ok, 1).
 obligation(asserted, theory_scoped, solution_cache(["00xx", "0xx1", "xx11"], ["00xx", "xx11"])).
 obligation(absent, theory_scoped, \+ covers_int("00xx", 4)).
 obligation(absent, theory_scoped, \+ smaller_cover(["00xx", "0xx1", "xx11"], [1, 3, 7, 11, 15], 1, A)).
-steps(243).
+steps(247).
 verified(145).
-recomputed(76).
+recomputed(78).
 trusted(22).
 verdict(checked_with_obligations).
 ```
 
-145 clause steps are replayed and 76 built-in steps recomputed. Twenty-two
+145 clause steps are replayed, 78 built-in steps recomputed, and 2
+if-then-else decisions composed from the branch they took. Twenty-two
 boundaries remain as obligations: the cached result the program `assertz`es,
 the `findall/3` collections, the safety facts that a pattern does **not**
 cover a zero row (such as `0100`, input 4), and the minimality claim itself,

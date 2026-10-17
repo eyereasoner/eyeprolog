@@ -121,6 +121,57 @@ export function whiteBoxCases() {
       },
     },
     {
+      name: 'an if-then-else is explained by the branch it took, and an else branch rests on the failed condition',
+      run: () => {
+        const source = [
+          'f(1).',
+          'r(X) :- ( f(3) -> X = a ; X = b ).',
+          's(X) :- ( f(X) ; X = 2 ).',
+          // A ground absence the libraries decide is recomputed, not trusted.
+          'w(X) :- ( 1 > 3 -> X = no ; X = yes ).',
+        ].join('\n');
+        const program = Program.parseSources([{ text: source, filename: 'control.pl' }], { sourceMetadata: true });
+        const prove = (goal) => publicApi.run(program, { goal, proof: true }).stdout;
+
+        const r = prove('r(X)');
+        assertIncludes(r, 'step((f(3) -> b = a ; b = b), control, [], [\\+ f(3), b = b]).', 'the else branch and why it was taken');
+        assertIncludes(r, 'step(\\+ f(3), absent, [], []).', 'the failed condition is a step of its own');
+        const report = checkProofDocument(program, r, { goals: ['r(X)'] });
+        assertEqual(report.valid, true, `the explained branch checks: ${verdict(report)}`);
+        assertEqual(report.composed, 1, 'the control step is composed from its uses');
+
+        // An else branch that does not say the condition failed is refused:
+        // otherwise any branch could be claimed.
+        const forged = r.replace('[\\+ f(3), b = b]', '[b = b]').replace(/^step\(\\\+ f\(3\).*$/m, '');
+        const forgedReport = checkProofDocument(program, forged, { goals: ['r(X)'] });
+        assertEqual(forgedReport.valid, false, 'an else branch without the failed condition');
+        assertIncludes(forgedReport.failures.map((failure) => failure.detail).join('\n'), 'control step does not follow from its uses', 'the forged branch');
+
+        assertIncludes(prove('s(X)'), 'step((f(1) ; 1 = 2), control, [], [f(1)]).', 'a disjunction rests on the branch it took');
+
+        const w = prove('w(X)');
+        const wReport = checkProofDocument(program, w, { goals: ['w(X)'] });
+        assertEqual(wReport.valid && wReport.trusted.length, 0, `nothing in w(yes) is trusted: ${verdict(wReport)}`);
+      },
+    },
+    {
+      name: "a '$VAR'(N) term reads back from an answer and a proof document as the term it is",
+      run: () => {
+        // Written as a letter, '$VAR'(0) reads back as a variable: a claim
+        // that changed meaning on the way, and a numbervars/3 step that no
+        // longer re-decides.
+        const source = [
+          'rule_text(because(p(X, Y), [q(X), r(Y)])).',
+          'shown(T) :- rule_text(T0), copy_term(T0, T), numbervars(T, 0, _).',
+        ].join('\n');
+        const program = Program.parseSources([{ text: source, filename: 'numbered.pl' }], { sourceMetadata: true });
+        const { stdout } = publicApi.run(program, { goal: 'shown(T)', proof: true });
+        assertIncludes(stdout, "shown(because(p('$VAR'(0), '$VAR'(1)), [q('$VAR'(0)), r('$VAR'(1))])).", 'the answer');
+        const report = checkProofDocument(program, stdout, { goals: ['shown(T)'] });
+        assertEqual(report.valid, true, `the document checks once read back: ${verdict(report)}`);
+      },
+    },
+    {
       // C1, C3, C5, C6 and C7 each catch a document the others accept. One
       // honest proof is altered once per condition, and each alteration must
       // be caught by the condition it targets -- and by that one alone.

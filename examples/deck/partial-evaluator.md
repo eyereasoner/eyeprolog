@@ -112,16 +112,17 @@ known variable. That is a negation, recorded as an `absent` step.
 
 ```text
 condition('C1', resolution, ok, 28).
-condition('C6', boundary_consistency, ok, 4).
+condition('C6', boundary_consistency, ok, 2).
 obligation(absent, theory_scoped, \+ known_var([bind(x, const(10))], y, A)).
-trusted(7).
+trusted(5).
 claims(4).
 verdict(checked_with_obligations).
 ```
 
-28 steps replay against the program. Seven negations cannot be replayed step
-by step: each says that some goal has *no* proof. They are listed as
-obligations. The checker still tested four of them against the evidence it had
+28 steps replay against the program, and the checker decides two ground
+negations again itself. Five negations remain: each says that some goal has
+*no* proof, for any value of its open variables. They are listed as
+obligations. The checker still tested two of them against the evidence it had
 and found none contradicted (C6), so the verdict is valid given those
 obligations.
 

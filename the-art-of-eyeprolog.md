@@ -1174,9 +1174,12 @@ against the clause it cites: the clause must exist, and with the recorded
 bindings it must yield exactly this conclusion from exactly these uses. Every
 claim needs a step, every use must resolve, and no conclusion may rest on
 itself. A `builtin` step cites no clause, so the checker recomputes it in a
-program that holds only the bundled libraries, and the result must agree.
-`absent`, `collected`, and `asserted` steps cannot be recomputed that way; they
-are reported as **trusted boundaries**.
+program that holds only the bundled libraries, and the result must agree. So is
+an `absent` step whose goal those libraries can decide, such as `\+ 1 > 3`. An
+absence of the program's own predicates, a `collected` step and an `asserted`
+step cannot be recomputed that way; they are reported as **trusted
+boundaries**. An if-then-else is recorded as the branch it took: its condition
+and then-goals, or `\+` of its condition and its else-goals.
 
 The report is itself a set of Prolog facts: one `condition/4` for each of the
 seven conditions C1–C7, the counts of verified, recomputed, and trusted steps,
@@ -1192,6 +1195,54 @@ not hold.
 A proof is also a design review: detours point at overgrown helpers, and a
 premise hidden inside a computed value should become a fact.
 
+### A proof as a dialogue
+
+A checked proof can also be read as an argument between two parties. In the
+dialogue logic of Paul Lorenzen and Kuno Lorenz, a proponent defends a claim
+and an opponent challenges everything that is not common ground; the claim
+holds when the proponent can answer every challenge. `--dialogue` plays each
+answer out that way, with the checker as the opponent:
+
+```sh
+eyeprolog --dialogue examples/dialogue/contract.pl
+```
+
+```text
+move(1, 1, proponent, claims(valid(c17))).
+move(1, 2, opponent, why(valid(c17))).
+move(1, 4, opponent, concedes(offer(c17, bob, ann))).
+move(1, 7, opponent, grants(\+ minor_party(c17))).
+outcome(1, valid(c17), won).
+obligation(1, \+ minor_party(c17)).
+```
+
+The opponent asks `why` of every derived goal, concedes facts, verifies what it
+can recompute, and grants what it can only trust. A won dialogue still rests
+on what was granted, and says so.
+
+An opponent can do one thing a checker cannot: bring evidence of its own.
+
+```sh
+eyeprolog --evidence examples/dialogue/evidence.pl examples/dialogue/contract.pl
+```
+
+```text
+move(1, 7, opponent, counters(\+ minor_party(c17), minor_party(c17), [born(ann, 2009)])).
+move(1, 8, proponent, retracts(valid(c17), rule(15))).
+move(1, 17, opponent, concedes(born(ann, 2009))).
+outcome(1, valid(c17), won).
+outcome(2, valid(c18), lost).
+```
+
+The absence the opponent had granted is refuted: Ann was a minor when she
+signed. The proponent retracts its defence and, by the formal rule of dialogue
+logic, may now use what the opponent asserted. It defends `c17` again through
+Ann's ratification at nineteen, built on the opponent's own evidence, but has
+nothing left for `c18`. Negation as failure is the place where a closed-world
+proof is open to challenge, and the dialogue makes that place visible.
+[examples/dialogical-reasoning.pl](examples/dialogical-reasoning.pl) writes
+the same game as an ordinary program, so the moves can be read in Prolog.
+
 **Exercises.**
 
 1. Run `--proof` on `examples/socrates.pl` and read each `step/4` downward
@@ -1202,6 +1253,9 @@ premise hidden inside a computed value should become a fact.
    confirm that the proof records one step for it.
 4. Add a `\+` goal to a rule and find the `absent` step in its proof. Why is it
    reported as a trusted boundary?
+5. Run `--dialogue` on `examples/dialogue/contract.pl`, then add
+   `ratified(c18, dave, 2029).` to the program and run it with
+   `--evidence examples/dialogue/evidence.pl`. Which moves change, and why?
 
 ## 12. Integrity checks as ordinary predicates
 
@@ -7934,6 +7988,8 @@ asked.
 | `--proof-detail abstract\|expanded` | Stop proofs at bundled library predicates, or explain through them; implies `--proof` |
 | `--check-proof File` | Check a saved proof against the input program without proof search; write `condition/4`, `failure/3`, `obligation/3`, and `verdict/1` facts; `-` reads the proof from stdin; exit `2` when the proof is not valid. With `--goal`, the goals the proof answers |
 | `--strict-proof` | With `--check-proof`, forbid trusted boundaries |
+| `-d`, `--dialogue` | Play each answer out as a dialogue, the checker as opponent; write `move/4`, `outcome/3`, and `obligation/2` facts |
+| `--evidence File` | Give the dialogue's opponent the clauses of `File`, to counter an absence it can refute; implies `--dialogue` |
 | `--json` | With `--check-proof`, write the report as JSON |
 | `-q`, `--quads` | Run embedded quad tests and fail if any do not hold |
 | `--quiet` | Suppress answer terms; keep Prolog output and diagnostics |
@@ -8183,9 +8239,9 @@ console.log(report.passed, report.failed, report.undecided, report.stdout);
 </figure>
 
 The [examples directory](https://github.com/eyereasoner/eyeprolog/tree/main/examples/) is the book's executable companion. Its
-top-level directory contains **238 self-contained runnable programs**. Every
+top-level directory contains **239 self-contained runnable programs**. Every
 program has an exact answer file under
-[examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **238 programs** have a checked
+[examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **239 programs** have a checked
 explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/), with the result of that
 check under [examples/check](https://github.com/eyereasoner/eyeprolog/tree/main/examples/check/). So each example comes in three
 parts, making three different claims:
@@ -8265,6 +8321,7 @@ A selection, grouped by theme:
   [access-control-policy](https://github.com/eyereasoner/eyeprolog/blob/main/examples/access-control-policy.pl),
   [gdpr-compliance](https://github.com/eyereasoner/eyeprolog/blob/main/examples/gdpr-compliance.pl),
   [defeasible-reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/defeasible-reasoning.pl),
+  [dialogical-reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dialogical-reasoning.pl),
   [trust-flow-provenance-threshold](https://github.com/eyereasoner/eyeprolog/blob/main/examples/trust-flow-provenance-threshold.pl).
 - **RDF 1.2.**
   [rdf12-triple-term](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-triple-term.pl),

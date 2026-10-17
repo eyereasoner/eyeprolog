@@ -109,7 +109,12 @@ step(reserve_aware_battery_limit_kW(campus_interval_17, 240.0),
 step(battery_max_discharge_kW(campus_interval_17, 320.0), fact(5), [], []).
 step(required_battery_reserve_kW(campus_interval_17, 80.0), fact(6), [], []).
 step(240.0 is 320.0 - 80.0, builtin, [], []).
-step((350.0 =< 240.0 -> 240.0 = 350.0 ; 240.0 = 240.0), builtin, [], []).
+step((350.0 =< 240.0 -> 240.0 = 350.0 ; 240.0 = 240.0),
+     control,
+     [],
+     [\+ 350.0 =< 240.0, 240.0 = 240.0]).
+step(\+ 350.0 =< 240.0, absent, [], []).
+step(240.0 = 240.0, builtin, [], []).
 step(gridImport_kW(campus_interval_17, 110.0),
      rule(19),
      ['Site' = campus_interval_17, 'Import' = 110.0],

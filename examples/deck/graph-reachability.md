@@ -93,17 +93,17 @@ the search for a route from `b` to `e` finished without one.
 
 ```text
 condition('C1', resolution, ok, 19).
-condition('C6', boundary_consistency, ok, 6).
+condition('C5', re_decision, ok, 6).
 obligation(absent, theory_scoped, \+ is_reachable(b, e)).
-trusted(7).
+trusted(1).
 verdict(checked_with_obligations).
 ```
 
-All 19 rule and fact steps replay. The seven `absent` steps (six "not visited
-yet" tests and the one unreachable pair) cannot be re-proved step by step, so
-the check lists them as obligations: they hold as long as the program's
-`edge/2` facts are complete. For six of them it found evidence and nothing
-contradicted them.
+All 19 rule and fact steps replay. The six "not visited yet" tests are about
+lists written out in their steps, so the checker decides them again itself.
+The one unreachable pair, `\+ is_reachable(b, e)`, is different: it says the
+whole program has no path, which no single step can show. It is the one
+obligation, and it holds as long as the program's `edge/2` facts are complete.
 
 ---
 

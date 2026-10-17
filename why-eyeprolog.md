@@ -267,10 +267,10 @@ they were trusted. They are named individually in the checker, counted
 separately in the result, and reported as what the check still rests on rather
 than what it establishes.
 
-The packaged corpus makes the proportion visible. Every one of the 236
-examples carries a proof: 212365 steps, of which 156674 are verified against
-their source clause, 54753 are recomputed independently, 10 are carried by the
-goals they wrap, and 928 — 0.4% — remain obligations, each one named; 516
+The packaged corpus makes the proportion visible. Every one of the 239
+examples carries a proof: 213091 steps, of which 156944 are verified against
+their source clause, 55460 are recomputed independently, 220 are carried by the
+goals they wrap, and 467 — 0.2% — remain obligations, each one named; 53
 trusted boundaries are confronted with evidence and none is contradicted. `npm test` re-checks all of them on every run, and the
 proof directory is read from disk rather than from a list, so a document cannot
 be added without being checked. An unverified proof is worse than none, because

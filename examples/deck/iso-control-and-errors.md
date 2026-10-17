@@ -106,15 +106,18 @@ catch produced `rejected`, not the thrown exception inside it.
 
 ```text
 condition('C1', resolution, ok, 11).
-condition('C5', re_decision, ok, 2).
+condition('C5', re_decision, ok, 7).
+obligation(absent, theory_scoped, \+ call(route(antwerp, paris))).
 obligation(builtin, theory_scoped, catch((require_route(antwerp, paris), rejected = accepted), no_route(antwerp, paris), rejected = rejected)).
 verdict(checked_with_obligations).
 ```
 
-Eleven steps replay against their clauses. Three control steps, the two
-if-then-else decisions and the `catch/3`, depend on the program's own
-`route/2` facts, so the checker cannot recompute them in isolation. They
-are recorded as **obligations**: trusted boundaries named in the report.
+Eleven steps replay against their clauses. The two if-then-else decisions are
+recorded as the branch each took and composed from its goals. The branch taken
+when there is no route rests on `\+ call(route(antwerp, paris))`, which depends
+on the program's own `route/2` facts, and so does the `catch/3`: the checker
+cannot recompute them in isolation. They are recorded as **obligations**:
+trusted boundaries named in the report.
 
 ---
 

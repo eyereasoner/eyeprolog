@@ -103,17 +103,17 @@ meets the deadline, so `Fast` is 1.
 # The check
 
 ```text
-condition('C5', re_decision, ok, 23).
+condition('C5', re_decision, ok, 25).
 obligation(builtin, stateful, fd_inf(A, 2)).
 obligation(builtin, stateful, fd_dom(A, 2..4 \/ 7)).
 trusted(5).
 verdict(checked_with_obligations).
 ```
 
-All allocation steps are verified or recomputed. The five `fd_*` steps read
-the solver's internal state for a variable that is never bound, so the checker
-cannot recompute them. It keeps them as **obligations**: the domain answer is
-as good as the constraint store that produced it.
+All allocation steps are verified, recomputed or composed. The five `fd_*`
+steps read the solver's internal state for a variable that is never bound, so
+the checker cannot recompute them. It keeps them as **obligations**: the
+domain answer is as good as the constraint store that produced it.
 
 ---
 

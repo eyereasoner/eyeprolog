@@ -2,14 +2,13 @@ condition('C1', resolution, ok, 8).
 condition('C2', well_founded, ok, 12).
 condition('C3', justification, ok, 12).
 condition('C4', coverage, ok, 14).
-condition('C5', re_decision, ok, 3).
-condition('C6', boundary_consistency, ok, 1).
+condition('C5', re_decision, ok, 4).
+condition('C6', boundary_consistency, ok, 0).
 condition('C7', relevance, ok, 13).
-obligation(absent, theory_scoped, \+ member(data4, [data1, data2, data3])).
 steps(12).
 verified(8).
-recomputed(3).
+recomputed(4).
 composed(0).
-trusted(1).
+trusted(0).
 claims(1).
-verdict(checked_with_obligations).
+verdict(checked).

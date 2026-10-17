@@ -102,17 +102,19 @@ The rest of the route is the same rule, one leg at a time.
 
 ```text
 condition('C1', resolution, ok, 42).
-condition('C5', re_decision, ok, 31).
-condition('C6', boundary_consistency, ok, 7).
-obligation(absent, theory_scoped, \+ member(res_airport_309, [res_airport_310])).
-trusted(7).
+condition('C5', re_decision, ok, 38).
+condition('C6', boundary_consistency, ok, 0).
+recomputed(38).
+trusted(0).
 claims(3).
-verdict(checked_with_obligations).
+verdict(checked).
 ```
 
-42 steps replay and 31 arithmetic steps are recomputed. The seven "not yet
-visited" tests are negations, so they are reported as obligations. The checker
-tested all seven against the evidence it had, and none was contradicted.
+42 steps replay against their clauses. The other 38 are recomputed: the
+arithmetic, and the seven "not yet visited" tests such as
+`\+ member(res_airport_309, [res_airport_310])`. Each of those is about a
+list written out in the step, so the checker decides it again itself rather
+than taking it on trust. Nothing is left as an obligation.
 
 ---
 

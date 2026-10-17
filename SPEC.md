@@ -41,9 +41,10 @@ of them.
 8. [Proof Documents](#8-proof-documents)
 9. [Proof Checking](#9-proof-checking)
 10. [Check Reports](#10-check-reports)
-11. [Command Line](#11-command-line)
-12. [Security Considerations](#12-security-considerations)
-13. [Conformance](#13-conformance)
+11. [Dialogues](#11-dialogues)
+12. [Command Line](#12-command-line)
+13. [Security Considerations](#13-security-considerations)
+14. [Conformance](#14-conformance)
 - [Appendix A. Document Grammar](#appendix-a-document-grammar)
 - [Appendix B. Example](#appendix-b-example)
 - [Appendix C. Implementation Notes](#appendix-c-implementation-notes)
@@ -117,7 +118,7 @@ A clause number therefore depends only on the source text, never on what
 
 A run asks a sequence of goals. They are, in order of precedence:
 
-1. the goals given on the command line with `--goal` (Section 11) or to the
+1. the goals given on the command line with `--goal` (Section 12) or to the
    embedding API;
 2. otherwise, the **declared goals** of the sources: each comment line of the
    form `%% ?- Goal.`, whose goal MAY continue on following lines that begin
@@ -159,7 +160,9 @@ the program's operator table and its `double_quotes` flag in force:
   as a double-quoted string, and a list ending in such a list is written
   `[a, b|"cd"]`;
 - a variable is written with its name: the name the program or document gave
-  it, or a name the engine minted.
+  it, or a name the engine minted;
+- a term `'$VAR'(N)` is written as itself, not as the variable letter
+  `writeq/1` would print for it: the letter would read back as a variable.
 
 The written text of a term MUST read back, with the same operators and flags,
 as a term identical to it up to the renaming of variables.
@@ -201,6 +204,17 @@ claim is recorded.
 A goal `Module:Goal` is replayed as `Goal` in `Module`, as the solver runs it:
 in a bundled library under `abstract` detail as one `builtin` step for the
 qualified goal, and otherwise as a `control` step whose use is `Goal`.
+
+A disjunction, an if-then, an if-then-else, a soft-cut and `call/1` are
+replayed branch by branch and recorded as a `control` step resting on the
+branch they took. The condition of an if-then-else commits to its first
+solution, as execution does. A construct that took its else branch rests on
+`\+ C`, recorded as an `absent` step, and then on the goals of `E`: the else
+branch is only taken when the condition has no solution. A condition that
+tests instantiation (`var/1`, `nonvar/1`, the type tests, `==/2`, `\==/2`,
+the standard order comparisons, `compare/3`, `\+/1`) on a term that is not
+yet ground is not split: its truth when tried can differ from its truth once
+the derivation is complete, and the construct is one `builtin` step.
 
 A derivation deeper than the replay's nesting budget continues as a **chain**:
 each level commits to the first clause whose head matches the goal and whose
@@ -378,14 +392,17 @@ order, to one of the **alternatives** of its goal:
 | --- | --- |
 | `call(G)`, `once(G)`, `ignore(G)`, `catch(G, C, R)`, `M:G` | the conjuncts of `G` |
 | `(C -> T)`, `(C *-> T)` | the conjuncts of `C`, then those of `T` |
-| `(C -> T ; E)`, `(C *-> T ; E)` | the conjuncts of `C`, then those of `T`; or the conjuncts of `E` |
+| `(C -> T ; E)`, `(C *-> T ; E)` | the conjuncts of `C`, then those of `T`; or `\+ C`, then the conjuncts of `E` |
 | `(A ; B)` | the conjuncts of `A`; or the conjuncts of `B` |
 
 A `builtin` step with uses whose goal has alternatives and cannot be
 re-decided is held to the same rule, as written by earlier versions.
 
-`absent`, `collected` and `asserted` steps are trusted boundaries of their own
-kind, with the reason `theory_scoped`. When trusted boundaries are forbidden
+An `absent` step whose goal is ground and whose inner goal is not one that
+cannot be re-decided is re-decided as a `builtin` step is: when the re-decision
+agrees, the step is checked rather than trusted, and when it disagrees, C5
+fails. Otherwise `absent`, `collected` and `asserted` steps are trusted
+boundaries of their own kind, with the reason `theory_scoped`. When trusted boundaries are forbidden
 ("strict"), each trusted boundary, of any kind, fails C5.
 
 ### 9.7 C6 Boundary consistency
@@ -454,7 +471,7 @@ reachable from a conjunct of a claim through the conjuncts of uses.
 | C2 well_founded | steps |
 | C3 justification | steps |
 | C4 coverage | claims plus the uses of all steps |
-| C5 re_decision | `builtin` steps that agreed plus `control` steps that composed |
+| C5 re_decision | `builtin` and `absent` steps that agreed plus `control` steps that composed |
 | C6 boundary_consistency | boundaries decided |
 | C7 relevance | claims plus steps |
 
@@ -525,7 +542,70 @@ The JSON form of a report is an object with `valid` (boolean), `steps`,
 `{id, name, covered, failed}`), where `conclusion` is the written text of the
 term concerned.
 
-## 11. Command Line
+## 11. Dialogues
+
+A proof can be read as one side of an argument. In the dialogue logic of
+Lorenzen and Lorenz, a **proponent** asserts a claim and an **opponent** may
+challenge every assertion that is not common ground; the proponent answers a
+challenge by naming what the assertion follows from, and the claim holds when
+the proponent can answer every challenge. A checked proof is a defence of
+this kind: the proponent's answers are its steps, and the opponent is the
+checker (Section 9).
+
+### 11.1 Moves
+
+A **dialogue** is held for each answer of a run, in answer order, numbered from
+1. Its first move is the proponent's `claims(Claim)`. The steps of the run's
+proof (Section 8.3) are then visited from the claim, depth first and left to
+right through the uses of each step, and each goal visited gives these moves:
+
+| Goal's step | Moves |
+| --- | --- |
+| `rule(N)` or `control` | the opponent's `why(G)`, then the proponent's `because(G, By, Uses)` |
+| `fact(N)`, or no step (a use given by a fact) | the opponent's `concedes(G)` |
+| `builtin` or `absent` that the check re-decided | the opponent's `verifies(G)` |
+| `builtin` or `absent` the check trusted, `collected`, `asserted` | the opponent's `grants(G)` |
+| `unproven` | the proponent's `gives_up(G)` |
+
+A goal already visited in the same dialogue gives only the opponent's
+`concedes(G)`: it has been established. A failure the check recorded for a
+step's conclusion (Section 10) gives the opponent's
+`objects(G, Condition, Detail)` after the moves of that step, and ends the
+dialogue, lost.
+
+### 11.2 Evidence
+
+The opponent MAY hold **evidence**: clauses added to the program, which the
+proponent did not use. Before it grants or verifies an `absent` step `\+ G`,
+the opponent then solves `G` in the program with its evidence. When `G` has a
+solution, the opponent's move is `counters(\+ G, Instance, Used)`, where
+`Instance` is the first solution and `Used` the list of the evidence's clauses
+in the first proof of `Instance`, in the order that proof visits them; the
+defence is lost.
+
+A countered defence is followed by the proponent's `retracts(Claim, By)`, where
+`By` is the justification of the claim's step. Under the formal rule of
+dialogue logic the proponent MAY then use what the opponent asserted: the run
+is made again on the program with the evidence, and when the claim is among
+its answers, its dialogue continues with the moves of that run's proof, which
+no evidence counters. Otherwise the proponent's last move is
+`gives_up(Claim)`.
+
+### 11.3 The dialogue document
+
+A dialogue document holds, for each dialogue in order, one fact per line:
+
+1. `move(Dialogue, N, Speaker, Act)` for each move, `N` counting from 1 and
+   `Speaker` being `proponent` or `opponent`;
+2. `outcome(Dialogue, Claim, Result)`, `Result` being `won` when no move lost
+   the defence and `lost` otherwise;
+3. `obligation(Dialogue, Goal)` for each `grants(Goal)` of a won dialogue's
+   final defence, in move order: what the proponent's win still rests on.
+
+Terms are written as in Section 6.1. A dialogue document is ordinary data: a
+program MAY load it as facts.
+
+## 12. Command Line
 
 ```text
 eyeprolog [OPTION ...] [FILE-OR-URL ... | -]
@@ -543,10 +623,13 @@ The options that concern this document are:
 | `--strict-proof` | With `--check-proof`, forbid trusted boundaries. |
 | `--json` | With `--check-proof`, print the report as JSON. |
 | `--quiet` | With `--check-proof`, print only the `verdict/1` fact. |
+| `-d`, `--dialogue` | Print the dialogue document (Section 11) instead of the answers. |
+| `--evidence FILE` | Give the opponent the clauses of `FILE` as evidence (Section 11.2); implies `--dialogue`. |
 | `--iso-strict`, `--no-autoload` | Select the language profile (Section 3). |
 | `-h`, `--help`, `-v`, `--version` | Print the usage, or the version. |
 
-`--check-proof` MUST NOT be combined with `--proof` or `--quads`, and `--json`
+`--dialogue` MUST NOT be combined with `--check-proof`, `--quads` or
+`--iso-strict`. `--check-proof` MUST NOT be combined with `--proof` or `--quads`, and `--json`
 and `--strict-proof` need `--check-proof`. With `--check-proof -` the proof is
 read from standard input, so the program MUST be named as a file:
 
@@ -566,7 +649,7 @@ goals, the command line MUST say how to check it instead.
 
 A program MAY choose its own exit status with `halt/1`.
 
-## 12. Security Considerations
+## 13. Security Considerations
 
 A **program** is Prolog code and runs with the privileges of whoever runs it;
 it MAY read and write files, open sockets and run initialization goals. Only
@@ -587,19 +670,19 @@ to the checker (Section 9.10). It does not establish that the program is
 correct or that the claims are all its answers, and a proof with obligations
 holds only conditional on them.
 
-## 13. Conformance
+## 14. Conformance
 
 A conforming **reasoner** implements Sections 3 to 8, produces answers and
 proof documents in the written form of Section 6, and checks every proof it
 produces as Section 7.1 requires. A conforming **checker**
 implements Sections 8 to 10 and does not depend on a reasoner. For the same
 program and goals, a conforming reasoner and checker MUST produce the same
-answers, proof documents and reports as eyeprolog 1.6.33, byte for byte,
+answers, proof documents, reports and dialogue documents as eyeprolog 1.6.42, byte for byte,
 except for the `Detail` texts of failures (Section 10) and where the host's
 floating-point library functions differ in the last digit.
 
 The repository's examples, with their saved answers (`examples/output/`),
-proofs (`examples/proof/`) and reports (`examples/check/`), test this on 236
+proofs (`examples/proof/`) and reports (`examples/check/`), test this on 239
 programs, each with its proof; `npm test` regenerates and re-checks every one of them, as well as
 the proof cases of the conformance suite in `test/conformance/proofs/`.
 
@@ -721,7 +804,8 @@ implements this document, not requirements on other implementations.
 | [src/result-format.js](src/result-format.js) | Writing answers, clause records and steps (Sections 6, 8) |
 | [src/proof-document.js](src/proof-document.js) | Checking a run's own proof before it is written (Section 7.1) |
 | [src/check-proof.js](src/check-proof.js) | Reading and checking proof documents and writing reports, with no search of the program (Sections 9, 10) |
-| [src/cli.js](src/cli.js) | The command line (Section 11) |
+| [src/dialogue.js](src/dialogue.js) | Playing a checked proof out as a dialogue (Section 11) |
+| [src/cli.js](src/cli.js) | The command line (Section 12) |
 | [test/run-proof-checking.mjs](test/run-proof-checking.mjs) | Re-checking every packaged proof against its saved report |
 
 **The proof is a replay, not a trace.** The engine answers goals without

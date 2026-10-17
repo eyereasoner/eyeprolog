@@ -216,25 +216,28 @@ the program themselves, with a different copy of the checker if they like.
 
 ## 08 — Catalogue: the corpus
 
-The pattern is not aspirational here. Every one of the **236 examples** ships
+The pattern is not aspirational here. Every one of the **239 examples** ships
 with its answer, the proof of that answer, and the result of checking the
 proof, and `npm test` re-checks all of them on every run:
 
 | | |
 | --- | ---: |
-| examples | 236 |
-| packaged proofs | 236 |
-| packaged check results | 236 |
-| recorded steps | 212365 |
-| verified against a source clause | 156674 |
-| recomputed independently | 54753 |
-| carried by the goal they wrap | 10 |
-| trusted boundaries confronted with evidence | 516 |
-| remaining obligations | 928 (0.4%) |
+| examples | 239 |
+| packaged proofs | 239 |
+| packaged check results | 239 |
+| recorded steps | 213091 |
+| verified against a source clause | 156944 |
+| recomputed independently | 55460 |
+| carried by the goal they wrap | 220 |
+| trusted boundaries confronted with evidence | 53 |
+| remaining obligations | 467 (0.2%) |
 
 Each obligation names the conclusion it stands for, so the residue can be read
-rather than only counted. Two thirds of it is one thing: a `\+` step claims a
-goal has no proof, and no recorded use can establish an absence.
+rather than only counted. Two fifths of it is one thing: a `\+` step claims a
+goal of the program has no proof, and no recorded use can establish an
+absence. An absence the bundled libraries can decide, such as
+`\+ member(b, "a")`, is recomputed instead. Most of the rest are aggregates
+over the program, such as `countall/2` and `setof/3`, and character I/O.
 
 The proof directory is read from disk rather than from a list, so a document
 cannot be added without being checked. An unverified proof is worse than none,

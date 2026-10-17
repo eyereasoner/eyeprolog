@@ -68,13 +68,26 @@ step([0, 1, 3] ins 0..3, builtin, [], []).
 step(lex_chain([[0, 1], [1, 3]]), builtin, [], []).
 step(serialized([0, 1, 3], [1, 2, 1]), builtin, [], []).
 step((integer(1) -> (integer(0) -> 1 >= 0 + 1 ; T_1 is 1, clpz:clpz_geq(T_1, 0 + 1)) ; integer(0) -> T_1 is 0 + 1, clpz:clpz_geq(1, T_1) ; clpz:clpz_geq(1, 0 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(1), (integer(0) -> 1 >= 0 + 1 ; T_1 is 1, clpz:clpz_geq(T_1, 0 + 1))]).
+step(integer(1), builtin, [], []).
+step((integer(0) -> 1 >= 0 + 1 ; T_1 is 1, clpz:clpz_geq(T_1, 0 + 1)),
+     control,
+     [],
+     [integer(0), 1 >= 0 + 1]).
+step(integer(0), builtin, [], []).
+step(1 >= 0 + 1, builtin, [], []).
 step((integer(3) -> (integer(1) -> 3 >= 1 + 1 ; T_2 is 3, clpz:clpz_geq(T_2, 1 + 1)) ; integer(1) -> T_2 is 1 + 1, clpz:clpz_geq(3, T_2) ; clpz:clpz_geq(3, 1 + 1)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), (integer(1) -> 3 >= 1 + 1 ; T_2 is 3, clpz:clpz_geq(T_2, 1 + 1))]).
+step(integer(3), builtin, [], []).
+step((integer(1) -> 3 >= 1 + 1 ; T_2 is 3, clpz:clpz_geq(T_2, 1 + 1)),
+     control,
+     [],
+     [integer(1), 3 >= 1 + 1]).
+step(3 >= 1 + 1, builtin, [], []).
 step(labeling([ff], [0, 1, 3]), builtin, [], []).
 step(advanced_clpz(cardinality, assignment([1, 1, 3], 13, >)),
      rule(3),
@@ -129,11 +142,14 @@ step(advanced_clpz(circuit, successors([2, 3, 4, 1])),
 step([2, 3, 4, 1] = [2, 3, 4, 1], builtin, [], []).
 step(circuit([2, 3, 4, 1]), builtin, [], []).
 step((integer(2) -> 2 =:= 2 ; true, var(2) -> 2 = 2 ; Var_3 = 2, clpz:clpz_equal(2, Var_3)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(2), 2 =:= 2]).
+step(integer(2), builtin, [], []).
+step(2 =:= 2, builtin, [], []).
 step((integer(3) -> 3 =:= 3 ; true, var(3) -> 3 = 3 ; Var_4 = 3, clpz:clpz_equal(3, Var_4)),
-     builtin,
+     control,
      [],
-     []).
+     [integer(3), 3 =:= 3]).
+step(3 =:= 3, builtin, [], []).
 step(labeling([ff], [2, 3, 4, 1]), builtin, [], []).
