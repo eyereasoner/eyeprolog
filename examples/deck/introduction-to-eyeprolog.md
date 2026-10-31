@@ -166,7 +166,7 @@ Boolean constraints are compact when the domain is “on/off”, “selected/not
 
 ## RDF and knowledge graphs
 
-EyeProlog pairs naturally with RDF through `rdf-prolog-interchange`:
+EyeProlog pairs naturally with RDF through `rdf-interchange`:
 
 ```text
 RDF dataset

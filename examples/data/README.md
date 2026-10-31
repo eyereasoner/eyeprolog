@@ -4,7 +4,7 @@ This directory contains source and materialized data that support runnable examp
 
 ## Symbiotic Knowledge Graphs
 
-The heatwave-response example uses [`rdf-prolog-interchange`](https://github.com/eyereasoner/rdf-prolog-interchange) as its RDF boundary:
+The heatwave-response example uses [`rdf-interchange`](https://github.com/eyereasoner/rdf-interchange) as its RDF boundary:
 
 ```text
 symbiotic-knowledge-graph-input.nq

@@ -18,7 +18,7 @@ Should a traveller cross the bridge, avoid it, or check manually?
 
 This is one of a family of RDF 1.2 examples. RDF data arrives as
 `rdf(Subject, Predicate, Object, Graph)` facts, as produced by
-[rdf-prolog-interchange](https://github.com/eyereasoner/rdf-prolog-interchange),
+[rdf-interchange](https://github.com/eyereasoner/rdf-interchange),
 and the decision is written back in the same shape.
 
 ---

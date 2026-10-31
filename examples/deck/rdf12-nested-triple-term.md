@@ -17,7 +17,7 @@ Which relationship sits at the bottom of a review of a claim?
 
 This is one of a family of RDF 1.2 examples. RDF data arrives as
 `rdf(Subject, Predicate, Object, Graph)` facts, as produced by
-[rdf-prolog-interchange](https://github.com/eyereasoner/rdf-prolog-interchange),
+[rdf-interchange](https://github.com/eyereasoner/rdf-interchange),
 and results are printed in the same shape.
 
 ---

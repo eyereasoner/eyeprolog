@@ -66,7 +66,7 @@ family of international standards, while RDF belongs to the W3C standards
 ecosystem, so a rule language for RDF can itself be a standard.
 
 EyeProlog and
-[`rdf-prolog-interchange`](https://github.com/eyereasoner/rdf-prolog-interchange)
+[`rdf-interchange`](https://github.com/eyereasoner/rdf-interchange)
 connect those two standardized worlds through a deliberately simple pipeline:
 
 ```text

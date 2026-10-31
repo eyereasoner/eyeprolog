@@ -17,7 +17,7 @@ Who is an ancestor of whom, according to the `family` graph?
 
 This is one of a family of RDF 1.2 examples. RDF data arrives as
 `rdf(Subject, Predicate, Object, Graph)` facts, as produced by
-[rdf-prolog-interchange](https://github.com/eyereasoner/rdf-prolog-interchange).
+[rdf-interchange](https://github.com/eyereasoner/rdf-interchange).
 In a TriG dataset, the fourth argument names the graph that holds each triple.
 
 ---

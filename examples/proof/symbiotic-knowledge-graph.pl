@@ -29,10 +29,10 @@ knowledge_exchange(machine_to_human, recommendation(after_review, riverside, ope
 knowledge_exchange(rdf_to_prolog, ordinary_rdf4_facts).
 knowledge_exchange(prolog_to_rdf, materialized_ground_rdf4).
 pipeline_step(1, 'RDF 1.2 N-Quads: named graphs keep source and governance boundaries explicit').
-pipeline_step(2, 'rdf-prolog-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver').
+pipeline_step(2, 'rdf-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver').
 pipeline_step(3, 'EyeProlog: ISO Prolog rules validate candidates, apply review policy, and derive actions').
 pipeline_step(4, 'EyeProlog: result_rdf/4 materializes accepted knowledge and decisions as ground RDF-shaped facts').
-pipeline_step(5, 'rdf-prolog-interchange: ground rdf/4 facts become RDF again for publication or federation').
+pipeline_step(5, 'rdf-interchange: ground rdf/4 facts become RDF again for publication or federation').
 cognitive_parallel(fact, remembered_assertion).
 cognitive_parallel(rule, reusable_generalization).
 cognitive_parallel(query, explicit_question).
@@ -427,7 +427,7 @@ clause(176,
        pipeline_step_fact(1, 'RDF 1.2 N-Quads: named graphs keep source and governance boundaries explicit'),
        true).
 clause(177,
-       pipeline_step_fact(2, 'rdf-prolog-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver'),
+       pipeline_step_fact(2, 'rdf-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver'),
        true).
 clause(178,
        pipeline_step_fact(3, 'EyeProlog: ISO Prolog rules validate candidates, apply review policy, and derive actions'),
@@ -436,7 +436,7 @@ clause(179,
        pipeline_step_fact(4, 'EyeProlog: result_rdf/4 materializes accepted knowledge and decisions as ground RDF-shaped facts'),
        true).
 clause(180,
-       pipeline_step_fact(5, 'rdf-prolog-interchange: ground rdf/4 facts become RDF again for publication or federation'),
+       pipeline_step_fact(5, 'rdf-interchange: ground rdf/4 facts become RDF again for publication or federation'),
        true).
 clause(181,
        cognitive_parallel(var('Prolog'), var('Human')),
@@ -1520,12 +1520,12 @@ step(pipeline_step_fact(1, 'RDF 1.2 N-Quads: named graphs keep source and govern
      fact(176),
      [],
      []).
-step(pipeline_step(2, 'rdf-prolog-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver'),
+step(pipeline_step(2, 'rdf-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver'),
      rule(175),
      ['N' = 2,
-      'Description' = 'rdf-prolog-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver'],
-     [pipeline_step_fact(2, 'rdf-prolog-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver')]).
-step(pipeline_step_fact(2, 'rdf-prolog-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver'),
+      'Description' = 'rdf-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver'],
+     [pipeline_step_fact(2, 'rdf-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver')]).
+step(pipeline_step_fact(2, 'rdf-interchange: RDF becomes ordinary rdf/4 Prolog facts without a solver'),
      fact(177),
      [],
      []).
@@ -1547,12 +1547,12 @@ step(pipeline_step_fact(4, 'EyeProlog: result_rdf/4 materializes accepted knowle
      fact(179),
      [],
      []).
-step(pipeline_step(5, 'rdf-prolog-interchange: ground rdf/4 facts become RDF again for publication or federation'),
+step(pipeline_step(5, 'rdf-interchange: ground rdf/4 facts become RDF again for publication or federation'),
      rule(175),
      ['N' = 5,
-      'Description' = 'rdf-prolog-interchange: ground rdf/4 facts become RDF again for publication or federation'],
-     [pipeline_step_fact(5, 'rdf-prolog-interchange: ground rdf/4 facts become RDF again for publication or federation')]).
-step(pipeline_step_fact(5, 'rdf-prolog-interchange: ground rdf/4 facts become RDF again for publication or federation'),
+      'Description' = 'rdf-interchange: ground rdf/4 facts become RDF again for publication or federation'],
+     [pipeline_step_fact(5, 'rdf-interchange: ground rdf/4 facts become RDF again for publication or federation')]).
+step(pipeline_step_fact(5, 'rdf-interchange: ground rdf/4 facts become RDF again for publication or federation'),
      fact(180),
      [],
      []).

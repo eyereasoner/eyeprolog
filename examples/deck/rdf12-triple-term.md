@@ -18,7 +18,7 @@ What relationship is inside Alice's claim?
 
 This is one of a family of RDF 1.2 examples. RDF data arrives as
 `rdf(Subject, Predicate, Object, Graph)` facts, as produced by
-[rdf-prolog-interchange](https://github.com/eyereasoner/rdf-prolog-interchange);
+[rdf-interchange](https://github.com/eyereasoner/rdf-interchange);
 ordinary rules derive new results in the same shape, and `write_results/0`
 prints them as `rdf/4` facts that convert straight back to RDF.
 

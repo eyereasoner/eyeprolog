@@ -31,7 +31,7 @@ rdf(iri('https://example.org/alpha_permission'), iri('http://www.w3.org/ns/odrl/
 
 Every RDF triple becomes one `rdf/4` fact: subject, predicate, object, and the
 graph it belongs to. The program was generated from RDF by
-rdf-prolog-interchange.
+rdf-interchange.
 
 ---
 
