@@ -694,8 +694,9 @@ function checkProofWithKeys(program, { claims, records = [], steps: allSteps }, 
   };
 }
 
-// C6: a trusted boundary cannot be proved, but the evidence at hand can refute
-// it. An absence fails when the evidence shows a solution of what it says has
+// C6 does not certify a trusted boundary from a complete search tree; the
+// document contains no such tree. Evidence can refute the claim: an absence
+// fails when the evidence shows a solution of what it says has
 // none; a collection fails when its list misses a solution the evidence
 // shows. Returns how many boundaries the evidence could speak for.
 function checkBoundaries(program, steps, boundaries, redecide, fail, show) {

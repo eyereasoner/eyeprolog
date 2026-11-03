@@ -22,17 +22,24 @@ oriented_rule(left_identity, append(nil, X), X).
 oriented_rule(right_identity, append(X, nil), X).
 oriented_rule(associate_right, append(append(X, Y), Z), append(X, append(Y, Z))).
 
-% One rewrite at the root or below an append node.
+% One rewrite at the root or below an append node. With a finite ground input,
+% recursion visits strict subterms, so this search has finitely many answers.
+% An open first argument is not a supported mode of this normalizer.
 rewrite_once(In, Out, Rule) :- oriented_rule(Rule, In, Out).
 rewrite_once(append(A, B), append(New_a, B), Rule) :- rewrite_once(A, New_a, Rule).
 rewrite_once(append(A, B), append(A, New_b), Rule) :- rewrite_once(B, New_b, Rule).
 
-% Normalize ground terms along one rewrite path. ISO/IEC 13211-1:1995,
-% 8.15.2 defines once/1: commit to the first rewrite at each step instead of
-% enumerating every path to the same normal form. The fixed rules terminate
-% and are confluent on these terms; this strategy does not establish confluence.
-normal_form(Term, Term) :- \+ rewrite_once(Term, _, _).
-normal_form(Term, Normal) :- once(rewrite_once(Term, Next, _)), normal_form(Next, Normal).
+% normal_form(+Term, ?Normal): Term must be a finite ground constructor term.
+% ISO/IEC 13211-1:1995, 7.8.8 commits to the first successful condition.
+% Probe for a rewrite once, before using Normal, so supplying Normal does not
+% change the selected path. Failure later in that path cannot take the else.
+% The fixed rules terminate and are confluent on these terms; choosing one
+% path does not establish confluence for an arbitrary rewrite system.
+normal_form(Term, Normal) :-
+  ( rewrite_once(Term, Next, _) ->
+      normal_form(Next, Normal)
+  ; Normal = Term
+  ).
 
 % A few critical pairs that arise from overlapping the three oriented rules.
 % Each pair records the two one-step reducts that must later normalize together.

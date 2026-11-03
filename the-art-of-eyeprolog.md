@@ -812,6 +812,13 @@ With `user(ann)`, `user(bob)`, and `blocked(bob)`, the query `allowed(U)` gives
 with `U` unbound asks "is nobody blocked?", which is false. Bind variables
 before you negate them.
 
+ISO Prolog (§8.15.1) permits non-ground callable goals in `\+`. They ask
+whether the inner query succeeds as called. For a pure positive inner goal,
+this can test whether any matching instance exists. Negation succeeds only
+when the search finitely fails; if the search diverges, negation does too.
+Use this deliberately for existential questions, rather than expecting it to
+enumerate exceptions.
+
 `\+` means "cannot be proved from this program", not "is false". Reading one
 as the other is the **closed-world assumption**: right for a complete roster or
 configuration, wrong for open data where a missing fact may just be unknown.
@@ -1180,6 +1187,12 @@ absence of the program's own predicates, a `collected` step and an `asserted`
 step cannot be recomputed that way; they are reported as **trusted
 boundaries**. An if-then-else is recorded as the branch it took: its condition
 and then-goals, or `\+` of its condition and its else-goals.
+
+The label `absent` records a finite-failure claim for the whole inner query,
+which may contain variables. It is not limited to an absent ground fact.
+The document does not include a complete failed search tree, so a trusted
+`absent` step does not certify finite failure independently. Positive evidence
+can refute it; passing that consistency check leaves it as an obligation.
 
 The report is itself a set of Prolog facts: one `condition/4` for each of the
 seven conditions C1–C7, the counts of verified, recomputed, and trusted steps,
@@ -4620,7 +4633,7 @@ contains 129 name/arity entries across 100 names.
 - **`!`** — Commits to choices made since entry into the current predicate invocation; it does not erase alternatives of an enclosing caller.
 - **`call(+Goal)`** — Calls an atom or compound goal. An unbound argument raises *instantiation_error*; another non-callable term raises *type_error(callable)*.
 - **`call(+Closure,?Arg,...)`** — `call/2` through `call/8` append their extra arguments to an atom or compound closure, as specified by Corrigendum 2.
-- **`\+(+Goal)`** — Negation as finite failure. Succeeds once when `Goal` has no solution and never exports bindings made while testing it. Bind the variables the test needs first.
+- **`\+(+Goal)`** — Negation as finite failure. Succeeds once when the search for `Goal` finitely fails and never exports bindings made while testing it. `Goal` must be callable; its arguments need not be ground. Bind the variables the test needs first.
 - **`once(+Goal)`** — Returns only the first solution of `Goal`, or fails.
 - **`repeat`** — Succeeds without limit; normally paired with a test, cut, exception, or `halt/0`.
 - **`Left ; Right`** — Enumerates `Left`, then `Right`, restoring the incoming environment between branches. A cut inside a called predicate cannot discard the other branch.

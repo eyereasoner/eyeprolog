@@ -295,6 +295,13 @@ is the list of the goals that justify `Goal`, in order. `By` is one of:
 | `asserted` | `Goal` was solved by a clause added at run time, which has no clause number. | empty | empty |
 | `unproven` | The replay could not reproduce `Goal` (Section 7). | empty | empty |
 
+An `absent` step records a finite-failure claim for the entire inner query
+`G`. ISO `\+/1` accepts a callable term whose arguments may be variables;
+the claim concerns finite failure of that query as called, not merely the
+absence of one ground fact. This format does not
+record the failed search tree. The claim remains a trusted obligation unless
+the checker can re-decide it under Section 9.6.
+
 `Bindings` is a list of `'Name' = Value` pairs, one per variable of the cited
 clause that the derivation bound, named as the program wrote it, in order of
 first occurrence in the head and then the body; variables whose names begin
@@ -407,8 +414,9 @@ boundaries of their own kind, with the reason `theory_scoped`. When trusted boun
 
 ### 9.7 C6 Boundary consistency
 
-A trusted absence or collection cannot be proved, but the evidence at hand
-can refute it.
+The checker does not certify a trusted absence or collection from a complete
+search tree: this format contains no such tree. The evidence at hand can
+nevertheless refute the claim.
 
 A predicate is **evidential** when it has clauses in the program, is not
 declared dynamic, is not the target of an `assert/1`, `asserta/1`,

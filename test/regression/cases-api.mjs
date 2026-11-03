@@ -27,7 +27,7 @@ import {
 export function apiCases() {
   return [
     {
-      name: 'Knuth-Bendix normalization selects one rewrite path in ISO Prolog (issue #120)',
+      name: 'Knuth-Bendix normalization selects one steadfast rewrite path in ISO Prolog (issue #120)',
       run: () => {
         const source = fs.readFileSync(path.join(packageRoot, 'examples', 'knuth-bendix-completion.pl'), 'utf8');
         // The rewriting predicates use only Part 1. The example's imports
@@ -48,19 +48,65 @@ export function apiCases() {
           const answers = (text) => {
             const solver = new Solver(program, { isoStrict });
             const goal = parseGoalText(text, { isoStrict });
+            const normalized = goal.name === ',' ? goal.args[0] : goal;
             // Enumerate the solver directly: printed answers can hide duplicates.
             return [...solver.solve([goal], new Env(), 0)]
-              .map((env) => termToString(goal.args[1], env, true));
+              .map((env) => termToString(normalized.args[1], env, true));
           };
           for (const [term, expected] of cases) {
             assertArrayEqual(answers(`normal_form(${term}, Normal)`), [expected],
               `one normal form for ${term} (isoStrict=${isoStrict})`);
+            assertArrayEqual(answers(`normal_form(${term}, ${expected})`), [expected],
+              `a supplied normal form succeeds once (isoStrict=${isoStrict})`);
+            assertArrayEqual(answers(`normal_form(${term}, Normal), Normal = ${expected}`), [expected],
+              'checking the result after normalization agrees');
+            assertArrayEqual(answers(`normal_form(${term}, Wrong), Wrong = wrong_normal_form`), [],
+              'checking an incorrect result after normalization fails');
+            assertArrayEqual(answers(`normal_form(${term}, wrong_normal_form)`), [],
+              'supplying an incorrect result fails');
           }
           assertArrayEqual(answers(`normal_form(append(append(append(a,b),c),d), ${normal})`), [normal],
             'checking a supplied normal form succeeds once');
           assertArrayEqual(answers('normal_form(append(nil,a), b)'), [], 'an incorrect normal form fails');
+          assertArrayEqual(answers('normal_form(append(nil,a), append(nil,a))'), [],
+            'a successful rewrite cannot fall back to the original term');
+          assertArrayEqual(answers('normal_form(append(append(append(a,b),c),d), append(a,Tail))'), [normal],
+            'a partially supplied output does not change the selected path');
+          assertArrayEqual(answers('normal_form(append(append(append(a,b),c),d), Normal), Normal = append(a,Tail)'),
+            [normal], 'delaying the partial output check gives the same result');
           assertEqual(answers('rewrite_once(append(append(append(a,b),c),d), Next, Rule)').length,
             2, 'one-step rewriting still exposes both alternatives');
+
+          // Observe calls rather than elapsed time: both the successful rewrite
+          // and the terminal failure must be tried just once by normal_form/2.
+          const observed = ':- dynamic(probed/1).\n' +
+            core.replace(/^rewrite_once\(/gm, 'rewrite_step(') + '\n' +
+            'rewrite_once(In, Out, Rule) :- assertz(probed(In)), rewrite_step(In, Out, Rule).\n' +
+            'probe_answer(Normal, Seen) :- findall(N, normal_form(append(nil,a), N), [Normal]), ' +
+            'findall(T, probed(T), Seen).\n';
+          assertEqual(runEyeProlog(observed, { isoStrict, goal: 'probe_answer(Normal, Seen)' }).stdout,
+            'probe_answer(a, [append(nil, a), a]).\n', 'each normalization step probes once');
+
+          // In a non-confluent system the requested output must not choose
+          // another rewrite or cause fallback after the first path fails.
+          const choices = 'oriented_rule(first, choice, selected).\n' +
+            'oriented_rule(second, choice, skipped).\n' + core;
+          assertEqual(runEyeProlog(choices, { isoStrict, goal: 'normal_form(choice, Normal)' }).stdout,
+            'normal_form(choice, selected).\n', 'the first rewrite determines the result');
+          for (const output of ['skipped', 'choice']) {
+            assertEqual(runEyeProlog(choices, { isoStrict, goal: `normal_form(choice, ${output})` })
+              .stats.completed_goal_lists, 0, 'a supplied output cannot steer the rewrite or select the else');
+          }
+
+          const proofProgram = Program.parse(core, { isoStrict, sourceMetadata: true });
+          const goals = ['normal_form(append(nil,a), Normal)'];
+          const proof = runEyeProlog(proofProgram, { isoStrict, goals, proof: true }).stdout;
+          const report = checkProofDocument(proofProgram, proof, { goals });
+          assertEqual(report.valid, true, 'the selected branch and rewrite proof check');
+          assertArrayEqual(report.trusted.map(({ kind }) => kind), ['absent'],
+            'terminal finite failure remains an explicit trust boundary');
+          assertEqual(checkProofDocument(proofProgram, proof, { goals, strict: true }).valid, false,
+            'a selected rewrite chain does not certify the terminal failure tree');
         }
       },
     },
