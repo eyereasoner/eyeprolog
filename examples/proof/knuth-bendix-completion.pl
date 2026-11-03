@@ -21,7 +21,7 @@ clause(7,
        \+ rewrite_once(var('Term'), anonymous(1), anonymous(2))).
 clause(8,
        normal_form(var('Term'), var('Normal')),
-       (rewrite_once(var('Term'), var('Next'), anonymous(1)),
+       (once(rewrite_once(var('Term'), var('Next'), anonymous(1))),
         normal_form(var('Next'), var('Normal')))).
 clause(9, critical_pair(left_identity_assoc, append(a, b), append(nil, append(a, b))), true).
 clause(10, critical_pair(right_identity_assoc, append(a, b), append(a, append(nil, b))), true).
@@ -60,8 +60,12 @@ step(normal_form(append(append(nil, append(a, nil)), append(b, c)), append(a, ap
      ['Term' = append(append(nil, append(a, nil)), append(b, c)),
       'Normal' = append(a, append(b, c)),
       'Next' = append(nil, append(append(a, nil), append(b, c)))],
-     [rewrite_once(append(append(nil, append(a, nil)), append(b, c)), append(nil, append(append(a, nil), append(b, c))), associate_right),
+     [once(rewrite_once(append(append(nil, append(a, nil)), append(b, c)), append(nil, append(append(a, nil), append(b, c))), associate_right)),
       normal_form(append(nil, append(append(a, nil), append(b, c))), append(a, append(b, c)))]).
+step(once(rewrite_once(append(append(nil, append(a, nil)), append(b, c)), append(nil, append(append(a, nil), append(b, c))), associate_right)),
+     control,
+     [],
+     [rewrite_once(append(append(nil, append(a, nil)), append(b, c)), append(nil, append(append(a, nil), append(b, c))), associate_right)]).
 step(rewrite_once(append(append(nil, append(a, nil)), append(b, c)), append(nil, append(append(a, nil), append(b, c))), associate_right),
      rule(4),
      ['In' = append(append(nil, append(a, nil)), append(b, c)),
@@ -77,8 +81,12 @@ step(normal_form(append(nil, append(append(a, nil), append(b, c))), append(a, ap
      ['Term' = append(nil, append(append(a, nil), append(b, c))),
       'Normal' = append(a, append(b, c)),
       'Next' = append(append(a, nil), append(b, c))],
-     [rewrite_once(append(nil, append(append(a, nil), append(b, c))), append(append(a, nil), append(b, c)), left_identity),
+     [once(rewrite_once(append(nil, append(append(a, nil), append(b, c))), append(append(a, nil), append(b, c)), left_identity)),
       normal_form(append(append(a, nil), append(b, c)), append(a, append(b, c)))]).
+step(once(rewrite_once(append(nil, append(append(a, nil), append(b, c))), append(append(a, nil), append(b, c)), left_identity)),
+     control,
+     [],
+     [rewrite_once(append(nil, append(append(a, nil), append(b, c))), append(append(a, nil), append(b, c)), left_identity)]).
 step(rewrite_once(append(nil, append(append(a, nil), append(b, c))), append(append(a, nil), append(b, c)), left_identity),
      rule(4),
      ['In' = append(nil, append(append(a, nil), append(b, c))),
@@ -94,8 +102,12 @@ step(normal_form(append(append(a, nil), append(b, c)), append(a, append(b, c))),
      ['Term' = append(append(a, nil), append(b, c)),
       'Normal' = append(a, append(b, c)),
       'Next' = append(a, append(nil, append(b, c)))],
-     [rewrite_once(append(append(a, nil), append(b, c)), append(a, append(nil, append(b, c))), associate_right),
+     [once(rewrite_once(append(append(a, nil), append(b, c)), append(a, append(nil, append(b, c))), associate_right)),
       normal_form(append(a, append(nil, append(b, c))), append(a, append(b, c)))]).
+step(once(rewrite_once(append(append(a, nil), append(b, c)), append(a, append(nil, append(b, c))), associate_right)),
+     control,
+     [],
+     [rewrite_once(append(append(a, nil), append(b, c)), append(a, append(nil, append(b, c))), associate_right)]).
 step(rewrite_once(append(append(a, nil), append(b, c)), append(a, append(nil, append(b, c))), associate_right),
      rule(4),
      ['In' = append(append(a, nil), append(b, c)),
@@ -111,8 +123,12 @@ step(normal_form(append(a, append(nil, append(b, c))), append(a, append(b, c))),
      ['Term' = append(a, append(nil, append(b, c))),
       'Normal' = append(a, append(b, c)),
       'Next' = append(a, append(b, c))],
-     [rewrite_once(append(a, append(nil, append(b, c))), append(a, append(b, c)), left_identity),
+     [once(rewrite_once(append(a, append(nil, append(b, c))), append(a, append(b, c)), left_identity)),
       normal_form(append(a, append(b, c)), append(a, append(b, c)))]).
+step(once(rewrite_once(append(a, append(nil, append(b, c))), append(a, append(b, c)), left_identity)),
+     control,
+     [],
+     [rewrite_once(append(a, append(nil, append(b, c))), append(a, append(b, c)), left_identity)]).
 step(rewrite_once(append(a, append(nil, append(b, c))), append(a, append(b, c)), left_identity),
      rule(6),
      ['A' = a, 'B' = append(nil, append(b, c)), 'New_b' = append(b, c), 'Rule' = left_identity],
@@ -155,8 +171,12 @@ step(\+ rewrite_once(append(a, b), __anon0, __anon1), absent, [], []).
 step(normal_form(append(nil, append(a, b)), append(a, b)),
      rule(8),
      ['Term' = append(nil, append(a, b)), 'Normal' = append(a, b), 'Next' = append(a, b)],
-     [rewrite_once(append(nil, append(a, b)), append(a, b), left_identity),
+     [once(rewrite_once(append(nil, append(a, b)), append(a, b), left_identity)),
       normal_form(append(a, b), append(a, b))]).
+step(once(rewrite_once(append(nil, append(a, b)), append(a, b), left_identity)),
+     control,
+     [],
+     [rewrite_once(append(nil, append(a, b)), append(a, b), left_identity)]).
 step(rewrite_once(append(nil, append(a, b)), append(a, b), left_identity),
      rule(4),
      ['In' = append(nil, append(a, b)), 'Out' = append(a, b), 'Rule' = left_identity],
@@ -185,8 +205,12 @@ step(critical_pair(right_identity_assoc, append(a, b), append(a, append(nil, b))
 step(normal_form(append(a, append(nil, b)), append(a, b)),
      rule(8),
      ['Term' = append(a, append(nil, b)), 'Normal' = append(a, b), 'Next' = append(a, b)],
-     [rewrite_once(append(a, append(nil, b)), append(a, b), left_identity),
+     [once(rewrite_once(append(a, append(nil, b)), append(a, b), left_identity)),
       normal_form(append(a, b), append(a, b))]).
+step(once(rewrite_once(append(a, append(nil, b)), append(a, b), left_identity)),
+     control,
+     [],
+     [rewrite_once(append(a, append(nil, b)), append(a, b), left_identity)]).
 step(rewrite_once(append(a, append(nil, b)), append(a, b), left_identity),
      rule(6),
      ['A' = a, 'B' = append(nil, b), 'New_b' = b, 'Rule' = left_identity],
@@ -218,8 +242,12 @@ step(normal_form(append(append(a, append(b, c)), d), append(a, append(b, append(
      ['Term' = append(append(a, append(b, c)), d),
       'Normal' = append(a, append(b, append(c, d))),
       'Next' = append(a, append(append(b, c), d))],
-     [rewrite_once(append(append(a, append(b, c)), d), append(a, append(append(b, c), d)), associate_right),
+     [once(rewrite_once(append(append(a, append(b, c)), d), append(a, append(append(b, c), d)), associate_right)),
       normal_form(append(a, append(append(b, c), d)), append(a, append(b, append(c, d))))]).
+step(once(rewrite_once(append(append(a, append(b, c)), d), append(a, append(append(b, c), d)), associate_right)),
+     control,
+     [],
+     [rewrite_once(append(append(a, append(b, c)), d), append(a, append(append(b, c), d)), associate_right)]).
 step(rewrite_once(append(append(a, append(b, c)), d), append(a, append(append(b, c), d)), associate_right),
      rule(4),
      ['In' = append(append(a, append(b, c)), d),
@@ -235,8 +263,12 @@ step(normal_form(append(a, append(append(b, c), d)), append(a, append(b, append(
      ['Term' = append(a, append(append(b, c), d)),
       'Normal' = append(a, append(b, append(c, d))),
       'Next' = append(a, append(b, append(c, d)))],
-     [rewrite_once(append(a, append(append(b, c), d)), append(a, append(b, append(c, d))), associate_right),
+     [once(rewrite_once(append(a, append(append(b, c), d)), append(a, append(b, append(c, d))), associate_right)),
       normal_form(append(a, append(b, append(c, d))), append(a, append(b, append(c, d))))]).
+step(once(rewrite_once(append(a, append(append(b, c), d)), append(a, append(b, append(c, d))), associate_right)),
+     control,
+     [],
+     [rewrite_once(append(a, append(append(b, c), d)), append(a, append(b, append(c, d))), associate_right)]).
 step(rewrite_once(append(a, append(append(b, c), d)), append(a, append(b, append(c, d))), associate_right),
      rule(6),
      ['A' = a,
@@ -262,8 +294,12 @@ step(normal_form(append(append(a, b), append(c, d)), append(a, append(b, append(
      ['Term' = append(append(a, b), append(c, d)),
       'Normal' = append(a, append(b, append(c, d))),
       'Next' = append(a, append(b, append(c, d)))],
-     [rewrite_once(append(append(a, b), append(c, d)), append(a, append(b, append(c, d))), associate_right),
+     [once(rewrite_once(append(append(a, b), append(c, d)), append(a, append(b, append(c, d))), associate_right)),
       normal_form(append(a, append(b, append(c, d))), append(a, append(b, append(c, d))))]).
+step(once(rewrite_once(append(append(a, b), append(c, d)), append(a, append(b, append(c, d))), associate_right)),
+     control,
+     [],
+     [rewrite_once(append(append(a, b), append(c, d)), append(a, append(b, append(c, d))), associate_right)]).
 step(rewrite_once(append(append(a, b), append(c, d)), append(a, append(b, append(c, d))), associate_right),
      rule(4),
      ['In' = append(append(a, b), append(c, d)),

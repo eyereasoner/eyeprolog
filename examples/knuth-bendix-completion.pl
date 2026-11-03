@@ -27,10 +27,12 @@ rewrite_once(In, Out, Rule) :- oriented_rule(Rule, In, Out).
 rewrite_once(append(A, B), append(New_a, B), Rule) :- rewrite_once(A, New_a, Rule).
 rewrite_once(append(A, B), append(A, New_b), Rule) :- rewrite_once(B, New_b, Rule).
 
-% Normalization by repeated rewriting.  The rules above are oriented so that the
-% recursive search has a normal form for the bounded terms in this example.
+% Normalize ground terms along one rewrite path. ISO/IEC 13211-1:1995,
+% 8.15.2 defines once/1: commit to the first rewrite at each step instead of
+% enumerating every path to the same normal form. The fixed rules terminate
+% and are confluent on these terms; this strategy does not establish confluence.
 normal_form(Term, Term) :- \+ rewrite_once(Term, _, _).
-normal_form(Term, Normal) :- rewrite_once(Term, Next, _), normal_form(Next, Normal).
+normal_form(Term, Normal) :- once(rewrite_once(Term, Next, _)), normal_form(Next, Normal).
 
 % A few critical pairs that arise from overlapping the three oriented rules.
 % Each pair records the two one-step reducts that must later normalize together.

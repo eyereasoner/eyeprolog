@@ -27,6 +27,44 @@ import {
 export function apiCases() {
   return [
     {
+      name: 'Knuth-Bendix normalization selects one rewrite path in ISO Prolog (issue #120)',
+      run: () => {
+        const source = fs.readFileSync(path.join(packageRoot, 'examples', 'knuth-bendix-completion.pl'), 'utf8');
+        // The rewriting predicates use only Part 1. The example's imports
+        // supply extension predicates used by its separate reporting goals.
+        const core = source.replace(/^:- use_module\([^\n]*\)\.\n/gm, '');
+        const normal = 'append(a, append(b, append(c, d)))';
+        const cases = [
+          ['append(append(append(a,b),c),d)', normal],
+          ['append(append(nil,append(a,nil)),append(b,c))', 'append(a, append(b, c))'],
+          ['append(nil,nil)', 'nil'],
+          ['a', 'a'],
+          [normal, normal],
+          ['append(append(append(append(append(append(append(a,b),c),d),e),f),g),h)',
+            'append(a, append(b, append(c, append(d, append(e, append(f, append(g, h)))))))'],
+        ];
+        for (const isoStrict of [false, true]) {
+          const program = Program.parse(core, { isoStrict });
+          const answers = (text) => {
+            const solver = new Solver(program, { isoStrict });
+            const goal = parseGoalText(text, { isoStrict });
+            // Enumerate the solver directly: printed answers can hide duplicates.
+            return [...solver.solve([goal], new Env(), 0)]
+              .map((env) => termToString(goal.args[1], env, true));
+          };
+          for (const [term, expected] of cases) {
+            assertArrayEqual(answers(`normal_form(${term}, Normal)`), [expected],
+              `one normal form for ${term} (isoStrict=${isoStrict})`);
+          }
+          assertArrayEqual(answers(`normal_form(append(append(append(a,b),c),d), ${normal})`), [normal],
+            'checking a supplied normal form succeeds once');
+          assertArrayEqual(answers('normal_form(append(nil,a), b)'), [], 'an incorrect normal form fails');
+          assertEqual(answers('rewrite_once(append(append(append(a,b),c),d), Next, Rule)').length,
+            2, 'one-step rewriting still exposes both alternatives');
+        }
+      },
+    },
+    {
       name: 'public type declarations match runtime exports',
       run: () => assertArrayEqual(declaredValueExportNames(), runtimeExportNames(), 'public value exports'),
     },
