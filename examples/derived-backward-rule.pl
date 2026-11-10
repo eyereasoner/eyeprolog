@@ -1,17 +1,11 @@
 % Derived backward rule example.
 %
-% In N3 notation:
-%   parentOf invOf childOf.
-%   alice parentOf bob.
-%   { P invOf Q. } => { { X Q Y. } <= { Y P X. }. }.
-%   { X childOf Y. } => { X hasParent Y. }.
-%
 % The generated backward rule is represented as quoted formula data in
-% log_impliedBy/2, then mirrored as an ordinary eyeprolog rule so the generated
+% implied_by/2, then mirrored as an ordinary eyeprolog rule so the generated
 % childOf relation can feed the ordinary hasParent rule.
 
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
-%% ?- log_impliedBy(X0, X1).
+%% ?- implied_by(X0, X1).
 
 %% ?- childOf(X0, X1).
 
@@ -23,11 +17,11 @@ invOf(parentOf, childOf).
 parentOf(alice, bob).
 
 % Derivation rules: each rule below contributes one logical step toward the displayed results.
-log_impliedBy(childOf(var(x), var(y)), parentOf(var(y), var(x))) :-
+implied_by(childOf(var(x), var(y)), parentOf(var(y), var(x))) :-
   invOf(parentOf, childOf).
 
 childOf(X, Y) :-
-  log_impliedBy(childOf(var(x), var(y)), parentOf(var(y), var(x))),
+  implied_by(childOf(var(x), var(y)), parentOf(var(y), var(x))),
   parentOf(Y, X).
 
 hasParent(X, Y) :- childOf(X, Y).

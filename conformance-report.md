@@ -17,27 +17,27 @@ bytes, avoiding a second live fetch and its race window.
 
 | Category | Positive | Errors | Warnings | Proofs | Total |
 |---|---:|---:|---:|---:|---:|
-| aggregation | 18 | 0 | 0 | 0 | 18 |
+| aggregation | 17 | 0 | 0 | 0 | 17 |
 | arithmetic | 38 | 0 | 0 | 0 | 38 |
-| atoms | 23 | 8 | 0 | 0 | 31 |
-| builtins | 11 | 0 | 0 | 0 | 11 |
+| atoms | 10 | 3 | 0 | 0 | 13 |
+| builtins | 7 | 0 | 0 | 0 | 7 |
 | context | 11 | 0 | 0 | 0 | 11 |
 | control | 15 | 0 | 0 | 0 | 15 |
 | explicit-tabling | 6 | 0 | 0 | 0 | 6 |
 | iso | 259 | 220 | 0 | 0 | 479 |
-| lists | 61 | 3 | 0 | 0 | 64 |
+| lists | 59 | 3 | 0 | 0 | 62 |
 | modules | 2 | 0 | 0 | 0 | 2 |
-| negation | 8 | 0 | 19 | 0 | 27 |
-| proofs | 0 | 0 | 0 | 21 | 21 |
+| negation | 8 | 0 | 18 | 0 | 26 |
+| proofs | 0 | 0 | 0 | 19 | 19 |
 | query | 8 | 2 | 0 | 0 | 10 |
 | rules | 13 | 3 | 0 | 0 | 16 |
 | stc | 5 | 6 | 0 | 0 | 11 |
-| strings | 40 | 0 | 0 | 0 | 40 |
-| syntax | 12 | 23 | 0 | 0 | 35 |
-| terms | 26 | 3 | 0 | 0 | 29 |
-| unification | 18 | 0 | 0 | 0 | 18 |
+| strings | 37 | 0 | 0 | 0 | 37 |
+| syntax | 12 | 22 | 0 | 0 | 34 |
+| terms | 23 | 3 | 0 | 0 | 26 |
+| unification | 17 | 0 | 0 | 0 | 17 |
 | variables | 16 | 7 | 0 | 0 | 23 |
-| **Total** | **590** | **275** | **19** | **21** | **905** |
+| **Total** | **563** | **269** | **18** | **19** | **869** |
 
 ## DCG conformance clarification
 

@@ -1,5 +1,5 @@
 % =============================================================================================================================
-% Deep Taxonomy - depth 10 - expanded N3-style eyeprolog
+% Deep Taxonomy - depth 10 - Prolog clause chain
 %
 % Adjacent rules form the deep-taxonomy chain. Each step derives
 % the next taxonomy class together with two side labels.
@@ -21,7 +21,7 @@ a(ind, n0).
 holds_result(test, true) :- once(a(ind, a2)).
 a(X, a2) :- a(X, n10).
 
-% Adjacent N3-style taxonomy rules.
+% Adjacent taxonomy rules.
 
 a(X, n1) :- a(X, n0).
 a(X, i1) :- a(X, n0).

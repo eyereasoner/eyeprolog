@@ -756,21 +756,21 @@ export function whiteBoxCases() {
       },
     },
     {
-      name: 'parser accepts quoted angle-bracket atoms',
+      name: 'parser preserves delimiters inside quoted atoms',
       run: () => {
-        const clauses = parseProgramText("p('<https://example.org/alice>', '<urn:example:bob>').\n");
-        assertEqual(termToString(clauses[0].head, new Env(), true), "p('<https://example.org/alice>', '<urn:example:bob>')", 'head');
+        const clauses = parseProgramText("p('<alice>', '<bob>').\n");
+        assertEqual(termToString(clauses[0].head, new Env(), true), "p('<alice>', '<bob>')", 'head');
       },
     },
     {
-      name: 'readback leaves absolute IRI atoms as quoted atoms',
+      name: 'readback quotes atoms containing slashes',
       run: () => {
-        const clauses = parseProgramText("p('https://example.org/alice').\n");
-        assertEqual(termToString(clauses[0].head, new Env(), true), "p('https://example.org/alice')", 'head');
+        const clauses = parseProgramText("p('team/alice').\n");
+        assertEqual(termToString(clauses[0].head, new Env(), true), "p('team/alice')", 'head');
       },
     },
     {
-      name: 'angle IRI syntax does not steal graphic atom syntax',
+      name: 'parser preserves graphic atoms containing angle brackets',
       run: () => {
         const clauses = parseProgramText('p(<=>).\n');
         assertEqual(termToString(clauses[0].head, new Env(), true), 'p(<=>)', 'head');

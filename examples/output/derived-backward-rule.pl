@@ -1,3 +1,3 @@
-log_impliedBy(childOf(var(x), var(y)), parentOf(var(y), var(x))).
+implied_by(childOf(var(x), var(y)), parentOf(var(y), var(x))).
 childOf(bob, alice).
 hasParent(bob, alice).

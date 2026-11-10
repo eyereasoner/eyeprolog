@@ -1,6 +1,0 @@
-rdf(iri('https://example.org/city/facility/riverside-school'),iri('https://example.org/vocab/emergencyDesignation'),iri('https://example.org/city/class/cooling-center'),iri('https://example.org/graph/accepted-knowledge')).
-rdf(iri('https://example.org/city/proposal/p2'),iri('https://example.org/vocab/reviewOutcome'),iri('https://example.org/city/decision/accept'),iri('https://example.org/graph/human-review')).
-rdf(iri('https://example.org/city/proposal/p3'),iri('https://example.org/vocab/reviewOutcome'),iri('https://example.org/city/decision/reject'),iri('https://example.org/graph/human-review')).
-rdf(iri('https://example.org/city/decision/before-review'),iri('https://example.org/vocab/recommendedAction'),iri('https://example.org/city/action/deploy-mobile-unit'),iri('https://example.org/graph/derived-decisions')).
-rdf(iri('https://example.org/city/decision/after-review'),iri('https://example.org/vocab/recommendedAction'),iri('https://example.org/city/action/open-local-center'),iri('https://example.org/graph/derived-decisions')).
-rdf(iri('https://example.org/city/decision/after-review'),iri('https://example.org/vocab/selectedFacility'),iri('https://example.org/city/facility/riverside-school'),iri('https://example.org/graph/derived-decisions')).

@@ -18,7 +18,7 @@ How can a rule conclude that *something* exists, such as a parent for every
 person or a registration record for every student and course, when the
 data does not name that something?
 
-Many rule languages use blank nodes or existential variables. Here the answer
+An existential statement says that a witness exists. Here the answer
 is a **Herbrand witness**: a compound term built from the inputs that the
 existence depends on.
 

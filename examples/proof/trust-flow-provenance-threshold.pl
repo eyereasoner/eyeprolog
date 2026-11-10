@@ -1,8 +1,8 @@
 confidence(message_a, 0.8937599999999999).
 confidence(message_b, 0.41999999999999993).
-trust_flow_state(message_a, fpv_accepted).
-trust_flow_state(message_b, fpv_quarantine).
-status(message_a, fpv_high_trust_flow).
+trust_flow_state(message_a, accepted).
+trust_flow_state(message_b, quarantined).
+status(message_a, high_trust_flow).
 risk(message_b, risk_low_trust_data_source).
 
 clause(1, message(message_a, publisher_a, transform_a, signature_a, receiver_app), true).
@@ -23,23 +23,21 @@ clause(10,
         var('A') is var('Publishertrust') * var('Signaturetrust'),
         var('Confidence') is var('A') * var('Quality'))).
 clause(11,
-       trust_flow_state(var('Message'), fpv_accepted),
+       trust_flow_state(var('Message'), accepted),
        (message(var('Message'), anonymous(1), anonymous(2), anonymous(3), var('Receiver')),
         confidence(var('Message'), var('Confidence')),
         acceptance_threshold(var('Receiver'), var('Threshold')),
         var('Confidence') >= var('Threshold'))).
 clause(12,
-       trust_flow_state(var('Message'), fpv_quarantine),
+       trust_flow_state(var('Message'), quarantined),
        (message(var('Message'), anonymous(1), anonymous(2), anonymous(3), var('Receiver')),
         confidence(var('Message'), var('Confidence')),
         acceptance_threshold(var('Receiver'), var('Threshold')),
         var('Confidence') < var('Threshold'))).
-clause(13,
-       status(var('Message'), fpv_high_trust_flow),
-       trust_flow_state(var('Message'), fpv_accepted)).
+clause(13, status(var('Message'), high_trust_flow), trust_flow_state(var('Message'), accepted)).
 clause(14,
        risk(var('Message'), risk_low_trust_data_source),
-       trust_flow_state(var('Message'), fpv_quarantine)).
+       trust_flow_state(var('Message'), quarantined)).
 
 step(confidence(message_a, 0.8937599999999999),
      rule(10),
@@ -87,7 +85,7 @@ step(signature_strength(signature_b, 0.75), fact(6), [], []).
 step(quality_score(transform_b, 0.8), fact(8), [], []).
 step(0.5249999999999999 is 0.7 * 0.75, builtin, [], []).
 step(0.41999999999999993 is 0.5249999999999999 * 0.8, builtin, [], []).
-step(trust_flow_state(message_a, fpv_accepted),
+step(trust_flow_state(message_a, accepted),
      rule(11),
      ['Message' = message_a,
       'Receiver' = receiver_app,
@@ -99,7 +97,7 @@ step(trust_flow_state(message_a, fpv_accepted),
       0.8937599999999999 >= 0.85]).
 step(acceptance_threshold(receiver_app, 0.85), fact(9), [], []).
 step(0.8937599999999999 >= 0.85, builtin, [], []).
-step(trust_flow_state(message_b, fpv_quarantine),
+step(trust_flow_state(message_b, quarantined),
      rule(12),
      ['Message' = message_b,
       'Receiver' = receiver_app,
@@ -110,11 +108,11 @@ step(trust_flow_state(message_b, fpv_quarantine),
       acceptance_threshold(receiver_app, 0.85),
       0.41999999999999993 < 0.85]).
 step(0.41999999999999993 < 0.85, builtin, [], []).
-step(status(message_a, fpv_high_trust_flow),
+step(status(message_a, high_trust_flow),
      rule(13),
      ['Message' = message_a],
-     [trust_flow_state(message_a, fpv_accepted)]).
+     [trust_flow_state(message_a, accepted)]).
 step(risk(message_b, risk_low_trust_data_source),
      rule(14),
      ['Message' = message_b],
-     [trust_flow_state(message_b, fpv_quarantine)]).
+     [trust_flow_state(message_b, quarantined)]).

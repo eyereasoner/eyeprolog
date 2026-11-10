@@ -1,2 +1,0 @@
-rdf(iri('https://example.org/ev-depot/site/depot-a'),iri('https://example.org/vocab/recommendedCharger'),iri('https://example.org/ev-depot/charger/fleet22'),iri('https://example.org/ev-depot/graph/derived')).
-rdf(iri('https://example.org/ev-depot/charger/fleet22'),iri('https://example.org/vocab/configurationStatus'),iri('https://example.org/ev-depot/state/compatible'),iri('https://example.org/ev-depot/graph/derived')).

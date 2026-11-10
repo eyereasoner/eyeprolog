@@ -1,2 +1,0 @@
-rdf(iri('https://example.org/evidence/claim/marker-reduction'),iri('https://example.org/vocab/evidenceState'),iri('https://example.org/evidence/state/supported'),iri('https://example.org/evidence/graph/derived')).
-rdf(iri('https://example.org/evidence/claim/survival-benefit'),iri('https://example.org/vocab/evidenceState'),iri('https://example.org/evidence/state/contested'),iri('https://example.org/evidence/graph/derived')).

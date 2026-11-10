@@ -57,44 +57,6 @@ and embedding facilities. Strict mode removes EyeProlog-specific language
 extensions so the standardized core can be tested on its own. The distinction
 keeps convenience from quietly redefining the language.
 
-## From standardized RDF to standardized rules
-
-The standards argument becomes especially concrete for RDF systems. RDF gives
-applications a standardized graph data model, but choosing a rule language for
-those graphs is a separate decision. Prolog is defined by the ISO/IEC 13211
-family of international standards, while RDF belongs to the W3C standards
-ecosystem, so a rule language for RDF can itself be a standard.
-
-EyeProlog and
-[`rdf-interchange`](https://github.com/eyereasoner/rdf-interchange)
-connect those two standardized worlds through a deliberately simple pipeline:
-
-```text
-RDF dataset
-    -> ordinary rdf(Subject, Predicate, Object, Graph) facts
-    -> portable ISO Prolog rules executed by EyeProlog
-    -> ground rdf/4 result facts
-    -> RDF dataset
-```
-
-The round-trip package performs the RDF conversion and contains no solver;
-EyeProlog performs the reasoning. This separation makes every boundary
-inspectable. The source graph remains recognizable, the rules are ordinary
-Prolog programs, intermediate results can be saved and tested, and the final
-facts can return to RDF without making the reasoning engine responsible for
-every RDF syntax.
-
-The [Symbiotic Knowledge Graphs example](examples/deck/symbiotic-knowledge-graphs.md) makes that boundary operational. Its RDF input keeps official sources, sensor data, AI proposals, and human review in separate named graphs. RDF 1.2 triple terms represent machine proposals without asserting them as truth. EyeProlog decides what can be accepted automatically, what requires human judgment, and what operational action follows. Only ground `result_rdf/4` conclusions are published back through `prolog-to-rdf`.
-
-This is a concrete model of human/AI/KG symbiosis: the graph constrains the agent, the agent proposes additions to the graph, people resolve governed uncertainty, and the accepted result improves the next decision while staying interoperable RDF.
-
-The companion example suite applies the same boundary to other forms of inspectable decision support: [cross-organization data sharing](examples/deck/cross-organization-data-sharing.md), [EV-depot configuration](examples/deck/explainable-ev-depot-configuration.md), [operational incident response](examples/deck/operational-incident-response.md), [SBOM vulnerability response](examples/deck/sbom-vulnerability-response.md), and [scientific evidence assessment](examples/deck/scientific-evidence-graph.md). Each keeps source RDF, portable rules, checked Prolog answers, and materialized RDF results as separate artifacts, so the decision can be reproduced and challenged at the appropriate layer.
-
-This combination is compelling when interoperability, reproducibility,
-long-term maintenance, or independent verification matter. It also opens RDF
-data to relational programming, constraints, recursion, collections, and
-portable Prolog libraries.
-
 ## Small enough to inspect, useful enough to embed
 
 A language standard is most valuable when the implementation can be examined
@@ -330,8 +292,6 @@ language boundary:
   can be inspected;
 - application developers who need rules in Node.js or the browser without
   inventing an application-specific rule format;
-- RDF practitioners who want standardized graph data to participate in
-  portable ISO Prolog reasoning;
 - researchers and implementers who want executable conformance evidence and a
   compact engine suitable for comparison; and
 - teams maintaining policies or knowledge rules that must remain reviewable,
@@ -360,7 +320,6 @@ and an ordinary JavaScript API can remain both practical and understandable.
 - [ISO/IEC 13211-1:1995 — Prolog, Part 1: General core](https://www.iso.org/standard/21413.html)
 - [ISO/IEC 13211-2:2000 — Prolog, Part 2: Modules](https://www.iso.org/standard/20775.html)
 - [ISO/IEC TS 13211-3:2025 — Prolog, Part 3: Definite clause grammar rules](https://www.iso.org/standard/83635.html)
-- [RDF 1.2 Concepts and Abstract Syntax](https://www.w3.org/TR/rdf12-concepts/)
 - [ARC — answer, reason, check](https://josd.github.io/arc/), on why a check
   has to be able to disagree with the answer it checks
 - [The Art of EyeProlog](the-art-of-eyeprolog.md)

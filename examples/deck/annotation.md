@@ -45,13 +45,13 @@ name(S, O) :-
   annotation(_t, Context),
   context_member(Context, name(S, O)).
 
-log_nameOf(T, name(S, O)) :-
+named_statement(T, name(S, O)) :-
   annotation(T, Context),
   context_member(Context, name(S, O)).
 ```
 
 `context_member/2` walks the comma term like a tree. Each projection rule then
-decides explicitly which member becomes a visible relation. `log_nameOf/2` keeps
+decides explicitly which member becomes a visible relation. `named_statement/2` keeps
 the link between the annotation `t` and the claim it carries.
 
 ---
@@ -64,7 +64,7 @@ eyeprolog examples/annotation.pl
 
 ```text
 name(a, "Alice").
-log_nameOf(t, name(a, "Alice")).
+named_statement(t, name(a, "Alice")).
 statedBy(t, bob).
 recorded(t, "2021-07-07").
 ```
@@ -115,7 +115,7 @@ checker.
 - Add a second annotation `u` in which Carol states that `b` is named "Bob",
   and predict the new answers.
 - Remove the `name/2` rule. Is the claim still visible through
-  `log_nameOf/2`? Why might you prefer that?
+  `named_statement/2`? Why might you prefer that?
 - Add `confidence(t, 0.9)` to the bundle and a projection rule for it.
 
 Learn more in [*The Art of EyeProlog*](https://eyereasoner.github.io/eyeprolog/the-art-of-eyeprolog),

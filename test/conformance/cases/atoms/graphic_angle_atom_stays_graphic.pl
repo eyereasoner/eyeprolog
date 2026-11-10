@@ -1,4 +1,4 @@
-% Graphic atoms that are not absolute IRIs remain graphic atoms.
+% A sequence of graphic characters is an ordinary atom.
 %% ?- answer(X0).
 
 operator(<=>).

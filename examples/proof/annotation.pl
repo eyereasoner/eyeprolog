@@ -1,5 +1,5 @@
 name(a, "Alice").
-log_nameOf(t, name(a, "Alice")).
+named_statement(t, name(a, "Alice")).
 statedBy(t, bob).
 recorded(t, "2021-07-07").
 
@@ -18,7 +18,7 @@ clause(5,
        (annotation(anonymous(1), var('Context')),
         context_member(var('Context'), name(var('S'), var('O'))))).
 clause(6,
-       log_nameOf(var('T'), name(var('S'), var('O'))),
+       named_statement(var('T'), name(var('S'), var('O'))),
        (annotation(var('T'), var('Context')),
         context_member(var('Context'), name(var('S'), var('O'))))).
 clause(7,
@@ -50,7 +50,7 @@ step(context_member(name(a, "Alice"), name(a, "Alice")),
      ['Member' = name(a, "Alice")],
      [name(a, "Alice") \= (_left, _right)]).
 step(name(a, "Alice") \= (_left, _right), builtin, [], []).
-step(log_nameOf(t, name(a, "Alice")),
+step(named_statement(t, name(a, "Alice")),
      rule(6),
      ['T' = t,
       'S' = a,

@@ -1,8 +1,0 @@
-VERSION "1.2"
-
-<https://example.org/city/facility/riverside-school> <https://example.org/vocab/emergencyDesignation> <https://example.org/city/class/cooling-center> <https://example.org/graph/accepted-knowledge> .
-<https://example.org/city/proposal/p2> <https://example.org/vocab/reviewOutcome> <https://example.org/city/decision/accept> <https://example.org/graph/human-review> .
-<https://example.org/city/proposal/p3> <https://example.org/vocab/reviewOutcome> <https://example.org/city/decision/reject> <https://example.org/graph/human-review> .
-<https://example.org/city/decision/before-review> <https://example.org/vocab/recommendedAction> <https://example.org/city/action/deploy-mobile-unit> <https://example.org/graph/derived-decisions> .
-<https://example.org/city/decision/after-review> <https://example.org/vocab/recommendedAction> <https://example.org/city/action/open-local-center> <https://example.org/graph/derived-decisions> .
-<https://example.org/city/decision/after-review> <https://example.org/vocab/selectedFacility> <https://example.org/city/facility/riverside-school> <https://example.org/graph/derived-decisions> .

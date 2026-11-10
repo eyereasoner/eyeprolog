@@ -1,6 +1,6 @@
 % Existential-style consequences as explicit Herbrand witness terms.
 %
-% EyeProlog has no blank nodes and no existential variables in rule heads.  The
+% Prolog represents witnesses with compound terms built from known values.  The
 % practical executable form is to put a named functional term directly in the
 % rule head.  The term is ordinary data: stable, visible, and proof-friendly.
 

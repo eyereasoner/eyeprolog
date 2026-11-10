@@ -3,9 +3,8 @@
 ## How can a rule say "there exists something" without inventing anonymous objects?
 
 "Every human has a witness of their humanity" is an existential statement.
-EyeProlog has no blank nodes and no existential variables in rule heads, so
-this example names the witness with a term built from the person it belongs
-to.
+This example names the witness with a Prolog term built from the person it
+belongs to.
 
 [Run it in the playground](https://eyereasoner.github.io/eyeprolog/playground#example=existential-rule) ·
 [Source](../existential-rule.pl)
@@ -14,9 +13,8 @@ to.
 
 # The question
 
-Semantic Web rule languages often allow a rule head to introduce a new,
-unnamed thing: "for every human there is some witness". In logic this is an
-**existential** consequence. The executable version used here is a
+"For every human there is some witness" is an **existential** consequence.
+The executable version used here is a
 **Skolem term**: a function symbol applied to the variables the new thing
 depends on, so the "something" gets a stable, printable name.
 

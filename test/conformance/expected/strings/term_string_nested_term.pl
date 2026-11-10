@@ -1,1 +1,1 @@
-answer('pair(<urn:example:a>, [1, two])').
+answer('pair(first, [1, two])').

@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/eyeprolog.svg)](https://www.npmjs.com/package/eyeprolog)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21446308-blue.svg)](https://doi.org/10.5281/zenodo.21446308)
 
-EyeProlog turns portable ISO Prolog programs into answers and inspectable proofs.
+EyeProlog is an ISO Prolog implementation for JavaScript that turns portable programs into answers and inspectable proofs.
 
 <p>
   <a href="https://eyereasoner.github.io/eyeprolog/the-art-of-eyeprolog">
@@ -75,22 +75,12 @@ printf 'human(socrates).\nmortal(X) :- human(X).\n' |
 - [SPEC.md](https://eyereasoner.github.io/eyeprolog/SPEC) — the answer, proof and check format, and the seven conditions C1–C7 a proof check establishes
 - [Playground](https://eyereasoner.github.io/eyeprolog/playground) — run EyeProlog in a browser
 - [Examples](examples) — runnable programs and checked output
-- [Example decks](https://eyereasoner.github.io/eyeprolog/examples/deck/) — explainable RDF/Prolog scenarios with reproducible roundtrips
+- [Example decks](https://eyereasoner.github.io/eyeprolog/examples/deck/) — walkthroughs of Prolog programs, answers, and checked proofs
 - [Introduction to EyeProlog](https://eyereasoner.github.io/eyeprolog/examples/deck/introduction-to-eyeprolog) — short presentation deck for first-time audiences
-- [Symbiotic Knowledge Graphs](https://eyereasoner.github.io/eyeprolog/examples/deck/symbiotic-knowledge-graphs) — RDF ↔ Prolog heatwave-response demo for human/AI/KG co-evolution
-- [rdf-interchange](https://github.com/eyereasoner/rdf-interchange) — standalone RDF 1.2 ↔ ISO Prolog bridge used by the RDF examples
-- [RDF and Prolog: Two Standards-Based Legs](https://eyereasoner.github.io/rdf-interchange/why-rdf-prolog) — why W3C RDF and ISO Prolog form the foundation
 - [ISO conformance review](https://eyereasoner.github.io/eyeprolog/test/conformance/ISO-COMPLIANCE) — supported Part 1 profile
 - [Latest Neumerkel conformity](https://eyereasoner.github.io/eyeprolog/test/conformance/NEUMERKEL-LATEST) — tracked result from the current live upstream inventory
 - [Conformance report](https://eyereasoner.github.io/eyeprolog/conformance-report) — generated executable conformance status, local corpus summary, and known deviations
 - [OpenRuleBench](https://eyereasoner.github.io/eyeprolog/openrulebench/) — portable benchmark profile
-## RDF, Prolog, and symbiotic knowledge graphs
-
-EyeProlog can sit behind an RDF knowledge graph without inventing a private graph representation. [`rdf-interchange`](https://github.com/eyereasoner/rdf-interchange) converts RDF 1.2 datasets to ordinary `rdf(Subject, Predicate, Object, Graph)` facts, EyeProlog applies portable rules, and ground `rdf/4` results can be converted back to RDF.
-
-The checked [Symbiotic Knowledge Graphs example](examples/symbiotic-knowledge-graph.pl) uses named graphs and RDF 1.2 triple terms to distinguish trusted knowledge, AI-proposed statements, and human review. Its [wide-audience companion](https://eyereasoner.github.io/eyeprolog/examples/deck/symbiotic-knowledge-graphs) explains why this is a useful present-day software model for human/AI/KG co-evolution: RDF supplies shared semantic memory, Prolog supplies explicit deliberation, AI supplies new hypotheses, and people remain participants in meaning and judgment.
-
-The same RDF → Prolog → RDF boundary is exercised by five additional checked scenarios: [cross-organization data sharing](https://eyereasoner.github.io/eyeprolog/examples/deck/cross-organization-data-sharing), [explainable EV-depot configuration](https://eyereasoner.github.io/eyeprolog/examples/deck/explainable-ev-depot-configuration), [operational incident response](https://eyereasoner.github.io/eyeprolog/examples/deck/operational-incident-response), [software supply-chain vulnerability response](https://eyereasoner.github.io/eyeprolog/examples/deck/sbom-vulnerability-response), and a [scientific evidence graph](https://eyereasoner.github.io/eyeprolog/examples/deck/scientific-evidence-graph). Together they cover policy decisions, reversible configuration reasoning, dependency-graph diagnosis, transitive SBOM exposure, and evidence aggregation with explicit disagreement.
 
 ## Performance
 EyeProlog does not carry a separate wall-clock benchmark harness. `npm test`'s own elapsed time, run across thousands of conformance, regression, and example programs, is the coarse performance indicator instead — a real slowdown shows up there. [OpenRuleBench](https://eyereasoner.github.io/eyeprolog/openrulebench/) remains a dedicated, checked correctness-and-scale benchmark for the Datalog rule-engine profile specifically.

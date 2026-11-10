@@ -145,12 +145,9 @@ program B ──→ answer + proof ──┼──→ program C ──→ answer
 facts     ────────────────────-┘
 ```
 
-The same property connects EyeProlog to the wider data world. RDF quads convert
-to ordinary `rdf/4` facts and back, so an arc can take RDF in, reason in
-Prolog, and emit RDF out, with the proof of the middle step available for
-inspection. The contract at each boundary is explicit, so a larger arc can
-check not only its own result but whether the pieces compose into an answer to
-the larger question.
+The contract at each boundary is explicit: ordinary Prolog facts carry both
+the answers and their justifications. A larger arc can check its own result
+and whether the pieces compose into an answer to the larger question.
 
 ## 05 — Scope: what this can and cannot guarantee
 

@@ -30,9 +30,8 @@
 % Here (3) is the better fit, and is this codebase's actual convention for
 % this situation. Reach for tnot/1 and wfs_truth/2 when the mutual defeat is
 % already how the rules are naturally stated as each other's negation — a
-% permission that holds unless its prohibition holds and vice versa, as
-% examples/odrl-policy-reasoning.pl's profile rules do for a real policy
-% language — not to manufacture a cycle for a conflict a direct join would
+% permission that holds unless its prohibition holds and vice versa
+% — not to manufacture a cycle for a conflict a direct join would
 % already detect. And for everyday defeasible overriding, where a more
 % specific rule is meant to win outright, plain stratified \+/1 already says
 % exactly that and is ISO-portable; WFS would not change the answer there,

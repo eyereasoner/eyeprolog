@@ -13,16 +13,7 @@ that backward rule as data, and the derived rule then feeds an ordinary one.
 
 # The question
 
-In Notation3 (N3), a Semantic Web rule language, the example reads:
-
-```text
-parentOf invOf childOf.
-alice parentOf bob.
-{ P invOf Q. } => { { X Q Y. } <= { Y P X. }. }.
-{ X childOf Y. } => { X hasParent Y. }.
-```
-
-The third line is a rule whose conclusion is itself a rule. Given that Alice
+The inverse relation is represented as a rule term. Given that Alice
 is Bob's parent, does it follow that Bob has a parent, and who?
 
 ---
@@ -42,11 +33,11 @@ directions. `parentOf(alice, bob)` is the only family fact.
 # The rules
 
 ```prolog
-log_impliedBy(childOf(var(x), var(y)), parentOf(var(y), var(x))) :-
+implied_by(childOf(var(x), var(y)), parentOf(var(y), var(x))) :-
   invOf(parentOf, childOf).
 
 childOf(X, Y) :-
-  log_impliedBy(childOf(var(x), var(y)), parentOf(var(y), var(x))),
+  implied_by(childOf(var(x), var(y)), parentOf(var(y), var(x))),
   parentOf(Y, X).
 
 hasParent(X, Y) :- childOf(X, Y).
@@ -66,7 +57,7 @@ eyeprolog examples/derived-backward-rule.pl
 ```
 
 ```text
-log_impliedBy(childOf(var(x), var(y)), parentOf(var(y), var(x))).
+implied_by(childOf(var(x), var(y)), parentOf(var(y), var(x))).
 childOf(bob, alice).
 hasParent(bob, alice).
 ```
@@ -86,7 +77,7 @@ eyeprolog --proof examples/derived-backward-rule.pl
 step(childOf(bob, alice),
      rule(4),
      ['X' = bob, 'Y' = alice],
-     [log_impliedBy(childOf(var(x), var(y)), parentOf(var(y), var(x))), parentOf(alice, bob)]).
+     [implied_by(childOf(var(x), var(y)), parentOf(var(y), var(x))), parentOf(alice, bob)]).
 step(hasParent(bob, alice), rule(5), ['X' = bob, 'Y' = alice], [childOf(bob, alice)]).
 ```
 

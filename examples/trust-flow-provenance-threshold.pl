@@ -35,17 +35,17 @@ confidence(Message, Confidence) :-
   (A is Publishertrust * Signaturetrust),
   (Confidence is A * Quality).
 
-trust_flow_state(Message, fpv_accepted) :-
+trust_flow_state(Message, accepted) :-
   message(Message, _publisher, _transform, _signature, Receiver),
   confidence(Message, Confidence),
   acceptance_threshold(Receiver, Threshold),
   (Confidence >= Threshold).
 
-trust_flow_state(Message, fpv_quarantine) :-
+trust_flow_state(Message, quarantined) :-
   message(Message, _publisher, _transform, _signature, Receiver),
   confidence(Message, Confidence),
   acceptance_threshold(Receiver, Threshold),
   (Confidence < Threshold).
 
-status(Message, fpv_high_trust_flow) :- trust_flow_state(Message, fpv_accepted).
-risk(Message, risk_low_trust_data_source) :- trust_flow_state(Message, fpv_quarantine).
+status(Message, high_trust_flow) :- trust_flow_state(Message, accepted).
+risk(Message, risk_low_trust_data_source) :- trust_flow_state(Message, quarantined).

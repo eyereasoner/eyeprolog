@@ -1,7 +1,0 @@
-rdf(iri('https://example.org/operations/incident/inc-900'),iri('https://example.org/vocab/rootCause'),iri('https://example.org/operations/db/primary'),iri('https://example.org/operations/graph/derived')).
-rdf(iri('https://example.org/operations/incident/inc-900'),iri('https://example.org/vocab/recommendedAction'),iri('https://example.org/operations/action/failover-to-replica'),iri('https://example.org/operations/graph/derived')).
-rdf(iri('https://example.org/operations/incident/inc-900'),iri('https://example.org/vocab/impacts'),iri('https://example.org/operations/db/primary'),iri('https://example.org/operations/graph/derived')).
-rdf(iri('https://example.org/operations/incident/inc-900'),iri('https://example.org/vocab/impacts'),iri('https://example.org/operations/service/payment-api'),iri('https://example.org/operations/graph/derived')).
-rdf(iri('https://example.org/operations/incident/inc-900'),iri('https://example.org/vocab/impacts'),iri('https://example.org/operations/service/storefront'),iri('https://example.org/operations/graph/derived')).
-rdf(iri('https://example.org/operations/incident/inc-900'),iri('https://example.org/vocab/impacts'),iri('https://example.org/operations/service/mobile-app'),iri('https://example.org/operations/graph/derived')).
-rdf(iri('https://example.org/operations/incident/inc-900'),iri('https://example.org/vocab/impacts'),iri('https://example.org/operations/service/checkout-api'),iri('https://example.org/operations/graph/derived')).

@@ -4296,8 +4296,7 @@ is insignificant.
 Graphic tokens use the characters `#$&*+-./<=>?@^~\`; `!` and `;` are solo
 atoms. A colon is the Part 2 module qualification operator in `Module:Goal`.
 Normal mode predeclares it; `--iso-strict` does not, since it is not in the
-Part 1 operator table. Quote an atom whose name contains a colon. Unquoted
-angle-bracket IRIs are not syntax.
+Part 1 operator table. Quote an atom whose name contains a colon.
 
 `/*` opens a block comment only at the start of a token; inside a graphic
 token the slash and star are atom characters. Graphic tokens are formed
@@ -8252,9 +8251,9 @@ console.log(report.passed, report.failed, report.undecided, report.stdout);
 </figure>
 
 The [examples directory](https://github.com/eyereasoner/eyeprolog/tree/main/examples/) is the book's executable companion. Its
-top-level directory contains **239 self-contained runnable programs**. Every
+top-level directory contains **213 self-contained runnable programs**. Every
 program has an exact answer file under
-[examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **239 programs** have a checked
+[examples/output](https://github.com/eyereasoner/eyeprolog/tree/main/examples/output/), and **213 programs** have a checked
 explanation under [examples/proof](https://github.com/eyereasoner/eyeprolog/tree/main/examples/proof/), with the result of that
 check under [examples/check](https://github.com/eyereasoner/eyeprolog/tree/main/examples/check/). So each example comes in three
 parts, making three different claims:
@@ -8336,17 +8335,11 @@ A selection, grouped by theme:
   [defeasible-reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/defeasible-reasoning.pl),
   [dialogical-reasoning](https://github.com/eyereasoner/eyeprolog/blob/main/examples/dialogical-reasoning.pl),
   [trust-flow-provenance-threshold](https://github.com/eyereasoner/eyeprolog/blob/main/examples/trust-flow-provenance-threshold.pl).
-- **RDF 1.2.**
-  [rdf12-triple-term](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-triple-term.pl),
-  [rdf12-trig-named-graph](https://github.com/eyereasoner/eyeprolog/blob/main/examples/rdf12-trig-named-graph.pl),
-  [odrl-policy](https://github.com/eyereasoner/eyeprolog/blob/main/examples/odrl-policy.pl),
-  [symbiotic-knowledge-graph](https://github.com/eyereasoner/eyeprolog/blob/main/examples/symbiotic-knowledge-graph.pl).
 - **Science and engineering.**
   [bayes-diagnosis](https://github.com/eyereasoner/eyeprolog/blob/main/examples/bayes-diagnosis.pl),
   [spacecraft-battery-diagnosis](https://github.com/eyereasoner/eyeprolog/blob/main/examples/spacecraft-battery-diagnosis.pl),
   [least-squares-regression](https://github.com/eyereasoner/eyeprolog/blob/main/examples/least-squares-regression.pl).
 - **Larger cases.**
-  [auroracare](https://github.com/eyereasoner/eyeprolog/blob/main/examples/auroracare.pl),
   [manufacturing-quality-control](https://github.com/eyereasoner/eyeprolog/blob/main/examples/manufacturing-quality-control.pl).
 
 `node test/run-examples.mjs` runs every answer and proof golden; `npm test`
@@ -8387,7 +8380,7 @@ node test/run-iso-strict.mjs
 node test/run-conformance-report.mjs
 ```
 
-The file-based conformance corpus contains 905 cases, including 479 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
+The file-based conformance corpus contains 869 cases, including 479 focused ISO cases derived from the success, failure, mode, and error behavior in ISO/IEC 13211-1 clauses 7 and 8, Part 2 modules, and Part 3 grammar rules.
 Separate exact-output suites check every example's answer, proof, and proof
 check, and every chapter display is parsed with its declared goals run. The
 playground suite drives the production worker through its message protocol and
@@ -8555,9 +8548,6 @@ languages and theories and are not EyeProlog specifications.
   Springer, 1981; Ivan Bratko, *Prolog Programming for Artificial
   Intelligence*, Addison-Wesley, 1986. Teaching Prolog by construction
   (Part X).
-- Dörthe Arndt and Stephan Mennicke,
-  [“Notation3 as an Existential Rule Language”](https://arxiv.org/abs/2308.07332),
-  2023. Semantic Web rules and existential-rule reasoning.
 
 ### Glossary
 

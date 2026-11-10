@@ -1,4 +1,4 @@
-% A lone graphic < remains a graphic atom, not an IRI opener.
+% A lone < is an ordinary graphic atom.
 %% ?- answer(X0).
 
 seed(<).

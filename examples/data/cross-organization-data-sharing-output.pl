@@ -1,3 +1,0 @@
-rdf(iri('https://example.org/data-sharing/request/marketing'),iri('https://example.org/vocab/sharingDecision'),iri('https://example.org/data-sharing/decision/deny'),iri('https://example.org/data-sharing/graph/derived')).
-rdf(iri('https://example.org/data-sharing/request/research-us'),iri('https://example.org/vocab/sharingDecision'),iri('https://example.org/data-sharing/decision/review'),iri('https://example.org/data-sharing/graph/derived')).
-rdf(iri('https://example.org/data-sharing/request/research-eu'),iri('https://example.org/vocab/sharingDecision'),iri('https://example.org/data-sharing/decision/permit'),iri('https://example.org/data-sharing/graph/derived')).

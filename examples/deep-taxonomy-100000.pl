@@ -1,5 +1,5 @@
 % =============================================================================================================================
-% Deep Taxonomy - depth 100000 - expanded N3-style eyeprolog
+% Deep Taxonomy - depth 100000 - Prolog clause chain
 %
 % Adjacent rules form the deep-taxonomy chain. Each step derives
 % the next taxonomy class together with two side labels.
@@ -18,7 +18,7 @@ a(ind, n0).
 % Derivation rules: each rule below contributes one logical step toward the displayed results.
 a(X, a2) :- a(X, n100000).
 
-% Adjacent N3-style taxonomy rules.
+% Adjacent taxonomy rules.
 
 a(X, n1) :- a(X, n0).
 a(X, i1) :- a(X, n0).

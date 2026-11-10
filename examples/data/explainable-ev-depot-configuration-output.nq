@@ -1,4 +1,0 @@
-VERSION "1.2"
-
-<https://example.org/ev-depot/site/depot-a> <https://example.org/vocab/recommendedCharger> <https://example.org/ev-depot/charger/fleet22> <https://example.org/ev-depot/graph/derived> .
-<https://example.org/ev-depot/charger/fleet22> <https://example.org/vocab/configurationStatus> <https://example.org/ev-depot/state/compatible> <https://example.org/ev-depot/graph/derived> .

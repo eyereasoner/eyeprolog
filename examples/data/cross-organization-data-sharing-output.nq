@@ -1,5 +1,0 @@
-VERSION "1.2"
-
-<https://example.org/data-sharing/request/marketing> <https://example.org/vocab/sharingDecision> <https://example.org/data-sharing/decision/deny> <https://example.org/data-sharing/graph/derived> .
-<https://example.org/data-sharing/request/research-us> <https://example.org/vocab/sharingDecision> <https://example.org/data-sharing/decision/review> <https://example.org/data-sharing/graph/derived> .
-<https://example.org/data-sharing/request/research-eu> <https://example.org/vocab/sharingDecision> <https://example.org/data-sharing/decision/permit> <https://example.org/data-sharing/graph/derived> .

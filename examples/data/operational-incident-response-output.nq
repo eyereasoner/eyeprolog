@@ -1,9 +1,0 @@
-VERSION "1.2"
-
-<https://example.org/operations/incident/inc-900> <https://example.org/vocab/rootCause> <https://example.org/operations/db/primary> <https://example.org/operations/graph/derived> .
-<https://example.org/operations/incident/inc-900> <https://example.org/vocab/recommendedAction> <https://example.org/operations/action/failover-to-replica> <https://example.org/operations/graph/derived> .
-<https://example.org/operations/incident/inc-900> <https://example.org/vocab/impacts> <https://example.org/operations/db/primary> <https://example.org/operations/graph/derived> .
-<https://example.org/operations/incident/inc-900> <https://example.org/vocab/impacts> <https://example.org/operations/service/payment-api> <https://example.org/operations/graph/derived> .
-<https://example.org/operations/incident/inc-900> <https://example.org/vocab/impacts> <https://example.org/operations/service/storefront> <https://example.org/operations/graph/derived> .
-<https://example.org/operations/incident/inc-900> <https://example.org/vocab/impacts> <https://example.org/operations/service/mobile-app> <https://example.org/operations/graph/derived> .
-<https://example.org/operations/incident/inc-900> <https://example.org/vocab/impacts> <https://example.org/operations/service/checkout-api> <https://example.org/operations/graph/derived> .

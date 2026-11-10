@@ -1,6 +1,6 @@
 % Burn the witch.
 %
-% This is the classic N3/Semantic Web rule chain in eyeprolog form: a duck
+% This is a Prolog version of the classic comedy rule chain: a duck
 % floats; something with the same weight as something that floats also floats;
 % things that float are made of wood; things made of wood burn; and a woman
 % who burns is a witch.

@@ -262,8 +262,7 @@ function blockLines(clauses, steps, writeOptions) {
 }
 
 // The `clause/3` and `step/4` blocks explaining what a run claimed. They
-// follow the claims, separated from them by a blank line, the way an N3
-// proof's steps follow the triples they explain.
+// follow the claims, separated from them by a blank line.
 export function proofBlocks(program, clauses, steps) {
   const lines = blockLines(clauses, steps, resultWriteOptions(program));
   return lines.length ? `${lines.join('\n')}\n` : '';

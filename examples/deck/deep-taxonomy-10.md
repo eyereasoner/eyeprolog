@@ -19,8 +19,7 @@ An individual `ind` belongs to class `n0`. Every member of `n0` is also a
 member of `n1`, every member of `n1` of `n2`, and so on up to `n10`; every
 member of `n10` belongs to `a2`. Is `ind` in `a2`?
 
-The benchmark comes from the Semantic Web, where such chains are written as
-N3 rules; here each rule is one Prolog clause.
+Each step in the hierarchy is one Prolog clause.
 
 ---
 

@@ -6,7 +6,7 @@
 % Output declarations: host-supplied goals select the relations written to this example's golden output.
 %% ?- name(X0, X1).
 
-%% ?- log_nameOf(X0, X1).
+%% ?- named_statement(X0, X1).
 
 %% ?- statedBy(X0, X1).
 
@@ -29,7 +29,7 @@ name(S, O) :-
   annotation(_t, Context),
   context_member(Context, name(S, O)).
 
-log_nameOf(T, name(S, O)) :-
+named_statement(T, name(S, O)) :-
   annotation(T, Context),
   context_member(Context, name(S, O)).
 

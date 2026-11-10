@@ -1,4 +1,0 @@
-VERSION "1.2"
-
-<https://example.org/evidence/claim/marker-reduction> <https://example.org/vocab/evidenceState> <https://example.org/evidence/state/supported> <https://example.org/evidence/graph/derived> .
-<https://example.org/evidence/claim/survival-benefit> <https://example.org/vocab/evidenceState> <https://example.org/evidence/state/contested> <https://example.org/evidence/graph/derived> .

@@ -13,15 +13,8 @@ fires it. The derived rule is kept as data, so it can be printed and cited.
 
 # The question
 
-In Notation3 (N3), a Semantic Web rule language:
-
-```text
-minka a cat.
-charly a dog.
-{ X a cat. } => { { Y a dog. } => { test is true. }. }.
-```
-
-The rule's conclusion is itself a rule. Does the test come out true?
+The presence of a cat derives an implication: if something is a dog, the
+test is true. Does the test come out true?
 
 ---
 
@@ -39,11 +32,11 @@ Minka is a cat and Charly is a dog.
 # The rules
 
 ```prolog
-log_implies(type(var(y), dog), holds_result(test, true)) :-
+implication(type(var(y), dog), holds_result(test, true)) :-
   type(_x, cat).
 
 holds_result(test, true) :-
-  log_implies(type(var(y), dog), holds_result(test, true)),
+  implication(type(var(y), dog), holds_result(test, true)),
   type(_y, dog).
 ```
 
@@ -61,7 +54,7 @@ eyeprolog examples/derived-rule.pl
 ```
 
 ```text
-log_implies(type(var(y), dog), holds_result(test, true)).
+implication(type(var(y), dog), holds_result(test, true)).
 holds_result(test, true).
 ```
 
@@ -76,11 +69,11 @@ eyeprolog --proof examples/derived-rule.pl
 ```
 
 ```text
-step(log_implies(type(var(y), dog), holds_result(test, true)), rule(3), [], [type(minka, cat)]).
+step(implication(type(var(y), dog), holds_result(test, true)), rule(3), [], [type(minka, cat)]).
 step(holds_result(test, true),
      rule(4),
      [],
-     [log_implies(type(var(y), dog), holds_result(test, true)), type(charly, dog)]).
+     [implication(type(var(y), dog), holds_result(test, true)), type(charly, dog)]).
 ```
 
 The implication exists because Minka is a cat (clause 3). The test is true by

@@ -1,7 +1,7 @@
 ---
 marp: true
 title: Introduction to EyeProlog
-description: A short presentation introducing EyeProlog as a portable, inspectable ISO Prolog engine for answers, proofs, constraints, and RDF-backed reasoning.
+description: A short presentation introducing EyeProlog as a portable, inspectable ISO Prolog engine for answers, proofs, and constraints.
 ---
 
 # Introduction to EyeProlog
@@ -164,24 +164,6 @@ Boolean constraints are compact when the domain is “on/off”, “selected/not
 
 ---
 
-## RDF and knowledge graphs
-
-EyeProlog pairs naturally with RDF through `rdf-interchange`:
-
-```text
-RDF dataset
-  -> rdf(S, P, O, Graph) facts
-  -> EyeProlog rules
-  -> result_rdf/4 facts
-  -> RDF dataset
-```
-
-RDF remains the interchange layer. Prolog remains the transparent reasoning layer.
-
-This is useful when a knowledge graph needs explicit derivation rules, but the data should still move in and out as RDF rather than as a private in-memory structure.
-
----
-
 ## Categorized examples: start here
 
 The example corpus is intentionally broad. A practical path through it is:
@@ -190,8 +172,7 @@ The example corpus is intentionally broad. A practical path through it is:
 - **Algorithms:** graph reachability, Dijkstra, parser, FFT, SAT/DPLL.
 - **Integer constraints:** CLP(Z) queens, Sudoku, resource allocation.
 - **Boolean constraints:** CLP(B) circuits, cardinality, feature models, planning.
-- **Policies and decisions:** access control, ODRL, GDPR, trust flow.
-- **RDF roundtrips:** symbiotic knowledge graph and domain-specific RDF scenarios.
+- **Policies and decisions:** access control, GDPR, trust flow.
 - **Proofs:** examples with checked `--proof` output.
 
 Use the [playground](https://eyereasoner.github.io/eyeprolog/playground) for quick exploration, or browse the [examples source tree](https://github.com/eyereasoner/eyeprolog/tree/main/examples) when you want to inspect the program and golden output side by side.
@@ -210,22 +191,6 @@ For constraint reasoning, start with the small examples and move outward:
 - `clpb-feature-model.pl` and `clpb-weighted-planning.pl` show product/release decisions.
 
 Together these examples show that Prolog can describe a problem declaratively while constraint libraries do the propagation and search work.
-
----
-
-## Example path: knowledge graphs
-
-For RDF-backed reasoning, start with [Symbiotic Knowledge Graphs](https://eyereasoner.github.io/eyeprolog/examples/deck/symbiotic-knowledge-graphs).
-
-Then explore the scenario decks:
-
-- [Cross-organization data sharing](https://eyereasoner.github.io/eyeprolog/examples/deck/cross-organization-data-sharing)
-- [Explainable EV-depot configuration](https://eyereasoner.github.io/eyeprolog/examples/deck/explainable-ev-depot-configuration)
-- [Operational incident response](https://eyereasoner.github.io/eyeprolog/examples/deck/operational-incident-response)
-- [SBOM vulnerability response](https://eyereasoner.github.io/eyeprolog/examples/deck/sbom-vulnerability-response)
-- [Scientific evidence graph](https://eyereasoner.github.io/eyeprolog/examples/deck/scientific-evidence-graph)
-
-Each scenario keeps source RDF, Prolog rules, generated Prolog, and output RDF as separate artifacts.
 
 ---
 

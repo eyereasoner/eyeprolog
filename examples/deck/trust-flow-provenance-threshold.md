@@ -54,7 +54,7 @@ confidence(Message, Confidence) :-
   (A is Publishertrust * Signaturetrust),
   (Confidence is A * Quality).
 
-trust_flow_state(Message, fpv_quarantine) :-
+trust_flow_state(Message, quarantined) :-
   message(Message, _publisher, _transform, _signature, Receiver),
   confidence(Message, Confidence),
   acceptance_threshold(Receiver, Threshold),
@@ -62,7 +62,7 @@ trust_flow_state(Message, fpv_quarantine) :-
 ```
 
 Confidence is the product of the three factors, so one weak link pulls the
-whole score down. A matching rule with `>=` yields `fpv_accepted`.
+whole score down. A matching rule with `>=` yields `accepted`.
 
 ---
 
@@ -75,9 +75,9 @@ eyeprolog examples/trust-flow-provenance-threshold.pl
 ```text
 confidence(message_a, 0.8937599999999999).
 confidence(message_b, 0.41999999999999993).
-trust_flow_state(message_a, fpv_accepted).
-trust_flow_state(message_b, fpv_quarantine).
-status(message_a, fpv_high_trust_flow).
+trust_flow_state(message_a, accepted).
+trust_flow_state(message_b, quarantined).
+status(message_a, high_trust_flow).
 risk(message_b, risk_low_trust_data_source).
 ```
 

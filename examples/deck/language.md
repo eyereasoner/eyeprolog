@@ -1,10 +1,10 @@
 # Language
 
-## How does an EyeProlog program look when its names are web identifiers?
+## How do quoted names and tabled recursion work together?
 
-Identifiers on the web often look like `<urn:example:a>`. In EyeProlog they
-are simply quoted atoms. This example builds a small graph of such identifiers
-and computes every path through it, with a tabled recursive rule.
+Prolog atoms can contain spaces when quoted, as in `'node a'`. This example
+builds a small graph of such names and computes every path through it, with
+a tabled recursive rule.
 
 [Run it in the playground](https://eyereasoner.github.io/eyeprolog/playground#example=language) ·
 [Source](../language.pl)
@@ -24,13 +24,13 @@ explicit `table/1` declaration for the recursive predicate.
 # The edges
 
 ```prolog
-edge('<urn:example:a>', '<urn:example:b>').
-edge('<urn:example:b>', '<urn:example:c>').
-edge('<urn:example:c>', '<urn:example:d>').
+edge('node a', 'node b').
+edge('node b', 'node c').
+edge('node c', 'node d').
 ```
 
-Quoting makes `'<urn:example:a>'` one atom. The angle brackets and colons are
-just characters of its name, so no special syntax for identifiers is needed.
+Quoting makes `'node a'` one atom. The space is part of its name,
+so the quotes are needed wherever the atom appears.
 
 ---
 
@@ -56,12 +56,12 @@ eyeprolog examples/language.pl
 ```
 
 ```text
-path('<urn:example:a>', '<urn:example:b>').
-path('<urn:example:b>', '<urn:example:c>').
-path('<urn:example:c>', '<urn:example:d>').
-path('<urn:example:a>', '<urn:example:c>').
-path('<urn:example:a>', '<urn:example:d>').
-path('<urn:example:b>', '<urn:example:d>').
+path('node a', 'node b').
+path('node b', 'node c').
+path('node c', 'node d').
+path('node a', 'node c').
+path('node a', 'node d').
+path('node b', 'node d').
 ```
 
 Three direct paths and three longer ones: every pair of nodes in order along
@@ -76,14 +76,14 @@ eyeprolog --proof examples/language.pl
 ```
 
 ```text
-step(path('<urn:example:a>', '<urn:example:d>'),
+step(path('node a', 'node d'),
      rule(6),
-     ['X' = '<urn:example:a>', 'Z' = '<urn:example:d>', 'Y' = '<urn:example:b>'],
-     [edge('<urn:example:a>', '<urn:example:b>'), path('<urn:example:b>', '<urn:example:d>')]).
+     ['X' = 'node a', 'Z' = 'node d', 'Y' = 'node b'],
+     [edge('node a', 'node b'), path('node b', 'node d')]).
 ```
 
-The longest path holds by the recursive rule with `Y` bound to `b`: there is
-an edge from `a` to `b`, and a path from `b` to `d`. That path has its own step
+The longest path holds by the recursive rule with `Y` bound to `'node b'`: there is
+an edge from `'node a'` to `'node b'`, and a path from `'node b'` to `'node d'`. That path has its own step
 further down the proof.
 
 ---
@@ -105,11 +105,11 @@ proof must show.
 
 # Try it
 
-- Add `edge('<urn:example:d>', '<urn:example:a>')` to close the cycle. With the
+- Add `edge('node d', 'node a')` to close the cycle. With the
   table, every node now reaches every node, including itself.
 - Remove `:- table path/2.` and keep the cycle. The search prints a few
   answers and never finishes.
-- Ask only for the nodes `a` can reach: `--goal "path('<urn:example:a>', X)"`.
+- Ask only for the nodes `'node a'` can reach: `--goal "path('node a', X)"`.
 
 Learn more in [*The Art of EyeProlog*](https://eyereasoner.github.io/eyeprolog/the-art-of-eyeprolog),
 Chapter 4.
