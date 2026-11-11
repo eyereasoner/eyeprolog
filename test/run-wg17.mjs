@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Execution and upstream-matching for WG17 conformity-testing syntax cases.
-// The live, current case inventory is discovered fresh by test/neumerkel.mjs
-// (its 'syntax' corpus) every run, not vendored here. wg17-syntax-cases.json
+// The case inventory is discovered by test/neumerkel.mjs (its 'syntax'
+// corpus) from the cached upstream sources, refreshed by npm run sync.
+// It is not vendored here. wg17-syntax-cases.json
 // is a separate, static offline regression corpus: a frozen set of cases with
 // reviewed exact EyeProlog outcomes, used by the offline regression suite and
 // cross-referenced by id against the live cases for an additional regression

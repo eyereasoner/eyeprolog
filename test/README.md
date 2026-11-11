@@ -1,8 +1,10 @@
 # Test runners
 
-Normally, run `npm test`. Use `npm test -- --offline` to skip live upstream fetching
-(this also skips the WG17 syntax check, which is discovered live and has no
-offline snapshot).
+Normally, run `npm test`. The eight upstream suites, including WG17 syntax,
+reuse Git-ignored `.cache/neumerkel/`. A missing or incomplete cache is downloaded
+automatically. `npm run sync` explicitly refreshes upstream, checks the suites
+and updates the tracked report. Use `npm test -- --offline` to skip those suites
+entirely, or `node test/run-neumerkel.mjs --cached` to run them without downloads.
 
 For development, run a focused check directly from the repository root:
 
@@ -12,7 +14,8 @@ node test/run-regression.mjs docs   # documentation checks only
 node test/run-conformance-all.mjs   # conformance layers; accepts --offline
 node test/run-iso-strict.mjs        # strict ISO core
 node test/run-iso-part2-amendment.mjs
-node test/run-neumerkel.mjs         # live upstream; --cached reproduces last fetch
+node test/run-neumerkel.mjs         # reuse cache; download if missing or incomplete
+                                    # --live forces a refresh; --cached never fetches
                                     # --verify-report fails on a stale tracked report
 node test/run-neumerkel-tests.mjs   # upstream-fetch harness
 node test/run-examples.mjs
@@ -24,10 +27,12 @@ node test/run-http-json.mjs
 node test/run-interop.mjs           # requires the comparison engines
 ```
 
-These runners retain their existing options. The single alias is
-`npm run neumerkel`, for `node test/run-neumerkel.mjs --verify-report`: the
-release gate only warns when the tracked upstream report has gone stale, and
-that alias makes it an error instead. Every other runner is invoked directly.
+`npm run neumerkel` runs `node test/run-neumerkel.mjs --live --verify-report`:
+it fetches upstream and makes a stale tracked report an error. Normal tests
+warn about report drift while still checking every discovered case.
+`npm run sync` uses `--live --update-report` to refresh and record that evidence.
+The version lifecycle syncs once before the full test run; tests reuse the
+same snapshot. Every other runner is invoked directly.
 Focused checks do not replace the full release gate.
 
 `run-properties.mjs` is different in kind from the rest of the suite: instead

@@ -1,8 +1,10 @@
 #!/usr/bin/env node
-import { NEUMERKEL_SOURCES, formatNeumerkelMarkdown, materializeSyntaxCases, parseCleanupCases, parseDifCases } from './neumerkel.mjs';
+import { NEUMERKEL_SOURCES, formatNeumerkelMarkdown, loadNeumerkelSources, materializeSyntaxCases, parseCleanupCases, parseDifCases } from './neumerkel.mjs';
 import { executeWg17Item, matchesUpstreamExpectation } from './run-wg17.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
+import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { TestReporter, isMainModule, runStandalone } from './test-style.mjs';
 
@@ -25,8 +27,90 @@ function syntaxHtmlWithBareAnchors() {
   return `<table><tr><td>number of conforming queries<td>376/376${rows.join('')}</table>`;
 }
 
-export function runNeumerkelHarnessTests(reporter = new TestReporter()) {
+function sourceResponse(url, revision = 1) {
+  const source = NEUMERKEL_SOURCES.find((item) => item.url === url);
+  return new Response(Buffer.from(`${source.key} caf\u00e9 ${revision}`, 'latin1'), {
+    headers: { 'content-type': 'text/plain; charset=ISO-8859-1' },
+  });
+}
+
+async function withCache(run) {
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'eyeprolog-neumerkel-cache-'));
+  try { await run(path.join(temporary, 'cache')); }
+  finally { fs.rmSync(temporary, { recursive: true, force: true }); }
+}
+
+export async function runNeumerkelHarnessTests(reporter = new TestReporter()) {
   reporter.section('Neumerkel harness');
+
+  await reporter.testAsync('missing upstream cache is downloaded once and warm runs preserve bytes and encoding without fetching', () => withCache(async (cacheDir) => {
+    const requests = [];
+    const first = await loadNeumerkelSources({ cacheDir, fetchSource: async (url) => { requests.push(url); return sourceResponse(url); } });
+    assert.equal(requests.length, 8);
+    const manifest = fs.readFileSync(path.join(cacheDir, 'manifest.json'), 'utf8');
+    const warm = await loadNeumerkelSources({ cacheDir, fetchSource: async () => assert.fail('warm cache fetched upstream') });
+    assert.equal(warm.get('syntax').text, 'syntax caf\u00e9 1');
+    for (const source of NEUMERKEL_SOURCES) {
+      assert.deepEqual(warm.get(source.key).bytes, first.get(source.key).bytes);
+      assert.equal(warm.get(source.key).metadata.cached, true);
+    }
+    assert.equal(fs.readFileSync(path.join(cacheDir, 'manifest.json'), 'utf8'), manifest);
+  }));
+
+  await reporter.testAsync('missing or altered cached inputs rebuild the whole upstream snapshot', () => withCache(async (cacheDir) => {
+    await loadNeumerkelSources({ cacheDir, fetchSource: async (url) => sourceResponse(url) });
+    for (const damage of ['missing', 'altered']) {
+      const filename = path.join(cacheDir, NEUMERKEL_SOURCES[0].filename);
+      if (damage === 'missing') fs.rmSync(filename);
+      else fs.writeFileSync(filename, 'changed input');
+      let requests = 0;
+      const restored = await loadNeumerkelSources({ cacheDir, fetchSource: async (url) => { requests++; return sourceResponse(url, 2); } });
+      assert.equal(requests, 8);
+      for (const source of NEUMERKEL_SOURCES) assert.equal(restored.get(source.key).text, `${source.key} caf\u00e9 2`);
+    }
+  }));
+
+  await reporter.testAsync('explicit live refresh replaces a complete cache and cached mode reuses the new snapshot', () => withCache(async (cacheDir) => {
+    await loadNeumerkelSources({ cacheDir, fetchSource: async (url) => sourceResponse(url) });
+    let requests = 0;
+    await loadNeumerkelSources({ mode: 'live', cacheDir, fetchSource: async (url) => { requests++; return sourceResponse(url, 2); } });
+    assert.equal(requests, 8);
+    const warm = await loadNeumerkelSources({ mode: 'cached', cacheDir, fetchSource: async () => assert.fail('cached mode fetched upstream') });
+    assert.equal(warm.get('syntax').text, 'syntax caf\u00e9 2');
+  }));
+
+  await reporter.testAsync('cached mode rejects missing and damaged manifests without fetching', () => withCache(async (cacheDir) => {
+    const options = { mode: 'cached', cacheDir, fetchSource: async () => assert.fail('cached mode fetched upstream') };
+    await assert.rejects(loadNeumerkelSources(options), /cache manifest is missing/);
+    await loadNeumerkelSources({ cacheDir, fetchSource: async (url) => sourceResponse(url) });
+    fs.writeFileSync(path.join(cacheDir, 'manifest.json'), '{');
+    await assert.rejects(loadNeumerkelSources(options), /cache manifest is missing or unreadable/);
+    const restored = await loadNeumerkelSources({ cacheDir, fetchSource: async (url) => sourceResponse(url) });
+    assert.equal(restored.size, 8);
+  }));
+
+  await reporter.testAsync('a late download failure keeps the complete previous cache unchanged', () => withCache(async (cacheDir) => {
+    await loadNeumerkelSources({ cacheDir, fetchSource: async (url) => sourceResponse(url) });
+    const before = fs.readFileSync(path.join(cacheDir, 'manifest.json'), 'utf8');
+    const last = NEUMERKEL_SOURCES.at(-1).url;
+    await assert.rejects(loadNeumerkelSources({ mode: 'live', cacheDir, fetchSource: async (url) => {
+      if (url === last) throw new Error('upstream unavailable');
+      return sourceResponse(url, 2);
+    } }), /live fetch failed/);
+    assert.equal(fs.readFileSync(path.join(cacheDir, 'manifest.json'), 'utf8'), before);
+    const warm = await loadNeumerkelSources({ mode: 'cached', cacheDir });
+    for (const source of NEUMERKEL_SOURCES) assert.equal(warm.get(source.key).text, `${source.key} caf\u00e9 1`);
+    assert.deepEqual(fs.readdirSync(path.dirname(cacheDir)), ['cache']);
+  }));
+
+  await reporter.testAsync('source fixtures override cache loading without fetching or replacing the cache', () => withCache(async (cacheDir) => {
+    const sourceDir = path.join(path.dirname(cacheDir), 'fixtures');
+    fs.mkdirSync(sourceDir);
+    for (const source of NEUMERKEL_SOURCES) fs.writeFileSync(path.join(sourceDir, source.filename), source.key);
+    const loaded = await loadNeumerkelSources({ sourceDir, cacheDir, fetchSource: async () => assert.fail('source fixture fetched upstream') });
+    assert.equal(loaded.get('syntax').metadata.sourceDir, true);
+    assert.equal(fs.existsSync(cacheDir), false);
+  }));
 
   reporter.test('live manifest tracks exactly eight upstream suite sources', () => {
     if (NEUMERKEL_SOURCES.length !== 8) throw new Error(`expected 8 sources, got ${NEUMERKEL_SOURCES.length}`);
@@ -122,7 +206,7 @@ export function runNeumerkelHarnessTests(reporter = new TestReporter()) {
     }
   });
 
-  reporter.test('release workflow reuses the successful live snapshot instead of refetching', () => {
+  reporter.test('release workflow refreshes upstream once and tests the same successful snapshot', () => {
     const pkg = JSON.parse(fs.readFileSync(path.join(packageRoot, 'package.json'), 'utf8'));
     const scripts = pkg.scripts ?? {};
     const releaseSteps = String(scripts.preversion ?? '').split(' && ');
@@ -131,8 +215,10 @@ export function runNeumerkelHarnessTests(reporter = new TestReporter()) {
         releaseSteps[2] !== 'node tools/extract-book-examples.mjs') {
       throw new Error('preversion must regenerate the library index, predicate reference, and book examples first');
     }
-    if (releaseSteps[3] !== 'npm test' || releaseSteps[4] !== 'node test/run-neumerkel.mjs --cached --update-report') {
-      throw new Error('preversion must synchronize the tracked report from the successful npm test snapshot');
+    if (scripts.sync !== 'node test/run-neumerkel.mjs --live --update-report' ||
+        scripts.neumerkel !== 'node test/run-neumerkel.mjs --live --verify-report' ||
+        releaseSteps[3] !== 'npm run sync' || releaseSteps[4] !== 'npm test') {
+      throw new Error('preversion must refresh upstream once and run npm test against the same cached snapshot');
     }
     if (releaseSteps[5] !== 'node test/run-conformance-report.mjs conformance-report.md' ||
         releaseSteps[6] !== 'git add src/library-autoload-index.js the-art-of-eyeprolog.md examples/book ' +

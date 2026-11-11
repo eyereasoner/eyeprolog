@@ -278,11 +278,13 @@ A release intended to advance ISO conformance uses one canonical command:
 npm test
 ```
 
-That command first fetches and runs the **latest eight Neumerkel conformity
-sources** (WG17 syntax among them, discovered live, not vendored), then
+That command first runs the **eight Neumerkel conformity sources** from
+`.cache/neumerkel/`, downloading them if missing or incomplete, then
 executes the deterministic local conformance, strict ISO,
 regression/API, examples, documentation and architecture gates. The upstream
-case counts are discovered dynamically.
+case counts, including WG17 syntax, are discovered dynamically. `npm run sync`
+refreshes upstream and records the results. The version lifecycle runs that
+sync once before testing the same cached snapshot.
 
 Useful focused commands are:
 
@@ -315,7 +317,7 @@ post-N289 STC drafts remain review input until standardized.
 | Implementation-specific strict/normal boundary is documented and tested | covered | all 5.5 hooks have explicit dispositions; the WG17 cross-profile gate verifies syntax-preservation for standard text accepted by the strict reader. |
 | Published Corrigenda 1-3 are incorporated | covered | `ISO-CORRIGENDA-MATRIX.md` inventories every published amendment cluster with executable, editorial, or superseded disposition |
 | Current post-N289 draft is tracked without silently changing the published baseline | covered | `STC-DRAFT-STATUS.md` tracks reviewed draft items separately from normative requirements |
-| Latest Neumerkel conformity is a live release gate | covered | `npm test` fetches and executes the eight current TU Wien conformity sources with dynamic inventories, including WG17 syntax; a small offline corpus of reviewed cases (`test/conformance/wg17-syntax-cases.json`) supplies an additional exact-outcome regression lock, cross-referenced by id against the live-discovered cases |
+| Latest Neumerkel conformity is a live release gate | covered | The version lifecycle runs `npm run sync` to fetch and check the eight current TU Wien sources, then `npm test` reuses that snapshot. Ordinary tests use `.cache/neumerkel/`, downloading it when incomplete. Inventories include dynamically discovered WG17 syntax; `test/conformance/wg17-syntax-cases.json` adds an exact-outcome regression lock, cross-referenced by id against the discovered cases |
 | Third-party standard-core regression provenance is retained | covered | adapted Logtalk, Scryer, Trealla, and SWI-Prolog cases retain source identifiers and licenses in `THIRD_PARTY.md` |
 | No unexplained deviation remains in the release-facing ledger | covered | the release-facing ledger contains no remaining `review` rows; documented variation points are implementation-defined/specific or draft-only rather than unexplained deviations. |
 

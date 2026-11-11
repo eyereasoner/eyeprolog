@@ -22,8 +22,8 @@ unmodified snapshot of the Prolog Prologue working draft's machine-readable
 quads (<https://www.complang.tuwien.ac.at/ulrich/iso-prolog/prologue_quad.pl>),
 plus a runner that loaded `library(prologue)` before including it. It was
 retired (see git history) once its coverage became strictly redundant with
-the *live* Prologue source the Neumerkel gate already fetches and checks on
-every `npm test` run -- the same reason the WG17 syntax matrix has no
+the upstream Prologue source the Neumerkel gate checks from `.cache/neumerkel/`
+on every `npm test` run and refreshes with `npm run sync` -- the same reason the WG17 syntax matrix has no
 vendored snapshot of its own either (see
 [NEUMERKEL-LIVE.md](../conformance/NEUMERKEL-LIVE.md) and
 [conformance/README.md](../conformance/README.md)). Unlike `phrase_quad.pl`

@@ -22,7 +22,7 @@ import { runNeumerkelHarnessTests } from './run-neumerkel-tests.mjs';
 const offline = process.argv.includes('--offline');
 
 await runStandalone(async (reporter) => {
-  runNeumerkelHarnessTests(reporter);
+  await runNeumerkelHarnessTests(reporter);
   if (!offline) await runNeumerkel(reporter);
   runConformance(reporter);
   runIsoStrict(reporter);

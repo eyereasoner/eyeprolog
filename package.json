@@ -48,8 +48,9 @@
   },
   "scripts": {
     "test": "node test/run-all.mjs",
-    "neumerkel": "node test/run-neumerkel.mjs --verify-report",
-    "preversion": "node tools/generate-library-autoload-index.mjs && node tools/generate-predicate-reference.mjs && node tools/extract-book-examples.mjs && npm test && node test/run-neumerkel.mjs --cached --update-report && node test/run-conformance-report.mjs conformance-report.md && git add src/library-autoload-index.js the-art-of-eyeprolog.md examples/book test/conformance/NEUMERKEL-LATEST.md conformance-report.md",
-    "postversion": "git push origin HEAD --follow-tags"
+    "neumerkel": "node test/run-neumerkel.mjs --live --verify-report",
+    "preversion": "node tools/generate-library-autoload-index.mjs && node tools/generate-predicate-reference.mjs && node tools/extract-book-examples.mjs && npm run sync && npm test && node test/run-conformance-report.mjs conformance-report.md && git add src/library-autoload-index.js the-art-of-eyeprolog.md examples/book test/conformance/NEUMERKEL-LATEST.md conformance-report.md",
+    "postversion": "git push origin HEAD --follow-tags",
+    "sync": "node test/run-neumerkel.mjs --live --update-report"
   }
 }

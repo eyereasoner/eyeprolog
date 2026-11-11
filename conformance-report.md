@@ -1,6 +1,6 @@
 # EyeProlog conformance report
 
-This report combines a live external conformance gate with the file-based
+This report combines upstream conformance evidence with the file-based
 conformance corpus under `test/conformance/`. The file-based corpus is
 measured when this report is generated; it is not inferred from fixture counts.
 
@@ -8,10 +8,10 @@ measured when this report is generated; it is not inferred from fixture counts.
 
 See the tracked [latest Neumerkel conformity report](test/conformance/NEUMERKEL-LATEST.md)
 for the executable external gate, including WG17 syntax conformance: `npm test`
-fetches all eight TU Wien sources (syntax discovered and executed live, not a
-vendored fixture) and executes the discovered inventory. The release workflow
-then synchronizes this tracked report from those exact successful cached source
-bytes, avoiding a second live fetch and its race window.
+reuses all eight TU Wien sources in `.cache/neumerkel/`, downloading them when
+missing or incomplete, and executes the discovered inventory. `npm run sync`
+refreshes upstream, checks every case and updates the tracked Neumerkel report.
+The release workflow syncs once, then tests that exact cached snapshot.
 
 ## File-based corpus inventory
 
@@ -57,8 +57,8 @@ The public [error subclause](https://www.complang.tuwien.ac.at/ulrich/iso-prolog
 also specifies `list` for these checks.
 
 The [phrase comparison](https://www.complang.tuwien.ac.at/ulrich/iso-prolog/phrase)
-links the machine-readable `phrase_quad.pl` corpus. `npm test` fetches and
-runs that corpus live through the Neumerkel gate; the offline regression
+links the machine-readable `phrase_quad.pl` corpus. `npm test` runs the
+cached upstream corpus through the Neumerkel gate; the offline regression
 suite runs all 58 vendored quads. Neither expectations nor error matching
 are relaxed for quads 41-44.
 

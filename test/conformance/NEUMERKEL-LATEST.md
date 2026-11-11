@@ -3,7 +3,8 @@
 Status: **PASS** — **766/766** discovered upstream cases passed.
 
 This tracked report records the latest upstream inventory successfully checked by EyeProlog.
-`npm test` fetches the eight TU Wien sources again and executes the discovered cases.
+`npm test` executes the discovered cases from `.cache/neumerkel/`, downloading the eight sources if needed.
+`npm run sync` refreshes the upstream sources, checks every discovered case and updates this report.
 Release/report checks can additionally require these tracked counts to match the live suites.
 Counts are output from upstream, not hard-coded test constants.
 
@@ -33,8 +34,8 @@ Counts are output from upstream, not hard-coded test constants.
 Exact fetched bytes, SHA-256 hashes, fetch timestamps, and HTTP validators remain under
 Git-ignored `.cache/neumerkel/` for local inspection/reproduction and are intentionally not committed.
 A normal test run warns when this tracked report is stale. Refresh directly from live
-upstream with `node test/run-neumerkel.mjs --update-report`, or sync the exact successful
-snapshot already fetched by `npm test` with `node test/run-neumerkel.mjs --cached --update-report`.
+upstream with `npm run sync`, or use the exact successful
+snapshot checked by `npm test` with `node test/run-neumerkel.mjs --cached --update-report`.
 `node test/run-neumerkel.mjs --cached --verify-report` verifies the tracked report against that last
-successful live snapshot without fetching upstream a second time.
+successful cached snapshot without fetching upstream again.
 

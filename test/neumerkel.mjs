@@ -50,10 +50,10 @@ function sourceRevision(text) {
   return matches.at(-1)?.[1] ?? null;
 }
 
-async function fetchOne(source) {
+async function fetchOne(source, fetchSource) {
   let response;
   try {
-    response = await fetch(source.url, {
+    response = await fetchSource(source.url, {
       headers: { 'user-agent': 'EyeProlog-Neumerkel-Conformance/1' },
       redirect: 'follow',
       cache: 'no-store',
@@ -61,8 +61,8 @@ async function fetchOne(source) {
   } catch (error) {
     throw new Error(
       `Neumerkel live fetch failed for ${source.key} (${source.url}). ` +
-      'The canonical conformance gate requires network access; use npm test -- --offline ' +
-      'for a network-free local run or node test/run-neumerkel.mjs --cached to reproduce the last live fetch.',
+      'Creating or refreshing the cache requires network access. Retry npm run sync, ' +
+      'or use node test/run-neumerkel.mjs --cached with an existing complete cache.',
       { cause: error },
     );
   }
@@ -87,21 +87,20 @@ async function fetchOne(source) {
   };
 }
 
-function readCachedOne(source, cacheDir) {
+function readCachedOne(source, cacheDir, metadata) {
   const filename = path.join(cacheDir, source.filename);
   if (!fs.existsSync(filename)) {
-    throw new Error(`Neumerkel cache is incomplete: missing ${path.relative(packageRoot, filename)}; run node test/run-neumerkel.mjs online first`);
+    throw new Error(`Neumerkel cache is incomplete: missing ${path.relative(packageRoot, filename)}; run npm run sync`);
   }
   const bytes = new Uint8Array(fs.readFileSync(filename));
+  if (sha256(bytes) !== metadata.sha256 || bytes.byteLength !== metadata.bytes) {
+    throw new Error(`Neumerkel cache does not match its manifest: ${source.filename}; run npm run sync`);
+  }
   return {
     bytes,
-    text: decodeDocument(bytes, ''),
+    text: decodeDocument(bytes, metadata.contentType ?? ''),
     metadata: {
-      key: source.key,
-      url: source.url,
-      filename: source.filename,
-      sha256: sha256(bytes),
-      bytes: bytes.byteLength,
+      ...metadata,
       cached: true,
     },
   };
@@ -125,31 +124,80 @@ function readSourceDirOne(source, sourceDir) {
   };
 }
 
-export async function loadNeumerkelSources({ mode = 'live', cacheDir = defaultCacheDir, sourceDir = null } = {}) {
+function readCachedSources(cacheDir) {
+  let manifest;
+  try {
+    manifest = JSON.parse(fs.readFileSync(path.join(cacheDir, 'manifest.json'), 'utf8'));
+  } catch (error) {
+    throw new Error('Neumerkel cache manifest is missing or unreadable; run npm run sync', { cause: error });
+  }
+  if (manifest?.schema !== 1 || !Array.isArray(manifest.sources) || manifest.sources.length !== NEUMERKEL_SOURCES.length) {
+    throw new Error('Neumerkel cache manifest is incomplete; run npm run sync');
+  }
+  const loaded = new Map();
+  for (const source of NEUMERKEL_SOURCES) {
+    const metadata = manifest.sources.find((item) => item?.key === source.key);
+    if (metadata?.url !== source.url || metadata?.filename !== source.filename) {
+      throw new Error(`Neumerkel cache manifest does not match ${source.key}; run npm run sync`);
+    }
+    loaded.set(source.key, { ...source, ...readCachedOne(source, cacheDir, metadata), localPath: path.join(cacheDir, source.filename) });
+  }
+  return loaded;
+}
+
+// Publish complete snapshots together. A failed download or installation
+// must leave the previous cache available for an explicit --cached run.
+function writeCache(cacheDir, loaded, manifest) {
+  safeMkdir(path.dirname(cacheDir));
+  const temporary = fs.mkdtempSync(path.join(path.dirname(cacheDir), '.neumerkel-'));
+  const staged = path.join(temporary, 'sources');
+  const previous = path.join(temporary, 'previous');
+  try {
+    safeMkdir(staged);
+    for (const item of loaded.values()) fs.writeFileSync(path.join(staged, item.filename), item.bytes);
+    fs.writeFileSync(path.join(staged, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+    const hadCache = fs.existsSync(cacheDir);
+    if (hadCache) fs.renameSync(cacheDir, previous);
+    try {
+      fs.renameSync(staged, cacheDir);
+    } catch (error) {
+      if (hadCache) fs.renameSync(previous, cacheDir);
+      throw error;
+    }
+  } finally {
+    fs.rmSync(temporary, { recursive: true, force: true });
+  }
+}
+
+export async function loadNeumerkelSources({ mode = 'auto', cacheDir = defaultCacheDir, sourceDir = null, fetchSource = fetch } = {}) {
+  if (!['auto', 'live', 'cached'].includes(mode)) throw new Error(`unknown Neumerkel source mode: ${mode}`);
+  if (sourceDir == null && mode !== 'live') {
+    try {
+      return readCachedSources(cacheDir);
+    } catch (error) {
+      if (mode === 'cached') throw error;
+    }
+  }
   const loaded = new Map();
   for (const source of NEUMERKEL_SOURCES) {
     const item = sourceDir != null
       ? readSourceDirOne(source, sourceDir)
-      : mode === 'cached'
-        ? readCachedOne(source, cacheDir)
-        : await fetchOne(source);
+      : await fetchOne(source, fetchSource);
     loaded.set(source.key, { ...source, ...item, localPath: sourceDir != null ? path.join(sourceDir, source.filename) : path.join(cacheDir, source.filename) });
   }
 
-  if (mode === 'live' && sourceDir == null) {
-    safeMkdir(cacheDir);
-    for (const item of loaded.values()) fs.writeFileSync(path.join(cacheDir, item.filename), item.bytes);
+  if (sourceDir == null) {
     const fetchedAt = new Date().toISOString();
     const manifest = {
       schema: 1,
-      policy: 'live Neumerkel sources fetched for this conformance run; cached copies are reproducibility aids only',
+      policy: 'complete upstream snapshot reused by tests; npm run sync explicitly refreshes it',
       fetchedAt,
       sources: [...loaded.values()].map((item) => ({
         ...item.metadata,
         revision: item.kind === 'syntax' || item.kind === 'cleanup' ? sourceRevision(item.text) : null,
       })),
     };
-    fs.writeFileSync(path.join(cacheDir, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`);
+    writeCache(cacheDir, loaded, manifest);
   }
 
   return loaded;
@@ -382,11 +430,12 @@ function runQuadCorpus(reporter, label, item, knownDivergences = new Map()) {
   return { total: result.results.length, passed, failures };
 }
 
-export async function executeNeumerkel({ reporter, mode = 'live', cacheDir = defaultCacheDir, sourceDir = null } = {}) {
+export async function executeNeumerkel({ reporter, mode = 'auto', cacheDir = defaultCacheDir, sourceDir = null } = {}) {
   const sources = await loadNeumerkelSources({ mode, cacheDir, sourceDir });
   const summary = {};
 
-  reporter.section(`Neumerkel conformity (${mode === 'live' && sourceDir == null ? 'live upstream' : sourceDir != null ? 'source fixtures' : 'cached'})`);
+  const origin = sourceDir != null ? 'source fixtures' : sources.get('syntax').metadata.cached ? 'cached' : 'live upstream';
+  reporter.section(`Neumerkel conformity (${origin})`);
 
   const syntaxCases = materializeSyntaxCases(sources.get('syntax').text);
   const syntaxOutcomes = readWg17SyntaxOutcomes();
@@ -463,7 +512,7 @@ export async function executeNeumerkel({ reporter, mode = 'live', cacheDir = def
   }
   summary.cleanup = { passed: cleanupCases.length, total: cleanupCases.length };
 
-  reporter.sectionTotal('live Neumerkel conformity');
+  reporter.sectionTotal('Neumerkel conformity');
 
   const cacheManifest = path.join(cacheDir, 'manifest.json');
   const cachedManifest = fs.existsSync(cacheManifest) ? JSON.parse(fs.readFileSync(cacheManifest, 'utf8')) : null;
@@ -478,7 +527,7 @@ export async function executeNeumerkel({ reporter, mode = 'live', cacheDir = def
         })),
       }
     : cachedManifest;
-  if (mode === 'live' && sourceDir == null && manifest != null) {
+  if (sourceDir == null && manifest != null) {
     fs.writeFileSync(path.join(cacheDir, 'results.json'), `${JSON.stringify({
       schema: 1,
       fetchedAt: manifest.fetchedAt,
@@ -539,7 +588,8 @@ export function formatNeumerkelMarkdown({ summary }) {
     `Status: **${status}** — **${passed}/${total}** discovered upstream cases passed.`,
     '',
     'This tracked report records the latest upstream inventory successfully checked by EyeProlog.',
-    '`npm test` fetches the eight TU Wien sources again and executes the discovered cases.',
+    '`npm test` executes the discovered cases from `.cache/neumerkel/`, downloading the eight sources if needed.',
+    '`npm run sync` refreshes the upstream sources, checks every discovered case and updates this report.',
     'Release/report checks can additionally require these tracked counts to match the live suites.',
     'Counts are output from upstream, not hard-coded test constants.',
     '',
@@ -569,10 +619,10 @@ export function formatNeumerkelMarkdown({ summary }) {
     'Exact fetched bytes, SHA-256 hashes, fetch timestamps, and HTTP validators remain under',
     'Git-ignored `.cache/neumerkel/` for local inspection/reproduction and are intentionally not committed.',
     'A normal test run warns when this tracked report is stale. Refresh directly from live',
-    'upstream with `node test/run-neumerkel.mjs --update-report`, or sync the exact successful',
-    'snapshot already fetched by `npm test` with `node test/run-neumerkel.mjs --cached --update-report`.',
+    'upstream with `npm run sync`, or use the exact successful',
+    'snapshot checked by `npm test` with `node test/run-neumerkel.mjs --cached --update-report`.',
     '`node test/run-neumerkel.mjs --cached --verify-report` verifies the tracked report against that last',
-    'successful live snapshot without fetching upstream a second time.',
+    'successful cached snapshot without fetching upstream again.',
     '',
   );
   return `${lines.join('\n')}\n`;

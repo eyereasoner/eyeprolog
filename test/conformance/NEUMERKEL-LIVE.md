@@ -1,10 +1,16 @@
-# Live Neumerkel conformity gate
+# Neumerkel conformity sources and cache
 
-EyeProlog treats Ulrich Neumerkel's current ISO/WG17 conformity material as a
-moving upstream release gate, not as a frozen snapshot with permanent case
-counts.
+EyeProlog checks Ulrich Neumerkel's ISO/WG17 conformity material with dynamic
+case inventories. Downloaded sources live in Git-ignored `.cache/neumerkel/`.
+They remain outside Git, source release archives and the npm package.
 
-`node test/run-neumerkel.mjs` fetches these eight TU Wien sources on every live run:
+`npm test` and `node test/run-neumerkel.mjs` reuse a complete cache without
+contacting upstream. If a source is missing, the manifest is invalid, or a
+source no longer matches its recorded SHA-256 hash and byte count, the runner
+downloads all eight sources before checking them. A failed download leaves
+the previous snapshot intact. The first run needs network access.
+
+The eight TU Wien sources are:
 
 1. `conformity_testing` — Part 1 syntax/reader/writer matrix;
 2. `number_chars_cont_quad.pl` — `number_chars/2` continuation corpus;
@@ -15,71 +21,50 @@ counts.
 7. `prologue_quad.pl` — Prolog Prologue working-draft corpus;
 8. `cleanup` — `setup_call_cleanup/3` examples.
 
-The Prologue corpus carries one permanent, documented divergence (its
-`max_integer` quad — see `KNOWN_QUAD_DIVERGENCES` in `test/neumerkel.mjs`):
-EyeProlog's `bounded=false` reports no `max_integer` value at all, which
-neither of the quad's two anticipated answers describes. That quad is still
-executed every run and counted honestly (it does not report as passing), but
-it does not abort the run the way an unexplained failure would; the tracked
-report and console summary both say "N divergence(s) to be addressed" rather
-than a bare pass/fail count. See `NEUMERKEL-LATEST.md`'s own "Known
-divergences" section for the explanation. If the divergence ever stopped
-reproducing, the counts would simply climb back to a plain, unqualified PASS.
+Every run executes the cases discovered from its source bytes. `npm run sync`
+refreshes all eight sources from current upstream, checks every discovered
+case and updates [`NEUMERKEL-LATEST.md`](NEUMERKEL-LATEST.md). New upstream
+rows therefore enter the next refreshed run automatically. The syntax
+extractor reads TU Wien's labelled `Codex` column and checks the page's declared
+total so hand-edited HTML cannot silently reduce coverage.
 
-The runner discovers the inventory at run time. A new upstream row is therefore
-executed automatically and a removed row disappears automatically. The syntax
-extractor keys the expected result from TU Wien's labelled `Codex` column rather
-than assuming a fixed cell position, and cross-checks the discovered inventory
-against the total declared by the live page so hand-edited HTML cannot silently
-reduce coverage.
-
-## Tracked GitHub evidence
-
-The latest successful discovered inventory is committed as
-[`NEUMERKEL-LATEST.md`](NEUMERKEL-LATEST.md). This is the stable report to link
-from GitHub, releases, or other documentation.
-
-A normal live run always executes the current upstream inventory. If the tracked
-Markdown no longer matches, the test still reflects engine conformance and prints a
-warning with the refresh command:
+## Commands
 
 ```sh
-node test/run-neumerkel.mjs --update-report
-```
-
-Commit the resulting `test/conformance/NEUMERKEL-LATEST.md` after reviewing the
-change. After a successful `npm test`, `node test/run-neumerkel.mjs --cached --update-report` writes
-the tracked report from the exact cached source bytes that just passed, avoiding a
-second network fetch. `node test/run-neumerkel.mjs --cached --verify-report` verifies the tracked
-report against that same last successful snapshot. The npm version lifecycle
-uses this race-free sync path and stages the generated reports into the release
-commit. The tracked report intentionally omits fetch timestamps and HTTP validators,
-so repeated runs against unchanged upstream suites do not dirty the checkout.
-
-## Local inspection cache
-
-Exact downloaded bytes, SHA-256 hashes, fetch timestamps, HTTP validators, and
-machine-readable results are kept under `.cache/neumerkel/`. `.cache/` remains
-Git-ignored: it is an inspection/reproduction cache, not published project evidence.
-
-Use:
-
-```sh
-node test/run-neumerkel.mjs
-```
-
-for the canonical live check. For offline reproduction of the exact last live
-fetch, use:
-
-```sh
+npm test
+npm run sync
+npm run neumerkel
 node test/run-neumerkel.mjs --cached
+node test/run-neumerkel.mjs --cached --update-report
+node test/run-neumerkel.mjs --cached --verify-report
 ```
 
-The cached command never claims to check the latest upstream suites by itself.
-The release flow first performs the canonical live `npm test`, then uses those exact
-just-fetched bytes only to synchronize and verify the tracked evidence without
-contacting upstream twice.
+`npm run neumerkel` forces a fresh download and requires the tracked report to
+match. `--live` also forces a fresh download when using the runner directly.
+`--cached` requires a complete, matching cache and never downloads anything.
+`npm test -- --offline` skips the eight upstream suites entirely, including
+WG17 syntax; a warm normal run includes them without needing upstream access.
+There is no clean command: use `npm run sync` to refresh the cache explicitly.
 
-The vendored WG17 syntax matrix remains useful as a deterministic reviewed
-regression snapshot, but it is secondary to this live gate: passing the snapshot
-cannot mask a new or changed Neumerkel case.
+## Tracked evidence and releases
+
+The stable report records the upstream inventory successfully checked by
+EyeProlog. A normal test run warns if it differs from the tracked report;
+`--verify-report` makes that difference an error. `--cached --update-report`
+records the exact snapshot already checked, without fetching again. Review
+and commit intentional report changes.
+
+The version lifecycle regenerates library and book files, runs `npm run sync`
+once, then runs the full `npm test` against that same snapshot. It generates
+and stages the conformance reports before the release commit. Releases thus
+check current upstream without fetching twice, while ordinary tests reuse the
+cache. A cached run alone does not establish that upstream is unchanged.
+
+Exact source bytes, SHA-256 hashes, fetch timestamps, HTTP validators and
+machine-readable results stay under `.cache/neumerkel/`. Cached reads use the
+saved content type so the text encoding matches the live download. Tracked
+reports omit volatile fetch metadata, keeping repeated runs stable.
+
+The reviewed WG17 syntax regression corpus is an additional check on selected
+outcomes. Every discovered syntax case still has to satisfy its upstream
+Codex expectation; a reviewed outcome never replaces that assertion.

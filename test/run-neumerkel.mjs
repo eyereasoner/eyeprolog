@@ -7,7 +7,7 @@ import { isMainModule, runStandalone } from './test-style.mjs';
 
 function parseArgs(argv) {
   const options = {
-    mode: 'live',
+    mode: 'auto',
     sourceDir: process.env.EYEPROLOG_NEUMERKEL_SOURCE_DIR ?? null,
     updateReport: false,
     verifyReport: false,
@@ -15,6 +15,7 @@ function parseArgs(argv) {
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index];
     if (arg === '--cached') options.mode = 'cached';
+    else if (arg === '--live') options.mode = 'live';
     else if (arg === '--update-report') options.updateReport = true;
     else if (arg === '--verify-report') options.verifyReport = true;
     else if (arg === '--no-verify-report') options.verifyReport = false;
@@ -29,11 +30,12 @@ function parseArgs(argv) {
 
 function printHelp() {
   process.stdout.write(
-    'Usage: node test/run-neumerkel.mjs [--cached] [--source-dir DIR] [--verify-report] [--update-report]\n\n' +
-    'Default: fetch all eight current Neumerkel conformity sources live and run\n' +
-    'every discovered case. A stale tracked report is reported as a warning, not\n' +
+    'Usage: node test/run-neumerkel.mjs [--cached | --live] [--source-dir DIR] [--verify-report] [--update-report]\n\n' +
+    'Default: reuse the complete cache, downloading all eight sources if needed,\n' +
+    'and run every discovered case. A stale tracked report is a warning, not\n' +
     'an engine-test failure. --verify-report makes report freshness mandatory;\n' +
-    '--update-report refreshes the tracked Markdown. --cached is reproduction only.\n',
+    '--update-report refreshes the tracked Markdown. --live forces a download;\n' +
+    '--cached requires an existing complete cache and never fetches.\n',
   );
 }
 
@@ -54,7 +56,7 @@ export async function runNeumerkel(reporter, options = {}) {
     if (committed !== result.reportText) {
       const message =
         `tracked Neumerkel report is stale: ${relativeReportPath}\n` +
-        'Run node test/run-neumerkel.mjs --update-report and commit the updated report.';
+        'Run node test/run-neumerkel.mjs --cached --update-report to record this snapshot, or npm run sync to refresh upstream.';
       if (effective.verifyReport) throw new Error(message);
       reporter.stdout.write(`WARN ${message}\n`);
     } else {

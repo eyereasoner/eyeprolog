@@ -94,9 +94,10 @@ npm test
 ```
 The npm command list is deliberately small:
 
-- `npm test` (or `npm run test`): run the release gate, including live upstream conformity checks (WG17 syntax among them).
+- `npm test` (or `npm run test`): run all checks, including the eight Neumerkel conformity suites (WG17 syntax among them). Reuse `.cache/neumerkel/`, downloading the sources only when the cache is missing or incomplete.
+- `npm run sync`: download the current upstream sources, check every discovered case and update the tracked Neumerkel report. This needs network access.
 - `npm run neumerkel`: re-fetch the upstream Neumerkel conformity sources and fail if the tracked report no longer matches them. The release gate reports that drift as a warning; this command makes it an error, so it answers "are we still current?" on its own.
 
-Use `npm test -- --offline` for a network-free local pass (this also skips the live-discovered WG17 syntax check, since it has no offline snapshot). Focused checks remain available directly, for example `node test/run-regression.mjs docs`; see [test runners](https://eyereasoner.github.io/eyeprolog/test/). The automatic version hooks rebuild generated library and book files, run the release gate, refresh and stage conformance reports, and push the release. Detailed upstream report maintenance is documented in the [conformance guide](https://eyereasoner.github.io/eyeprolog/test/conformance/).
+Once the cache exists, ordinary tests need no upstream access. `npm test -- --offline` skips the eight upstream suites entirely; `node test/run-neumerkel.mjs --cached` runs them without permitting downloads. Focused checks remain available directly, for example `node test/run-regression.mjs docs`; see [test runners](https://eyereasoner.github.io/eyeprolog/test/). The automatic version hooks rebuild generated library and book files, sync the current upstream suites once, run the release gate from that cache, stage conformance reports, and push the release. Detailed upstream report maintenance is documented in the [conformance guide](https://eyereasoner.github.io/eyeprolog/test/conformance/).
 
 EyeProlog is released under the [MIT License](LICENSE.md).
