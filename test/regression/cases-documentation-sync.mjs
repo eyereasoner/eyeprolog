@@ -629,6 +629,12 @@ ${profile}`;
         const publishIndex = publishWorkflow.indexOf('run: npm publish');
         assertEqual(testIndex >= 0 && testIndex < publishIndex, true, 'publish workflow test gate');
         assertEqual(packIndex >= 0 && packIndex < publishIndex, true, 'publish workflow package gate');
+        for (const workflow of ['test.yml', 'publish-npm.yml', 'release.yml', 'pages.yml']) {
+          const text = fs.readFileSync(path.join(packageRoot, '.github', 'workflows', workflow), 'utf8');
+          assertIncludes(text, 'run-name: ${{ github.event.head_commit.message || github.event.pull_request.title ||', `${workflow} descriptive Actions title`);
+        }
+        const releaseWorkflow = fs.readFileSync(path.join(packageRoot, '.github', 'workflows', 'release.yml'), 'utf8');
+        assertIncludes(releaseWorkflow, '--title "$RELEASE_TAG — $TITLE"', 'GitHub release title includes the release message');
         assertArrayEqual(Object.keys(pkg.scripts).sort(), ['neumerkel', 'postversion', 'preversion', 'sync', 'test'], 'small npm command surface');
         assertEqual(pkg.scripts.test, 'node test/run-all.mjs', 'full release gate');
         const runner = fs.readFileSync(path.join(packageRoot, 'test', 'run-all.mjs'), 'utf8');

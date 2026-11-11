@@ -1,4 +1,5 @@
 name: Create GitHub Release
+run-name: ${{ github.event.head_commit.message || github.event.pull_request.title || format('{0} — {1}', github.workflow, github.ref_name) }}
 
 on:
   push:
@@ -20,11 +21,13 @@ jobs:
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          MESSAGE="$(git tag -l --format='%(contents)' "${{ github.ref_name }}")"
+          MESSAGE="$(git tag -l --format='%(contents)' "$RELEASE_TAG")"
+          TITLE="${MESSAGE%%$'\n'*}"
 
-          gh release create "${{ github.ref_name }}" \
+          gh release create "$RELEASE_TAG" \
             --verify-tag \
-            --title "${{ github.ref_name }}" \
+            --title "$RELEASE_TAG — $TITLE" \
             --notes "$MESSAGE" \
             --generate-notes
